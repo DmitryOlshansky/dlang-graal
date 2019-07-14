@@ -29,8 +29,8 @@ public class dmacro {
         public  Ptr<Macro> search(ByteSlice name) {
             Ptr<Macro> table = null;
             {
-                table = ptr(this);
-                for (; table != null;table = (table.get()).next){
+                table = pcopy((ptr(this)));
+                for (; table != null;table = pcopy((table.get()).next)){
                     if (__equals((table.get()).name, name))
                     {
                         break;
@@ -43,8 +43,8 @@ public class dmacro {
         public static Ptr<Macro> define(Ptr<Ptr<Macro>> ptable, ByteSlice name, ByteSlice text) {
             Ptr<Macro> table = null;
             {
-                table = ptable.get();
-                for (; table != null;table = (table.get()).next){
+                table = pcopy((ptable.get()));
+                for (; table != null;table = pcopy((table.get()).next)){
                     if (__equals((table.get()).name, name))
                     {
                         (table.get()).text = text.copy();
@@ -52,8 +52,8 @@ public class dmacro {
                     }
                 }
             }
-            table = refPtr(new Macro(name, text));
-            (table.get()).next = ptable.get();
+            table = pcopy((refPtr(new Macro(name, text))));
+            (table.get()).next = pcopy((ptable.get()));
             ptable.set(0, table);
             return table;
         }
@@ -160,7 +160,7 @@ public class dmacro {
                             if (m == null)
                             {
                                 ByteSlice undef = new ByteSlice("DDOC_UNDEFINED_MACRO").copy();
-                                m = this.search(toByteSlice(undef));
+                                m = pcopy(this.search(toByteSlice(undef)));
                                 if (m != null)
                                 {
                                     if (marg.getLength() != 0)

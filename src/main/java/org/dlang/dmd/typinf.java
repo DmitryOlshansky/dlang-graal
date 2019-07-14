@@ -123,73 +123,83 @@ public class typinf {
     }
 
     public static boolean isSpeculativeType(Type t) {
-        Function1<TypeVector,Boolean> visitVector = (t) -> {
-         {
-            return isSpeculativeType(t.basetype);
-        }
+        Function1<TypeVector,Boolean> visitVector = new Function1<TypeVector,Boolean>() {
+            public Boolean invoke(TypeVector t) {
+             {
+                return isSpeculativeType(t.basetype);
+            }}
+
         };
-        Function1<TypeAArray,Boolean> visitAArray = (t) -> {
-         {
-            return isSpeculativeType(t.index) || isSpeculativeType(t.next.value);
-        }
+        Function1<TypeAArray,Boolean> visitAArray = new Function1<TypeAArray,Boolean>() {
+            public Boolean invoke(TypeAArray t) {
+             {
+                return isSpeculativeType(t.index) || isSpeculativeType(t.next.value);
+            }}
+
         };
-        Function1<TypeStruct,Boolean> visitStruct = (t) -> {
-         {
-            StructDeclaration sd = t.sym;
-            {
-                TemplateInstance ti = sd.isInstantiated();
-                if ((ti) != null)
+        Function1<TypeStruct,Boolean> visitStruct = new Function1<TypeStruct,Boolean>() {
+            public Boolean invoke(TypeStruct t) {
+             {
+                StructDeclaration sd = t.sym;
                 {
-                    if (!ti.needsCodegen())
+                    TemplateInstance ti = sd.isInstantiated();
+                    if ((ti) != null)
                     {
-                        if ((ti.minst != null) || sd.requestTypeInfo)
+                        if (!ti.needsCodegen())
                         {
-                            return false;
+                            if ((ti.minst != null) || sd.requestTypeInfo)
+                            {
+                                return false;
+                            }
+                            return true;
                         }
-                        return true;
                     }
-                }
-                else
-                {
-                }
-            }
-            return false;
-        }
-        };
-        Function1<TypeClass,Boolean> visitClass = (t) -> {
-         {
-            ClassDeclaration sd = t.sym;
-            {
-                TemplateInstance ti = sd.isInstantiated();
-                if ((ti) != null)
-                {
-                    if (!ti.needsCodegen() && (ti.minst == null))
+                    else
                     {
-                        return true;
                     }
                 }
-            }
-            return false;
-        }
+                return false;
+            }}
+
         };
-        Function1<TypeTuple,Boolean> visitTuple = (t) -> {
-         {
-            if (t.arguments != null)
-            {
+        Function1<TypeClass,Boolean> visitClass = new Function1<TypeClass,Boolean>() {
+            public Boolean invoke(TypeClass t) {
+             {
+                ClassDeclaration sd = t.sym;
                 {
-                    Slice<Parameter> __r1651 = (t.arguments.get()).opSlice().copy();
-                    Ref<Integer> __key1652 = ref(0);
-                    for (; (__key1652.value < __r1651.getLength());__key1652.value += 1) {
-                        Parameter arg = __r1651.get(__key1652.value);
-                        if (isSpeculativeType(arg.type))
+                    TemplateInstance ti = sd.isInstantiated();
+                    if ((ti) != null)
+                    {
+                        if (!ti.needsCodegen() && (ti.minst == null))
                         {
                             return true;
                         }
                     }
                 }
-            }
-            return false;
-        }
+                return false;
+            }}
+
+        };
+        Function1<TypeTuple,Boolean> visitTuple = new Function1<TypeTuple,Boolean>() {
+            public Boolean invoke(TypeTuple t) {
+             {
+                if (t.arguments != null)
+                {
+                    {
+                        Slice<Parameter> __r1669 = (t.arguments.get()).opSlice().copy();
+                        Ref<Integer> __key1670 = ref(0);
+                        for (; (__key1670.value < __r1669.getLength());__key1670.value += 1) {
+                            Parameter arg = __r1669.get(__key1670.value);
+                            if (isSpeculativeType(arg.type))
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
+            }}
+
         };
         if (t == null)
         {

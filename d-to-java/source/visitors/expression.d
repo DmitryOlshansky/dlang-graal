@@ -542,6 +542,9 @@ public:
                 buf.fmt("%s::", opts.currentMod.ident.symbol);
             buf.fmt("%s", e.var.varName(opts));
         }
+        else if(e.var.type.isTypeSArray) {
+            buf.fmt("%s%s.ptr()", printParent(e.var, opts), e.var.varName(opts));
+        }
         else {
             buf.fmt("ptr(%s%s)", printParent(e.var, opts), e.var.varName(opts));
         }
@@ -1039,18 +1042,28 @@ public:
                     buf.put(".set");
             }
             else if(e.f) {
-                auto var = e.e1.isDotVarExp();
-                if (var) {
-                    if (!(var.e1.isThisExp && opts.funcs.length > 1)) {
-                        expToBuffer(var.e1, PREC.primary, buf, opts);
-                        buf.put('.');
-                    }
-                    buf.put(e.f.funcName);
+                // recursion of local function
+                if(e.f in opts.localFuncs && e.f is opts.funcs.top) {
+                    buf.put("invoke");
+                    buf.put('(');
+                    argsToBuffer(e.arguments, buf, opts, e.f);
+                    buf.put(')');
+                    return;
                 }
-                else 
-                    expToBuffer(e.e1, precedence[e.op], buf, opts);
-                if (auto tmpl = e.f in opts.templates) {
-                    buf.put(tmpl.str);
+                else {
+                    auto var = e.e1.isDotVarExp();
+                    if (var) {
+                        if (!(var.e1.isThisExp && opts.funcs.length > 1)) {
+                            expToBuffer(var.e1, PREC.primary, buf, opts);
+                            buf.put('.');
+                        }
+                        buf.put(e.f.funcName);
+                    }
+                    else 
+                        expToBuffer(e.e1, precedence[e.op], buf, opts);
+                    if (auto tmpl = e.f in opts.templates) {
+                        buf.put(tmpl.str);
+                    }
                 }
             }
             else if(e.e1.type.isTypeFunction || e.e1.type.isTypeDelegate) {
@@ -1064,10 +1077,15 @@ public:
             }
             else
                 expToBuffer(e.e1, precedence[e.op], buf, opts);
-            //stderr.writefln("Calling %x %s type %s\n", e.f, e.e1.toString(), e.e1.type.toString());
+                //stderr.writefln("Calling %x %s type %s\n", e.f, e.e1.toString(), e.e1.type.toString());
             if (!e.f || e.f.isNested() || e.f in opts.localFuncs) {
                 buf.put(".invoke");
             }
+        }
+        auto save = opts.dollarValue;
+        scope(exit) opts.dollarValue = save;
+        if (e.f && (e.f.funcName == "opIndex" || e.f.funcName == "opSlice")) {
+            opts.dollarValue = e.e1;
         }
         buf.put('(');
         argsToBuffer(e.arguments, buf, opts, e.f);
@@ -1348,7 +1366,7 @@ public:
             expToBuffer(e.e2, PREC.primary, buf, opts);
             buf.put(')');
         }
-        else if ((e.e1.type.ty == Tpointer && e.e1.type.nextOf.ty != Tstruct) && e.e2.type.ty == Tpointer) {
+        else if (e.e1.type.ty == Tpointer && e.e2.type.ty == Tpointer) {
             expToBuffer(e.e1, PREC.primary, buf, opts);
             buf.put(" = ");
             if (e.e2.isNullExp()) expToBuffer(e.e2, PREC.primary, buf, opts);
@@ -1361,8 +1379,14 @@ public:
         else if(e.e1.type.ty == Tstruct && e.e2.type.ty == Tint32) {
             buf.put("null");
         }
-        else if ((e.e1.type.ty == Tstruct || e.e1.type.ty == Tarray) 
-        && (e.e2.type.ty == Tstruct || e.e2.type.ty == Tarray)) {
+        else if(e.e1.type.ty == Tstruct && e.e2.type.ty == Tstruct) {
+            expToBuffer(e.e1, PREC.primary, buf, opts);
+            buf.put(".opAssign(");
+            expToBuffer(e.e2, PREC.primary, buf, opts);
+            if (!e.e2.isStructLiteralExp) buf.put(".copy()");
+            buf.put(")");
+        }
+        else if (e.e1.type.ty == Tarray && e.e2.type.ty == Tarray) {
             expToBuffer(e.e1, PREC.primary, buf, opts);
             buf.put(" = ");
             expToBuffer(e.e2, PREC.primary, buf, opts);

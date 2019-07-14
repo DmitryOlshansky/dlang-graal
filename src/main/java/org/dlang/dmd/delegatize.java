@@ -76,11 +76,11 @@ public class delegatize {
 
         public  void visit(StructInitializer si) {
             {
-                Slice<Identifier> __r920 = si.field.opSlice().copy();
-                int __key919 = 0;
-                for (; (__key919 < __r920.getLength());__key919 += 1) {
-                    Identifier id = __r920.get(__key919);
-                    int i = __key919;
+                Slice<Identifier> __r938 = si.field.opSlice().copy();
+                int __key937 = 0;
+                for (; (__key937 < __r938.getLength());__key937 += 1) {
+                    Identifier id = __r938.get(__key937);
+                    int i = __key937;
                     {
                         Initializer iz = si.value.get(i);
                         if ((iz) != null)
@@ -94,11 +94,11 @@ public class delegatize {
 
         public  void visit(ArrayInitializer ai) {
             {
-                Slice<Expression> __r922 = ai.index.opSlice().copy();
-                int __key921 = 0;
-                for (; (__key921 < __r922.getLength());__key921 += 1) {
-                    Expression ex = __r922.get(__key921);
-                    int i = __key921;
+                Slice<Expression> __r940 = ai.index.opSlice().copy();
+                int __key939 = 0;
+                for (; (__key939 < __r940.getLength());__key939 += 1) {
+                    Expression ex = __r940.get(__key939);
+                    int i = __key939;
                     if (ex != null)
                     {
                         walkPostorder(ex, this);
@@ -123,7 +123,7 @@ public class delegatize {
         private boolean result = false;
         public  LambdaCheckForNestedRef(Ptr<Scope> sc) {
             super();
-            this.sc = sc;
+            this.sc = pcopy(sc);
         }
 
         public  void visit(Expression _param_0) {
@@ -182,10 +182,10 @@ public class delegatize {
         }
         FuncLiteralDeclaration fld = new FuncLiteralDeclaration(loc, loc, tf, TOK.delegate_, null, null);
         lambdaSetParent(e, fld);
-        sc = (sc.get()).push();
+        sc = pcopy((sc.get()).push());
         (sc.get()).parent.value = fld;
         boolean r = lambdaCheckForNestedRef(e, sc);
-        sc = (sc.get()).pop();
+        sc = pcopy((sc.get()).pop());
         if (r)
         {
             return new ErrorExp();

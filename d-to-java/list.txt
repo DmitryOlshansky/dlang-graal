@@ -37,6 +37,8 @@ vendor/dmd/src/dmd/cond.d
 vendor/dmd/src/dmd/compiler.d
 vendor/dmd/src/dmd/complex.d
 vendor/dmd/src/dmd/constfold.d
+vendor/dmd/src/dmd/cppmangle.d
+vendor/dmd/src/dmd/cppmanglewin.d
 vendor/dmd/src/dmd/ctfeexpr.d
 vendor/dmd/src/dmd/ctorflow.d
 vendor/dmd/src/dmd/dcast.d

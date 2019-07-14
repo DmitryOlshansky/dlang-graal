@@ -70,7 +70,7 @@ public class objc {
             Ptr<ObjcSelector> sel = ((Ptr<ObjcSelector>)(sv.get()).ptrvalue);
             if (sel == null)
             {
-                sel = refPtr(new ObjcSelector((sv.get()).toDchars(), len, pcount));
+                sel = pcopy((refPtr(new ObjcSelector((sv.get()).toDchars(), len, pcount))));
                 (sv.get()).ptrvalue = pcopy((toBytePtr(sel)));
             }
             return sel;
@@ -157,7 +157,7 @@ public class objc {
         public Ptr<DArray<Dsymbol>> methodList = null;
         public  ObjcClassDeclaration(ClassDeclaration classDeclaration) {
             this.classDeclaration = classDeclaration;
-            this.methodList = refPtr(new DArray<Dsymbol>());
+            this.methodList = pcopy((refPtr(new DArray<Dsymbol>())));
         }
 
         public  boolean isRootClass() {
@@ -402,7 +402,7 @@ public class objc {
                             assert(((literal.elements.get()).length == 1));
                             StringExp se = (literal.elements.get()).get(0).toStringExp();
                             assert(se != null);
-                            fd.selector = ObjcSelector.lookup(se.toUTF8(sc).string);
+                            fd.selector = pcopy(ObjcSelector.lookup(se.toUTF8(sc).string));
                         }
                     }
                 }
@@ -454,16 +454,18 @@ public class objc {
             }
             catch(Dispatch0 __d){}
         /*__returnLabel:*/
-            Function3<Ref<ClassDeclaration>,Ref<FuncDeclaration>,Ref<ClassDeclaration>,Void> __ensure = (__result, fd, cd) -> {
-             {
-                {
-                    ClassDeclaration metaclass = __result;
+            Function3<Ref<ClassDeclaration>,Ref<FuncDeclaration>,Ref<ClassDeclaration>,Void> __ensure = new Function3<Ref<ClassDeclaration>,Ref<FuncDeclaration>,Ref<ClassDeclaration>,Void>() {
+                public Void invoke(ClassDeclaration __result, Ref<FuncDeclaration> fd, Ref<ClassDeclaration> cd) {
+                 {
                     {
-                        assert(metaclass != null);
+                        ClassDeclaration metaclass = __result;
+                        {
+                            assert(metaclass != null);
+                        }
                     }
-                }
-                return null;
-            }
+                    return null;
+                }}
+
             };
             __ensure.invoke(__result, fd_ref, cd_ref);
             return __result;
@@ -517,19 +519,23 @@ public class objc {
         }
 
         public  void setMetaclass(InterfaceDeclaration interfaceDeclaration, Ptr<Scope> sc) {
-            Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration> newMetaclass = (loc, metaBases) -> {
-             {
-                return new InterfaceDeclaration(loc, null, metaBases);
-            }
+            Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration> newMetaclass = new Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration>() {
+                public InterfaceDeclaration invoke(Loc loc, Ptr<DArray<Ptr<BaseClass>>> metaBases) {
+                 {
+                    return new InterfaceDeclaration(loc, null, metaBases);
+                }}
+
             };
             setMetaclass_98AC5D09E954A8ECInterfaceDeclaration(interfaceDeclaration, sc);
         }
 
         public  void setMetaclass(ClassDeclaration classDeclaration, Ptr<Scope> sc) {
-            Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration> newMetaclass = (loc, metaBases) -> {
-             {
-                return new ClassDeclaration(loc, null, metaBases, refPtr(new DArray<Dsymbol>()), false);
-            }
+            Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration> newMetaclass = new Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration>() {
+                public ClassDeclaration invoke(Loc loc, Ptr<DArray<Ptr<BaseClass>>> metaBases) {
+                 {
+                    return new ClassDeclaration(loc, null, metaBases, refPtr(new DArray<Dsymbol>()), false);
+                }}
+
             };
             setMetaclass_98AC5D09E954A8ECClassDeclaration.invoke(classDeclaration, sc);
         }
@@ -559,10 +565,10 @@ public class objc {
                 return ;
             }
             {
-                Slice<Dsymbol> __r1527 = (symbols.get()).opSlice().copy();
-                int __key1528 = 0;
-                for (; (__key1528 < __r1527.getLength());__key1528 += 1) {
-                    Dsymbol symbol = __r1527.get(__key1528);
+                Slice<Dsymbol> __r1545 = (symbols.get()).opSlice().copy();
+                int __key1546 = 0;
+                for (; (__key1546 < __r1545.getLength());__key1546 += 1) {
+                    Dsymbol symbol = __r1545.get(__key1546);
                     symbol.addObjcSymbols(classes, categories);
                 }
             }
@@ -624,10 +630,10 @@ public class objc {
             }
             Ptr<DArray<Ptr<BaseClass>>> metaBases = refPtr(new DArray<Ptr<BaseClass>>());
             {
-                Slice<Ptr<BaseClass>> __r1525 = (__withSym.baseclasses.get()).opSlice().copy();
-                int __key1526 = 0;
-                for (; (__key1526 < __r1525.getLength());__key1526 += 1) {
-                    Ptr<BaseClass> base = __r1525.get(__key1526);
+                Slice<Ptr<BaseClass>> __r1543 = (__withSym.baseclasses.get()).opSlice().copy();
+                int __key1544 = 0;
+                for (; (__key1544 < __r1543.getLength());__key1544 += 1) {
+                    Ptr<BaseClass> base = __r1543.get(__key1544);
                     ClassDeclaration baseCd = (base.get()).sym;
                     assert(baseCd != null);
                     if ((baseCd.classKind == ClassKind.objc))
@@ -676,10 +682,10 @@ public class objc {
             }
             Ptr<DArray<Ptr<BaseClass>>> metaBases = refPtr(new DArray<Ptr<BaseClass>>());
             {
-                Slice<Ptr<BaseClass>> __r1523 = (__withSym.baseclasses.get()).opSlice().copy();
-                int __key1524 = 0;
-                for (; (__key1524 < __r1523.getLength());__key1524 += 1) {
-                    Ptr<BaseClass> base = __r1523.get(__key1524);
+                Slice<Ptr<BaseClass>> __r1541 = (__withSym.baseclasses.get()).opSlice().copy();
+                int __key1542 = 0;
+                for (; (__key1542 < __r1541.getLength());__key1542 += 1) {
+                    Ptr<BaseClass> base = __r1541.get(__key1542);
                     ClassDeclaration baseCd = (base.get()).sym;
                     assert(baseCd != null);
                     if ((baseCd.classKind == ClassKind.objc))

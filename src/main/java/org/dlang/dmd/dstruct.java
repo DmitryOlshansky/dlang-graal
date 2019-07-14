@@ -69,83 +69,91 @@ public class dstruct {
         {
             return ;
         }
-        Function1<TypeVector,Void> visitVector = (t) -> {
-         {
-            semanticTypeInfo(sc, t.basetype);
-            return null;
-        }
-        };
-        Function1<TypeAArray,Void> visitAArray = (t) -> {
-         {
-            semanticTypeInfo(sc, t.index);
-            semanticTypeInfo(sc, t.next.value);
-            return null;
-        }
-        };
-        Function1<TypeStruct,Void> visitStruct = (t) -> {
-         {
-            StructDeclaration sd = t.sym;
-            if (sc == null)
-            {
-                Ref<Scope> scx = ref(new Scope().copy());
-                scx.value._module = sd.getModule();
-                getTypeInfoType(sd.loc, t, ptr(scx));
-                sd.requestTypeInfo = true;
-            }
-            else if ((sc.get()).minst == null)
-            {
-            }
-            else
-            {
-                getTypeInfoType(sd.loc, t, sc);
-                sd.requestTypeInfo = true;
-            }
-            if (sd.members == null)
-            {
+        Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>() {
+            public Void invoke(TypeVector t) {
+             {
+                semanticTypeInfo(sc, t.basetype);
                 return null;
-            }
-            if ((sd.xeq == null) && (sd.xcmp == null) && (sd.postblit == null) && (sd.dtor == null) && (sd.xhash == null) && (search_toString(sd) == null))
-            {
+            }}
+
+        };
+        Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>() {
+            public Void invoke(TypeAArray t) {
+             {
+                semanticTypeInfo(sc, t.index);
+                semanticTypeInfo(sc, t.next.value);
                 return null;
-            }
-            if ((sd.semanticRun >= PASS.semantic3))
-            {
-            }
-            else {
-                TemplateInstance ti = sd.isInstantiated();
-                if ((ti) != null)
+            }}
+
+        };
+        Function1<TypeStruct,Void> visitStruct = new Function1<TypeStruct,Void>() {
+            public Void invoke(TypeStruct t) {
+             {
+                StructDeclaration sd = t.sym;
+                if (sc == null)
                 {
-                    if ((ti.minst != null) && !ti.minst.isRoot())
-                    {
-                        dmodule.Module.addDeferredSemantic3(sd);
-                    }
+                    Ref<Scope> scx = ref(new Scope().copy());
+                    scx.value._module = sd.getModule();
+                    getTypeInfoType(sd.loc, t, ptr(scx));
+                    sd.requestTypeInfo = true;
+                }
+                else if ((sc.get()).minst == null)
+                {
                 }
                 else
                 {
-                    if (sd.inNonRoot())
-                    {
-                        dmodule.Module.addDeferredSemantic3(sd);
-                    }
+                    getTypeInfoType(sd.loc, t, sc);
+                    sd.requestTypeInfo = true;
                 }
-            }
-            return null;
-        }
-        };
-        Function1<TypeTuple,Void> visitTuple = (t) -> {
-         {
-            if (t.arguments != null)
-            {
+                if (sd.members == null)
                 {
-                    Slice<Parameter> __r1109 = (t.arguments.get()).opSlice().copy();
-                    Ref<Integer> __key1110 = ref(0);
-                    for (; (__key1110.value < __r1109.getLength());__key1110.value += 1) {
-                        Parameter arg = __r1109.get(__key1110.value);
-                        semanticTypeInfo(sc, arg.type);
+                    return null;
+                }
+                if ((sd.xeq == null) && (sd.xcmp == null) && (sd.postblit == null) && (sd.dtor == null) && (sd.xhash == null) && (search_toString(sd) == null))
+                {
+                    return null;
+                }
+                if ((sd.semanticRun >= PASS.semantic3))
+                {
+                }
+                else {
+                    TemplateInstance ti = sd.isInstantiated();
+                    if ((ti) != null)
+                    {
+                        if ((ti.minst != null) && !ti.minst.isRoot())
+                        {
+                            dmodule.Module.addDeferredSemantic3(sd);
+                        }
+                    }
+                    else
+                    {
+                        if (sd.inNonRoot())
+                        {
+                            dmodule.Module.addDeferredSemantic3(sd);
+                        }
                     }
                 }
-            }
-            return null;
-        }
+                return null;
+            }}
+
+        };
+        Function1<TypeTuple,Void> visitTuple = new Function1<TypeTuple,Void>() {
+            public Void invoke(TypeTuple t) {
+             {
+                if (t.arguments != null)
+                {
+                    {
+                        Slice<Parameter> __r1127 = (t.arguments.get()).opSlice().copy();
+                        Ref<Integer> __key1128 = ref(0);
+                        for (; (__key1128.value < __r1127.getLength());__key1128.value += 1) {
+                            Parameter arg = __r1127.get(__key1128.value);
+                            semanticTypeInfo(sc, arg.type);
+                        }
+                    }
+                }
+                return null;
+            }}
+
         };
         Type tb = t.toBasetype();
         switch ((tb.ty & 0xFF))
@@ -336,10 +344,10 @@ public class dstruct {
             }
             this.zeroInit = true;
             {
-                Slice<VarDeclaration> __r1111 = this.fields.opSlice().copy();
-                int __key1112 = 0;
-                for (; (__key1112 < __r1111.getLength());__key1112 += 1) {
-                    VarDeclaration vd = __r1111.get(__key1112);
+                Slice<VarDeclaration> __r1129 = this.fields.opSlice().copy();
+                int __key1130 = 0;
+                for (; (__key1130 < __r1129.getLength());__key1130 += 1) {
+                    VarDeclaration vd = __r1129.get(__key1130);
                     if (vd._init != null)
                     {
                         if (vd._init.isVoidInitializer() != null)
@@ -592,10 +600,10 @@ public class dstruct {
             case 49:
                 StructLiteralExp sle = (StructLiteralExp)exp;
                 {
-                    int __key1113 = 0;
-                    int __limit1114 = sle.sd.fields.length;
-                    for (; (__key1113 < __limit1114);__key1113 += 1) {
-                        int i = __key1113;
+                    int __key1131 = 0;
+                    int __limit1132 = sle.sd.fields.length;
+                    for (; (__key1131 < __limit1132);__key1131 += 1) {
+                        int i = __key1131;
                         VarDeclaration field = sle.sd.fields.get(i);
                         if (field.type.size(field.loc) != 0)
                         {
@@ -616,10 +624,10 @@ public class dstruct {
                     return dim == 0;
                 }
                 {
-                    int __key1115 = 0;
-                    int __limit1116 = dim;
-                    for (; (__key1115 < __limit1116);__key1115 += 1) {
-                        int i_1 = __key1115;
+                    int __key1133 = 0;
+                    int __limit1134 = dim;
+                    for (; (__key1133 < __limit1134);__key1133 += 1) {
+                        int i_1 = __key1133;
                         if (!_isZeroInit(ale.getElement(i_1)))
                         {
                             return false;
@@ -634,10 +642,10 @@ public class dstruct {
                     return se.len == 0;
                 }
                 {
-                    int __key1117 = 0;
-                    int __limit1118 = se.len;
-                    for (; (__key1117 < __limit1118);__key1117 += 1) {
-                        int i_2 = __key1117;
+                    int __key1135 = 0;
+                    int __limit1136 = se.len;
+                    for (; (__key1135 < __limit1136);__key1135 += 1) {
+                        int i_2 = __key1135;
                         if (se.getCodeUnit(i_2) != 0)
                         {
                             return false;

@@ -25,7 +25,7 @@ public class nspace {
         public Expression identExp = null;
         public  Nspace(Loc loc, Identifier ident, Expression identExp, Ptr<DArray<Dsymbol>> members) {
             super(loc, ident);
-            this.members = members;
+            this.members = pcopy(members);
             this.identExp = identExp;
         }
 
@@ -44,7 +44,7 @@ public class nspace {
                 }
                 {
                     Ptr<Scope> sce = sc;
-                    for (; 1 != 0;sce = (sce.get()).enclosing){
+                    for (; 1 != 0;sce = pcopy((sce.get()).enclosing)){
                         ScopeDsymbol sds2 = (sce.get()).scopesym;
                         if (sds2 != null)
                         {
@@ -54,14 +54,16 @@ public class nspace {
                     }
                 }
                 assert(sc != null);
-                sc = (sc.get()).push(this);
+                sc = pcopy((sc.get()).push(this));
                 (sc.get()).linkage = LINK.cpp;
                 (sc.get()).parent.value = this;
-                Function1<Dsymbol,Void> __lambda3 = (s) -> {
-                 {
-                    s.addMember(sc, this);
-                    return null;
-                }
+                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+                    public Void invoke(Dsymbol s) {
+                     {
+                        s.addMember(sc, this);
+                        return null;
+                    }}
+
                 };
                 foreachDsymbol(this.members, __lambda3);
                 (sc.get()).pop();
@@ -73,14 +75,16 @@ public class nspace {
             if (this.members != null)
             {
                 assert(sc != null);
-                sc = (sc.get()).push(this);
+                sc = pcopy((sc.get()).push(this));
                 (sc.get()).linkage = LINK.cpp;
                 (sc.get()).parent.value = this;
-                Function1<Dsymbol,Void> __lambda2 = (s) -> {
-                 {
-                    s.setScope(sc);
-                    return null;
-                }
+                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+                    public Void invoke(Dsymbol s) {
+                     {
+                        s.setScope(sc);
+                        return null;
+                    }}
+
                 };
                 foreachDsymbol(this.members, __lambda2);
                 (sc.get()).pop();
@@ -110,19 +114,23 @@ public class nspace {
         }
 
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
-            Function1<Dsymbol,Integer> __lambda3 = (s) -> {
-             {
-                return (((s != null) && (s.apply(fp, param) != 0)) ? 1 : 0);
-            }
+            Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>() {
+                public Integer invoke(Dsymbol s) {
+                 {
+                    return (((s != null) && (s.apply(fp, param) != 0)) ? 1 : 0);
+                }}
+
             };
             return foreachDsymbol(this.members, __lambda3);
         }
 
         public  boolean hasPointers() {
-            Function1<Dsymbol,Integer> __lambda1 = (s) -> {
-             {
-                return (s.hasPointers() ? 1 : 0);
-            }
+            Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
+                public Integer invoke(Dsymbol s) {
+                 {
+                    return (s.hasPointers() ? 1 : 0);
+                }}
+
             };
             return foreachDsymbol(this.members, __lambda1) != 0;
         }
@@ -132,11 +140,13 @@ public class nspace {
             {
                 dsymbolSemantic(this, null);
             }
-            Function1<Dsymbol,Void> __lambda4 = (s) -> {
-             {
-                s.setFieldOffset(ad, poffset, isunion);
-                return null;
-            }
+            Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>() {
+                public Void invoke(Dsymbol s) {
+                 {
+                    s.setFieldOffset(ad, poffset, isunion);
+                    return null;
+                }}
+
             };
             foreachDsymbol(this.members, __lambda4);
         }

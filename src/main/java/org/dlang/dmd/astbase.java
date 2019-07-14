@@ -435,7 +435,7 @@ public class astbase {
             public Identifier ident = null;
             public  AliasThis(Loc loc, Identifier ident) {
                 super(null);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.ident = ident;
             }
 
@@ -467,7 +467,7 @@ public class astbase {
             public  Declaration(Identifier id) {
                 super(id);
                 this.storage_class = 0L;
-                this.protection = new Prot(Prot.Kind.undefined, null).copy();
+                this.protection.opAssign(new Prot(Prot.Kind.undefined, null));
                 this.linkage = LINK.default_;
             }
 
@@ -523,12 +523,12 @@ public class astbase {
             public DArray<Identifier> aliases = new DArray<Identifier>();
             public  Import(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Identifier aliasId, int isstatic) {
                 super(null);
-                this.loc = loc.copy();
-                this.packages = packages;
+                this.loc.opAssign(loc.copy());
+                this.packages = pcopy(packages);
                 this.id = id;
                 this.aliasId = aliasId;
                 this.isstatic = isstatic;
-                this.protection = new Prot(Prot.Kind.private_, null).copy();
+                this.protection.opAssign(new Prot(Prot.Kind.private_, null));
                 if (aliasId != null)
                 {
                     this.ident = aliasId;
@@ -586,7 +586,7 @@ public class astbase {
             public Ptr<DArray<Dsymbol>> decl = null;
             public  AttribDeclaration(Ptr<DArray<Dsymbol>> decl) {
                 super();
-                this.decl = decl;
+                this.decl = pcopy(decl);
             }
 
             public  AttribDeclaration isAttribDeclaration() {
@@ -608,7 +608,7 @@ public class astbase {
             public Expression msg = null;
             public  StaticAssert(Loc loc, Expression exp, Expression msg) {
                 super(Id.empty);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.exp = exp;
                 this.msg = msg;
             }
@@ -634,13 +634,13 @@ public class astbase {
             public int level = 0;
             public  DebugSymbol(Loc loc, Identifier ident) {
                 super(ident);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
             }
 
             public  DebugSymbol(Loc loc, int level) {
                 super();
                 this.level = level;
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -667,13 +667,13 @@ public class astbase {
             public int level = 0;
             public  VersionSymbol(Loc loc, Identifier ident) {
                 super(ident);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
             }
 
             public  VersionSymbol(Loc loc, int level) {
                 super();
                 this.level = level;
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -707,7 +707,7 @@ public class astbase {
                 super(id);
                 this.type = type;
                 this._init = _init;
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.storage_class = st;
                 this.sequenceNumber = (nextSequenceNumber += 1);
                 this.ctfeAdrOnStack = -1;
@@ -791,8 +791,8 @@ public class astbase {
                 {
                     this.storage_class &= -4465259184133L;
                 }
-                this.loc = loc.copy();
-                this.endloc = endloc.copy();
+                this.loc.opAssign(loc.copy());
+                this.endloc.opAssign(endloc.copy());
                 this.inferRetType = (type != null) && (type.nextOf() == null);
             }
 
@@ -844,13 +844,13 @@ public class astbase {
             public Dsymbol aliassym = null;
             public  AliasDeclaration(Loc loc, Identifier id, Dsymbol s) {
                 super(id);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.aliassym = s;
             }
 
             public  AliasDeclaration(Loc loc, Identifier id, Type type) {
                 super(id);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.type = type;
             }
 
@@ -886,8 +886,8 @@ public class astbase {
             public Ptr<DArray<RootObject>> objects = null;
             public  TupleDeclaration(Loc loc, Identifier id, Ptr<DArray<RootObject>> objects) {
                 super(id);
-                this.loc = loc.copy();
-                this.objects = objects;
+                this.loc.opAssign(loc.copy());
+                this.objects = pcopy(objects);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -1168,7 +1168,7 @@ public class astbase {
             public int varargs = 0;
             public  NewDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams, int varargs) {
                 super(loc, endloc, Id.classNew, 1L | stc, null);
-                this.parameters = fparams;
+                this.parameters = pcopy(fparams);
                 this.varargs = varargs;
             }
 
@@ -1210,7 +1210,7 @@ public class astbase {
             public Ptr<DArray<Parameter>> parameters = null;
             public  DeleteDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams) {
                 super(loc, endloc, Id.classDelete, 1L | stc, null);
-                this.parameters = fparams;
+                this.parameters = pcopy(fparams);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -1441,10 +1441,10 @@ public class astbase {
             public Prot protection = new Prot();
             public  EnumDeclaration(Loc loc, Identifier id, Type memtype) {
                 super(id);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.type = new TypeEnum(this);
                 this.memtype = memtype;
-                this.protection = new Prot(Prot.Kind.undefined, null).copy();
+                this.protection.opAssign(new Prot(Prot.Kind.undefined, null));
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -1476,8 +1476,8 @@ public class astbase {
             public Type type = null;
             public  AggregateDeclaration(Loc loc, Identifier id) {
                 super(id);
-                this.loc = loc.copy();
-                this.protection = new Prot(Prot.Kind.public_, null).copy();
+                this.loc.opAssign(loc.copy());
+                this.protection.opAssign(new Prot(Prot.Kind.public_, null));
                 this.sizeok = Sizeok.none;
             }
 
@@ -1506,14 +1506,14 @@ public class astbase {
             public Dsymbol onemember = null;
             public  TemplateDeclaration(Loc loc, Identifier id, Ptr<DArray<TemplateParameter>> parameters, Expression constraint, Ptr<DArray<Dsymbol>> decldefs, boolean ismixin, boolean literal) {
                 super(id);
-                this.loc = loc.copy();
-                this.parameters = parameters;
-                this.origParameters = parameters;
-                this.members = decldefs;
+                this.loc.opAssign(loc.copy());
+                this.parameters = pcopy(parameters);
+                this.origParameters = pcopy(parameters);
+                this.members = pcopy(decldefs);
                 this.literal = literal;
                 this.ismixin = ismixin;
                 this.isstatic = true;
-                this.protection = new Prot(Prot.Kind.undefined, null).copy();
+                this.protection.opAssign(new Prot(Prot.Kind.undefined, null));
                 if ((this.members != null) && (this.ident != null))
                 {
                     Dsymbol s = null;
@@ -1580,14 +1580,14 @@ public class astbase {
             public TemplateInstance inst = null;
             public  TemplateInstance(Loc loc, Identifier ident, Ptr<DArray<RootObject>> tiargs) {
                 super(null);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.name = ident;
-                this.tiargs = tiargs;
+                this.tiargs = pcopy(tiargs);
             }
 
             public  TemplateInstance(Loc loc, TemplateDeclaration td, Ptr<DArray<RootObject>> tiargs) {
                 super(null);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.name = td.ident;
                 this.tempdecl = td;
                 this.semantictiargsdone = true;
@@ -1602,7 +1602,7 @@ public class astbase {
                 Ptr<DArray<RootObject>> a = null;
                 if (objs != null)
                 {
-                    a = refPtr(new DArray<RootObject>());
+                    a = pcopy((refPtr(new DArray<RootObject>())));
                     (a.get()).setDim((objs.get()).length);
                     {
                         int i = 0;
@@ -1638,7 +1638,7 @@ public class astbase {
 
             public  Dsymbol syntaxCopy(Dsymbol s) {
                 TemplateInstance ti = s != null ? (TemplateInstance)s : new TemplateInstance(this.loc, this.name, null);
-                ti.tiargs = this.arraySyntaxCopy(this.tiargs);
+                ti.tiargs = pcopy(this.arraySyntaxCopy(this.tiargs));
                 TemplateDeclaration td = null;
                 if ((this.inst != null) && (this.tempdecl != null) && ((td = this.tempdecl.isTemplateDeclaration()) != null))
                 {
@@ -1681,8 +1681,8 @@ public class astbase {
             public Expression identExp = null;
             public  Nspace(Loc loc, Identifier ident, Expression identExp, Ptr<DArray<Dsymbol>> members) {
                 super(ident);
-                this.loc = loc.copy();
-                this.members = members;
+                this.loc.opAssign(loc.copy());
+                this.members = pcopy(members);
                 this.identExp = identExp;
             }
 
@@ -1711,8 +1711,8 @@ public class astbase {
             public Ptr<DArray<Expression>> exps = null;
             public  CompileDeclaration(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(null);
-                this.loc = loc.copy();
-                this.exps = exps;
+                this.loc.opAssign(loc.copy());
+                this.exps = pcopy(exps);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -1740,22 +1740,22 @@ public class astbase {
             public Ptr<DArray<Expression>> atts = null;
             public  UserAttributeDeclaration(Ptr<DArray<Expression>> atts, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
-                this.atts = atts;
+                this.atts = pcopy(atts);
             }
 
             public static Ptr<DArray<Expression>> concat(Ptr<DArray<Expression>> udas1, Ptr<DArray<Expression>> udas2) {
                 Ptr<DArray<Expression>> udas = null;
                 if ((udas1 == null) || ((udas1.get()).length == 0))
                 {
-                    udas = udas2;
+                    udas = pcopy(udas2);
                 }
                 else if ((udas2 == null) || ((udas2.get()).length == 0))
                 {
-                    udas = udas1;
+                    udas = pcopy(udas1);
                 }
                 else
                 {
-                    udas = refPtr(new DArray<Expression>(2));
+                    udas = pcopy((refPtr(new DArray<Expression>(2))));
                     udas.get().set(0, new TupleExp(Loc.initial, udas1));
                     udas.get().set(1, new TupleExp(Loc.initial, udas2));
                 }
@@ -1815,7 +1815,7 @@ public class astbase {
             public boolean isunion = false;
             public  AnonDeclaration(Loc loc, boolean isunion, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.isunion = isunion;
             }
 
@@ -1844,7 +1844,7 @@ public class astbase {
             public Expression ealign = null;
             public  AlignDeclaration(Loc loc, Expression ealign, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.ealign = ealign;
             }
 
@@ -1935,16 +1935,16 @@ public class astbase {
             public Ptr<DArray<Identifier>> pkg_identifiers = null;
             public  ProtDeclaration(Loc loc, Prot p, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
-                this.loc = loc.copy();
-                this.protection = p.copy();
+                this.loc.opAssign(loc.copy());
+                this.protection.opAssign(p.copy());
             }
 
             public  ProtDeclaration(Loc loc, Ptr<DArray<Identifier>> pkg_identifiers, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.protection.kind = Prot.Kind.package_;
                 this.protection.pkg = null;
-                this.pkg_identifiers = pkg_identifiers;
+                this.pkg_identifiers = pcopy(pkg_identifiers);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -1973,9 +1973,9 @@ public class astbase {
             public Ptr<DArray<Expression>> args = null;
             public  PragmaDeclaration(Loc loc, Identifier ident, Ptr<DArray<Expression>> args, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.ident = ident;
-                this.args = args;
+                this.args = pcopy(args);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -2033,7 +2033,7 @@ public class astbase {
             public  ConditionalDeclaration(Condition condition, Ptr<DArray<Dsymbol>> decl, Ptr<DArray<Dsymbol>> elsedecl) {
                 super(decl);
                 this.condition = condition;
-                this.elsedecl = elsedecl;
+                this.elsedecl = pcopy(elsedecl);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -2314,13 +2314,13 @@ public class astbase {
                 super(loc, id);
                 if (baseclasses != null)
                 {
-                    this.baseclasses = baseclasses;
+                    this.baseclasses = pcopy(baseclasses);
                 }
                 else
                 {
-                    this.baseclasses = refPtr(new DArray<Ptr<BaseClass>>());
+                    this.baseclasses = pcopy((refPtr(new DArray<Ptr<BaseClass>>())));
                 }
-                this.members = members;
+                this.members = pcopy(members);
                 this.type = new TypeClass(this);
                 if (id != null)
                 {
@@ -2641,11 +2641,13 @@ public class astbase {
 
             public static int dim(Ptr<DArray<Parameter>> parameters) {
                 Ref<Integer> nargs = ref(0);
-                Function2<Integer,Parameter,Integer> dimDg = (n, p) -> {
-                 {
-                    nargs.value += 1;
-                    return 0;
-                }
+                Function2<Integer,Parameter,Integer> dimDg = new Function2<Integer,Parameter,Integer>() {
+                    public Integer invoke(Integer n, Parameter p) {
+                     {
+                        nargs.value += 1;
+                        return 0;
+                    }}
+
                 };
                 _foreach(parameters, dimDg, null);
                 return nargs.value;
@@ -2653,15 +2655,17 @@ public class astbase {
 
             public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth, Ptr<Integer> pn) {
                 Ref<Parameter> param = ref(null);
-                Function2<Integer,Parameter,Integer> getNthParamDg = (n, p) -> {
-                 {
-                    if ((n == nth))
-                    {
-                        param.value = p;
-                        return 1;
-                    }
-                    return 0;
-                }
+                Function2<Integer,Parameter,Integer> getNthParamDg = new Function2<Integer,Parameter,Integer>() {
+                    public Integer invoke(Integer n, Parameter p) {
+                     {
+                        if ((n == nth))
+                        {
+                            param.value = p;
+                            return 1;
+                        }
+                        return 0;
+                    }}
+
                 };
                 int res = _foreach(parameters, getNthParamDg, null);
                 return res != 0 ? param.value : null;
@@ -2726,7 +2730,7 @@ public class astbase {
                 Ptr<DArray<Parameter>> params = null;
                 if (parameters != null)
                 {
-                    params = refPtr(new DArray<Parameter>());
+                    params = pcopy((refPtr(new DArray<Parameter>())));
                     (params.get()).setDim((parameters.get()).length);
                     {
                         int i = 0;
@@ -2756,7 +2760,7 @@ public class astbase {
             public Loc loc = new Loc();
             public  Statement(Loc loc) {
                 super();
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
             }
 
             public  ExpStatement isExpStatement() {
@@ -2785,7 +2789,7 @@ public class astbase {
             public Ptr<DArray<Dsymbol>> imports = null;
             public  ImportStatement(Loc loc, Ptr<DArray<Dsymbol>> imports) {
                 super(loc);
-                this.imports = imports;
+                this.imports = pcopy(imports);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -2809,7 +2813,7 @@ public class astbase {
             public  ScopeStatement(Loc loc, Statement s, Loc endloc) {
                 super(loc);
                 this.statement = s;
-                this.endloc = endloc.copy();
+                this.endloc.opAssign(endloc.copy());
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -2905,7 +2909,7 @@ public class astbase {
             public Ptr<DArray<Expression>> exps = null;
             public  CompileStatement(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(loc);
-                this.exps = exps;
+                this.exps = pcopy(exps);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -2931,7 +2935,7 @@ public class astbase {
                 super(loc);
                 this.condition = c;
                 this._body = b;
-                this.endloc = endloc.copy();
+                this.endloc.opAssign(endloc.copy());
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -2963,7 +2967,7 @@ public class astbase {
                 this.condition = condition;
                 this.increment = increment;
                 this._body = _body;
-                this.endloc = endloc.copy();
+                this.endloc.opAssign(endloc.copy());
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -2993,7 +2997,7 @@ public class astbase {
                 super(loc);
                 this._body = b;
                 this.condition = c;
-                this.endloc = endloc.copy();
+                this.endloc.opAssign(endloc.copy());
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -3027,7 +3031,7 @@ public class astbase {
                 this.lwr = lwr;
                 this.upr = upr;
                 this._body = _body;
-                this.endloc = endloc.copy();
+                this.endloc.opAssign(endloc.copy());
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -3059,10 +3063,10 @@ public class astbase {
             public  ForeachStatement(Loc loc, byte op, Ptr<DArray<Parameter>> parameters, Expression aggr, Statement _body, Loc endloc) {
                 super(loc);
                 this.op = op;
-                this.parameters = parameters;
+                this.parameters = pcopy(parameters);
                 this.aggr = aggr;
                 this._body = _body;
-                this.endloc = endloc.copy();
+                this.endloc.opAssign(endloc.copy());
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -3097,7 +3101,7 @@ public class astbase {
                 this.condition = condition;
                 this.ifbody = ifbody;
                 this.elsebody = elsebody;
-                this.endloc = endloc.copy();
+                this.endloc.opAssign(endloc.copy());
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -3202,7 +3206,7 @@ public class astbase {
             public  PragmaStatement(Loc loc, Identifier ident, Ptr<DArray<Expression>> args, Statement _body) {
                 super(loc);
                 this.ident = ident;
-                this.args = args;
+                this.args = pcopy(args);
                 this._body = _body;
             }
 
@@ -3466,7 +3470,7 @@ public class astbase {
                 super(loc);
                 this.exp = exp;
                 this._body = _body;
-                this.endloc = endloc.copy();
+                this.endloc.opAssign(endloc.copy());
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -3492,7 +3496,7 @@ public class astbase {
             public  TryCatchStatement(Loc loc, Statement _body, Ptr<DArray<Catch>> catches) {
                 super(loc);
                 this._body = _body;
-                this.catches = catches;
+                this.catches = pcopy(catches);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -3562,7 +3566,7 @@ public class astbase {
             public Ptr<Token> tokens = null;
             public  AsmStatement(Loc loc, Ptr<Token> tokens) {
                 super(loc);
-                this.tokens = tokens;
+                this.tokens = pcopy(tokens);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -3655,12 +3659,12 @@ public class astbase {
             public Ptr<DArray<Statement>> statements = null;
             public  CompoundStatement(Loc loc, Ptr<DArray<Statement>> statements) {
                 super(loc);
-                this.statements = statements;
+                this.statements = pcopy(statements);
             }
 
             public  CompoundStatement(Loc loc, Slice<Statement> sts) {
                 super(loc);
-                this.statements = refPtr(new DArray<Statement>());
+                this.statements = pcopy((refPtr(new DArray<Statement>())));
                 (this.statements.get()).reserve(sts.getLength());
                 {
                     Slice<Statement> __r122 = sts.copy();
@@ -3741,7 +3745,7 @@ public class astbase {
             public Statement handler = null;
             public  Catch(Loc loc, Type t, Identifier id, Statement handler) {
                 super();
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.type = t;
                 this.ident = id;
                 this.handler = handler;
@@ -4854,7 +4858,7 @@ public class astbase {
             public Ptr<DArray<Parameter>> arguments = null;
             public  TypeTuple(Ptr<DArray<Parameter>> arguments) {
                 super((byte)37);
-                this.arguments = arguments;
+                this.arguments = pcopy(arguments);
             }
 
             public  TypeTuple(Ptr<DArray<Expression>> exps) {
@@ -4876,7 +4880,7 @@ public class astbase {
                         }
                     }
                 }
-                this.arguments = arguments;
+                this.arguments = pcopy(arguments);
             }
 
             public  Type syntaxCopy() {
@@ -5220,7 +5224,7 @@ public class astbase {
             public  TypeFunction(ParameterList pl, Type treturn, int linkage, long stc) {
                 super((byte)5, treturn);
                 assert((VarArg.none <= pl.varargs) && (pl.varargs <= VarArg.typesafe));
-                this.parameterList = pl.copy();
+                this.parameterList.opAssign(pl.copy());
                 this.linkage = linkage;
                 if ((stc & 67108864L) != 0)
                 {
@@ -5284,7 +5288,7 @@ public class astbase {
                 t.isscope = this.isscope;
                 t.iswild = this.iswild;
                 t.trust = this.trust;
-                t.fargs = this.fargs;
+                t.fargs = pcopy(this.fargs);
                 return t;
             }
 
@@ -5532,7 +5536,7 @@ public class astbase {
             public Loc loc = new Loc();
             public  TypeQualified(byte ty, Loc loc) {
                 super(ty);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
             }
 
             public  void addIdent(Identifier id) {
@@ -5623,7 +5627,7 @@ public class astbase {
             public boolean inAliasDeclaration = false;
             public  TypeTraits(Loc loc, TraitsExp exp) {
                 super((byte)6);
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.exp = exp;
             }
 
@@ -5853,7 +5857,7 @@ public class astbase {
             public Loc loc = new Loc();
             public  Expression(Loc loc, byte op, int size) {
                 super();
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.op = op;
                 this.size = (byte)size;
             }
@@ -6020,9 +6024,9 @@ public class astbase {
             public  NewAnonClassExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, ClassDeclaration cd, Ptr<DArray<Expression>> arguments) {
                 super(loc, TOK.newAnonymousClass, 40);
                 this.thisexp = thisexp;
-                this.newargs = newargs;
+                this.newargs = pcopy(newargs);
                 this.cd = cd;
-                this.arguments = arguments;
+                this.arguments = pcopy(arguments);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -6061,7 +6065,7 @@ public class astbase {
                 this.tok = tok;
                 this.tspec = tspec;
                 this.tok2 = tok2;
-                this.parameters = parameters;
+                this.parameters = pcopy(parameters);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -6176,7 +6180,7 @@ public class astbase {
             public  TraitsExp(Loc loc, Identifier ident, Ptr<DArray<RootObject>> args) {
                 super(loc, TOK.traits, 32);
                 this.ident = ident;
-                this.args = args;
+                this.args = pcopy(args);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -6305,9 +6309,9 @@ public class astbase {
             public  NewExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, Type newtype, Ptr<DArray<Expression>> arguments) {
                 super(loc, TOK.new_, 40);
                 this.thisexp = thisexp;
-                this.newargs = newargs;
+                this.newargs = pcopy(newargs);
                 this.newtype = newtype;
-                this.arguments = arguments;
+                this.arguments = pcopy(arguments);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -6338,8 +6342,8 @@ public class astbase {
             public  AssocArrayLiteralExp(Loc loc, Ptr<DArray<Expression>> keys, Ptr<DArray<Expression>> values) {
                 super(loc, TOK.assocArrayLiteral, 32);
                 assert(((keys.get()).length == (values.get()).length));
-                this.keys = keys;
-                this.values = values;
+                this.keys = pcopy(keys);
+                this.values = pcopy(values);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -6367,19 +6371,19 @@ public class astbase {
             public Ptr<DArray<Expression>> elements = null;
             public  ArrayLiteralExp(Loc loc, Ptr<DArray<Expression>> elements) {
                 super(loc, TOK.arrayLiteral, 32);
-                this.elements = elements;
+                this.elements = pcopy(elements);
             }
 
             public  ArrayLiteralExp(Loc loc, Expression e) {
                 super(loc, TOK.arrayLiteral, 32);
-                this.elements = refPtr(new DArray<Expression>());
+                this.elements = pcopy((refPtr(new DArray<Expression>())));
                 (this.elements.get()).push(e);
             }
 
             public  ArrayLiteralExp(Loc loc, Expression basis, Ptr<DArray<Expression>> elements) {
                 super(loc, TOK.arrayLiteral, 32);
                 this.basis = basis;
-                this.elements = elements;
+                this.elements = pcopy(elements);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -6757,17 +6761,17 @@ public class astbase {
             public  TupleExp(Loc loc, Expression e0, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.tuple, 32);
                 this.e0 = e0;
-                this.exps = exps;
+                this.exps = pcopy(exps);
             }
 
             public  TupleExp(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.tuple, 32);
-                this.exps = exps;
+                this.exps = pcopy(exps);
             }
 
             public  TupleExp(Loc loc, TupleDeclaration tup) {
                 super(loc, TOK.tuple, 32);
-                this.exps = refPtr(new DArray<Expression>());
+                this.exps = pcopy((refPtr(new DArray<Expression>())));
                 (this.exps.get()).reserve((tup.objects.get()).length);
                 {
                     int i = 0;
@@ -6783,7 +6787,7 @@ public class astbase {
                             else if ((o.dyncast() == DYNCAST.expression))
                             {
                                 Expression e = ((Expression)o).copy();
-                                e.loc = loc.copy();
+                                e.loc.opAssign(loc.copy());
                                 (this.exps.get()).push(e);
                             }
                             else if ((o.dyncast() == DYNCAST.type))
@@ -7182,7 +7186,7 @@ public class astbase {
             public Ptr<DArray<Expression>> arguments = null;
             public  CallExp(Loc loc, Expression e, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.call, 32, e);
-                this.arguments = exps;
+                this.arguments = pcopy(exps);
             }
 
             public  CallExp(Loc loc, Expression e) {
@@ -7197,7 +7201,7 @@ public class astbase {
                     (arguments.get()).setDim(1);
                     arguments.get().set(0, earg1);
                 }
-                this.arguments = arguments;
+                this.arguments = pcopy(arguments);
             }
 
             public  CallExp(Loc loc, Expression e, Expression earg1, Expression earg2) {
@@ -7206,7 +7210,7 @@ public class astbase {
                 (arguments.get()).setDim(2);
                 arguments.get().set(0, earg1);
                 arguments.get().set(1, earg2);
-                this.arguments = arguments;
+                this.arguments = pcopy(arguments);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -7292,7 +7296,7 @@ public class astbase {
             public Ptr<DArray<Expression>> exps = null;
             public  CompileExp(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.mixin_, 28);
-                this.exps = exps;
+                this.exps = pcopy(exps);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -7374,7 +7378,7 @@ public class astbase {
             public Ptr<DArray<Expression>> arguments = null;
             public  ArrayExp(Loc loc, Expression e1, Expression index) {
                 super(loc, TOK.array, 32, e1);
-                this.arguments = refPtr(new DArray<Expression>());
+                this.arguments = pcopy((refPtr(new DArray<Expression>())));
                 if (index != null)
                 {
                     (this.arguments.get()).push(index);
@@ -7388,7 +7392,7 @@ public class astbase {
 
             public  ArrayExp(Loc loc, Expression e1, Ptr<DArray<Expression>> args) {
                 super(loc, TOK.array, 32, e1);
-                this.arguments = args;
+                this.arguments = pcopy(args);
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -8450,7 +8454,7 @@ public class astbase {
             public Identifier ident = null;
             public  TemplateParameter(Loc loc, Identifier ident) {
                 super();
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.ident = ident;
             }
 
@@ -8607,7 +8611,7 @@ public class astbase {
             public Loc loc = new Loc();
             public  Condition(Loc loc) {
                 super();
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
             }
 
             public  void accept(ParseTimeVisitorASTBase v) {
@@ -8631,7 +8635,7 @@ public class astbase {
                     }
                 }
                 super();
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.aggrfe = aggrfe;
                 this.rangefe = rangefe;
             }
@@ -8756,7 +8760,7 @@ public class astbase {
             public byte kind = 0;
             public  Initializer(Loc loc, byte kind) {
                 super();
-                this.loc = loc.copy();
+                this.loc.opAssign(loc.copy());
                 this.kind = kind;
             }
 
@@ -8943,8 +8947,8 @@ public class astbase {
             public boolean isdeprecated = false;
             public Expression msg = null;
             public  ModuleDeclaration(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Expression msg, boolean isdeprecated) {
-                this.loc = loc.copy();
-                this.packages = packages;
+                this.loc.opAssign(loc.copy());
+                this.packages = pcopy(packages);
                 this.id = id;
                 this.msg = msg;
                 this.isdeprecated = isdeprecated;

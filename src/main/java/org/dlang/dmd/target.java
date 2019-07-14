@@ -252,7 +252,7 @@ public class target {
         }
 
         public  void deinitialize() {
-            this = new Target(0, 0, 0, 0, 0, 0L, 0, 0, 0, false, false, false, new FPTypePropertiesFloat(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 6L, 24L, 128L, -125L, 38L, -37L), new FPTypePropertiesDouble(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 15L, 53L, 1024L, -1021L, 308L, -307L), new FPTypePropertiesDouble(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 18L, 64L, 16384L, -16381L, 4932L, -4931L)).copy();
+            this.opAssign(new Target(0, 0, 0, 0, 0, 0L, 0, 0, 0, false, false, false, new FPTypePropertiesFloat(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 6L, 24L, 128L, -125L, 38L, -37L), new FPTypePropertiesDouble(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 15L, 53L, 1024L, -1021L, 308L, -307L), new FPTypePropertiesDouble(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 18L, 64L, 16384L, -16381L, 4932L, -4931L)));
         }
 
         public  int alignsize(Type type) {
@@ -689,10 +689,12 @@ public class target {
         }
 
         public  Expression getTargetInfo(BytePtr name, Loc loc) {
-            Function1<ByteSlice,StringExp> stringExp = (sval) -> {
-             {
-                return new StringExp(loc, toBytePtr(sval), sval.getLength());
-            }
+            Function1<ByteSlice,StringExp> stringExp = new Function1<ByteSlice,StringExp>() {
+                public StringExp invoke(ByteSlice sval) {
+                 {
+                    return new StringExp(loc, toBytePtr(sval), sval.getLength());
+                }}
+
             };
             switch (__switch(toDString(name)))
             {
@@ -747,23 +749,12 @@ public class target {
             r.reverseCppOverloads = reverseCppOverloads;
             r.cppExceptions = cppExceptions;
             r.twoDtorInVtable = twoDtorInVtable;
-            r.max = max;
-            r.min_normal = min_normal;
-            r.nan = nan;
-            r.infinity = infinity;
-            r.epsilon = epsilon;
-            r.dig = dig;
-            r.mant_dig = mant_dig;
-            r.max_exp = max_exp;
-            r.min_exp = min_exp;
-            r.max_10_exp = max_10_exp;
-            r.min_10_exp = min_10_exp;
             r.FloatProperties = FloatProperties.copy();
             r.DoubleProperties = DoubleProperties.copy();
             r.RealProperties = RealProperties.copy();
             return r;
         }
-        public Target(int ptrsize, int realsize, int realpad, int realalignsize, int classinfosize, long maxStaticDataSize, int c_longsize, int c_long_doublesize, int criticalSectionSize, boolean reverseCppOverloads, boolean cppExceptions, boolean twoDtorInVtable, real_t max, real_t min_normal, real_t nan, real_t infinity, real_t epsilon, d_int64 dig, d_int64 mant_dig, d_int64 max_exp, d_int64 min_exp, d_int64 max_10_exp, d_int64 min_10_exp, FPTypePropertiesFloat FloatProperties, FPTypePropertiesDouble DoubleProperties, FPTypePropertiesDouble RealProperties) {
+        public Target(int ptrsize, int realsize, int realpad, int realalignsize, int classinfosize, long maxStaticDataSize, int c_longsize, int c_long_doublesize, int criticalSectionSize, boolean reverseCppOverloads, boolean cppExceptions, boolean twoDtorInVtable, FPTypePropertiesFloat FloatProperties, FPTypePropertiesDouble DoubleProperties, FPTypePropertiesDouble RealProperties) {
             this.ptrsize = ptrsize;
             this.realsize = realsize;
             this.realpad = realpad;
@@ -776,17 +767,6 @@ public class target {
             this.reverseCppOverloads = reverseCppOverloads;
             this.cppExceptions = cppExceptions;
             this.twoDtorInVtable = twoDtorInVtable;
-            this.max = max;
-            this.min_normal = min_normal;
-            this.nan = nan;
-            this.infinity = infinity;
-            this.epsilon = epsilon;
-            this.dig = dig;
-            this.mant_dig = mant_dig;
-            this.max_exp = max_exp;
-            this.min_exp = min_exp;
-            this.max_10_exp = max_10_exp;
-            this.min_10_exp = min_10_exp;
             this.FloatProperties = FloatProperties;
             this.DoubleProperties = DoubleProperties;
             this.RealProperties = RealProperties;
@@ -805,17 +785,6 @@ public class target {
             this.reverseCppOverloads = that.reverseCppOverloads;
             this.cppExceptions = that.cppExceptions;
             this.twoDtorInVtable = that.twoDtorInVtable;
-            this.max = that.max;
-            this.min_normal = that.min_normal;
-            this.nan = that.nan;
-            this.infinity = that.infinity;
-            this.epsilon = that.epsilon;
-            this.dig = that.dig;
-            this.mant_dig = that.mant_dig;
-            this.max_exp = that.max_exp;
-            this.min_exp = that.min_exp;
-            this.max_10_exp = that.max_10_exp;
-            this.min_10_exp = that.min_10_exp;
             this.FloatProperties = that.FloatProperties;
             this.DoubleProperties = that.DoubleProperties;
             this.RealProperties = that.RealProperties;

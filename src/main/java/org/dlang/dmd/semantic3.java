@@ -70,7 +70,7 @@ public class semantic3 {
     {
         public Ptr<Scope> sc = null;
         public  Semantic3Visitor(Ptr<Scope> sc) {
-            this.sc = sc;
+            this.sc = pcopy(sc);
         }
 
         public  void visit(Dsymbol _param_0) {
@@ -86,9 +86,9 @@ public class semantic3 {
             {
                 TemplateDeclaration tempdecl = tempinst.tempdecl.isTemplateDeclaration();
                 assert(tempdecl != null);
-                this.sc = tempdecl._scope;
-                this.sc = (this.sc.get()).push(tempinst.argsym);
-                this.sc = (this.sc.get()).push(tempinst);
+                this.sc = pcopy(tempdecl._scope);
+                this.sc = pcopy((this.sc.get()).push(tempinst.argsym));
+                this.sc = pcopy((this.sc.get()).push(tempinst));
                 (this.sc.get()).tinst = tempinst;
                 (this.sc.get()).minst = tempinst.minst;
                 int needGagging = ((tempinst.gagged && (global.gag == 0)) ? 1 : 0);
@@ -128,7 +128,7 @@ public class semantic3 {
                 {
                     global.endGagging(oldGaggedErrors);
                 }
-                this.sc = (this.sc.get()).pop();
+                this.sc = pcopy((this.sc.get()).pop());
                 (this.sc.get()).pop();
             }
         }
@@ -141,8 +141,8 @@ public class semantic3 {
             tmix.semanticRun = PASS.semantic3;
             if (tmix.members != null)
             {
-                this.sc = (this.sc.get()).push(tmix.argsym);
-                this.sc = (this.sc.get()).push(tmix);
+                this.sc = pcopy((this.sc.get()).push(tmix.argsym));
+                this.sc = pcopy((this.sc.get()).push(tmix));
                 {
                     int i = 0;
                     for (; (i < (tmix.members.get()).length);i++){
@@ -150,7 +150,7 @@ public class semantic3 {
                         semantic3(s, this.sc);
                     }
                 }
-                this.sc = (this.sc.get()).pop();
+                this.sc = pcopy((this.sc.get()).pop());
                 (this.sc.get()).pop();
             }
         }
@@ -174,17 +174,19 @@ public class semantic3 {
             {
                 semantic3(mod.userAttribDecl, sc);
             }
-            sc = (sc.get()).pop();
+            sc = pcopy((sc.get()).pop());
             (sc.get()).pop();
             mod.semanticRun = PASS.semantic3done;
         }
 
         public  void visit(FuncDeclaration funcdecl) {
-            Function0<Boolean> addReturn0 = () -> {
-             {
-                TypeFunction f = (TypeFunction)funcdecl.type;
-                return ((f.next.value.ty & 0xFF) == ENUMTY.Tvoid) && funcdecl.isMain() || global.params.betterC && funcdecl.isCMain();
-            }
+            Function0<Boolean> addReturn0 = new Function0<Boolean>() {
+                public Boolean invoke() {
+                 {
+                    TypeFunction f = (TypeFunction)funcdecl.type;
+                    return ((f.next.value.ty & 0xFF) == ENUMTY.Tvoid) && funcdecl.isMain() || global.params.betterC && funcdecl.isCMain();
+                }}
+
             };
             VarDeclaration _arguments = null;
             if (funcdecl.parent.value == null)
@@ -247,7 +249,7 @@ public class semantic3 {
                 ScopeDsymbol ss = new ScopeDsymbol(funcdecl.loc, null);
                 {
                     Ptr<Scope> scx = this.sc;
-                    for (; ;scx = (scx.get()).enclosing){
+                    for (; ;scx = pcopy((scx.get()).enclosing)){
                         if ((scx.get()).scopesym != null)
                         {
                             ss.parent.value = (scx.get()).scopesym;
@@ -266,7 +268,7 @@ public class semantic3 {
                 (sc2.get()).fes = funcdecl.fes;
                 (sc2.get()).linkage = LINK.d;
                 (sc2.get()).stc &= -17660607202720L;
-                (sc2.get()).protection = new Prot(Prot.Kind.public_).copy();
+                (sc2.get()).protection.opAssign(new Prot(Prot.Kind.public_).copy());
                 (sc2.get()).explicitProtection = 0;
                 (sc2.get()).aligndecl = null;
                 if ((!pequals(funcdecl.ident, Id.require)) && (!pequals(funcdecl.ident, Id.ensure)))
@@ -363,7 +365,7 @@ public class semantic3 {
                 int nparams = f.parameterList.length();
                 if (nparams != 0)
                 {
-                    funcdecl.parameters = refPtr(new DArray<VarDeclaration>());
+                    funcdecl.parameters = pcopy((refPtr(new DArray<VarDeclaration>())));
                     (funcdecl.parameters.get()).reserve(nparams);
                     {
                         int i = 0;
@@ -495,23 +497,23 @@ public class semantic3 {
                     ScopeDsymbol sym = new ScopeDsymbol(funcdecl.loc, null);
                     sym.parent.value = (sc2.get()).scopesym;
                     sym.endlinnum = fensure_endlin;
-                    scout = (sc2.get()).push(sym);
+                    scout = pcopy((sc2.get()).push(sym));
                 }
                 if (funcdecl.fbody != null)
                 {
                     ScopeDsymbol sym = new ScopeDsymbol(funcdecl.loc, null);
                     sym.parent.value = (sc2.get()).scopesym;
                     sym.endlinnum = funcdecl.endloc.linnum;
-                    sc2 = (sc2.get()).push(sym);
+                    sc2 = pcopy((sc2.get()).push(sym));
                     AggregateDeclaration ad2 = funcdecl.isMemberLocal();
                     if ((ad2 != null) && (funcdecl.isCtorDeclaration() != null))
                     {
                         (sc2.get()).ctorflow.allocFieldinit(ad2.fields.length);
                         {
-                            Slice<VarDeclaration> __r1543 = ad2.fields.opSlice().copy();
-                            int __key1544 = 0;
-                            for (; (__key1544 < __r1543.getLength());__key1544 += 1) {
-                                VarDeclaration v = __r1543.get(__key1544);
+                            Slice<VarDeclaration> __r1561 = ad2.fields.opSlice().copy();
+                            int __key1562 = 0;
+                            for (; (__key1562 < __r1561.getLength());__key1562 += 1) {
+                                VarDeclaration v = __r1561.get(__key1562);
                                 v.ctorinit = false;
                             }
                         }
@@ -606,11 +608,11 @@ public class semantic3 {
                         if (((sc2.get()).ctorflow.callSuper.value & 1) == 0)
                         {
                             {
-                                Slice<VarDeclaration> __r1546 = ad2.fields.opSlice().copy();
-                                int __key1545 = 0;
-                                for (; (__key1545 < __r1546.getLength());__key1545 += 1) {
-                                    VarDeclaration v = __r1546.get(__key1545);
-                                    int i = __key1545;
+                                Slice<VarDeclaration> __r1564 = ad2.fields.opSlice().copy();
+                                int __key1563 = 0;
+                                for (; (__key1563 < __r1564.getLength());__key1563 += 1) {
+                                    VarDeclaration v = __r1564.get(__key1563);
+                                    int i = __key1563;
                                     if (v.isThisDeclaration() != null)
                                     {
                                         continue;
@@ -820,10 +822,10 @@ public class semantic3 {
                     {
                         NrvoWalker nw = new NrvoWalker();
                         nw.fd = funcdecl;
-                        nw.sc = sc2;
+                        nw.sc = pcopy(sc2);
                         nw.visitStmt(funcdecl.fbody);
                     }
-                    sc2 = (sc2.get()).pop();
+                    sc2 = pcopy((sc2.get()).pop());
                 }
                 funcdecl.frequire = funcdecl.mergeFrequire(funcdecl.frequire, funcdecl.fdrequireParams);
                 funcdecl.fensure = funcdecl.mergeFensure(funcdecl.fensure, Id.result, funcdecl.fdensureParams);
@@ -834,12 +836,12 @@ public class semantic3 {
                     ScopeDsymbol sym = new ScopeDsymbol(funcdecl.loc, null);
                     sym.parent.value = (sc2.get()).scopesym;
                     sym.endlinnum = funcdecl.endloc.linnum;
-                    sc2 = (sc2.get()).push(sym);
+                    sc2 = pcopy((sc2.get()).push(sym));
                     (sc2.get()).flags = (sc2.get()).flags & -97 | 64;
                     freq = statementSemantic(freq, sc2);
                     blockExit(freq, funcdecl, false);
                     funcdecl.eh_none = false;
-                    sc2 = (sc2.get()).pop();
+                    sc2 = pcopy((sc2.get()).pop());
                     if (((global.params.useIn & 0xFF) == 1))
                     {
                         freq = null;
@@ -850,10 +852,10 @@ public class semantic3 {
                     if (((f.next.value.ty & 0xFF) == ENUMTY.Tvoid) && (funcdecl.fensures != null))
                     {
                         {
-                            Slice<Ensure> __r1547 = (funcdecl.fensures.get()).opSlice().copy();
-                            int __key1548 = 0;
-                            for (; (__key1548 < __r1547.getLength());__key1548 += 1) {
-                                Ensure e = __r1547.get(__key1548).copy();
+                            Slice<Ensure> __r1565 = (funcdecl.fensures.get()).opSlice().copy();
+                            int __key1566 = 0;
+                            for (; (__key1566 < __r1565.getLength());__key1566 += 1) {
+                                Ensure e = __r1565.get(__key1566).copy();
                                 if (e.id != null)
                                 {
                                     funcdecl.error(e.ensure.loc, new BytePtr("`void` functions have no result"));
@@ -861,7 +863,7 @@ public class semantic3 {
                             }
                         }
                     }
-                    sc2 = scout;
+                    sc2 = pcopy(scout);
                     (sc2.get()).flags = (sc2.get()).flags & -97 | 96;
                     if ((funcdecl.fensure != null) && ((f.next.value.ty & 0xFF) != ENUMTY.Tvoid))
                     {
@@ -870,7 +872,7 @@ public class semantic3 {
                     fens = statementSemantic(fens, sc2);
                     blockExit(fens, funcdecl, false);
                     funcdecl.eh_none = false;
-                    sc2 = (sc2.get()).pop();
+                    sc2 = pcopy((sc2.get()).pop());
                     if (((global.params.useOut & 0xFF) == 1))
                     {
                         fens = null;
@@ -971,10 +973,10 @@ public class semantic3 {
                     if (funcdecl.parameters != null)
                     {
                         {
-                            Slice<VarDeclaration> __r1549 = (funcdecl.parameters.get()).opSlice().copy();
-                            int __key1550 = 0;
-                            for (; (__key1550 < __r1549.getLength());__key1550 += 1) {
-                                VarDeclaration v = __r1549.get(__key1550);
+                            Slice<VarDeclaration> __r1567 = (funcdecl.parameters.get()).opSlice().copy();
+                            int __key1568 = 0;
+                            for (; (__key1568 < __r1567.getLength());__key1568 += 1) {
+                                VarDeclaration v = __r1567.get(__key1568);
                                 if ((v.storage_class & 2109440L) != 0)
                                 {
                                     continue;
@@ -1134,10 +1136,10 @@ public class semantic3 {
                 if (funcdecl.parameters != null)
                 {
                     {
-                        Slice<VarDeclaration> __r1551 = (funcdecl.parameters.get()).opSlice().copy();
-                        int __key1552 = 0;
-                        for (; (__key1552 < __r1551.getLength());__key1552 += 1) {
-                            VarDeclaration v = __r1551.get(__key1552);
+                        Slice<VarDeclaration> __r1569 = (funcdecl.parameters.get()).opSlice().copy();
+                        int __key1570 = 0;
+                        for (; (__key1570 < __r1569.getLength());__key1570 += 1) {
+                            VarDeclaration v = __r1569.get(__key1570);
                             array.set(n++, v);
                         }
                     }
@@ -1153,11 +1155,11 @@ public class semantic3 {
                 int nfparams = f.parameterList.length();
                 assert((nfparams == (funcdecl.parameters.get()).length));
                 {
-                    Slice<VarDeclaration> __r1554 = (funcdecl.parameters.get()).opSlice().copy();
-                    int __key1553 = 0;
-                    for (; (__key1553 < __r1554.getLength());__key1553 += 1) {
-                        VarDeclaration v = __r1554.get(__key1553);
-                        int u = __key1553;
+                    Slice<VarDeclaration> __r1572 = (funcdecl.parameters.get()).opSlice().copy();
+                    int __key1571 = 0;
+                    for (; (__key1571 < __r1572.getLength());__key1571 += 1) {
+                        VarDeclaration v = __r1572.get(__key1571);
+                        int u = __key1571;
                         if ((v.storage_class & 281474976710656L) != 0)
                         {
                             Parameter p = f.parameterList.get(u);
@@ -1182,7 +1184,7 @@ public class semantic3 {
             }
             if ((f.deco == null) && (!pequals(funcdecl.ident, Id.xopEquals)) && (!pequals(funcdecl.ident, Id.xopCmp)))
             {
-                this.sc = (this.sc.get()).push();
+                this.sc = pcopy((this.sc.get()).push());
                 if (funcdecl.isCtorDeclaration() != null)
                 {
                     (this.sc.get()).flags |= 1;
@@ -1190,7 +1192,7 @@ public class semantic3 {
                 (this.sc.get()).stc = 0L;
                 (this.sc.get()).linkage = funcdecl.linkage;
                 funcdecl.type = typeSemantic(f, funcdecl.loc, this.sc);
-                this.sc = (this.sc.get()).pop();
+                this.sc = pcopy((this.sc.get()).pop());
             }
             funcdecl.semanticRun = PASS.semantic3done;
             funcdecl.semantic3Errors = (global.errors != oldErrors) || (funcdecl.fbody != null) && (funcdecl.fbody.isErrorStatement() != null);
@@ -1233,13 +1235,13 @@ public class semantic3 {
             ns.semanticRun = PASS.semantic3;
             if (ns.members != null)
             {
-                this.sc = (this.sc.get()).push(ns);
+                this.sc = pcopy((this.sc.get()).push(ns));
                 (this.sc.get()).linkage = LINK.cpp;
                 {
-                    Slice<Dsymbol> __r1555 = (ns.members.get()).opSlice().copy();
-                    int __key1556 = 0;
-                    for (; (__key1556 < __r1555.getLength());__key1556 += 1) {
-                        Dsymbol s = __r1555.get(__key1556);
+                    Slice<Dsymbol> __r1573 = (ns.members.get()).opSlice().copy();
+                    int __key1574 = 0;
+                    for (; (__key1574 < __r1573.getLength());__key1574 += 1) {
+                        Dsymbol s = __r1573.get(__key1574);
                         semantic3(s, this.sc);
                     }
                 }
@@ -1329,7 +1331,7 @@ public class semantic3 {
         public Ptr<Scope> sc = null;
         public  FuncDeclSem3(FuncDeclaration fd, Ptr<Scope> s) {
             this.funcdecl = fd;
-            this.sc = s;
+            this.sc = pcopy(s);
         }
 
         public  void checkInContractOverrides() {

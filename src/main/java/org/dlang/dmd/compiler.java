@@ -68,9 +68,9 @@ public class compiler {
             try {
                 ParserASTCodegen p = new ParserASTCodegen(m, toByteSlice(cmaincode), false, diagnosticReporter);
                 try {
-                    p.scanloc.value = Loc.initial.copy();
+                    p.scanloc.value.opAssign(Loc.initial.copy());
                     p.nextToken();
-                    m.members = p.parseModule();
+                    m.members = pcopy(p.parseModule());
                     assert(((p.token.value.value & 0xFF) == 11));
                     assert(!p.errors());
                     boolean v = global.params.verbose;
@@ -317,19 +317,21 @@ public class compiler {
     static boolean includeByDefault = true;
     static DArray<MatcherNode> matchNodes = new DArray<MatcherNode>();
     public static void createMatchNodes() {
-        Function1<Integer,Integer> findSortedIndexToAddForDepth = (depth) -> {
-         {
-            Ref<Integer> index = ref(0);
-            for (; (index.value < matchNodes.value.length);){
-                MatcherNode info = matchNodes.value.get(index.value).copy();
-                if ((depth > (int)info.depth))
-                {
-                    break;
+        Function1<Integer,Integer> findSortedIndexToAddForDepth = new Function1<Integer,Integer>() {
+            public Integer invoke(Integer depth) {
+             {
+                Ref<Integer> index = ref(0);
+                for (; (index.value < matchNodes.value.length);){
+                    MatcherNode info = matchNodes.value.get(index.value).copy();
+                    if ((depth > (int)info.depth))
+                    {
+                        break;
+                    }
+                    index.value += (1 + (int)info.depth);
                 }
-                index.value += (1 + (int)info.depth);
-            }
-            return index.value;
-        }
+                return index.value;
+            }}
+
         };
         if ((matchNodes.value.length == 0))
         {

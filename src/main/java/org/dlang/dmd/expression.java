@@ -66,7 +66,7 @@ public class expression {
         private boolean isThen = false;
         public  DtorVisitor(Ptr<Scope> sc, CondExp ce) {
             super();
-            this.sc = sc;
+            this.sc = pcopy(sc);
             this.ce = ce;
         }
 
@@ -473,11 +473,11 @@ public class expression {
                     {
                         (exps.get()).remove(u);
                         {
-                            Slice<RootObject> __r1315 = (td.objects.get()).opSlice().copy();
-                            int __key1314 = 0;
-                            for (; (__key1314 < __r1315.getLength());__key1314 += 1) {
-                                RootObject o = __r1315.get(__key1314);
-                                int i = __key1314;
+                            Slice<RootObject> __r1333 = (td.objects.get()).opSlice().copy();
+                            int __key1332 = 0;
+                            for (; (__key1332 < __r1333.getLength());__key1332 += 1) {
+                                RootObject o = __r1333.get(__key1332);
+                                int i = __key1332;
                                 Declaration d = isExpression(o).isDsymbolExp().s.isDeclaration();
                                 DotVarExp e = new DotVarExp(exp.loc, exp, d, true);
                                 assert(d.type != null);
@@ -679,7 +679,7 @@ public class expression {
         public Loc loc = new Loc();
         public  Expression(Loc loc, byte op, int size) {
             super();
-            this.loc = loc.copy();
+            this.loc.opAssign(loc.copy());
             this.op = op;
             this.size = (byte)size;
         }
@@ -808,13 +808,13 @@ public class expression {
             Ptr<DArray<Expression>> a = null;
             if (exps != null)
             {
-                a = refPtr(new DArray<Expression>((exps.get()).length));
+                a = pcopy((refPtr(new DArray<Expression>((exps.get()).length))));
                 {
-                    Slice<Expression> __r1317 = (exps.get()).opSlice().copy();
-                    int __key1316 = 0;
-                    for (; (__key1316 < __r1317.getLength());__key1316 += 1) {
-                        Expression e = __r1317.get(__key1316);
-                        int i = __key1316;
+                    Slice<Expression> __r1335 = (exps.get()).opSlice().copy();
+                    int __key1334 = 0;
+                    for (; (__key1334 < __r1335.getLength());__key1334 += 1) {
+                        Expression e = __r1335.get(__key1334);
+                        int i = __key1334;
                         a.get().set(i, e != null ? e.syntaxCopy() : null);
                     }
                 }
@@ -865,7 +865,7 @@ public class expression {
             }
             else if (!this.loc.isValid())
             {
-                this.loc = e.loc.copy();
+                this.loc.opAssign(e.loc.copy());
             }
             if (((e.op & 0xFF) == 20))
             {
@@ -931,7 +931,7 @@ public class expression {
         }
 
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
-            this.loc = loc.copy();
+            this.loc.opAssign(loc.copy());
             return this;
         }
 
@@ -1247,7 +1247,7 @@ public class expression {
                 {
                     if (!this.loc.isValid())
                     {
-                        this.loc = (sc.get()).func.loc.copy();
+                        this.loc.opAssign((sc.get()).func.loc.copy());
                     }
                     BytePtr prettyChars = pcopy(f.toPrettyChars(false));
                     this.error(new BytePtr("`@safe` %s `%s` cannot call `@system` %s `%s`"), (sc.get()).func.kind(), (sc.get()).func.toPrettyChars(false), f.kind(), prettyChars);
@@ -1281,7 +1281,7 @@ public class expression {
                 {
                     if ((this.loc.linnum == 0))
                     {
-                        this.loc = (sc.get()).func.loc.copy();
+                        this.loc.opAssign((sc.get()).func.loc.copy());
                     }
                     this.error(new BytePtr("`@nogc` %s `%s` cannot call non-@nogc %s `%s`"), (sc.get()).func.kind(), (sc.get()).func.toPrettyChars(false), f.kind(), f.toPrettyChars(false));
                     return true;
@@ -1974,7 +1974,7 @@ public class expression {
             }
             else if (!this.loc.isValid())
             {
-                this.loc = e.loc.copy();
+                this.loc.opAssign(e.loc.copy());
             }
             e.error(new BytePtr("cannot modify constant `%s`"), e.toChars());
             return new ErrorExp();
@@ -2247,7 +2247,7 @@ public class expression {
         public complex_t value = new complex_t();
         public  ComplexExp(Loc loc, complex_t value, Type type) {
             super(loc, TOK.complex80, 56);
-            this.value = value.copy();
+            this.value.opAssign(value.copy());
             this.type.value = type;
         }
 
@@ -2690,10 +2690,10 @@ public class expression {
                     break;
                 case 4:
                     {
-                        int __key1318 = 0;
-                        int __limit1319 = this.len;
-                        for (; (__key1318 < __limit1319);__key1318 += 1) {
-                            int u_2 = __key1318;
+                        int __key1336 = 0;
+                        int __limit1337 = this.len;
+                        for (; (__key1336 < __limit1337);__key1336 += 1) {
+                            int u_2 = __key1336;
                             result += utf_codeLength(encSize, this.dstring.get(u_2));
                         }
                     }
@@ -2815,10 +2815,10 @@ public class expression {
                             CharPtr s1 = pcopy(toCharPtr(this.string));
                             CharPtr s2_1 = pcopy(toCharPtr(se2.string));
                             {
-                                int __key1320 = 0;
-                                int __limit1321 = this.len;
-                                for (; (__key1320 < __limit1321);__key1320 += 1) {
-                                    int u = __key1320;
+                                int __key1338 = 0;
+                                int __limit1339 = this.len;
+                                for (; (__key1338 < __limit1339);__key1338 += 1) {
+                                    int u = __key1338;
                                     if (((int)s1.get(u) != (int)s2_1.get(u)))
                                     {
                                         return (int)s1.get(u) - (int)s2_1.get(u);
@@ -2832,10 +2832,10 @@ public class expression {
                             Ptr<Integer> s1_1 = pcopy(toPtr<Integer>(this.string));
                             Ptr<Integer> s2 = pcopy(toPtr<Integer>(se2.string));
                             {
-                                int __key1322 = 0;
-                                int __limit1323 = this.len;
-                                for (; (__key1322 < __limit1323);__key1322 += 1) {
-                                    int u_1 = __key1322;
+                                int __key1340 = 0;
+                                int __limit1341 = this.len;
+                                for (; (__key1340 < __limit1341);__key1340 += 1) {
+                                    int u_1 = __key1340;
                                     if ((s1_1.get(u_1) != s2.get(u_1)))
                                     {
                                         return (s1_1.get(u_1) - s2.get(u_1));
@@ -2931,23 +2931,23 @@ public class expression {
         public  TupleExp(Loc loc, Expression e0, Ptr<DArray<Expression>> exps) {
             super(loc, TOK.tuple, 32);
             this.e0.value = e0;
-            this.exps = exps;
+            this.exps = pcopy(exps);
         }
 
         public  TupleExp(Loc loc, Ptr<DArray<Expression>> exps) {
             super(loc, TOK.tuple, 32);
-            this.exps = exps;
+            this.exps = pcopy(exps);
         }
 
         public  TupleExp(Loc loc, TupleDeclaration tup) {
             super(loc, TOK.tuple, 32);
-            this.exps = refPtr(new DArray<Expression>());
+            this.exps = pcopy((refPtr(new DArray<Expression>())));
             (this.exps.get()).reserve((tup.objects.get()).length);
             {
-                Slice<RootObject> __r1324 = (tup.objects.get()).opSlice().copy();
-                int __key1325 = 0;
-                for (; (__key1325 < __r1324.getLength());__key1325 += 1) {
-                    RootObject o = __r1324.get(__key1325);
+                Slice<RootObject> __r1342 = (tup.objects.get()).opSlice().copy();
+                int __key1343 = 0;
+                for (; (__key1343 < __r1342.getLength());__key1343 += 1) {
+                    RootObject o = __r1342.get(__key1343);
                     {
                         Dsymbol s = getDsymbol(o);
                         if ((s) != null)
@@ -2960,7 +2960,7 @@ public class expression {
                             if ((eo) != null)
                             {
                                 Expression e = eo.copy();
-                                e.loc = loc.copy();
+                                e.loc.opAssign(loc.copy());
                                 (this.exps.get()).push(e);
                             }
                             else {
@@ -3015,11 +3015,11 @@ public class expression {
                                 return false;
                             }
                             {
-                                Slice<Expression> __r1327 = (this.exps.get()).opSlice().copy();
-                                int __key1326 = 0;
-                                for (; (__key1326 < __r1327.getLength());__key1326 += 1) {
-                                    Expression e1 = __r1327.get(__key1326);
-                                    int i = __key1326;
+                                Slice<Expression> __r1345 = (this.exps.get()).opSlice().copy();
+                                int __key1344 = 0;
+                                for (; (__key1344 < __r1345.getLength());__key1344 += 1) {
+                                    Expression e1 = __r1345.get(__key1344);
+                                    int i = __key1344;
                                     Expression e2 = (te.exps.get()).get(i);
                                     if (!e1.equals(e2))
                                     {
@@ -3062,13 +3062,13 @@ public class expression {
         public  ArrayLiteralExp(Loc loc, Type type, Ptr<DArray<Expression>> elements) {
             super(loc, TOK.arrayLiteral, 33);
             this.type.value = type;
-            this.elements = elements;
+            this.elements = pcopy(elements);
         }
 
         public  ArrayLiteralExp(Loc loc, Type type, Expression e) {
             super(loc, TOK.arrayLiteral, 33);
             this.type.value = type;
-            this.elements = refPtr(new DArray<Expression>());
+            this.elements = pcopy((refPtr(new DArray<Expression>())));
             (this.elements.get()).push(e);
         }
 
@@ -3076,7 +3076,7 @@ public class expression {
             super(loc, TOK.arrayLiteral, 33);
             this.type.value = type;
             this.basis.value = basis;
-            this.elements = elements;
+            this.elements = pcopy(elements);
         }
 
         public static ArrayLiteralExp create(Loc loc, Ptr<DArray<Expression>> elements) {
@@ -3114,11 +3114,11 @@ public class expression {
                         return false;
                     }
                     {
-                        Slice<Expression> __r1329 = (this.elements.get()).opSlice().copy();
-                        int __key1328 = 0;
-                        for (; (__key1328 < __r1329.getLength());__key1328 += 1) {
-                            Expression e1 = __r1329.get(__key1328);
-                            int i = __key1328;
+                        Slice<Expression> __r1347 = (this.elements.get()).opSlice().copy();
+                        int __key1346 = 0;
+                        for (; (__key1346 < __r1347.getLength());__key1346 += 1) {
+                            Expression e1 = __r1347.get(__key1346);
+                            int i = __key1346;
                             Expression e2 = (ae.elements.get()).get(i);
                             if (e1 == null)
                             {
@@ -3168,10 +3168,10 @@ public class expression {
                     if (this.elements != null)
                     {
                         {
-                            int __key1330 = 0;
-                            int __limit1331 = (this.elements.get()).length;
-                            for (; (__key1330 < __limit1331);__key1330 += 1) {
-                                int i = __key1330;
+                            int __key1348 = 0;
+                            int __limit1349 = (this.elements.get()).length;
+                            for (; (__key1348 < __limit1349);__key1348 += 1) {
+                                int i = __key1348;
                                 Expression ch = this.getElement(i);
                                 if (((ch.op & 0xFF) != 135))
                                 {
@@ -3248,8 +3248,8 @@ public class expression {
         public  AssocArrayLiteralExp(Loc loc, Ptr<DArray<Expression>> keys, Ptr<DArray<Expression>> values) {
             super(loc, TOK.assocArrayLiteral, 33);
             assert(((keys.get()).length == (values.get()).length));
-            this.keys = keys;
-            this.values = values;
+            this.keys = pcopy(keys);
+            this.values = pcopy(values);
         }
 
         public  boolean equals(RootObject o) {
@@ -3272,17 +3272,17 @@ public class expression {
                     }
                     int count = 0;
                     {
-                        Slice<Expression> __r1333 = (this.keys.get()).opSlice().copy();
-                        int __key1332 = 0;
-                        for (; (__key1332 < __r1333.getLength());__key1332 += 1) {
-                            Expression key = __r1333.get(__key1332);
-                            int i = __key1332;
+                        Slice<Expression> __r1351 = (this.keys.get()).opSlice().copy();
+                        int __key1350 = 0;
+                        for (; (__key1350 < __r1351.getLength());__key1350 += 1) {
+                            Expression key = __r1351.get(__key1350);
+                            int i = __key1350;
                             {
-                                Slice<Expression> __r1335 = (ae.keys.get()).opSlice().copy();
-                                int __key1334 = 0;
-                                for (; (__key1334 < __r1335.getLength());__key1334 += 1) {
-                                    Expression akey = __r1335.get(__key1334);
-                                    int j = __key1334;
+                                Slice<Expression> __r1353 = (ae.keys.get()).opSlice().copy();
+                                int __key1352 = 0;
+                                for (; (__key1352 < __r1353.getLength());__key1352 += 1) {
+                                    Expression akey = __r1353.get(__key1352);
+                                    int j = __key1352;
                                     if (key.equals(akey))
                                     {
                                         if (!(this.values.get()).get(i).equals((ae.values.get()).get(j)))
@@ -3352,9 +3352,9 @@ public class expression {
             this.sd = sd;
             if (elements == null)
             {
-                elements = refPtr(new DArray<Expression>());
+                elements = pcopy((refPtr(new DArray<Expression>())));
             }
-            this.elements = elements;
+            this.elements = pcopy(elements);
             this.stype = stype;
             this.origin = this;
         }
@@ -3396,11 +3396,11 @@ public class expression {
                         return false;
                     }
                     {
-                        Slice<Expression> __r1337 = (this.elements.get()).opSlice().copy();
-                        int __key1336 = 0;
-                        for (; (__key1336 < __r1337.getLength());__key1336 += 1) {
-                            Expression e1 = __r1337.get(__key1336);
-                            int i = __key1336;
+                        Slice<Expression> __r1355 = (this.elements.get()).opSlice().copy();
+                        int __key1354 = 0;
+                        for (; (__key1354 < __r1355.getLength());__key1354 += 1) {
+                            Expression e1 = __r1355.get(__key1354);
+                            int i = __key1354;
                             Expression e2 = (se.elements.get()).get(i);
                             if ((!pequals(e1, e2)) && (e1 == null) || (e2 == null) || !e1.equals(e2))
                             {
@@ -3439,10 +3439,10 @@ public class expression {
                         int length = (int)tsa.dim.toInteger();
                         Ptr<DArray<Expression>> z = refPtr(new DArray<Expression>(length));
                         {
-                            Slice<Expression> __r1338 = (z.get()).opSlice().copy();
-                            int __key1339 = 0;
-                            for (; (__key1339 < __r1338.getLength());__key1339 += 1) {
-                                Expression q = __r1338.get(__key1339);
+                            Slice<Expression> __r1356 = (z.get()).opSlice().copy();
+                            int __key1357 = 0;
+                            for (; (__key1357 < __r1356.getLength());__key1357 += 1) {
+                                Expression q = __r1356.get(__key1357);
                                 q = e.copy();
                             }
                         }
@@ -3472,11 +3472,11 @@ public class expression {
             if ((this.elements.get()).length != 0)
             {
                 {
-                    Slice<VarDeclaration> __r1341 = this.sd.fields.opSlice().copy();
-                    int __key1340 = 0;
-                    for (; (__key1340 < __r1341.getLength());__key1340 += 1) {
-                        VarDeclaration v = __r1341.get(__key1340);
-                        int i = __key1340;
+                    Slice<VarDeclaration> __r1359 = this.sd.fields.opSlice().copy();
+                    int __key1358 = 0;
+                    for (; (__key1358 < __r1359.getLength());__key1358 += 1) {
+                        VarDeclaration v = __r1359.get(__key1358);
+                        int i = __key1358;
                         if ((offset == v.offset) && (type.size() == v.type.size()))
                         {
                             if ((i >= this.sd.nonHiddenFields()))
@@ -3502,12 +3502,12 @@ public class expression {
             if ((this.sd.dtor != null) && ((sc.get()).func != null))
             {
                 int len = 10;
-                Ref<ByteSlice> buf = ref(new ByteSlice(new byte[11]));
-                buf.value.set(10, (byte)0);
-                strcpy(ptr(buf), new BytePtr("__sl"));
-                strncat(ptr(buf), this.sd.ident.toChars(), 5);
-                assert(((buf.value.get(10) & 0xFF) == 0));
-                VarDeclaration tmp = copyToTemp(0L, ptr(buf), this);
+                ByteSlice buf = new ByteSlice(new byte[11]);
+                buf.set(10, (byte)0);
+                strcpy(buf.ptr(), new BytePtr("__sl"));
+                strncat(buf.ptr(), this.sd.ident.toChars(), 5);
+                assert(((buf.get(10) & 0xFF) == 0));
+                VarDeclaration tmp = copyToTemp(0L, buf.ptr(), this);
                 Expression ae = new DeclarationExp(this.loc, tmp);
                 Expression e = new CommaExp(this.loc, ae, new VarExp(this.loc, tmp, true), true);
                 e = expressionSemantic(e, sc);
@@ -3707,9 +3707,9 @@ public class expression {
         public  NewExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, Type newtype, Ptr<DArray<Expression>> arguments) {
             super(loc, TOK.new_, 54);
             this.thisexp.value = thisexp;
-            this.newargs = newargs;
+            this.newargs = pcopy(newargs);
             this.newtype = newtype;
-            this.arguments = arguments;
+            this.arguments = pcopy(arguments);
         }
 
         public static NewExp create(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, Type newtype, Ptr<DArray<Expression>> arguments) {
@@ -3755,9 +3755,9 @@ public class expression {
         public  NewAnonClassExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, ClassDeclaration cd, Ptr<DArray<Expression>> arguments) {
             super(loc, TOK.newAnonymousClass, 40);
             this.thisexp = thisexp;
-            this.newargs = newargs;
+            this.newargs = pcopy(newargs);
             this.cd = cd;
-            this.arguments = arguments;
+            this.arguments = pcopy(arguments);
         }
 
         public  Expression syntaxCopy() {
@@ -4123,14 +4123,16 @@ public class expression {
         }
 
         public  int matchType(Type to, Ptr<Scope> sc, Ptr<FuncExp> presult, int flag) {
-            Function3<Expression,Type,Integer,Integer> cannotInfer = (e, to, flag) -> {
-             {
-                if (flag == 0)
-                {
-                    e.error(new BytePtr("cannot infer parameter types from `%s`"), to.toChars());
-                }
-                return MATCH.nomatch;
-            }
+            Function3<Expression,Type,Integer,Integer> cannotInfer = new Function3<Expression,Type,Integer,Integer>() {
+                public Integer invoke(Expression e, Type to, Integer flag) {
+                 {
+                    if (flag == 0)
+                    {
+                        e.error(new BytePtr("cannot infer parameter types from `%s`"), to.toChars());
+                    }
+                    return MATCH.nomatch;
+                }}
+
             };
             if (presult != null)
             {
@@ -4176,10 +4178,10 @@ public class expression {
                 Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
                 (tiargs.get()).reserve((this.td.parameters.get()).length);
                 {
-                    Slice<TemplateParameter> __r1342 = (this.td.parameters.get()).opSlice().copy();
-                    int __key1343 = 0;
-                    for (; (__key1343 < __r1342.getLength());__key1343 += 1) {
-                        TemplateParameter tp = __r1342.get(__key1343);
+                    Slice<TemplateParameter> __r1360 = (this.td.parameters.get()).opSlice().copy();
+                    int __key1361 = 0;
+                    for (; (__key1361 < __r1360.getLength());__key1361 += 1) {
+                        TemplateParameter tp = __r1360.get(__key1361);
                         int u = 0;
                         for (; (u < dim);u++){
                             Parameter p = tf.parameterList.get(u);
@@ -4407,7 +4409,7 @@ public class expression {
         public  TraitsExp(Loc loc, Identifier ident, Ptr<DArray<RootObject>> args) {
             super(loc, TOK.traits, 32);
             this.ident = ident;
-            this.args = args;
+            this.args = pcopy(args);
         }
 
         public  Expression syntaxCopy() {
@@ -4471,20 +4473,20 @@ public class expression {
             this.tok = tok;
             this.tspec = tspec;
             this.tok2 = tok2;
-            this.parameters = parameters;
+            this.parameters = pcopy(parameters);
         }
 
         public  Expression syntaxCopy() {
             Ptr<DArray<TemplateParameter>> p = null;
             if (this.parameters != null)
             {
-                p = refPtr(new DArray<TemplateParameter>((this.parameters.get()).length));
+                p = pcopy((refPtr(new DArray<TemplateParameter>((this.parameters.get()).length))));
                 {
-                    Slice<TemplateParameter> __r1345 = (this.parameters.get()).opSlice().copy();
-                    int __key1344 = 0;
-                    for (; (__key1344 < __r1345.getLength());__key1344 += 1) {
-                        TemplateParameter el = __r1345.get(__key1344);
-                        int i = __key1344;
+                    Slice<TemplateParameter> __r1363 = (this.parameters.get()).opSlice().copy();
+                    int __key1362 = 0;
+                    for (; (__key1362 < __r1363.getLength());__key1362 += 1) {
+                        TemplateParameter el = __r1363.get(__key1362);
+                        int i = __key1362;
                         p.get().set(i, el.syntaxCopy());
                     }
                 }
@@ -4853,7 +4855,7 @@ public class expression {
         public Ptr<DArray<Expression>> exps = null;
         public  CompileExp(Loc loc, Ptr<DArray<Expression>> exps) {
             super(loc, TOK.mixin_, 28);
-            this.exps = exps;
+            this.exps = pcopy(exps);
         }
 
         public  Expression syntaxCopy() {
@@ -4879,11 +4881,11 @@ public class expression {
                         return false;
                     }
                     {
-                        Slice<Expression> __r1347 = (this.exps.get()).opSlice().copy();
-                        int __key1346 = 0;
-                        for (; (__key1346 < __r1347.getLength());__key1346 += 1) {
-                            Expression e1 = __r1347.get(__key1346);
-                            int i = __key1346;
+                        Slice<Expression> __r1365 = (this.exps.get()).opSlice().copy();
+                        int __key1364 = 0;
+                        for (; (__key1364 < __r1365.getLength());__key1364 += 1) {
+                            Expression e1 = __r1365.get(__key1364);
+                            int i = __key1364;
                             Expression e2 = (ce.exps.get()).get(i);
                             if ((!pequals(e1, e2)) && (e1 == null) || (e2 == null) || !e1.equals(e2))
                             {
@@ -5119,11 +5121,11 @@ public class expression {
                         if ((ad != null) && (ad.fields.length == (sc.get()).ctorflow.fieldinit.getLength()))
                         {
                             {
-                                Slice<VarDeclaration> __r1349 = ad.fields.opSlice().copy();
-                                int __key1348 = 0;
-                                for (; (__key1348 < __r1349.getLength());__key1348 += 1) {
-                                    VarDeclaration f = __r1349.get(__key1348);
-                                    int i = __key1348;
+                                Slice<VarDeclaration> __r1367 = ad.fields.opSlice().copy();
+                                int __key1366 = 0;
+                                for (; (__key1366 < __r1367.getLength());__key1366 += 1) {
+                                    VarDeclaration f = __r1367.get(__key1366);
+                                    int i = __key1366;
                                     if ((pequals(f, vd)))
                                     {
                                         if (((sc.get()).ctorflow.fieldinit.get(i).csx.value & 1) == 0)
@@ -5318,7 +5320,7 @@ public class expression {
         public VarDeclaration vthis2 = null;
         public  CallExp(Loc loc, Expression e, Ptr<DArray<Expression>> exps) {
             super(loc, TOK.call, 48, e);
-            this.arguments = exps;
+            this.arguments = pcopy(exps);
         }
 
         public  CallExp(Loc loc, Expression e) {
@@ -5327,7 +5329,7 @@ public class expression {
 
         public  CallExp(Loc loc, Expression e, Expression earg1) {
             super(loc, TOK.call, 48, e);
-            this.arguments = refPtr(new DArray<Expression>());
+            this.arguments = pcopy((refPtr(new DArray<Expression>())));
             if (earg1 != null)
             {
                 (this.arguments.get()).push(earg1);
@@ -5339,7 +5341,7 @@ public class expression {
             Ptr<DArray<Expression>> arguments = refPtr(new DArray<Expression>(2));
             arguments.get().set(0, earg1);
             arguments.get().set(1, earg2);
-            this.arguments = arguments;
+            this.arguments = pcopy(arguments);
         }
 
         public  CallExp(Loc loc, FuncDeclaration fd, Expression earg1) {
@@ -5985,7 +5987,7 @@ public class expression {
         public Ref<VarDeclaration> lengthVar = ref(null);
         public  ArrayExp(Loc loc, Expression e1, Expression index) {
             super(loc, TOK.array, 44, e1);
-            this.arguments = refPtr(new DArray<Expression>());
+            this.arguments = pcopy((refPtr(new DArray<Expression>())));
             if (index != null)
             {
                 (this.arguments.get()).push(index);
@@ -5999,7 +6001,7 @@ public class expression {
 
         public  ArrayExp(Loc loc, Expression e1, Ptr<DArray<Expression>> args) {
             super(loc, TOK.array, 44, e1);
-            this.arguments = args;
+            this.arguments = pcopy(args);
         }
 
         public  Expression syntaxCopy() {

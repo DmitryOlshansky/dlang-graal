@@ -13,6 +13,7 @@ import dmd.dsymbol;
 import dmd.dimport;
 import dmd.dmodule;
 import dmd.dstruct;
+import dmd.dtemplate;
 import dmd.expression;
 import dmd.statement;
 import dmd.func;
@@ -52,6 +53,10 @@ Members collectMembers(Dsymbol agg, bool recurseBase = false) {
             }
         }
 
+        override void visit(TemplateDeclaration td){   }
+
+        override void visit(TemplateInstance ti){   }
+
         override void visit(AnonDeclaration un) {
             hasUnion = true;
             super.visit(un);
@@ -63,11 +68,15 @@ Members collectMembers(Dsymbol agg, bool recurseBase = false) {
         }
 
         override void visit(StructDeclaration d) {
-            if (aggCount++ == 0) super.visit(d);
+            aggCount++;
+            super.visit(d);
+            aggCount--;
         }
         
         override void visit(ClassDeclaration d) {
-            if (aggCount++ == 0) super.visit(d);
+            aggCount++;
+            super.visit(d);
+            aggCount--;
             if (recursive && d.baseClass) {
                 decls ~= collectMembers(d.baseClass, true).all;
             }
@@ -77,7 +86,7 @@ Members collectMembers(Dsymbol agg, bool recurseBase = false) {
         override void visit(SharedStaticCtorDeclaration){}
         override void visit(StaticAssert ) {}
         override void visit(VarDeclaration v) {
-            if (!v.isStatic && !(v.storage_class & STC.gshared) && !v.ident.toString.startsWith("__")){
+            if (aggCount <= 1 && !v.isStatic && !(v.storage_class & STC.gshared) && !v.ident.toString.startsWith("__")){
                 if (!v.isThisDeclaration) decls ~= v;
             }
         }

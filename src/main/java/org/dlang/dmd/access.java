@@ -101,7 +101,7 @@ public class access {
             {
                 {
                     Ptr<Scope> scx = sc;
-                    for (; scx != null;scx = (scx.get()).enclosing){
+                    for (; scx != null;scx = pcopy((scx.get()).enclosing)){
                         if ((scx.get()).scopesym == null)
                         {
                             continue;
@@ -159,7 +159,7 @@ public class access {
         {
             return false;
         }
-        for (; sc != null;sc = (sc.get()).enclosing){
+        for (; sc != null;sc = pcopy((sc.get()).enclosing)){
             if (((sc.get()).scopesym != null) && (sc.get()).scopesym.isPackageAccessible(p, new Prot(Prot.Kind.private_), 0))
             {
                 return false;
@@ -287,15 +287,17 @@ public class access {
                     }
                 }
             }
-            Function2<Dsymbol,dmodule.Module,Prot> protectionSeenFromModule = (d, mod) -> {
-             {
-                Prot prot = d.prot().copy();
-                if ((mod != null) && (prot.kind == Prot.Kind.package_))
-                {
-                    return hasPackageAccess(mod, d) ? new Prot(Prot.Kind.public_) : new Prot(Prot.Kind.private_);
-                }
-                return prot;
-            }
+            Function2<Dsymbol,dmodule.Module,Prot> protectionSeenFromModule = new Function2<Dsymbol,dmodule.Module,Prot>() {
+                public Prot invoke(Dsymbol d, dmodule.Module mod) {
+                 {
+                    Prot prot = d.prot().copy();
+                    if ((mod != null) && (prot.kind == Prot.Kind.package_))
+                    {
+                        return hasPackageAccess(mod, d) ? new Prot(Prot.Kind.public_) : new Prot(Prot.Kind.private_);
+                    }
+                    return prot;
+                }}
+
             };
             if ((next != null) && protectionSeenFromModule.invoke(mostVisible, mod).isMoreRestrictiveThan(protectionSeenFromModule.invoke(next, mod)))
             {

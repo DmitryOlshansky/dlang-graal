@@ -255,14 +255,16 @@ public class argtypes {
             Type tn = t.next.value;
             long tnsize = tn.size();
             int tnalignsize = tn.alignsize();
-            Function3<Integer,Ref<Integer>,Ref<Integer>,Type> getNthElement = (n, offset, alignsize) -> {
-             {
-                offset.value = 0;
-                alignsize.value = 0;
-                offset.value = (int)((long)n * tnsize);
-                alignsize.value = tnalignsize;
-                return tn;
-            }
+            Function3<Integer,Ref<Integer>,Ref<Integer>,Type> getNthElement = new Function3<Integer,Ref<Integer>,Ref<Integer>,Type>() {
+                public Type invoke(Integer n, Ref<Integer> offset, Ref<Integer> alignsize) {
+                 {
+                    offset.value = 0;
+                    alignsize.value = 0;
+                    offset.value = (int)((long)n * tnsize);
+                    alignsize.value = tnalignsize;
+                    return tn;
+                }}
+
             };
             this.aggregate(sz, (int)dim, getNthElement);
         }
@@ -273,15 +275,17 @@ public class argtypes {
                 this.memory();
                 return ;
             }
-            Function3<Integer,Ref<Integer>,Ref<Integer>,Type> getNthField = (n, offset, alignsize) -> {
-             {
-                offset.value = 0;
-                alignsize.value = 0;
-                VarDeclaration field = t.sym.fields.get(n);
-                offset.value = field.offset;
-                alignsize.value = field.type.alignsize();
-                return field.type;
-            }
+            Function3<Integer,Ref<Integer>,Ref<Integer>,Type> getNthField = new Function3<Integer,Ref<Integer>,Ref<Integer>,Type>() {
+                public Type invoke(Integer n, Ref<Integer> offset, Ref<Integer> alignsize) {
+                 {
+                    offset.value = 0;
+                    alignsize.value = 0;
+                    VarDeclaration field = t.sym.fields.get(n);
+                    offset.value = field.offset;
+                    alignsize.value = field.type.alignsize();
+                    return field.type;
+                }}
+
             };
             this.aggregate(t.size(Loc.initial), t.sym.fields.length, getNthField);
         }

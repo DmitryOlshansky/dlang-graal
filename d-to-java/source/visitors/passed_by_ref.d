@@ -123,7 +123,7 @@ private extern(C++) class PassedByRef : SemanticTimeTransitiveVisitor {
 
     override void visit(SymOffExp symoff) {
         super.visit(symoff);
-        if (symoff.var.isVarDeclaration) {
+        if (symoff.var.isVarDeclaration && !symoff.var.type.isTypeSArray) {
             if (allowed(symoff.type)) {
                 passed[symoff.var.isVarDeclaration] = true;
             }

@@ -52,7 +52,7 @@ public class constfold {
 
     public static void cantExp(UnionExp ue) {
         Ref<UnionExp> ue_ref = ref(ue);
-        ue_ref.value = new UnionExp().copy();
+        ue_ref.value.opAssign(new UnionExp().copy());
         (ptr(ue_ref)) = new UnionExp(new CTFEExp(TOK.cantExpression));
     }
 
@@ -131,7 +131,7 @@ public class constfold {
             }
             else
             {
-                c1 = e1.toComplex().copy();
+                c1.opAssign(e1.toComplex().copy());
                 x = 6;
             }
             if (e2.type.value.isreal())
@@ -145,37 +145,37 @@ public class constfold {
             }
             else
             {
-                c2 = e2.toComplex().copy();
+                c2.opAssign(e2.toComplex().copy());
                 x += 2;
             }
             switch (x)
             {
                 case 0:
-                    v = new complex_t(r1 + r2).copy();
+                    v.opAssign(new complex_t(r1 + r2).copy());
                     break;
                 case 1:
-                    v = new complex_t(r1, i2).copy();
+                    v.opAssign(new complex_t(r1, i2).copy());
                     break;
                 case 2:
-                    v = new complex_t(r1 + creall(c2), cimagl(c2)).copy();
+                    v.opAssign(new complex_t(r1 + creall(c2), cimagl(c2)).copy());
                     break;
                 case 3:
-                    v = new complex_t(r2, i1).copy();
+                    v.opAssign(new complex_t(r2, i1).copy());
                     break;
                 case 4:
-                    v = new complex_t(CTFloat.zero, i1 + i2).copy();
+                    v.opAssign(new complex_t(CTFloat.zero, i1 + i2).copy());
                     break;
                 case 5:
-                    v = new complex_t(creall(c2), i1 + cimagl(c2)).copy();
+                    v.opAssign(new complex_t(creall(c2), i1 + cimagl(c2)).copy());
                     break;
                 case 6:
-                    v = new complex_t(creall(c1) + r2, cimagl(c2)).copy();
+                    v.opAssign(new complex_t(creall(c1) + r2, cimagl(c2)).copy());
                     break;
                 case 7:
-                    v = new complex_t(creall(c1), cimagl(c1) + i2).copy();
+                    v.opAssign(new complex_t(creall(c1), cimagl(c1) + i2).copy());
                     break;
                 case 8:
-                    v = c1.opAdd(c2).copy();
+                    v.opAssign(c1.opAdd(c2).copy());
                     break;
                 default:
                 throw new AssertionError("Unreachable code!");
@@ -233,7 +233,7 @@ public class constfold {
             }
             else
             {
-                c1 = e1.toComplex().copy();
+                c1.opAssign(e1.toComplex().copy());
                 x = 6;
             }
             if (e2.type.value.isreal())
@@ -247,37 +247,37 @@ public class constfold {
             }
             else
             {
-                c2 = e2.toComplex().copy();
+                c2.opAssign(e2.toComplex().copy());
                 x += 2;
             }
             switch (x)
             {
                 case 0:
-                    v = new complex_t(r1 - r2).copy();
+                    v.opAssign(new complex_t(r1 - r2).copy());
                     break;
                 case 1:
-                    v = new complex_t(r1, -i2).copy();
+                    v.opAssign(new complex_t(r1, -i2).copy());
                     break;
                 case 2:
-                    v = new complex_t(r1 - creall(c2), -cimagl(c2)).copy();
+                    v.opAssign(new complex_t(r1 - creall(c2), -cimagl(c2)).copy());
                     break;
                 case 3:
-                    v = new complex_t(-r2, i1).copy();
+                    v.opAssign(new complex_t(-r2, i1).copy());
                     break;
                 case 4:
-                    v = new complex_t(CTFloat.zero, i1 - i2).copy();
+                    v.opAssign(new complex_t(CTFloat.zero, i1 - i2).copy());
                     break;
                 case 5:
-                    v = new complex_t(-creall(c2), i1 - cimagl(c2)).copy();
+                    v.opAssign(new complex_t(-creall(c2), i1 - cimagl(c2)).copy());
                     break;
                 case 6:
-                    v = new complex_t(creall(c1) - r2, cimagl(c1)).copy();
+                    v.opAssign(new complex_t(creall(c1) - r2, cimagl(c1)).copy());
                     break;
                 case 7:
-                    v = new complex_t(creall(c1), cimagl(c1) - i2).copy();
+                    v.opAssign(new complex_t(creall(c1), cimagl(c1) - i2).copy());
                     break;
                 case 8:
-                    v = c1.opSub(c2).copy();
+                    v.opAssign(c1.opSub(c2).copy());
                     break;
                 default:
                 throw new AssertionError("Unreachable code!");
@@ -306,30 +306,30 @@ public class constfold {
             if (e1.type.value.isreal())
             {
                 r = e1.toReal();
-                c = e2.toComplex().copy();
-                c = new complex_t(r * creall(c), r * cimagl(c)).copy();
+                c.opAssign(e2.toComplex().copy());
+                c.opAssign(new complex_t(r * creall(c), r * cimagl(c)).copy());
             }
             else if (e1.type.value.isimaginary())
             {
                 r = e1.toImaginary();
-                c = e2.toComplex().copy();
-                c = new complex_t(-r * cimagl(c), r * creall(c)).copy();
+                c.opAssign(e2.toComplex().copy());
+                c.opAssign(new complex_t(-r * cimagl(c), r * creall(c)).copy());
             }
             else if (e2.type.value.isreal())
             {
                 r = e2.toReal();
-                c = e1.toComplex().copy();
-                c = new complex_t(r * creall(c), r * cimagl(c)).copy();
+                c.opAssign(e1.toComplex().copy());
+                c.opAssign(new complex_t(r * creall(c), r * cimagl(c)).copy());
             }
             else if (e2.type.value.isimaginary())
             {
                 r = e2.toImaginary();
-                c = e1.toComplex().copy();
-                c = new complex_t(-r * cimagl(c), r * creall(c)).copy();
+                c.opAssign(e1.toComplex().copy());
+                c.opAssign(new complex_t(-r * cimagl(c), r * creall(c)).copy());
             }
             else
             {
-                c = e1.toComplex().opMul(e2.toComplex()).copy();
+                c.opAssign(e1.toComplex().opMul(e2.toComplex()).copy());
             }
             if (type.isreal())
             {
@@ -368,18 +368,18 @@ public class constfold {
                     return ue.value;
                 }
                 double r = e2.toReal();
-                c = e1.toComplex().copy();
-                c = new complex_t(creall(c) / r, cimagl(c) / r).copy();
+                c.opAssign(e1.toComplex().copy());
+                c.opAssign(new complex_t(creall(c) / r, cimagl(c) / r).copy());
             }
             else if (e2.type.value.isimaginary())
             {
                 double r = e2.toImaginary();
-                c = e1.toComplex().copy();
-                c = new complex_t(cimagl(c) / r, -creall(c) / r).copy();
+                c.opAssign(e1.toComplex().copy());
+                c.opAssign(new complex_t(cimagl(c) / r, -creall(c) / r).copy());
             }
             else
             {
-                c = e1.toComplex().opDiv(e2.toComplex()).copy();
+                c.opAssign(e1.toComplex().opDiv(e2.toComplex()).copy());
             }
             if (type.isreal())
             {
@@ -447,12 +447,12 @@ public class constfold {
             if (e2.type.value.isreal())
             {
                 double r2 = e2.toReal();
-                c = new complex_t(e1.toReal() % r2, e1.toImaginary() % r2).copy();
+                c.opAssign(new complex_t(e1.toReal() % r2, e1.toImaginary() % r2).copy());
             }
             else if (e2.type.value.isimaginary())
             {
                 double i2 = e2.toImaginary();
-                c = new complex_t(e1.toReal() % i2, e1.toImaginary() % i2).copy();
+                c.opAssign(new complex_t(e1.toReal() % i2, e1.toImaginary() % i2).copy());
             }
             else
             {
@@ -558,16 +558,16 @@ public class constfold {
             for (; (n != 0L);){
                 if ((n & 1L) != 0)
                 {
-                    uv.value = Mul(loc, v.type.value, v, r).copy();
+                    uv.value.opAssign(Mul(loc, v.type.value, v, r).copy());
                 }
                 n >>= 1;
-                ur.value = Mul(loc, r.type.value, r, r).copy();
+                ur.value.opAssign(Mul(loc, r.type.value, r, r).copy());
             }
             if (neg)
             {
                 Ref<UnionExp> one = ref(new UnionExp().copy());
                 ptr(one) = new UnionExp(new RealExp(loc, CTFloat.one, v.type.value));
-                uv.value = Div(loc, v.type.value, one.value.exp(), v).copy();
+                uv.value.opAssign(Div(loc, v.type.value, one.value.exp(), v).copy());
             }
             if (type.iscomplex())
             {
@@ -794,7 +794,7 @@ public class constfold {
                     for (; (i < (es1.elements.get()).length);i++){
                         Expression ee1 = es1.getElement(i);
                         Expression ee2 = es2.getElement(i);
-                        ue.value = Equal(TOK.equal, loc, Type.tint32, ee1, ee2).copy();
+                        ue.value.opAssign(Equal(TOK.equal, loc, Type.tint32, ee1, ee2).copy());
                         if (CTFEExp.isCantExp(ue.value.exp()))
                         {
                             return ue.value;
@@ -915,7 +915,7 @@ public class constfold {
                             cmp = 0;
                             break;
                         }
-                        ue.value = Equal(TOK.equal, loc, Type.tint32, ee1, ee2).copy();
+                        ue.value.opAssign(Equal(TOK.equal, loc, Type.tint32, ee1, ee2).copy());
                         if (((ue.value.exp().op & 0xFF) == 233))
                         {
                             return ue.value;
@@ -1019,7 +1019,7 @@ public class constfold {
             }
             else
             {
-                ue.value = Equal(((op & 0xFF) == 60) ? TOK.equal : TOK.notEqual, loc, type, e1, e2).copy();
+                ue.value.opAssign(Equal(((op & 0xFF) == 60) ? TOK.equal : TOK.notEqual, loc, type, e1, e2).copy());
                 return ue.value;
             }
         }
@@ -1237,7 +1237,7 @@ public class constfold {
                     VarDeclaration v = sd.fields.get(i);
                     Ref<UnionExp> zero = ref(new UnionExp().copy());
                     ptr(zero) = new UnionExp(new IntegerExp(0));
-                    ue.value = Cast(loc, v.type, v.type, zero.value.exp()).copy();
+                    ue.value.opAssign(Cast(loc, v.type, v.type, zero.value.exp()).copy());
                     if (((ue.value.exp().op & 0xFF) == 233))
                     {
                         return ue.value;
@@ -1324,7 +1324,7 @@ public class constfold {
                 ArrayLiteralExp ale = (ArrayLiteralExp)e1;
                 Expression e = ale.getElement((int)i);
                 e.type.value = type;
-                e.loc = loc.copy();
+                e.loc.opAssign(loc.copy());
                 if (hasSideEffect(e))
                 {
                     cantExp(ue);
@@ -1354,7 +1354,7 @@ public class constfold {
                 {
                     Expression e = ale.getElement((int)i);
                     e.type.value = type;
-                    e.loc = loc.copy();
+                    e.loc.opAssign(loc.copy());
                     if (hasSideEffect(e))
                     {
                         cantExp(ue);
@@ -1378,7 +1378,7 @@ public class constfold {
                 for (; i != 0;){
                     i--;
                     Expression ekey = (ae.keys.get()).get(i);
-                    ue.value = Equal(TOK.equal, loc, Type.tbool, ekey, e2).copy();
+                    ue.value.opAssign(Equal(TOK.equal, loc, Type.tbool, ekey, e2).copy());
                     if (CTFEExp.isCantExp(ue.value.exp()))
                     {
                         return ue.value;
@@ -1387,7 +1387,7 @@ public class constfold {
                     {
                         Expression e = (ae.values.get()).get(i);
                         e.type.value = type;
-                        e.loc = loc.copy();
+                        e.loc.opAssign(loc.copy());
                         if (hasSideEffect(e))
                         {
                             cantExp(ue);
@@ -1412,11 +1412,13 @@ public class constfold {
     public static UnionExp Slice(Type type, Expression e1, Expression lwr, Expression upr) {
         Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
-        Function4<Long,Long,Long,Long,Boolean> sliceBoundsCheck = (lwr, upr, newlwr, newupr) -> {
-         {
-            assert((lwr <= upr));
-            return !((newlwr <= newupr) && (lwr <= newlwr) && (newupr <= upr));
-        }
+        Function4<Long,Long,Long,Long,Boolean> sliceBoundsCheck = new Function4<Long,Long,Long,Long,Boolean>() {
+            public Boolean invoke(Long lwr, Long upr, Long newlwr, Long newupr) {
+             {
+                assert((lwr <= upr));
+                return !((newlwr <= newupr) && (lwr <= newlwr) && (newupr <= upr));
+            }}
+
         };
         if (((e1.op & 0xFF) == 121) && ((lwr.op & 0xFF) == 135) && ((upr.op & 0xFF) == 135))
         {
@@ -1522,27 +1524,29 @@ public class constfold {
 
     public static Ptr<DArray<Expression>> copyElements(Expression e1, Expression e2) {
         Ptr<DArray<Expression>> elems = refPtr(new DArray<Expression>());
-        Function1<ArrayLiteralExp,Void> append = (ale) -> {
-         {
-            if (ale.elements == null)
-            {
-                return null;
-            }
-            int d = (elems.get()).length;
-            (elems.get()).append(ale.elements);
-            {
-                Slice<Expression> __r846 = (elems.get()).opSlice(d, (elems.get()).length).copy();
-                Ref<Integer> __key847 = ref(0);
-                for (; (__key847.value < __r846.getLength());__key847.value += 1) {
-                    Ref<Expression> el = ref(__r846.get(__key847.value));
-                    if (el.value == null)
-                    {
-                        el.value = ale.basis.value;
+        Function1<ArrayLiteralExp,Void> append = new Function1<ArrayLiteralExp,Void>() {
+            public Void invoke(ArrayLiteralExp ale) {
+             {
+                if (ale.elements == null)
+                {
+                    return null;
+                }
+                int d = (elems.get()).length;
+                (elems.get()).append(ale.elements);
+                {
+                    Slice<Expression> __r846 = (elems.get()).opSlice(d, (elems.get()).length).copy();
+                    Ref<Integer> __key847 = ref(0);
+                    for (; (__key847.value < __r846.getLength());__key847.value += 1) {
+                        Ref<Expression> el = ref(__r846.get(__key847.value));
+                        if (el.value == null)
+                        {
+                            el.value = ale.basis.value;
+                        }
                     }
                 }
-            }
-            return null;
-        }
+                return null;
+            }}
+
         };
         if (((e1.op & 0xFF) == 47))
         {

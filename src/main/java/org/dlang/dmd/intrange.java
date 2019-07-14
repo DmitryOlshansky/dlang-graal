@@ -308,18 +308,18 @@ public class intrange {
         public SignExtendedNumber imin = new SignExtendedNumber();
         public SignExtendedNumber imax = new SignExtendedNumber();
         public  IntRange(IntRange another) {
-            this.imin = another.imin.copy();
-            this.imax = another.imax.copy();
+            this.imin.opAssign(another.imin.copy());
+            this.imax.opAssign(another.imax.copy());
         }
 
         public  IntRange(SignExtendedNumber a) {
-            this.imin = a.copy();
-            this.imax = a.copy();
+            this.imin.opAssign(a.copy());
+            this.imax.opAssign(a.copy());
         }
 
         public  IntRange(SignExtendedNumber lower, SignExtendedNumber upper) {
-            this.imin = lower.copy();
-            this.imax = upper.copy();
+            this.imin.opAssign(lower.copy());
+            this.imax.opAssign(upper.copy());
         }
 
         public static IntRange fromType(Type type) {
@@ -363,11 +363,11 @@ public class intrange {
             IntRange cd = fromNumbers2(numbers.plus(24)).copy();
             if ((cd.imin.opCmp(ab.imin) < 0))
             {
-                ab.imin = cd.imin.copy();
+                ab.imin.opAssign(cd.imin.copy());
             }
             if ((cd.imax.opCmp(ab.imax) > 0))
             {
-                ab.imax = cd.imax.copy();
+                ab.imax.opAssign(cd.imax.copy());
             }
             return ab;
         }
@@ -410,8 +410,8 @@ public class intrange {
             }
             else
             {
-                this.imin = new SignExtendedNumber(~halfChunkMask, true).copy();
-                this.imax = new SignExtendedNumber(halfChunkMask, false).copy();
+                this.imin.opAssign(new SignExtendedNumber(~halfChunkMask, true));
+                this.imax.opAssign(new SignExtendedNumber(halfChunkMask, false));
             }
             return this;
         }
@@ -511,11 +511,11 @@ public class intrange {
         public  void unionOrAssign(IntRange other, Ref<Boolean> union_) {
             if (!union_.value || (this.imin.opCmp(other.imin) > 0))
             {
-                this.imin = other.imin.copy();
+                this.imin.opAssign(other.imin.copy());
             }
             if (!union_.value || (this.imax.opCmp(other.imax) < 0))
             {
-                this.imax = other.imax.copy();
+                this.imax.opAssign(other.imax.copy());
             }
             union_.value = true;
         }
@@ -529,14 +529,14 @@ public class intrange {
             hasNegRange.value = this.imin.negative;
             if (hasNegRange.value)
             {
-                negRange.imin = this.imin.copy();
-                negRange.imax = (this.imax.negative ? this.imax : new SignExtendedNumber(-1L, true)).copy();
+                negRange.imin.opAssign(this.imin.copy());
+                negRange.imax.opAssign((this.imax.negative ? this.imax : new SignExtendedNumber(-1L, true)).copy());
             }
             hasNonNegRange.value = !this.imax.negative;
             if (hasNonNegRange.value)
             {
-                nonNegRange.imin = (this.imin.negative ? new SignExtendedNumber(0L, false) : this.imin).copy();
-                nonNegRange.imax = this.imax.copy();
+                nonNegRange.imin.opAssign((this.imin.negative ? new SignExtendedNumber(0L, false) : this.imin).copy());
+                nonNegRange.imax.opAssign(this.imax.copy());
             }
         }
 
@@ -607,12 +607,12 @@ public class intrange {
 
         // from template opBinary!(_mul)
         public  IntRange opBinary_mul(IntRange rhs) {
-            Ref<Slice<SignExtendedNumber>> bdy = ref(new Slice<SignExtendedNumber>(new SignExtendedNumber[4]));
-            bdy.value.set(0, this.imin.opBinary_mul(rhs.imin));
-            bdy.value.set(1, this.imin.opBinary_mul(rhs.imax));
-            bdy.value.set(2, this.imax.opBinary_mul(rhs.imin));
-            bdy.value.set(3, this.imax.opBinary_mul(rhs.imax));
-            return fromNumbers4(ptr(bdy));
+            Slice<SignExtendedNumber> bdy = new Slice<SignExtendedNumber>(new SignExtendedNumber[4]);
+            bdy.set(0, this.imin.opBinary_mul(rhs.imin));
+            bdy.set(1, this.imin.opBinary_mul(rhs.imax));
+            bdy.set(2, this.imax.opBinary_mul(rhs.imin));
+            bdy.set(3, this.imax.opBinary_mul(rhs.imax));
+            return fromNumbers4(bdy.ptr());
         }
 
 
@@ -636,12 +636,12 @@ public class intrange {
             }
             else
             {
-                Ref<Slice<SignExtendedNumber>> bdy = ref(new Slice<SignExtendedNumber>(new SignExtendedNumber[4]));
-                bdy.value.set(0, this.imin.opBinary_div(rhs.imin));
-                bdy.value.set(1, this.imin.opBinary_div(rhs.imax));
-                bdy.value.set(2, this.imax.opBinary_div(rhs.imin));
-                bdy.value.set(3, this.imax.opBinary_div(rhs.imax));
-                return fromNumbers4(ptr(bdy));
+                Slice<SignExtendedNumber> bdy = new Slice<SignExtendedNumber>(new SignExtendedNumber[4]);
+                bdy.set(0, this.imin.opBinary_div(rhs.imin));
+                bdy.set(1, this.imin.opBinary_div(rhs.imax));
+                bdy.set(2, this.imax.opBinary_div(rhs.imin));
+                bdy.set(3, this.imax.opBinary_div(rhs.imax));
+                return fromNumbers4(bdy.ptr());
             }
         }
 
@@ -650,15 +650,15 @@ public class intrange {
         public  IntRange opBinary_mod(IntRange rhs) {
             IntRange irNum = this.copy();
             IntRange irDen = rhs.absNeg().copy();
-            irDen.imin = irDen.imin.opBinary_plus(new SignExtendedNumber(1L, false)).copy();
-            irDen.imax = irDen.imin.opUnary_minus().copy();
+            irDen.imin.opAssign(irDen.imin.opBinary_plus(new SignExtendedNumber(1L, false)).copy());
+            irDen.imax.opAssign(irDen.imin.opUnary_minus().copy());
             if (!irNum.imin.negative)
             {
                 irNum.imin.value = 0L;
             }
             else if ((irNum.imin.opCmp(irDen.imin) < 0))
             {
-                irNum.imin = irDen.imin.copy();
+                irNum.imin.opAssign(irDen.imin.copy());
             }
             if (irNum.imax.negative)
             {
@@ -667,7 +667,7 @@ public class intrange {
             }
             else if ((irNum.imax.opCmp(irDen.imax) > 0))
             {
-                irNum.imax = irDen.imax.copy();
+                irNum.imax.opAssign(irDen.imax.copy());
             }
             return irNum;
         }
@@ -677,7 +677,7 @@ public class intrange {
         public  IntRange opBinary_ll(IntRange rhs) {
             if (rhs.imin.negative)
             {
-                rhs = new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(64L, false)).copy();
+                rhs.opAssign(new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(64L, false)).copy());
             }
             SignExtendedNumber lower = this.imin.opBinary_ll(this.imin.negative ? rhs.imax : rhs.imin).copy();
             SignExtendedNumber upper = this.imax.opBinary_ll(this.imax.negative ? rhs.imin : rhs.imax).copy();
@@ -689,7 +689,7 @@ public class intrange {
         public  IntRange opBinary_rr(IntRange rhs) {
             if (rhs.imin.negative)
             {
-                rhs = new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(64L, false)).copy();
+                rhs.opAssign(new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(64L, false)).copy());
             }
             SignExtendedNumber lower = this.imin.opBinary_rr(this.imin.negative ? rhs.imin : rhs.imax).copy();
             SignExtendedNumber upper = this.imax.opBinary_rr(this.imax.negative ? rhs.imax : rhs.imin).copy();
@@ -701,7 +701,7 @@ public class intrange {
         public  IntRange opBinary_rrr(IntRange rhs) {
             if (rhs.imin.negative)
             {
-                rhs = new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(64L, false)).copy();
+                rhs.opAssign(new IntRange(new SignExtendedNumber(0L, false), new SignExtendedNumber(64L, false)).copy());
             }
             return new IntRange(this.imin.opBinary_rr(rhs.imax), this.imax.opBinary_rr(rhs.imin));
         }
@@ -821,8 +821,8 @@ public class intrange {
 
         public static void swap(IntRange a, IntRange b) {
             IntRange aux = a.copy();
-            a = b.copy();
-            b = aux.copy();
+            a.opAssign(b.copy());
+            b.opAssign(aux.copy());
         }
 
         public IntRange(){

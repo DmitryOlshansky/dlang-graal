@@ -261,7 +261,7 @@ public class opover {
         private BytePtr pop = null;
         private Expression result = null;
         public  OpOverload(Ptr<Scope> sc, BytePtr pop) {
-            this.sc = sc;
+            this.sc = pcopy(sc);
             this.pop = pcopy(pop);
         }
 
@@ -632,7 +632,7 @@ public class opover {
                         {
                             id = Id.opBinary;
                             id_r = Id.opBinaryRight;
-                            tiargs = opToArg(this.sc, e.op);
+                            tiargs = pcopy(opToArg(this.sc, e.op));
                         }
                     }
                     try {
@@ -817,32 +817,34 @@ public class opover {
             Type t2 = e.e2.value.type.value.toBasetype();
             if (((t1.ty & 0xFF) == ENUMTY.Tarray) || ((t1.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray) || ((t2.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                Function0<Boolean> needsDirectEq = () -> {
-                 {
-                    Type t1n = t1.nextOf().toBasetype();
-                    Type t2n = t2.nextOf().toBasetype();
-                    if (((t1n.ty & 0xFF) == ENUMTY.Tchar) || ((t1n.ty & 0xFF) == ENUMTY.Twchar) || ((t1n.ty & 0xFF) == ENUMTY.Tdchar) && ((t2n.ty & 0xFF) == ENUMTY.Tchar) || ((t2n.ty & 0xFF) == ENUMTY.Twchar) || ((t2n.ty & 0xFF) == ENUMTY.Tdchar) || ((t1n.ty & 0xFF) == ENUMTY.Tvoid) || ((t2n.ty & 0xFF) == ENUMTY.Tvoid))
-                    {
-                        return false;
-                    }
-                    if ((!pequals(t1n.constOf(), t2n.constOf())))
-                    {
-                        return true;
-                    }
-                    Ref<Type> t = ref(t1n);
-                    for (; t.value.toBasetype().nextOf() != null;) {
-                        t.value = t.value.nextOf().toBasetype();
-                    }
-                    if (((t.value.ty & 0xFF) != ENUMTY.Tstruct))
-                    {
-                        return false;
-                    }
-                    if (global.params.useTypeInfo && (Type.dtypeinfo != null))
-                    {
-                        semanticTypeInfo(sc, t.value);
-                    }
-                    return ((TypeStruct)t.value).sym.hasIdentityEquals;
-                }
+                Function0<Boolean> needsDirectEq = new Function0<Boolean>() {
+                    public Boolean invoke() {
+                     {
+                        Type t1n = t1.nextOf().toBasetype();
+                        Type t2n = t2.nextOf().toBasetype();
+                        if (((t1n.ty & 0xFF) == ENUMTY.Tchar) || ((t1n.ty & 0xFF) == ENUMTY.Twchar) || ((t1n.ty & 0xFF) == ENUMTY.Tdchar) && ((t2n.ty & 0xFF) == ENUMTY.Tchar) || ((t2n.ty & 0xFF) == ENUMTY.Twchar) || ((t2n.ty & 0xFF) == ENUMTY.Tdchar) || ((t1n.ty & 0xFF) == ENUMTY.Tvoid) || ((t2n.ty & 0xFF) == ENUMTY.Tvoid))
+                        {
+                            return false;
+                        }
+                        if ((!pequals(t1n.constOf(), t2n.constOf())))
+                        {
+                            return true;
+                        }
+                        Ref<Type> t = ref(t1n);
+                        for (; t.value.toBasetype().nextOf() != null;) {
+                            t.value = t.value.nextOf().toBasetype();
+                        }
+                        if (((t.value.ty & 0xFF) != ENUMTY.Tstruct))
+                        {
+                            return false;
+                        }
+                        if (global.params.useTypeInfo && (Type.dtypeinfo != null))
+                        {
+                            semanticTypeInfo(sc, t.value);
+                        }
+                        return ((TypeStruct)t.value).sym.hasIdentityEquals;
+                    }}
+
                 };
                 if (needsDirectEq.invoke() && !(((t1.ty & 0xFF) == ENUMTY.Tarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray)))
                 {
@@ -1165,7 +1167,7 @@ public class opover {
                     if (s != null)
                     {
                         id = Id.opOpAssign;
-                        tiargs = opToArg(this.sc, e.op);
+                        tiargs = pcopy(opToArg(this.sc, e.op));
                     }
                 }
                 try {
@@ -1590,10 +1592,10 @@ public class opover {
         if (sapply.value != null)
         {
             {
-                Slice<Parameter> __r1531 = (fes.parameters.get()).opSlice().copy();
-                int __key1532 = 0;
-                for (; (__key1532 < __r1531.getLength());__key1532 += 1) {
-                    Parameter p = __r1531.get(__key1532);
+                Slice<Parameter> __r1549 = (fes.parameters.get()).opSlice().copy();
+                int __key1550 = 0;
+                for (; (__key1550 < __r1549.getLength());__key1550 += 1) {
+                    Parameter p = __r1549.get(__key1550);
                     if (p.type != null)
                     {
                         p.type = typeSemantic(p.type, fes.loc, sc);
@@ -1724,46 +1726,48 @@ public class opover {
         int match = MATCH.nomatch;
         FuncDeclaration fd_best = null;
         FuncDeclaration fd_ambig = null;
-        Function1<Dsymbol,Integer> __lambda4 = (s) -> {
-         {
-            FuncDeclaration f = s.isFuncDeclaration();
-            if (f == null)
-            {
-                return 0;
-            }
-            TypeFunction tf = (TypeFunction)f.type;
-            int m = MATCH.exact;
-            if (f.isThis() != null)
-            {
-                if (!MODimplicitConv(mod, tf.mod))
+        Function1<Dsymbol,Integer> __lambda4 = new Function1<Dsymbol,Integer>() {
+            public Integer invoke(Dsymbol s) {
+             {
+                FuncDeclaration f = s.isFuncDeclaration();
+                if (f == null)
+                {
+                    return 0;
+                }
+                TypeFunction tf = (TypeFunction)f.type;
+                int m = MATCH.exact;
+                if (f.isThis() != null)
+                {
+                    if (!MODimplicitConv(mod, tf.mod))
+                    {
+                        m = MATCH.nomatch;
+                    }
+                    else if (((mod & 0xFF) != (tf.mod & 0xFF)))
+                    {
+                        m = MATCH.constant;
+                    }
+                }
+                if (!matchParamsToOpApply(tf, parameters, false))
                 {
                     m = MATCH.nomatch;
                 }
-                else if (((mod & 0xFF) != (tf.mod & 0xFF)))
+                if ((m > match))
                 {
-                    m = MATCH.constant;
+                    fd_best = f;
+                    fd_ambig = null;
+                    match = m;
                 }
-            }
-            if (!matchParamsToOpApply(tf, parameters, false))
-            {
-                m = MATCH.nomatch;
-            }
-            if ((m > match))
-            {
-                fd_best = f;
-                fd_ambig = null;
-                match = m;
-            }
-            else if ((m == match) && (m > MATCH.nomatch))
-            {
-                assert(fd_best != null);
-                if ((tf.covariant(fd_best.type, null, true) != 1) && (fd_best.type.covariant(tf, null, true) != 1))
+                else if ((m == match) && (m > MATCH.nomatch))
                 {
-                    fd_ambig = f;
+                    assert(fd_best != null);
+                    if ((tf.covariant(fd_best.type, null, true) != 1) && (fd_best.type.covariant(tf, null, true) != 1))
+                    {
+                        fd_ambig = f;
+                    }
                 }
-            }
-            return 0;
-        }
+                return 0;
+            }}
+
         };
         overloadApply(fstart, __lambda4, null);
         if (fd_ambig != null)
@@ -1793,11 +1797,11 @@ public class opover {
             return false;
         }
         {
-            Slice<Parameter> __r1534 = (parameters.get()).opSlice().copy();
-            int __key1533 = 0;
-            for (; (__key1533 < __r1534.getLength());__key1533 += 1) {
-                Parameter p = __r1534.get(__key1533);
-                int u = __key1533;
+            Slice<Parameter> __r1552 = (parameters.get()).opSlice().copy();
+            int __key1551 = 0;
+            for (; (__key1551 < __r1552.getLength());__key1551 += 1) {
+                Parameter p = __r1552.get(__key1551);
+                int u = __key1551;
                 Parameter param = tdg.parameterList.get(u);
                 if (p.type != null)
                 {

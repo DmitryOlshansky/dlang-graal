@@ -219,7 +219,7 @@ public class dsymbol {
 
         public  Dsymbol(Loc loc, Identifier ident) {
             super();
-            this.loc = loc.copy();
+            this.loc.opAssign(loc.copy());
             this.ident = ident;
         }
 
@@ -476,7 +476,7 @@ public class dsymbol {
             Ptr<DArray<Dsymbol>> b = null;
             if (a != null)
             {
-                b = (a.get()).copy();
+                b = pcopy((a.get()).copy());
                 {
                     int i = 0;
                     for (; (i < (b.get()).length);i++){
@@ -534,10 +534,10 @@ public class dsymbol {
             BytePtr q = pcopy(s.plus(length).minus(1));
             q.set(0, (byte)0);
             {
-                int __key1120 = 0;
-                int __limit1121 = complength;
-                for (; (__key1120 < __limit1121);__key1120 += 1) {
-                    int j = __key1120;
+                int __key1138 = 0;
+                int __limit1139 = complength;
+                for (; (__key1138 < __limit1139);__key1138 += 1) {
+                    int j = __key1138;
                     BytePtr t = pcopy(toBytePtr(comp.get(j)));
                     int len = comp.get(j).getLength();
                     q.minusAssign(len);
@@ -607,7 +607,7 @@ public class dsymbol {
             {
                 (sc.get()).setNoFree();
             }
-            this._scope = sc;
+            this._scope = pcopy(sc);
             if ((sc.get()).depdecl != null)
             {
                 this.depdecl = (sc.get()).depdecl;
@@ -631,22 +631,24 @@ public class dsymbol {
         }
 
         public  Dsymbol search_correct(Identifier ident) {
-            Function2<ByteSlice,Ref<Integer>,Dsymbol> symbol_search_fp = (seed, cost) -> {
-             {
-                if (seed.getLength() == 0)
-                {
-                    return null;
-                }
-                Identifier id = Identifier.lookup(seed);
-                if (id == null)
-                {
-                    return null;
-                }
-                cost.value = 0;
-                Dsymbol s = this;
-                dmodule.Module.clearCache();
-                return s.search(Loc.initial, id, 2);
-            }
+            Function2<ByteSlice,Ref<Integer>,Dsymbol> symbol_search_fp = new Function2<ByteSlice,Ref<Integer>,Dsymbol>() {
+                public Dsymbol invoke(ByteSlice seed, Ref<Integer> cost) {
+                 {
+                    if (seed.getLength() == 0)
+                    {
+                        return null;
+                    }
+                    Identifier id = Identifier.lookup(seed);
+                    if (id == null)
+                    {
+                        return null;
+                    }
+                    cost.value = 0;
+                    Dsymbol s = this;
+                    dmodule.Module.clearCache();
+                    return s.search(Loc.initial, id, 2);
+                }}
+
             };
             if (global.gag != 0)
             {
@@ -1158,7 +1160,7 @@ public class dsymbol {
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
             ScopeDsymbol sds = s != null ? (ScopeDsymbol)s : new ScopeDsymbol(this.ident);
-            sds.members = Dsymbol.arraySyntaxCopy(this.members);
+            sds.members = pcopy(Dsymbol.arraySyntaxCopy(this.members));
             sds.endlinnum = this.endlinnum;
             return sds;
         }
@@ -1336,7 +1338,7 @@ public class dsymbol {
             {
                 if (this.importedScopes == null)
                 {
-                    this.importedScopes = refPtr(new DArray<Dsymbol>());
+                    this.importedScopes = pcopy((refPtr(new DArray<Dsymbol>())));
                 }
                 else
                 {
@@ -1380,11 +1382,11 @@ public class dsymbol {
                 return true;
             }
             {
-                Slice<Dsymbol> __r1131 = (this.importedScopes != null ? (this.importedScopes.get()).opSlice() : new Slice<Dsymbol>()).copy();
-                int __key1130 = 0;
-                for (; (__key1130 < __r1131.getLength());__key1130 += 1) {
-                    Dsymbol ss = __r1131.get(__key1130);
-                    int i = __key1130;
+                Slice<Dsymbol> __r1149 = (this.importedScopes != null ? (this.importedScopes.get()).opSlice() : new Slice<Dsymbol>()).copy();
+                int __key1148 = 0;
+                for (; (__key1148 < __r1149.getLength());__key1148 += 1) {
+                    Dsymbol ss = __r1149.get(__key1148);
+                    int i = __key1148;
                     if ((protection.kind <= this.prots.get(i)) && ss.isScopeDsymbol().isPackageAccessible(p, protection, 1))
                     {
                         return true;
@@ -1462,10 +1464,10 @@ public class dsymbol {
             int n = pn != null ? pn.get() : 0;
             int result = 0;
             {
-                int __key1132 = 0;
-                int __limit1133 = (members.get()).length;
-                for (; (__key1132 < __limit1133);__key1132 += 1) {
-                    int i = __key1132;
+                int __key1150 = 0;
+                int __limit1151 = (members.get()).length;
+                for (; (__key1150 < __limit1151);__key1150 += 1) {
+                    int i = __key1150;
                     Dsymbol s = (members.get()).get(i);
                     {
                         AttribDeclaration a = s.isAttribDeclaration();
@@ -1642,19 +1644,19 @@ public class dsymbol {
             super(exp.loc, null);
             assert(((exp.op & 0xFF) == 62) || ((exp.op & 0xFF) == 31) || ((exp.op & 0xFF) == 17));
             this.exp = exp;
-            this.sc = sc;
+            this.sc = pcopy(sc);
         }
 
         public  ArrayScopeSymbol(Ptr<Scope> sc, TypeTuple type) {
             super();
             this.type = type;
-            this.sc = sc;
+            this.sc = pcopy(sc);
         }
 
         public  ArrayScopeSymbol(Ptr<Scope> sc, TupleDeclaration td) {
             super();
             this.td = td;
-            this.sc = sc;
+            this.sc = pcopy(sc);
         }
 
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {

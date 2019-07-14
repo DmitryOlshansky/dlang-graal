@@ -62,11 +62,11 @@ public class staticcond {
             return !errors.value && result;
         }
         int nerrors = global.errors;
-        sc = (sc.get()).startCTFE();
+        sc = pcopy((sc.get()).startCTFE());
         (sc.get()).flags |= 4;
         e = expressionSemantic(e, sc);
         e = resolveProperties(sc, e);
-        sc = (sc.get()).endCTFE();
+        sc = pcopy((sc.get()).endCTFE());
         e = e.optimize(0, false);
         if ((nerrors != global.errors) || ((e.op & 0xFF) == 127) || (pequals(e.type.value.toBasetype(), Type.terror)))
         {

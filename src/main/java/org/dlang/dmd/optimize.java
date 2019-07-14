@@ -994,27 +994,34 @@ public class optimize {
     }
 
     public static Expression expandVar(int result, VarDeclaration v) {
-        Function1<Expression,Expression> initializerReturn = (e) -> {
-         {
-            if ((!pequals(e.value.type.value, v.type)))
-            {
-                e.value = e.value.castTo(null, v.type);
-            }
-            v.inuse++;
-            e.value = e.value.optimize(result, false);
-            v.inuse--;
-            return e.value;
-        }
+        Function1<Expression,Expression> initializerReturn = new Function1<Expression,Expression>() {
+            public Expression invoke(Expression e) {
+             {
+                Ref<Expression> e_ref = ref(e);
+                if ((!pequals(e_ref.value.type.value, v.type)))
+                {
+                    e_ref.value = e_ref.value.castTo(null, v.type);
+                }
+                v.inuse++;
+                e_ref.value = e_ref.value.optimize(result, false);
+                v.inuse--;
+                return e_ref.value;
+            }}
+
         };
-        Function0<Expression> nullReturn = () -> {
-         {
-            return null;
-        }
+        Function0<Expression> nullReturn = new Function0<Expression>() {
+            public Expression invoke() {
+             {
+                return null;
+            }}
+
         };
-        Function0<Expression> errorReturn = () -> {
-         {
-            return new ErrorExp();
-        }
+        Function0<Expression> errorReturn = new Function0<Expression>() {
+            public Expression invoke() {
+             {
+                return new ErrorExp();
+            }}
+
         };
         if (v == null)
         {
@@ -1122,7 +1129,7 @@ public class optimize {
                     e = e.copy();
                     e.type.value = e1.type.value;
                 }
-                e.loc = e1.loc.copy();
+                e.loc.opAssign(e1.loc.copy());
             }
             else
             {

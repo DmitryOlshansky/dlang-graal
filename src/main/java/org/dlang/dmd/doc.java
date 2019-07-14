@@ -44,8 +44,8 @@ public class doc {
         private Ptr<OutBuffer> buf = null;
         private Ptr<Scope> sc = null;
         public  EmitComment(Ptr<OutBuffer> buf, Ptr<Scope> sc) {
-            this.buf = buf;
-            this.sc = sc;
+            this.buf = pcopy(buf);
+            this.sc = pcopy(sc);
         }
 
         public  void visit(Dsymbol _param_0) {
@@ -131,7 +131,7 @@ public class doc {
             {
                 Ptr<DocComment> dc = DocComment.parse(s, com);
                 (dc.get()).pmacrotable = pcopy((ptr((sc.get())._module.macrotable)));
-                (sc.get()).lastdc = dc;
+                (sc.get()).lastdc = pcopy(dc);
             }
         }
 
@@ -295,11 +295,11 @@ public class doc {
             if (pd.decl != null)
             {
                 Ptr<Scope> scx = this.sc;
-                this.sc = (this.sc.get()).copy();
-                (this.sc.get()).protection = pd.protection.copy();
+                this.sc = pcopy((this.sc.get()).copy());
+                (this.sc.get()).protection.opAssign(pd.protection.copy());
                 this.visit((AttribDeclaration)pd);
-                (scx.get()).lastdc = (this.sc.get()).lastdc;
-                this.sc = (this.sc.get()).pop();
+                (scx.get()).lastdc = pcopy((this.sc.get()).lastdc);
+                this.sc = pcopy((this.sc.get()).pop());
             }
         }
 
@@ -327,8 +327,8 @@ public class doc {
         private Ptr<OutBuffer> buf = null;
         private Ptr<Scope> sc = null;
         public  ToDocBuffer(Ptr<OutBuffer> buf, Ptr<Scope> sc) {
-            this.buf = buf;
-            this.sc = sc;
+            this.buf = pcopy(buf);
+            this.sc = pcopy(sc);
         }
 
         public  void visit(Dsymbol s) {
@@ -704,11 +704,11 @@ public class doc {
                 if (this.namelen != 0)
                 {
                     {
-                        Slice<ByteSlice> __r1040 = doc.writetable.copy();
-                        int __key1041 = 0;
+                        Slice<ByteSlice> __r1058 = doc.writetable.copy();
+                        int __key1059 = 0;
                     L_outer1:
-                        for (; (__key1041 < __r1040.getLength());__key1041 += 1) {
-                            ByteSlice entry = __r1040.get(__key1041).copy();
+                        for (; (__key1059 < __r1058.getLength());__key1059 += 1) {
+                            ByteSlice entry = __r1058.get(__key1059).copy();
                             if (iequals(toByteSlice(entry), this.name.slice(0,this.namelen)))
                             {
                                 (buf.get()).printf(new BytePtr("$(DDOC_%s "), toBytePtr(entry));
@@ -962,10 +962,10 @@ public class doc {
     }
     public static boolean isCVariadicParameter(Ptr<DArray<Dsymbol>> a, ByteSlice p) {
         {
-            Slice<Dsymbol> __r1042 = (a.get()).opSlice().copy();
-            int __key1043 = 0;
-            for (; (__key1043 < __r1042.getLength());__key1043 += 1) {
-                Dsymbol member = __r1042.get(__key1043);
+            Slice<Dsymbol> __r1060 = (a.get()).opSlice().copy();
+            int __key1061 = 0;
+            for (; (__key1061 < __r1060.getLength());__key1061 += 1) {
+                Dsymbol member = __r1060.get(__key1061);
                 TypeFunction tf = isTypeFunction(member);
                 if ((tf != null) && (tf.parameterList.varargs == VarArg.variadic) && __equals(p, new ByteSlice("...")))
                 {
@@ -1051,8 +1051,8 @@ public class doc {
             Ptr<Scope> sc = Scope.createGlobal(m);
             Ptr<DocComment> dc = DocComment.parse(m, m.comment);
             (dc.get()).pmacrotable = pcopy((ptr(m.macrotable)));
-            (dc.get()).escapetable = m.escapetable;
-            (sc.get()).lastdc = dc;
+            (dc.get()).escapetable = pcopy(m.escapetable);
+            (sc.get()).lastdc = pcopy(dc);
             {
                 ByteSlice p = toDString(m.toPrettyChars(false)).copy();
                 Macro.define(ptr(m.macrotable), new ByteSlice("TITLE"), p);
@@ -1300,7 +1300,7 @@ public class doc {
 
     public static Ptr<Scope> skipNonQualScopes(Ptr<Scope> sc) {
         for (; (sc != null) && ((sc.get()).scopesym == null);) {
-            sc = (sc.get()).enclosing;
+            sc = pcopy((sc.get()).enclosing);
         }
         return sc;
     }
@@ -1366,7 +1366,7 @@ public class doc {
             }
             else
             {
-                (sc.get()).anchorCounts.set((ident), __aaval1044);
+                (sc.get()).anchorCounts.set((ident), __aaval1062);
                 count = 1;
             }
         }
@@ -1407,22 +1407,24 @@ public class doc {
                     }
                     else
                     {
-                        Function0<Void> printFullyQualifiedImport = () -> {
-                         {
-                            if ((imp.packages != null) && ((imp.packages.get()).length != 0))
-                            {
+                        Function0<Void> printFullyQualifiedImport = new Function0<Void>() {
+                            public Void invoke() {
+                             {
+                                if ((imp.packages != null) && ((imp.packages.get()).length != 0))
                                 {
-                                    Slice<Identifier> __r1045 = (imp.packages.get()).opSlice().copy();
-                                    Ref<Integer> __key1046 = ref(0);
-                                    for (; (__key1046.value < __r1045.getLength());__key1046.value += 1) {
-                                        Identifier pid = __r1045.get(__key1046.value);
-                                        (buf.get()).printf(new BytePtr("%s."), pid.toChars());
+                                    {
+                                        Slice<Identifier> __r1063 = (imp.packages.get()).opSlice().copy();
+                                        Ref<Integer> __key1064 = ref(0);
+                                        for (; (__key1064.value < __r1063.getLength());__key1064.value += 1) {
+                                            Identifier pid = __r1063.get(__key1064.value);
+                                            (buf.get()).printf(new BytePtr("%s."), pid.toChars());
+                                        }
                                     }
                                 }
-                            }
-                            (buf.get()).writestring(imp.id.asString());
-                            return null;
-                        }
+                                (buf.get()).writestring(imp.id.asString());
+                                return null;
+                            }}
+
                         };
                         (buf.get()).printf(new BytePtr("$(%.*s "), macroName.getLength(), toBytePtr(macroName));
                         printFullyQualifiedImport.invoke();
@@ -1535,7 +1537,7 @@ public class doc {
         int offset1 = (buf.get()).offset;
         (buf.get()).writestring(m);
         int offset2 = (buf.get()).offset;
-        sc = (sc.get()).push(sds);
+        sc = pcopy((sc.get()).push(sds));
         {
             int i = 0;
             for (; (i < (sds.members.get()).length);i++){
@@ -1773,7 +1775,7 @@ public class doc {
         public static void parseEscapes(Ptr<Escape> escapetable, BytePtr textstart, int textlen) {
             if (escapetable == null)
             {
-                escapetable = refPtr(new Escape(new ByteSlice()));
+                escapetable = pcopy((refPtr(new Escape(new ByteSlice()))));
                 memset(escapetable, 0, 2040);
             }
             BytePtr p = pcopy(textstart);
@@ -1971,7 +1973,7 @@ public class doc {
                 {
                     if (m.md != null)
                     {
-                        loc = (m.md.get()).loc.value.copy();
+                        loc.opAssign((m.md.get()).loc.value.copy());
                     }
                 }
             }
@@ -2108,11 +2110,11 @@ public class doc {
 
     public static ByteSlice skipwhitespace(ByteSlice p) {
         {
-            ByteSlice __r1048 = p.copy();
-            int __key1047 = 0;
-            for (; (__key1047 < __r1048.getLength());__key1047 += 1) {
-                byte c = __r1048.get(__key1047);
-                int idx = __key1047;
+            ByteSlice __r1066 = p.copy();
+            int __key1065 = 0;
+            for (; (__key1065 < __r1066.getLength());__key1065 += 1) {
+                byte c = __r1066.get(__key1065);
+                int idx = __key1065;
                 switch ((c & 0xFF))
                 {
                     case 32:
@@ -2130,16 +2132,16 @@ public class doc {
     public static int skipChars(Ptr<OutBuffer> buf, int i, ByteSlice chars) {
     /*Outer:*/
         {
-            ByteSlice __r1050 = (buf.get()).peekSlice().slice(i,(buf.get()).peekSlice().getLength()).copy();
-            int __key1049 = 0;
-            for (; (__key1049 < __r1050.getLength());__key1049 += 1) {
-                byte c = __r1050.get(__key1049);
-                int j = __key1049;
+            ByteSlice __r1068 = (buf.get()).peekSlice().slice(i,(buf.get()).peekSlice().getLength()).copy();
+            int __key1067 = 0;
+            for (; (__key1067 < __r1068.getLength());__key1067 += 1) {
+                byte c = __r1068.get(__key1067);
+                int j = __key1067;
                 {
-                    ByteSlice __r1051 = chars.copy();
-                    int __key1052 = 0;
-                    for (; (__key1052 < __r1051.getLength());__key1052 += 1) {
-                        byte d = __r1051.get(__key1052);
+                    ByteSlice __r1069 = chars.copy();
+                    int __key1070 = 0;
+                    for (; (__key1070 < __r1069.getLength());__key1070 += 1) {
+                        byte d = __r1069.get(__key1070);
                         if (((d & 0xFF) == (c & 0xFF)))
                         {
                             continue Outer;
@@ -2155,10 +2157,10 @@ public class doc {
     public static ByteSlice replaceChar(ByteSlice s, byte c, ByteSlice r) {
         int count = 0;
         {
-            ByteSlice __r1053 = s.copy();
-            int __key1054 = 0;
-            for (; (__key1054 < __r1053.getLength());__key1054 += 1) {
-                byte sc = __r1053.get(__key1054);
+            ByteSlice __r1071 = s.copy();
+            int __key1072 = 0;
+            for (; (__key1072 < __r1071.getLength());__key1072 += 1) {
+                byte sc = __r1071.get(__key1072);
                 if (((sc & 0xFF) == (c & 0xFF)))
                 {
                     count += 1;
@@ -2173,11 +2175,11 @@ public class doc {
         reserve(result, s.getLength() - count + r.getLength() * count);
         int start = 0;
         {
-            ByteSlice __r1056 = s.copy();
-            int __key1055 = 0;
-            for (; (__key1055 < __r1056.getLength());__key1055 += 1) {
-                byte sc = __r1056.get(__key1055);
-                int i = __key1055;
+            ByteSlice __r1074 = s.copy();
+            int __key1073 = 0;
+            for (; (__key1073 < __r1074.getLength());__key1073 += 1) {
+                byte sc = __r1074.get(__key1073);
+                int i = __key1073;
                 if (((sc & 0xFF) == (c & 0xFF)))
                 {
                     result.value.append(s.slice(start,i));
@@ -2193,10 +2195,10 @@ public class doc {
     public static ByteSlice toLowercase(ByteSlice s) {
         Ref<ByteSlice> lower = ref(new ByteSlice().copy());
         {
-            int __key1057 = 0;
-            int __limit1058 = s.getLength();
-            for (; (__key1057 < __limit1058);__key1057 += 1) {
-                int i = __key1057;
+            int __key1075 = 0;
+            int __limit1076 = s.getLength();
+            for (; (__key1075 < __limit1076);__key1075 += 1) {
+                int i = __key1075;
                 byte c = s.get(i);
                 if (((c & 0xFF) >= 65) && ((c & 0xFF) <= 90))
                 {
@@ -2229,10 +2231,10 @@ public class doc {
         }
         int indent = 0;
         {
-            ByteSlice __r1059 = slice.slice(from,to).copy();
-            int __key1060 = 0;
-            for (; (__key1060 < __r1059.getLength());__key1060 += 1) {
-                byte c = __r1059.get(__key1060);
+            ByteSlice __r1077 = slice.slice(from,to).copy();
+            int __key1078 = 0;
+            for (; (__key1078 < __r1077.getLength());__key1078 += 1) {
+                byte c = __r1077.get(__key1078);
                 indent += ((c & 0xFF) == 9) ? 4 - indent % 4 : 1;
             }
         }
@@ -2536,37 +2538,39 @@ public class doc {
         {
             return 0;
         }
-        Function2<Ref<MarkdownDelimiter>,Ref<MarkdownDelimiter>,Integer> replaceEmphasisPair = (start, end) -> {
-         {
-            int count = (start.count == 1) || (end.count == 1) ? 1 : 2;
-            Ref<Integer> iStart = ref(start.iStart);
-            Ref<Integer> iEnd = ref(end.iStart);
-            end.count -= count;
-            start.count -= count;
-            iStart.value += start.count;
-            if (start.count == 0)
-            {
-                start.type = (byte)0;
-            }
-            if (end.count == 0)
-            {
-                end.type = (byte)0;
-            }
-            if (global.params.vmarkdown)
-            {
-                ByteSlice s = (buf.get()).peekSlice().slice(iStart.value + count,iEnd.value).copy();
-                message(loc, new BytePtr("Ddoc: emphasized text '%.*s'"), s.getLength(), toBytePtr(s));
-            }
-            (buf.get()).remove(iStart.value, count);
-            iEnd.value -= count;
-            (buf.get()).remove(iEnd.value, count);
-            ByteSlice macroName = (count >= 2) ? new ByteSlice("$(STRONG ") : new ByteSlice("$(EM ").copy();
-            (buf.get()).insert(iEnd.value, new ByteSlice(")"));
-            (buf.get()).insert(iStart.value, toByteSlice(macroName));
-            int delta = 1 + macroName.getLength() - (count + count);
-            end.iStart += count;
-            return delta;
-        }
+        Function2<Ref<MarkdownDelimiter>,Ref<MarkdownDelimiter>,Integer> replaceEmphasisPair = new Function2<Ref<MarkdownDelimiter>,Ref<MarkdownDelimiter>,Integer>() {
+            public Integer invoke(MarkdownDelimiter start, MarkdownDelimiter end) {
+             {
+                int count = (start.count == 1) || (end.count == 1) ? 1 : 2;
+                Ref<Integer> iStart = ref(start.iStart);
+                Ref<Integer> iEnd = ref(end.iStart);
+                end.count -= count;
+                start.count -= count;
+                iStart.value += start.count;
+                if (start.count == 0)
+                {
+                    start.type = (byte)0;
+                }
+                if (end.count == 0)
+                {
+                    end.type = (byte)0;
+                }
+                if (global.params.vmarkdown)
+                {
+                    ByteSlice s = (buf.get()).peekSlice().slice(iStart.value + count,iEnd.value).copy();
+                    message(loc, new BytePtr("Ddoc: emphasized text '%.*s'"), s.getLength(), toBytePtr(s));
+                }
+                (buf.get()).remove(iStart.value, count);
+                iEnd.value -= count;
+                (buf.get()).remove(iEnd.value, count);
+                ByteSlice macroName = (count >= 2) ? new ByteSlice("$(STRONG ") : new ByteSlice("$(EM ").copy();
+                (buf.get()).insert(iEnd.value, new ByteSlice(")"));
+                (buf.get()).insert(iStart.value, toByteSlice(macroName));
+                int delta = 1 + macroName.getLength() - (count + count);
+                end.iStart += count;
+                return delta;
+            }}
+
         };
         int delta = 0;
         int start = inlineDelimiters.getLength() - 1;
@@ -2613,10 +2617,10 @@ public class doc {
 
     public static boolean isIdentifier(Ptr<DArray<Dsymbol>> a, BytePtr p, int len) {
         {
-            Slice<Dsymbol> __r1061 = (a.get()).opSlice().copy();
-            int __key1062 = 0;
-            for (; (__key1062 < __r1061.getLength());__key1062 += 1) {
-                Dsymbol member = __r1061.get(__key1062);
+            Slice<Dsymbol> __r1079 = (a.get()).opSlice().copy();
+            int __key1080 = 0;
+            for (; (__key1080 < __r1079.getLength());__key1080 += 1) {
+                Dsymbol member = __r1079.get(__key1080);
                 {
                     Import imp = member.isImport();
                     if ((imp) != null)
@@ -2634,10 +2638,10 @@ public class doc {
                             if ((imp.packages != null) && ((imp.packages.get()).length != 0))
                             {
                                 {
-                                    Slice<Identifier> __r1063 = (imp.packages.get()).opSlice().copy();
-                                    int __key1064 = 0;
-                                    for (; (__key1064 < __r1063.getLength());__key1064 += 1) {
-                                        Identifier pid = __r1063.get(__key1064);
+                                    Slice<Identifier> __r1081 = (imp.packages.get()).opSlice().copy();
+                                    int __key1082 = 0;
+                                    for (; (__key1082 < __r1081.getLength());__key1082 += 1) {
+                                        Identifier pid = __r1081.get(__key1082);
                                         fullyQualifiedImport.append(toByteSlice((concat(pid.asString(), new ByteSlice(".")))));
                                     }
                                 }
@@ -2665,10 +2669,10 @@ public class doc {
     public static boolean isKeyword(BytePtr p, int len) {
         Slice<ByteSlice> table = slice(new ByteSlice[]{new ByteSlice("true"), new ByteSlice("false"), new ByteSlice("null")});
         {
-            Slice<ByteSlice> __r1065 = table.copy();
-            int __key1066 = 0;
-            for (; (__key1066 < __r1065.getLength());__key1066 += 1) {
-                ByteSlice s = __r1065.get(__key1066).copy();
+            Slice<ByteSlice> __r1083 = table.copy();
+            int __key1084 = 0;
+            for (; (__key1084 < __r1083.getLength());__key1084 += 1) {
+                ByteSlice s = __r1083.get(__key1084).copy();
                 if (__equals(p.slice(0,len), toByteSlice(s)))
                 {
                     return true;
@@ -2696,10 +2700,10 @@ public class doc {
         if ((tf != null) && (tf.parameterList.parameters != null))
         {
             {
-                Slice<Parameter> __r1067 = (tf.parameterList.parameters.get()).opSlice().copy();
-                int __key1068 = 0;
-                for (; (__key1068 < __r1067.getLength());__key1068 += 1) {
-                    Parameter fparam = __r1067.get(__key1068);
+                Slice<Parameter> __r1085 = (tf.parameterList.parameters.get()).opSlice().copy();
+                int __key1086 = 0;
+                for (; (__key1086 < __r1085.getLength());__key1086 += 1) {
+                    Parameter fparam = __r1085.get(__key1086);
                     if ((fparam.ident != null) && __equals(p.slice(0,len), fparam.ident.asString()))
                     {
                         return fparam;
@@ -2770,10 +2774,10 @@ public class doc {
                 if ((td != null) && (td.origParameters != null))
                 {
                     {
-                        Slice<TemplateParameter> __r1069 = (td.origParameters.get()).opSlice().copy();
-                        int __key1070 = 0;
-                        for (; (__key1070 < __r1069.getLength());__key1070 += 1) {
-                            TemplateParameter tp = __r1069.get(__key1070);
+                        Slice<TemplateParameter> __r1087 = (td.origParameters.get()).opSlice().copy();
+                        int __key1088 = 0;
+                        for (; (__key1088 < __r1087.getLength());__key1088 += 1) {
+                            TemplateParameter tp = __r1087.get(__key1088);
                             if ((tp.ident != null) && __equals(p.slice(0,len), tp.ident.asString()))
                             {
                                 return tp;
@@ -2789,10 +2793,10 @@ public class doc {
     public static boolean isReservedName(ByteSlice str) {
         Slice<ByteSlice> table = slice(new ByteSlice[]{new ByteSlice("__ctor"), new ByteSlice("__dtor"), new ByteSlice("__postblit"), new ByteSlice("__invariant"), new ByteSlice("__unitTest"), new ByteSlice("__require"), new ByteSlice("__ensure"), new ByteSlice("__dollar"), new ByteSlice("__ctfe"), new ByteSlice("__withSym"), new ByteSlice("__result"), new ByteSlice("__returnLabel"), new ByteSlice("__vptr"), new ByteSlice("__monitor"), new ByteSlice("__gate"), new ByteSlice("__xopEquals"), new ByteSlice("__xopCmp"), new ByteSlice("__LINE__"), new ByteSlice("__FILE__"), new ByteSlice("__MODULE__"), new ByteSlice("__FUNCTION__"), new ByteSlice("__PRETTY_FUNCTION__"), new ByteSlice("__DATE__"), new ByteSlice("__TIME__"), new ByteSlice("__TIMESTAMP__"), new ByteSlice("__VENDOR__"), new ByteSlice("__VERSION__"), new ByteSlice("__EOF__"), new ByteSlice("__CXXLIB__"), new ByteSlice("__LOCAL_SIZE"), new ByteSlice("___tls_get_addr"), new ByteSlice("__entrypoint")}).copy();
         {
-            Slice<ByteSlice> __r1071 = table.copy();
-            int __key1072 = 0;
-            for (; (__key1072 < __r1071.getLength());__key1072 += 1) {
-                ByteSlice s = __r1071.get(__key1072).copy();
+            Slice<ByteSlice> __r1089 = table.copy();
+            int __key1090 = 0;
+            for (; (__key1090 < __r1089.getLength());__key1090 += 1) {
+                ByteSlice s = __r1089.get(__key1090).copy();
                 if (__equals(str, toByteSlice(s)))
                 {
                     return true;
@@ -3060,10 +3064,10 @@ public class doc {
                 if ((iEnd > i.value))
                 {
                     ByteSlice label = link.label.value.copy();
-                    link = linkReferences_ref.value.lookupReference(label, buf, i.value, loc).copy();
+                    link.opAssign(linkReferences_ref.value.lookupReference(label, buf, i.value, loc).copy());
                     if ((link.href.getLength() == 0) && !delimiter.rightFlanking)
                     {
-                        link = linkReferences_ref.value.lookupSymbol(label).copy();
+                        link.opAssign(linkReferences_ref.value.lookupSymbol(label).copy());
                     }
                     if (link.href.getLength() == 0)
                     {
@@ -3237,7 +3241,7 @@ public class doc {
                                 __dispatch7 = 0;
                                 if ((this.label.value.getLength() != 0) && ((this.label.value.get(this.label.value.getLength() - 1) & 0xFF) == 32))
                                 {
-                                    (__arraylength1075.get()).getLength() = (__arraylength1075.get()).getLength() - 1;
+                                    (__arraylength1093.get()).getLength() = (__arraylength1093.get()).getLength() - 1;
                                 }
                                 if (this.label.value.getLength() != 0)
                                 {
@@ -3468,7 +3472,7 @@ public class doc {
             ByteSlice lowercaseLabel = toLowercase(this.label.value).copy();
             if (linkReferences.references.getLvalue(lowercaseLabel) == null)
             {
-                linkReferences.references.set(lowercaseLabel, __aaval1076);
+                linkReferences.references.set(lowercaseLabel, __aaval1094);
             }
         }
 
@@ -3508,10 +3512,12 @@ public class doc {
         }
 
         public static ByteSlice percentEncode(ByteSlice s) {
-            Function1<Byte,Boolean> shouldEncode = (c) -> {
-             {
-                return ((c & 0xFF) < 48) && ((c & 0xFF) != 33) && ((c & 0xFF) != 35) && ((c & 0xFF) != 36) && ((c & 0xFF) != 37) && ((c & 0xFF) != 38) && ((c & 0xFF) != 39) && ((c & 0xFF) != 40) && ((c & 0xFF) != 41) && ((c & 0xFF) != 42) && ((c & 0xFF) != 43) && ((c & 0xFF) != 44) && ((c & 0xFF) != 45) && ((c & 0xFF) != 46) && ((c & 0xFF) != 47) || ((c & 0xFF) > 57) && ((c & 0xFF) < 65) && ((c & 0xFF) != 58) && ((c & 0xFF) != 59) && ((c & 0xFF) != 61) && ((c & 0xFF) != 63) && ((c & 0xFF) != 64) || ((c & 0xFF) > 90) && ((c & 0xFF) < 97) && ((c & 0xFF) != 91) && ((c & 0xFF) != 93) && ((c & 0xFF) != 95) || ((c & 0xFF) > 122) && ((c & 0xFF) != 126);
-            }
+            Function1<Byte,Boolean> shouldEncode = new Function1<Byte,Boolean>() {
+                public Boolean invoke(Byte c) {
+                 {
+                    return ((c & 0xFF) < 48) && ((c & 0xFF) != 33) && ((c & 0xFF) != 35) && ((c & 0xFF) != 36) && ((c & 0xFF) != 37) && ((c & 0xFF) != 38) && ((c & 0xFF) != 39) && ((c & 0xFF) != 40) && ((c & 0xFF) != 41) && ((c & 0xFF) != 42) && ((c & 0xFF) != 43) && ((c & 0xFF) != 44) && ((c & 0xFF) != 45) && ((c & 0xFF) != 46) && ((c & 0xFF) != 47) || ((c & 0xFF) > 57) && ((c & 0xFF) < 65) && ((c & 0xFF) != 58) && ((c & 0xFF) != 59) && ((c & 0xFF) != 61) && ((c & 0xFF) != 63) && ((c & 0xFF) != 64) || ((c & 0xFF) > 90) && ((c & 0xFF) < 97) && ((c & 0xFF) != 91) && ((c & 0xFF) != 93) && ((c & 0xFF) != 95) || ((c & 0xFF) > 122) && ((c & 0xFF) != 126);
+                }}
+
             };
             {
                 int i = 0;
@@ -3606,18 +3612,20 @@ public class doc {
                 }
                 if (symbol != null)
                 {
-                    link = new MarkdownLink(this.createHref(symbol), new ByteSlice(), name, symbol).copy();
+                    link.opAssign(new MarkdownLink(this.createHref(symbol), new ByteSlice(), name, symbol));
                 }
             }
-            this.symbols.set(name, __aaval1077);
+            this.symbols.set(name, __aaval1095);
             return link;
         }
 
         public  void extractReferences(Ptr<OutBuffer> buf, int i, Loc loc) {
-            Function2<Ptr<OutBuffer>,Integer,Boolean> isFollowedBySpace = (buf, i) -> {
-             {
-                return (i + 1 < (buf.get()).offset) && (((buf.get()).data.get(i + 1) & 0xFF) == 32) || (((buf.get()).data.get(i + 1) & 0xFF) == 9);
-            }
+            Function2<Ptr<OutBuffer>,Integer,Boolean> isFollowedBySpace = new Function2<Ptr<OutBuffer>,Integer,Boolean>() {
+                public Boolean invoke(Ptr<OutBuffer> buf, Integer i) {
+                 {
+                    return (i + 1 < (buf.get()).offset) && (((buf.get()).data.get(i + 1) & 0xFF) == 32) || (((buf.get()).data.get(i + 1) & 0xFF) == 9);
+                }}
+
             };
             if (this.extractedAll)
             {
@@ -3756,10 +3764,10 @@ public class doc {
             Slice<ByteSlice> result = new Slice<ByteSlice>().copy();
             int iStart = 0;
             {
-                int __key1078 = 0;
-                int __limit1079 = s.getLength();
-                for (; (__key1078 < __limit1079);__key1078 += 1) {
-                    int i = __key1078;
+                int __key1096 = 0;
+                int __limit1097 = s.getLength();
+                for (; (__key1096 < __limit1097);__key1096 += 1) {
+                    int i = __key1096;
                     if (((s.get(i) & 0xFF) == (delimiter & 0xFF)))
                     {
                         result.append(s.slice(iStart,i));
@@ -3928,10 +3936,10 @@ public class doc {
         iStart = skipChars(buf, iStart, new ByteSlice(" \u0009"));
         int cellCount = 0;
         {
-            Slice<MarkdownDelimiter> __r1080 = inlineDelimiters_ref.value.copy();
-            int __key1081 = 0;
-            for (; (__key1081 < __r1080.getLength());__key1081 += 1) {
-                MarkdownDelimiter delimiter = __r1080.get(__key1081).copy();
+            Slice<MarkdownDelimiter> __r1098 = inlineDelimiters_ref.value.copy();
+            int __key1099 = 0;
+            for (; (__key1099 < __r1098.getLength());__key1099 += 1) {
+                MarkdownDelimiter delimiter = __r1098.get(__key1099).copy();
                 if (((delimiter.type & 0xFF) == 124) && !delimiter.leftFlanking)
                 {
                     cellCount += 1;
@@ -3958,65 +3966,68 @@ public class doc {
             message(loc, new BytePtr("Ddoc: formatting table '%.*s'"), s.getLength(), toBytePtr(s));
         }
         Ref<Integer> delta = ref(0);
-        Function4<Integer,Integer,Integer,Integer,Void> replaceTableCell = (iCellStart, iCellEnd, cellIndex, di) -> {
-         {
-            int eDelta = replaceMarkdownEmphasis(buf, loc, inlineDelimiters_ref, di);
-            delta.value += eDelta;
-            iCellEnd.value += eDelta;
-            Ref<Integer> i = ref(iCellEnd.value - 1);
-            for (; (i.value > iCellStart) && (((buf.get()).data.get(i.value) & 0xFF) == 124) || (((buf.get()).data.get(i.value) & 0xFF) == 32) || (((buf.get()).data.get(i.value) & 0xFF) == 9);) {
-                i.value -= 1;
-            }
-            i.value += 1;
-            (buf.get()).remove(i.value, iCellEnd.value - i.value);
-            delta.value -= iCellEnd.value - i.value;
-            iCellEnd.value = i.value;
-            (buf.get()).insert(iCellEnd.value, new ByteSlice(")"));
-            delta.value += 1;
-            i.value = skipChars(buf, iCellStart, new ByteSlice("| \u0009"));
-            (buf.get()).remove(iCellStart, i.value - iCellStart);
-            delta.value -= i.value - iCellStart;
-            {
-                int __dispatch11 = 0;
-                dispatched_11:
-                do {
-                    switch (__dispatch11 != 0 ? __dispatch11 : columnAlignments.get(cellIndex))
-                    {
-                        case TableColumnAlignment.none:
-                            (buf.get()).insert(iCellStart, headerRow ? new ByteSlice("$(TH ") : new ByteSlice("$(TD "));
-                            delta.value += 5;
+        Function4<Integer,Integer,Integer,Integer,Void> replaceTableCell = new Function4<Integer,Integer,Integer,Integer,Void>() {
+            public Void invoke(Integer iCellStart, Integer iCellEnd, Integer cellIndex, Integer di) {
+             {
+                Ref<Integer> iCellEnd_ref = ref(iCellEnd);
+                int eDelta = replaceMarkdownEmphasis(buf, loc, inlineDelimiters_ref, di);
+                delta.value += eDelta;
+                iCellEnd_ref.value += eDelta;
+                Ref<Integer> i = ref(iCellEnd_ref.value - 1);
+                for (; (i.value > iCellStart) && (((buf.get()).data.get(i.value) & 0xFF) == 124) || (((buf.get()).data.get(i.value) & 0xFF) == 32) || (((buf.get()).data.get(i.value) & 0xFF) == 9);) {
+                    i.value -= 1;
+                }
+                i.value += 1;
+                (buf.get()).remove(i.value, iCellEnd_ref.value - i.value);
+                delta.value -= iCellEnd_ref.value - i.value;
+                iCellEnd_ref.value = i.value;
+                (buf.get()).insert(iCellEnd_ref.value, new ByteSlice(")"));
+                delta.value += 1;
+                i.value = skipChars(buf, iCellStart, new ByteSlice("| \u0009"));
+                (buf.get()).remove(iCellStart, i.value - iCellStart);
+                delta.value -= i.value - iCellStart;
+                {
+                    int __dispatch11 = 0;
+                    dispatched_11:
+                    do {
+                        switch (__dispatch11 != 0 ? __dispatch11 : columnAlignments.get(cellIndex))
+                        {
+                            case TableColumnAlignment.none:
+                                (buf.get()).insert(iCellStart, headerRow ? new ByteSlice("$(TH ") : new ByteSlice("$(TD "));
+                                delta.value += 5;
+                                break;
+                            case TableColumnAlignment.left:
+                                (buf.get()).insert(iCellStart, new ByteSlice("left, "));
+                                delta.value += 6;
+                                /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
+                            case TableColumnAlignment.center:
+                                (buf.get()).insert(iCellStart, new ByteSlice("center, "));
+                                delta.value += 8;
+                                /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
+                            case TableColumnAlignment.right:
+                                (buf.get()).insert(iCellStart, new ByteSlice("right, "));
+                                delta.value += 7;
+                                /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
+                            default:
+                            __dispatch11 = 0;
+                            (buf.get()).insert(iCellStart, headerRow ? new ByteSlice("$(TH_ALIGN ") : new ByteSlice("$(TD_ALIGN "));
+                            delta.value += 11;
                             break;
-                        case TableColumnAlignment.left:
-                            (buf.get()).insert(iCellStart, new ByteSlice("left, "));
-                            delta.value += 6;
-                            /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
-                        case TableColumnAlignment.center:
-                            (buf.get()).insert(iCellStart, new ByteSlice("center, "));
-                            delta.value += 8;
-                            /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
-                        case TableColumnAlignment.right:
-                            (buf.get()).insert(iCellStart, new ByteSlice("right, "));
-                            delta.value += 7;
-                            /*goto default*/ { __dispatch11 = -1; continue dispatched_11; }
-                        default:
-                        __dispatch11 = 0;
-                        (buf.get()).insert(iCellStart, headerRow ? new ByteSlice("$(TH_ALIGN ") : new ByteSlice("$(TD_ALIGN "));
-                        delta.value += 11;
-                        break;
-                    }
-                } while(__dispatch11 != 0);
-            }
-            return null;
-        }
+                        }
+                    } while(__dispatch11 != 0);
+                }
+                return null;
+            }}
+
         };
         int cellIndex = cellCount - 1;
         int iCellEnd = iEnd;
         {
-            Slice<MarkdownDelimiter> __r1083 = inlineDelimiters_ref.value.copy();
-            int __key1082 = __r1083.getLength();
-            for (; __key1082-- != 0;) {
-                MarkdownDelimiter delimiter = __r1083.get(__key1082).copy();
-                int di = __key1082;
+            Slice<MarkdownDelimiter> __r1101 = inlineDelimiters_ref.value.copy();
+            int __key1100 = __r1101.getLength();
+            for (; __key1100-- != 0;) {
+                MarkdownDelimiter delimiter = __r1101.get(__key1100).copy();
+                int di = __key1100;
                 if (((delimiter.type & 0xFF) == 124))
                 {
                     if (ignoreLast && (di == inlineDelimiters_ref.value.getLength() - 1))
@@ -4098,7 +4109,7 @@ public class doc {
         int codeIndent = 0;
         ByteSlice codeLanguage = new ByteSlice().copy();
         Ref<Integer> iLineStart = ref(offset);
-        linkReferences._scope = sc;
+        linkReferences._scope = pcopy(sc);
         {
             Ref<Integer> i = ref(offset);
         L_outer15:
@@ -5031,10 +5042,10 @@ public class doc {
                 {
                     int previ = i;
                     {
-                        int __key1088 = 0;
-                        int __limit1089 = (a.get()).length;
-                        for (; (__key1088 < __limit1089);__key1088 += 1) {
-                            int symi = __key1088;
+                        int __key1106 = 0;
+                        int __limit1107 = (a.get()).length;
+                        for (; (__key1106 < __limit1107);__key1106 += 1) {
+                            int symi = __key1106;
                             FuncDeclaration fd = (a.get()).get(symi).isFuncDeclaration();
                             if ((fd == null) || (fd.parent.value == null) || (fd.parent.value.isTemplateDeclaration() == null))
                             {
@@ -5049,10 +5060,10 @@ public class doc {
                                     Ref<HdrGenState> hgs = ref(new HdrGenState());
                                     parametersBuf.value.writeByte(40);
                                     {
-                                        int __key1091 = 0;
-                                        int __limit1092 = (td.parameters.get()).length;
-                                        for (; (__key1091 < __limit1092);__key1091 += 1) {
-                                            int parami = __key1091;
+                                        int __key1109 = 0;
+                                        int __limit1110 = (td.parameters.get()).length;
+                                        for (; (__key1109 < __limit1110);__key1109 += 1) {
+                                            int parami = __key1109;
                                             TemplateParameter tp = (td.parameters.get()).get(parami);
                                             if (parami != 0)
                                             {
@@ -5071,10 +5082,10 @@ public class doc {
                                         (buf.get()).bracket(i, toBytePtr(templateParamListMacro), i + templateParams.getLength(), new BytePtr(")"));
                                         i += 28;
                                         {
-                                            IntSlice __r1093 = paramLens.opSlice().copy();
-                                            int __key1094 = 0;
-                                            for (; (__key1094 < __r1093.getLength());__key1094 += 1) {
-                                                int len = __r1093.get(__key1094);
+                                            IntSlice __r1111 = paramLens.opSlice().copy();
+                                            int __key1112 = 0;
+                                            for (; (__key1112 < __r1111.getLength());__key1112 += 1) {
+                                                int len = __r1111.get(__key1112);
                                                 i = (buf.get()).bracket(i, new BytePtr("$(DDOC_TEMPLATE_PARAM "), i + len, new BytePtr(")"));
                                                 i += 2;
                                             }

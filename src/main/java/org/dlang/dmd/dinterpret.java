@@ -40,7 +40,7 @@ public class dinterpret {
         private Ptr<CompiledCtfeFunction> ccf = null;
         public  VarWalker(Ptr<CompiledCtfeFunction> ccf) {
             super();
-            this.ccf = ccf;
+            this.ccf = pcopy(ccf);
         }
 
         public  void visit(Expression e) {
@@ -70,10 +70,10 @@ public class dinterpret {
                     return ;
                 }
                 {
-                    Slice<RootObject> __r929 = (td.objects.get()).opSlice().copy();
-                    int __key930 = 0;
-                    for (; (__key930 < __r929.getLength());__key930 += 1) {
-                        RootObject o = __r929.get(__key930);
+                    Slice<RootObject> __r947 = (td.objects.get()).opSlice().copy();
+                    int __key948 = 0;
+                    for (; (__key948 < __r947.getLength());__key948 += 1) {
+                        RootObject o = __r947.get(__key948);
                         Expression ex = isExpression(o);
                         DsymbolExp s = ex != null ? ex.isDsymbolExp() : null;
                         assert(s != null);
@@ -245,7 +245,7 @@ public class dinterpret {
             return new ErrorExp();
         }
         CompiledCtfeFunction ctfeCodeGlobal = ctfeCodeGlobal = new CompiledCtfeFunction(null);
-        ctfeCodeGlobal.callingloc = e.loc.copy();
+        ctfeCodeGlobal.callingloc.opAssign(e.loc.copy());
         ctfeCodeGlobal.onExpression(e);
         Expression result = interpret(e, null, CtfeGoal.ctfeNeedRvalue);
         if (!CTFEExp.isCantExp(result))
@@ -281,17 +281,17 @@ public class dinterpret {
         }
         Ptr<DArray<Expression>> expsx = null;
         {
-            Slice<Expression> __r928 = (tup.exps.get()).opSlice().copy();
-            int __key927 = 0;
-            for (; (__key927 < __r928.getLength());__key927 += 1) {
-                Expression g = __r928.get(__key927);
-                int i = __key927;
+            Slice<Expression> __r946 = (tup.exps.get()).opSlice().copy();
+            int __key945 = 0;
+            for (; (__key945 < __r946.getLength());__key945 += 1) {
+                Expression g = __r946.get(__key945);
+                int i = __key945;
                 Expression h = ctfeInterpretForPragmaMsg(g);
                 if ((!pequals(h, g)))
                 {
                     if (expsx == null)
                     {
-                        expsx = (tup.exps.get()).copy();
+                        expsx = pcopy((tup.exps.get()).copy());
                     }
                     expsx.get().set(i, h);
                 }
@@ -573,7 +573,7 @@ public class dinterpret {
     {
         public Ptr<CompiledCtfeFunction> ccf = null;
         public  CtfeCompiler(Ptr<CompiledCtfeFunction> ccf) {
-            this.ccf = ccf;
+            this.ccf = pcopy(ccf);
         }
 
         public  void visit(Statement s) {
@@ -641,10 +641,10 @@ public class dinterpret {
         public  void visit(SwitchStatement s) {
             (this.ccf.get()).onExpression(s.condition);
             {
-                Slice<CaseStatement> __r931 = (s.cases.get()).opSlice().copy();
-                int __key932 = 0;
-                for (; (__key932 < __r931.getLength());__key932 += 1) {
-                    CaseStatement cs = __r931.get(__key932);
+                Slice<CaseStatement> __r949 = (s.cases.get()).opSlice().copy();
+                int __key950 = 0;
+                for (; (__key950 < __r949.getLength());__key950 += 1) {
+                    CaseStatement cs = __r949.get(__key950);
                     (this.ccf.get()).onExpression(cs.exp);
                 }
             }
@@ -704,10 +704,10 @@ public class dinterpret {
                 this.ctfeCompile(s._body);
             }
             {
-                Slice<Catch> __r933 = (s.catches.get()).opSlice().copy();
-                int __key934 = 0;
-                for (; (__key934 < __r933.getLength());__key934 += 1) {
-                    Catch ca = __r933.get(__key934);
+                Slice<Catch> __r951 = (s.catches.get()).opSlice().copy();
+                int __key952 = 0;
+                for (; (__key952 < __r951.getLength());__key952 += 1) {
+                    Catch ca = __r951.get(__key952);
                     if (ca.var != null)
                     {
                         (this.ccf.get()).onDeclaration(ca.var);
@@ -754,16 +754,16 @@ public class dinterpret {
         assert(fd.ctfeCode.pimpl == null);
         assert(!fd.semantic3Errors);
         assert((fd.semanticRun == PASS.semantic3done));
-        fd.ctfeCode.pimpl = refPtr(new CompiledCtfeFunction(fd));
+        fd.ctfeCode.pimpl = pcopy((refPtr(new CompiledCtfeFunction(fd))));
         if (fd.parameters != null)
         {
             Type tb = fd.type.toBasetype().isTypeFunction();
             assert(tb != null);
             {
-                Slice<VarDeclaration> __r935 = (fd.parameters.get()).opSlice().copy();
-                int __key936 = 0;
-                for (; (__key936 < __r935.getLength());__key936 += 1) {
-                    VarDeclaration v = __r935.get(__key936);
+                Slice<VarDeclaration> __r953 = (fd.parameters.get()).opSlice().copy();
+                int __key954 = 0;
+                for (; (__key954 < __r953.getLength());__key954 += 1) {
+                    VarDeclaration v = __r953.get(__key954);
                     (fd.ctfeCode.pimpl.get()).onDeclaration(v);
                 }
             }
@@ -873,7 +873,7 @@ public class dinterpret {
                 }
             }
             InterState istatex = new InterState();
-            istatex.caller = istate;
+            istatex.caller = pcopy(istate);
             istatex.fd = fd;
             if (fd.isThis2)
             {
@@ -1013,8 +1013,8 @@ public class dinterpret {
         public Expression result = null;
         public Ptr<UnionExp> pue = null;
         public  Interpreter(Ptr<UnionExp> pue, Ptr<InterState> istate, int goal) {
-            this.pue = pue;
-            this.istate = istate;
+            this.pue = pcopy(pue);
+            this.istate = pcopy(istate);
             this.goal = goal;
         }
 
@@ -1032,11 +1032,11 @@ public class dinterpret {
             {
                 if (original == null)
                 {
-                    exps = refPtr(new DArray<Expression>());
+                    exps = pcopy((refPtr(new DArray<Expression>())));
                 }
                 else
                 {
-                    exps = (original.get()).copy();
+                    exps = pcopy((original.get()).copy());
                 }
                 CtfeStatus.numArrayAllocs += 1;
             }
@@ -1079,10 +1079,10 @@ public class dinterpret {
             }
             int dim = s.statements != null ? (s.statements.get()).length : 0;
             {
-                int __key938 = 0;
-                int __limit939 = dim;
-                for (; (__key938 < __limit939);__key938 += 1) {
-                    int i = __key938;
+                int __key956 = 0;
+                int __limit957 = dim;
+                for (; (__key956 < __limit957);__key956 += 1) {
+                    int i = __key956;
                     Statement sx = (s.statements.get()).get(i);
                     this.result = interpret(this.pue, sx, this.istate);
                     if (this.result != null)
@@ -1100,10 +1100,10 @@ public class dinterpret {
             }
             int dim = s.statements != null ? (s.statements.get()).length : 0;
             {
-                int __key940 = 0;
-                int __limit941 = dim;
-                for (; (__key940 < __limit941);__key940 += 1) {
-                    int i = __key940;
+                int __key958 = 0;
+                int __limit959 = dim;
+                for (; (__key958 < __limit959);__key958 += 1) {
+                    int i = __key958;
                     Statement sx = (s.statements.get()).get(i);
                     Expression e = interpret(this.pue, sx, this.istate);
                     if (e == null)
@@ -1256,10 +1256,10 @@ public class dinterpret {
 
         public static boolean stopPointersEscapingFromArray(Loc loc, Ptr<DArray<Expression>> elems) {
             {
-                Slice<Expression> __r942 = (elems.get()).opSlice().copy();
-                int __key943 = 0;
-                for (; (__key943 < __r942.getLength());__key943 += 1) {
-                    Expression e = __r942.get(__key943);
+                Slice<Expression> __r960 = (elems.get()).opSlice().copy();
+                int __key961 = 0;
+                for (; (__key961 < __r960.getLength());__key961 += 1) {
+                    Expression e = __r960.get(__key961);
                     if ((e != null) && !stopPointersEscaping(loc, e))
                     {
                         return false;
@@ -1534,10 +1534,10 @@ public class dinterpret {
             Statement scase = null;
             if (s.cases != null)
             {
-                Slice<CaseStatement> __r944 = (s.cases.get()).opSlice().copy();
-                int __key945 = 0;
-                for (; (__key945 < __r944.getLength());__key945 += 1) {
-                    CaseStatement cs = __r944.get(__key945);
+                Slice<CaseStatement> __r962 = (s.cases.get()).opSlice().copy();
+                int __key963 = 0;
+                for (; (__key963 < __r962.getLength());__key963 += 1) {
+                    CaseStatement cs = __r962.get(__key963);
                     Ref<UnionExp> uecase = ref(null);
                     Expression ecase = interpret(ptr(uecase), cs.exp, this.istate, CtfeGoal.ctfeNeedRvalue);
                     if (this.exceptionOrCant(ecase))
@@ -1652,10 +1652,10 @@ public class dinterpret {
                 Expression e = null;
                 e = interpret(this.pue, s._body, this.istate);
                 {
-                    Slice<Catch> __r946 = (s.catches.get()).opSlice().copy();
-                    int __key947 = 0;
-                    for (; (__key947 < __r946.getLength());__key947 += 1) {
-                        Catch ca = __r946.get(__key947);
+                    Slice<Catch> __r964 = (s.catches.get()).opSlice().copy();
+                    int __key965 = 0;
+                    for (; (__key965 < __r964.getLength());__key965 += 1) {
+                        Catch ca = __r964.get(__key965);
                         if ((e != null) || ((this.istate.get()).start == null))
                         {
                             break;
@@ -1672,10 +1672,10 @@ public class dinterpret {
                 ThrownExceptionExp ex = (ThrownExceptionExp)e;
                 Type extype = ex.thrown.originalClass().type;
                 {
-                    Slice<Catch> __r948 = (s.catches.get()).opSlice().copy();
-                    int __key949 = 0;
-                    for (; (__key949 < __r948.getLength());__key949 += 1) {
-                        Catch ca = __r948.get(__key949);
+                    Slice<Catch> __r966 = (s.catches.get()).opSlice().copy();
+                    int __key967 = 0;
+                    for (; (__key967 < __r966.getLength());__key967 += 1) {
+                        Catch ca = __r966.get(__key967);
                         Type catype = ca.type;
                         if (!catype.equals(extype) && !catype.isBaseOf(extype, null))
                         {
@@ -2347,10 +2347,10 @@ public class dinterpret {
                                 return ;
                             }
                             {
-                                Slice<RootObject> __r950 = (td.objects.get()).opSlice().copy();
-                                int __key951 = 0;
-                                for (; (__key951 < __r950.getLength());__key951 += 1) {
-                                    RootObject o = __r950.get(__key951);
+                                Slice<RootObject> __r968 = (td.objects.get()).opSlice().copy();
+                                int __key969 = 0;
+                                for (; (__key969 < __r968.getLength());__key969 += 1) {
+                                    RootObject o = __r968.get(__key969);
                                     Expression ex = isExpression(o);
                                     DsymbolExp ds = ex != null ? ex.isDsymbolExp() : null;
                                     VarDeclaration v2 = ds != null ? ds.s.isVarDeclaration() : null;
@@ -2499,11 +2499,11 @@ public class dinterpret {
             }
             Ptr<DArray<Expression>> expsx = e.exps;
             {
-                Slice<Expression> __r953 = (expsx.get()).opSlice().copy();
-                int __key952 = 0;
-                for (; (__key952 < __r953.getLength());__key952 += 1) {
-                    Expression exp = __r953.get(__key952);
-                    int i = __key952;
+                Slice<Expression> __r971 = (expsx.get()).opSlice().copy();
+                int __key970 = 0;
+                for (; (__key970 < __r971.getLength());__key970 += 1) {
+                    Expression exp = __r971.get(__key970);
+                    int i = __key970;
                     Expression ex = interpret(exp, this.istate, CtfeGoal.ctfeNeedRvalue);
                     if (this.exceptionOrCant(ex))
                     {
@@ -2520,7 +2520,7 @@ public class dinterpret {
                     }
                     if ((ex != exp))
                     {
-                        expsx = copyArrayOnWrite(expsx, e.exps);
+                        expsx = pcopy(copyArrayOnWrite(expsx, e.exps));
                         expsx.get().set(i, ex);
                     }
                 }
@@ -2577,7 +2577,7 @@ public class dinterpret {
                     }
                     if ((ex != exp))
                     {
-                        expsx = copyArrayOnWrite(expsx, e.elements);
+                        expsx = pcopy(copyArrayOnWrite(expsx, e.elements));
                         expsx.get().set(i, ex);
                     }
                 }
@@ -2616,11 +2616,11 @@ public class dinterpret {
             Ptr<DArray<Expression>> keysx = e.keys;
             Ptr<DArray<Expression>> valuesx = e.values;
             {
-                Slice<Expression> __r955 = (keysx.get()).opSlice().copy();
-                int __key954 = 0;
-                for (; (__key954 < __r955.getLength());__key954 += 1) {
-                    Expression ekey = __r955.get(__key954);
-                    int i = __key954;
+                Slice<Expression> __r973 = (keysx.get()).opSlice().copy();
+                int __key972 = 0;
+                for (; (__key972 < __r973.getLength());__key972 += 1) {
+                    Expression ekey = __r973.get(__key972);
+                    int i = __key972;
                     Expression evalue = (valuesx.get()).get(i);
                     Expression ek = interpret(ekey, this.istate, CtfeGoal.ctfeNeedRvalue);
                     if (this.exceptionOrCant(ek))
@@ -2634,8 +2634,8 @@ public class dinterpret {
                     }
                     if ((ek != ekey) || (ev != evalue))
                     {
-                        keysx = copyArrayOnWrite(keysx, e.keys);
-                        valuesx = copyArrayOnWrite(valuesx, e.values);
+                        keysx = pcopy(copyArrayOnWrite(keysx, e.keys));
+                        valuesx = pcopy(copyArrayOnWrite(valuesx, e.values));
                         keysx.get().set(i, ek);
                         valuesx.get().set(i, ev);
                     }
@@ -2667,8 +2667,8 @@ public class dinterpret {
                             {
                                 continue;
                             }
-                            keysx = copyArrayOnWrite(keysx, e.keys);
-                            valuesx = copyArrayOnWrite(valuesx, e.values);
+                            keysx = pcopy(copyArrayOnWrite(keysx, e.keys));
+                            valuesx = pcopy(copyArrayOnWrite(valuesx, e.values));
                             (keysx.get()).remove(i - 1);
                             (valuesx.get()).remove(i - 1);
                             i -= 1;
@@ -2705,14 +2705,14 @@ public class dinterpret {
                 int nvthis = e.sd.fields.length - e.sd.nonHiddenFields();
                 assert((e.sd.fields.length - dim == nvthis));
                 {
-                    int __key956 = 0;
-                    int __limit957 = nvthis;
-                    for (; (__key956 < __limit957);__key956 += 1) {
-                        int i = __key956;
+                    int __key974 = 0;
+                    int __limit975 = nvthis;
+                    for (; (__key974 < __limit975);__key974 += 1) {
+                        int i = __key974;
                         NullExp ne = new NullExp(e.loc, null);
                         VarDeclaration vthis = (i == 0) ? e.sd.vthis : e.sd.vthis2;
                         ne.type.value = vthis.type;
-                        expsx = copyArrayOnWrite(expsx, e.elements);
+                        expsx = pcopy(copyArrayOnWrite(expsx, e.elements));
                         (expsx.get()).push(ne);
                         dim += 1;
                     }
@@ -2720,10 +2720,10 @@ public class dinterpret {
             }
             assert((dim == e.sd.fields.length));
             {
-                int __key958 = 0;
-                int __limit959 = dim;
-                for (; (__key958 < __limit959);__key958 += 1) {
-                    int i = __key958;
+                int __key976 = 0;
+                int __limit977 = dim;
+                for (; (__key976 < __limit977);__key976 += 1) {
+                    int i = __key976;
                     VarDeclaration v = e.sd.fields.get(i);
                     Expression exp = (expsx.get()).get(i);
                     Expression ex = null;
@@ -2752,7 +2752,7 @@ public class dinterpret {
                     }
                     if ((ex != exp))
                     {
-                        expsx = copyArrayOnWrite(expsx, e.elements);
+                        expsx = pcopy(copyArrayOnWrite(expsx, e.elements));
                         expsx.get().set(i, ex);
                     }
                 }
@@ -2797,10 +2797,10 @@ public class dinterpret {
                 }
                 Ptr<DArray<Expression>> elements = refPtr(new DArray<Expression>(len));
                 {
-                    Slice<Expression> __r960 = (elements.get()).opSlice().copy();
-                    int __key961 = 0;
-                    for (; (__key961 < __r960.getLength());__key961 += 1) {
-                        Expression element = __r960.get(__key961);
+                    Slice<Expression> __r978 = (elements.get()).opSlice().copy();
+                    int __key979 = 0;
+                    for (; (__key979 < __r978.getLength());__key979 += 1) {
+                        Expression element = __r978.get(__key979);
                         element = copyLiteral(elem).copy();
                     }
                 }
@@ -2853,7 +2853,7 @@ public class dinterpret {
                             return ;
                         }
                         this.result = interpretFunction(this.pue, e.member, this.istate, e.arguments, se);
-                        this.result.loc = e.loc.copy();
+                        this.result.loc.opAssign(e.loc.copy());
                     }
                     else
                     {
@@ -2864,11 +2864,11 @@ public class dinterpret {
                         {
                             (exps.get()).setDim((e.arguments.get()).length);
                             {
-                                Slice<Expression> __r963 = (e.arguments.get()).opSlice().copy();
-                                int __key962 = 0;
-                                for (; (__key962 < __r963.getLength());__key962 += 1) {
-                                    Expression ex = __r963.get(__key962);
-                                    int i = __key962;
+                                Slice<Expression> __r981 = (e.arguments.get()).opSlice().copy();
+                                int __key980 = 0;
+                                for (; (__key980 < __r981.getLength());__key980 += 1) {
+                                    Expression ex = __r981.get(__key980);
+                                    int i = __key980;
                                     ex = interpret(ex, this.istate, CtfeGoal.ctfeNeedRvalue);
                                     if (this.exceptionOrCant(ex))
                                     {
@@ -2913,11 +2913,11 @@ public class dinterpret {
                         for (; c != null;c = c.baseClass){
                             fieldsSoFar -= c.fields.length;
                             {
-                                Slice<VarDeclaration> __r965 = c.fields.opSlice().copy();
-                                int __key964 = 0;
-                                for (; (__key964 < __r965.getLength());__key964 += 1) {
-                                    VarDeclaration v = __r965.get(__key964);
-                                    int i = __key964;
+                                Slice<VarDeclaration> __r983 = c.fields.opSlice().copy();
+                                int __key982 = 0;
+                                for (; (__key982 < __r983.getLength());__key982 += 1) {
+                                    VarDeclaration v = __r983.get(__key982);
+                                    int i = __key982;
                                     if (v.inuse != 0)
                                     {
                                         e.error(new BytePtr("circular reference to `%s`"), v.toPrettyChars(false));
@@ -2977,7 +2977,7 @@ public class dinterpret {
                         {
                             return ;
                         }
-                        eref.loc = e.loc.copy();
+                        eref.loc.opAssign(e.loc.copy());
                     }
                     this.result = eref;
                     return ;
@@ -3117,29 +3117,31 @@ public class dinterpret {
                 this.result = CTFEExp.cantexp;
                 return ;
             }
-            Function3<Ptr<UnionExp>,Expression,Ref<Expression>,Boolean> evalOperand = (pue, ex, er) -> {
-             {
-                er.value = null;
-                er.value = interpret(pue, ex, istate, CtfeGoal.ctfeNeedRvalue);
-                if (exceptionOrCant(er.value))
-                {
-                    return false;
-                }
-                if ((er.value.isConst() != 1))
-                {
-                    if (((er.value.op & 0xFF) == 47))
+            Function3<Ptr<UnionExp>,Expression,Ref<Expression>,Boolean> evalOperand = new Function3<Ptr<UnionExp>,Expression,Ref<Expression>,Boolean>() {
+                public Boolean invoke(Ptr<UnionExp> pue, Expression ex, Ref<Expression> er) {
+                 {
+                    er.value = null;
+                    er.value = interpret(pue, ex, istate, CtfeGoal.ctfeNeedRvalue);
+                    if (exceptionOrCant(er.value))
                     {
-                        e.error(new BytePtr("cannot interpret array literal expression `%s` at compile time"), e.toChars());
+                        return false;
                     }
-                    else
+                    if ((er.value.isConst() != 1))
                     {
-                        e.error(new BytePtr("CTFE internal error: non-constant value `%s`"), ex.toChars());
+                        if (((er.value.op & 0xFF) == 47))
+                        {
+                            e.error(new BytePtr("cannot interpret array literal expression `%s` at compile time"), e.toChars());
+                        }
+                        else
+                        {
+                            e.error(new BytePtr("CTFE internal error: non-constant value `%s`"), ex.toChars());
+                        }
+                        result = CTFEExp.cantexp;
+                        return false;
                     }
-                    result = CTFEExp.cantexp;
-                    return false;
-                }
-                return true;
-            }
+                    return true;
+                }}
+
             };
             Ref<UnionExp> ue1 = ref(null);
             Ref<Expression> e1 = ref(null);
@@ -3413,10 +3415,10 @@ public class dinterpret {
                     for (; (depth > 0);){
                         IndexExp xe = (IndexExp)e1;
                         {
-                            int __key966 = 0;
-                            int __limit967 = depth;
-                            for (; (__key966 < __limit967);__key966 += 1) {
-                                int d = __key966;
+                            int __key984 = 0;
+                            int __limit985 = depth;
+                            for (; (__key984 < __limit985);__key984 += 1) {
+                                int d = __key984;
                                 xe = (IndexExp)xe.e1.value;
                             }
                         }
@@ -3757,11 +3759,11 @@ public class dinterpret {
                 return ;
             }
             {
-                Slice<VarDeclaration> __r969 = sle.sd.fields.opSlice().copy();
-                int __key968 = 0;
-                for (; (__key968 < __r969.getLength());__key968 += 1) {
-                    VarDeclaration v2 = __r969.get(__key968);
-                    int i = __key968;
+                Slice<VarDeclaration> __r987 = sle.sd.fields.opSlice().copy();
+                int __key986 = 0;
+                for (; (__key986 < __r987.getLength());__key986 += 1) {
+                    VarDeclaration v2 = __r987.get(__key986);
+                    int i = __key986;
                     if ((v == v2) || !v.isOverlappedWith(v2))
                     {
                         continue;
@@ -3884,11 +3886,11 @@ public class dinterpret {
                 assert(((oldelems.get()).length == (newelems.get()).length));
                 Type elemtype = oldval.type.value.nextOf();
                 {
-                    Slice<Expression> __r971 = (oldelems.get()).opSlice().copy();
-                    int __key970 = 0;
-                    for (; (__key970 < __r971.getLength());__key970 += 1) {
-                        Expression oldelem = __r971.get(__key970);
-                        int i = __key970;
+                    Slice<Expression> __r989 = (oldelems.get()).opSlice().copy();
+                    int __key988 = 0;
+                    for (; (__key988 < __r989.getLength());__key988 += 1) {
+                        Expression oldelem = __r989.get(__key988);
+                        int i = __key988;
                         Expression newelem = paintTypeOntoLiteral(elemtype, (newelems.get()).get(i));
                         if (e.e2.value.isLvalue())
                         {
@@ -4100,10 +4102,10 @@ public class dinterpret {
                     }
                     int value = (int)newval.toInteger();
                     {
-                        long __key972 = 0L;
-                        long __limit973 = upperbound - lowerbound;
-                        for (; (__key972 < __limit973);__key972 += 1L) {
-                            long i = __key972;
+                        long __key990 = 0L;
+                        long __limit991 = upperbound - lowerbound;
+                        for (; (__key990 < __limit991);__key990 += 1L) {
+                            long i = __key990;
                             existingSE.setCodeUnit((int)(i + firstIndex), value);
                         }
                     }
@@ -4227,11 +4229,11 @@ public class dinterpret {
                         Type elemtype = existingAE.type.value.nextOf();
                         boolean needsPostblit = ((e.op & 0xFF) != 96) && e.e2.value.isLvalue();
                         {
-                            Slice<Expression> __r975 = (newelems.get()).opSlice().copy();
-                            int __key974 = 0;
-                            for (; (__key974 < __r975.getLength());__key974 += 1) {
-                                Expression newelem = __r975.get(__key974);
-                                int j = __key974;
+                            Slice<Expression> __r993 = (newelems.get()).opSlice().copy();
+                            int __key992 = 0;
+                            for (; (__key992 < __r993.getLength());__key992 += 1) {
+                                Expression newelem = __r993.get(__key992);
+                                int j = __key992;
                                 newelem = paintTypeOntoLiteral(elemtype, newelem);
                                 if (needsPostblit)
                                 {
@@ -4252,7 +4254,7 @@ public class dinterpret {
                     Type tb = tn.baseElemOf();
                     StructDeclaration sd = ((tb.ty & 0xFF) == ENUMTY.Tstruct) ? ((TypeStruct)tb).sym : null;
                     RecursiveBlock rb = new RecursiveBlock(null, null, false, false, false).copy();
-                    rb.istate = this.istate;
+                    rb.istate = pcopy(this.istate);
                     rb.newval = newval;
                     rb.refCopy = wantRef || cow;
                     rb.needsPostblit = (sd != null) && (sd.postblit != null) && ((e.op & 0xFF) != 96) && e.e2.value.isLvalue();
@@ -4460,27 +4462,30 @@ public class dinterpret {
                     }
                 }
             }
-            Function1<Byte,Byte> negateRelation = (op) -> {
-             {
-                switch ((op.value & 0xFF))
-                {
-                    case 57:
-                        op.value = TOK.lessThan;
-                        break;
-                    case 55:
-                        op.value = TOK.lessOrEqual;
-                        break;
-                    case 56:
-                        op.value = TOK.greaterThan;
-                        break;
-                    case 54:
-                        op.value = TOK.greaterOrEqual;
-                        break;
-                    default:
-                    throw new AssertionError("Unreachable code!");
-                }
-                return op.value;
-            }
+            Function1<Byte,Byte> negateRelation = new Function1<Byte,Byte>() {
+                public Byte invoke(Byte op) {
+                 {
+                    Ref<Byte> op_ref = ref(op);
+                    switch ((op_ref.value & 0xFF))
+                    {
+                        case 57:
+                            op_ref.value = TOK.lessThan;
+                            break;
+                        case 55:
+                            op_ref.value = TOK.lessOrEqual;
+                            break;
+                        case 56:
+                            op_ref.value = TOK.greaterThan;
+                            break;
+                        case 54:
+                            op_ref.value = TOK.greaterOrEqual;
+                            break;
+                        default:
+                        throw new AssertionError("Unreachable code!");
+                    }
+                    return op_ref.value;
+                }}
+
             };
             byte cmpop = nott ? (byte)(negateRelation.invoke(ex.op) & 0xFF) : (byte)(ex.op & 0xFF);
             int cmp = comparePointers(cmpop, agg1, ofs1.value, agg2, ofs2.value);
@@ -4570,12 +4575,12 @@ public class dinterpret {
             Ptr<InterState> lastRecurse = this.istate;
             {
                 Ptr<InterState> cur = this.istate;
-                for (; cur != null;cur = (cur.get()).caller){
+                for (; cur != null;cur = pcopy((cur.get()).caller)){
                     if ((pequals((cur.get()).fd, fd)))
                     {
                         recurseCount += 1;
                         numToSuppress = depthSoFar;
-                        lastRecurse = cur;
+                        lastRecurse = pcopy(cur);
                     }
                     depthSoFar += 1;
                 }
@@ -4587,14 +4592,14 @@ public class dinterpret {
             errorSupplemental(fd.loc, new BytePtr("%d recursive calls to function `%s`"), recurseCount, fd.toChars());
             {
                 Ptr<InterState> cur = this.istate;
-                for (; (!pequals((cur.get()).fd, fd));cur = (cur.get()).caller){
+                for (; (!pequals((cur.get()).fd, fd));cur = pcopy((cur.get()).caller)){
                     errorSupplemental((cur.get()).fd.loc, new BytePtr("recursively called from function `%s`"), (cur.get()).fd.toChars());
                 }
             }
             Ptr<InterState> cur = this.istate;
             for (; ((lastRecurse.get()).caller != null) && (pequals((cur.get()).fd, ((lastRecurse.get()).caller.get()).fd));){
-                cur = (cur.get()).caller;
-                lastRecurse = (lastRecurse.get()).caller;
+                cur = pcopy((cur.get()).caller);
+                lastRecurse = pcopy((lastRecurse.get()).caller);
                 numToSuppress += 1;
             }
             CtfeStatus.stackTraceCallsToSuppress = numToSuppress;
@@ -4797,7 +4802,7 @@ public class dinterpret {
             if (!exceptionOrCantInterpret(this.result))
             {
                 this.result = paintTypeOntoLiteral(e.type.value, this.result);
-                this.result.loc = e.loc.copy();
+                this.result.loc.opAssign(e.loc.copy());
             }
             else if (CTFEExp.isCantExp(this.result) && (global.gag == 0))
             {
@@ -4810,16 +4815,18 @@ public class dinterpret {
             if ((this.istate == null) && ((firstComma(e.e1.value).op & 0xFF) == 38))
             {
                 ctfeStack.startFrame(null);
-                this.istate = ptr(istateComma);
+                this.istate = pcopy(ptr(istateComma));
             }
-            Function0<Void> endTempStackFrame = () -> {
-             {
-                if ((istate == ptr(istateComma)))
-                {
-                    ctfeStack.endFrame();
-                }
-                return null;
-            }
+            Function0<Void> endTempStackFrame = new Function0<Void>() {
+                public Void invoke() {
+                 {
+                    if ((istate == ptr(istateComma)))
+                    {
+                        ctfeStack.endFrame();
+                    }
+                    return null;
+                }}
+
             };
             this.result = CTFEExp.cantexp;
             if (((e.e1.value.op & 0xFF) == 38) && ((e.e2.value.op & 0xFF) == 26) && (pequals(((DeclarationExp)e.e1.value).declaration, ((VarExp)e.e2.value).var)) && ((((VarExp)e.e2.value).var.storage_class & 68719476736L) != 0))
@@ -4922,10 +4929,10 @@ public class dinterpret {
             {
                 Ptr<DArray<Expression>> elements = refPtr(new DArray<Expression>(e.dim));
                 {
-                    Slice<Expression> __r976 = (elements.get()).opSlice().copy();
-                    int __key977 = 0;
-                    for (; (__key977 < __r976.getLength());__key977 += 1) {
-                        Expression element = __r976.get(__key977);
+                    Slice<Expression> __r994 = (elements.get()).opSlice().copy();
+                    int __key995 = 0;
+                    for (; (__key995 < __r994.getLength());__key995 += 1) {
+                        Expression element = __r994.get(__key995);
                         element = copyLiteral(e.e1.value).copy();
                     }
                 }
@@ -5546,10 +5553,10 @@ public class dinterpret {
                 {
                     ale.ownedByCtfe = OwnedBy.ctfe;
                     {
-                        Slice<Expression> __r978 = (ale.elements.get()).opSlice().copy();
-                        int __key979 = 0;
-                        for (; (__key979 < __r978.getLength());__key979 += 1) {
-                            Expression elem = __r978.get(__key979);
+                        Slice<Expression> __r996 = (ale.elements.get()).opSlice().copy();
+                        int __key997 = 0;
+                        for (; (__key997 < __r996.getLength());__key997 += 1) {
+                            Expression elem = __r996.get(__key997);
                             Expression ex = evaluatePostblit(this.istate, elem);
                             if (this.exceptionOrCant(ex))
                             {
@@ -5655,10 +5662,10 @@ public class dinterpret {
                         {
                             ArrayLiteralExp ale = (ArrayLiteralExp)this.result;
                             {
-                                Slice<Expression> __r980 = (ale.elements.get()).opSlice().copy();
-                                int __key981 = 0;
-                                for (; (__key981 < __r980.getLength());__key981 += 1) {
-                                    Expression el = __r980.get(__key981);
+                                Slice<Expression> __r998 = (ale.elements.get()).opSlice().copy();
+                                int __key999 = 0;
+                                for (; (__key999 < __r998.getLength());__key999 += 1) {
+                                    Expression el = __r998.get(__key999);
                                     this.result = interpretFunction(this.pue, sd_1.dtor, this.istate, null, el);
                                     if (this.exceptionOrCant(this.result))
                                     {
@@ -6197,11 +6204,11 @@ public class dinterpret {
             Ptr<DArray<Expression>> valuesx = aae.values;
             int removed = 0;
             {
-                Slice<Expression> __r983 = (valuesx.get()).opSlice().copy();
-                int __key982 = 0;
-                for (; (__key982 < __r983.getLength());__key982 += 1) {
-                    Expression evalue = __r983.get(__key982);
-                    int j = __key982;
+                Slice<Expression> __r1001 = (valuesx.get()).opSlice().copy();
+                int __key1000 = 0;
+                for (; (__key1000 < __r1001.getLength());__key1000 += 1) {
+                    Expression evalue = __r1001.get(__key1000);
+                    int j = __key1000;
                     Expression ekey = (keysx.get()).get(j);
                     int eq = ctfeEqual(e.loc, TOK.equal, ekey, index);
                     if (eq != 0)
@@ -6299,95 +6306,103 @@ public class dinterpret {
     }
 
     public static Expression scrubReturnValue(Loc loc, Expression e) {
-        Function2<Expression,Boolean,Boolean> isVoid = (e, checkArrayType) -> {
-         {
-            if (((e.op & 0xFF) == 128))
-            {
-                return true;
-            }
-            Function1<Ptr<DArray<Expression>>,Boolean> isEntirelyVoid = (elems) -> {
+        Function2<Expression,Boolean,Boolean> isVoid = new Function2<Expression,Boolean,Boolean>() {
+            public Boolean invoke(Expression e, Boolean checkArrayType) {
+             {
+                if (((e.op & 0xFF) == 128))
+                {
+                    return true;
+                }
+                Function1<Ptr<DArray<Expression>>,Boolean> isEntirelyVoid = new Function1<Ptr<DArray<Expression>>,Boolean>() {
+                    public Boolean invoke(Ptr<DArray<Expression>> elems) {
+                     {
+                        {
+                            Slice<Expression> __r1002 = (elems.get()).opSlice().copy();
+                            Ref<Integer> __key1003 = ref(0);
+                            for (; (__key1003.value < __r1002.getLength());__key1003.value += 1) {
+                                Expression e = __r1002.get(__key1003.value);
+                                if ((e != null) && !isVoid.invoke(e, false))
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
+                    }}
+
+                };
+                {
+                    StructLiteralExp sle = e.isStructLiteralExp();
+                    if ((sle) != null)
+                    {
+                        return isEntirelyVoid.invoke(sle.elements);
+                    }
+                }
+                if (checkArrayType && ((e.type.value.ty & 0xFF) != ENUMTY.Tsarray))
+                {
+                    return false;
+                }
+                {
+                    ArrayLiteralExp ale = e.isArrayLiteralExp();
+                    if ((ale) != null)
+                    {
+                        return isEntirelyVoid.invoke(ale.elements);
+                    }
+                }
+                return false;
+            }}
+
+        };
+        Function2<Ptr<DArray<Expression>>,Boolean,Expression> scrubArray = new Function2<Ptr<DArray<Expression>>,Boolean,Expression>() {
+            public Expression invoke(Ptr<DArray<Expression>> elems, Boolean structlit) {
              {
                 {
-                    Slice<Expression> __r984 = (elems.get()).opSlice().copy();
-                    Ref<Integer> __key985 = ref(0);
-                    for (; (__key985.value < __r984.getLength());__key985.value += 1) {
-                        Expression e = __r984.get(__key985.value);
-                        if ((e != null) && !isVoid.invoke(e, false))
+                    Slice<Expression> __r1004 = (elems.get()).opSlice().copy();
+                    Ref<Integer> __key1005 = ref(0);
+                    for (; (__key1005.value < __r1004.getLength());__key1005.value += 1) {
+                        Ref<Expression> e = ref(__r1004.get(__key1005.value));
+                        if (e.value == null)
                         {
-                            return false;
+                            continue;
+                        }
+                        if (structlit && isVoid.invoke(e.value, true))
+                        {
+                            e.value = null;
+                        }
+                        else
+                        {
+                            e.value = scrubReturnValue(loc, e.value);
+                            if (CTFEExp.isCantExp(e.value) || ((e.value.op & 0xFF) == 127))
+                            {
+                                return e.value;
+                            }
                         }
                     }
                 }
-                return true;
-            }
-            };
-            {
-                StructLiteralExp sle = e.isStructLiteralExp();
-                if ((sle) != null)
-                {
-                    return isEntirelyVoid.invoke(sle.elements);
-                }
-            }
-            if (checkArrayType && ((e.type.value.ty & 0xFF) != ENUMTY.Tsarray))
-            {
-                return false;
-            }
-            {
-                ArrayLiteralExp ale = e.isArrayLiteralExp();
-                if ((ale) != null)
-                {
-                    return isEntirelyVoid.invoke(ale.elements);
-                }
-            }
-            return false;
-        }
+                return null;
+            }}
+
         };
-        Function2<Ptr<DArray<Expression>>,Boolean,Expression> scrubArray = (elems, structlit) -> {
-         {
-            {
-                Slice<Expression> __r986 = (elems.get()).opSlice().copy();
-                Ref<Integer> __key987 = ref(0);
-                for (; (__key987.value < __r986.getLength());__key987.value += 1) {
-                    Ref<Expression> e = ref(__r986.get(__key987.value));
-                    if (e.value == null)
+        Function1<StructLiteralExp,Expression> scrubSE = new Function1<StructLiteralExp,Expression>() {
+            public Expression invoke(StructLiteralExp sle) {
+             {
+                sle.ownedByCtfe = OwnedBy.code;
+                if ((sle.stageflags & 1) == 0)
+                {
+                    int old = sle.stageflags;
+                    sle.stageflags |= 1;
                     {
-                        continue;
-                    }
-                    if (structlit && isVoid.invoke(e.value, true))
-                    {
-                        e.value = null;
-                    }
-                    else
-                    {
-                        e.value = scrubReturnValue(loc, e.value);
-                        if (CTFEExp.isCantExp(e.value) || ((e.value.op & 0xFF) == 127))
+                        Expression ex = scrubArray.invoke(sle.elements, true);
+                        if ((ex) != null)
                         {
-                            return e.value;
+                            return ex;
                         }
                     }
+                    sle.stageflags = old;
                 }
-            }
-            return null;
-        }
-        };
-        Function1<StructLiteralExp,Expression> scrubSE = (sle) -> {
-         {
-            sle.ownedByCtfe = OwnedBy.code;
-            if ((sle.stageflags & 1) == 0)
-            {
-                int old = sle.stageflags;
-                sle.stageflags |= 1;
-                {
-                    Expression ex = scrubArray.invoke(sle.elements, true);
-                    if ((ex) != null)
-                    {
-                        return ex;
-                    }
-                }
-                sle.stageflags = old;
-            }
-            return null;
-        }
+                return null;
+            }}
+
         };
         if (((e.op & 0xFF) == 50))
         {
@@ -6494,37 +6509,41 @@ public class dinterpret {
         {
             return e;
         }
-        Function1<Ptr<DArray<Expression>>,Expression> scrubArrayCache = (elems) -> {
-         {
-            {
-                Slice<Expression> __r988 = (elems.get()).opSlice().copy();
-                Ref<Integer> __key989 = ref(0);
-                for (; (__key989.value < __r988.getLength());__key989.value += 1) {
-                    Ref<Expression> e = ref(__r988.get(__key989.value));
-                    e.value = scrubCacheValue(e.value);
-                }
-            }
-            return null;
-        }
-        };
-        Function1<StructLiteralExp,Expression> scrubSE = (sle) -> {
-         {
-            sle.ownedByCtfe = OwnedBy.cache;
-            if ((sle.stageflags & 1) == 0)
-            {
-                int old = sle.stageflags;
-                sle.stageflags |= 1;
+        Function1<Ptr<DArray<Expression>>,Expression> scrubArrayCache = new Function1<Ptr<DArray<Expression>>,Expression>() {
+            public Expression invoke(Ptr<DArray<Expression>> elems) {
+             {
                 {
-                    Expression ex = scrubArrayCache.invoke(sle.elements);
-                    if ((ex) != null)
-                    {
-                        return ex;
+                    Slice<Expression> __r1006 = (elems.get()).opSlice().copy();
+                    Ref<Integer> __key1007 = ref(0);
+                    for (; (__key1007.value < __r1006.getLength());__key1007.value += 1) {
+                        Ref<Expression> e = ref(__r1006.get(__key1007.value));
+                        e.value = scrubCacheValue(e.value);
                     }
                 }
-                sle.stageflags = old;
-            }
-            return null;
-        }
+                return null;
+            }}
+
+        };
+        Function1<StructLiteralExp,Expression> scrubSE = new Function1<StructLiteralExp,Expression>() {
+            public Expression invoke(StructLiteralExp sle) {
+             {
+                sle.ownedByCtfe = OwnedBy.cache;
+                if ((sle.stageflags & 1) == 0)
+                {
+                    int old = sle.stageflags;
+                    sle.stageflags |= 1;
+                    {
+                        Expression ex = scrubArrayCache.invoke(sle.elements);
+                        if ((ex) != null)
+                        {
+                            return ex;
+                        }
+                    }
+                    sle.stageflags = old;
+                }
+                return null;
+            }}
+
         };
         if (((e.op & 0xFF) == 50))
         {
@@ -6752,7 +6771,7 @@ public class dinterpret {
         assert(fd.parameters != null);
         int numParams = (fd.parameters.get()).length;
         assert((numParams == 1) || (numParams == 2));
-        Parameter fparam = __dop990.get(numParams - 1);
+        Parameter fparam = __dop1008.get(numParams - 1);
         boolean wantRefValue = 0L != (fparam.storageClass & 2101248L);
         DArray<Expression> args = args = new DArray<Expression>(numParams);
         try {
@@ -6841,8 +6860,8 @@ public class dinterpret {
         DArray<Expression> args = args = new DArray<Expression>(numParams);
         try {
             Expression eresult = null;
-            Ref<ByteSlice> utf8buf = ref(new ByteSlice(new byte[4]));
-            Ref<CharSlice> utf16buf = ref(new CharSlice(new char[2]));
+            ByteSlice utf8buf = new ByteSlice(new byte[4]);
+            CharSlice utf16buf = new CharSlice(new char[2]);
             int start = rvs ? len : 0;
             int end = rvs ? 0 : len;
             {
@@ -6881,11 +6900,11 @@ public class dinterpret {
                                     int i = 0;
                                     for (; (i < buflen);i += 1){
                                         Expression r_1 = (ale.elements.get()).get(indx + i);
-                                        utf8buf.value.set(i, (byte)r_1.isIntegerExp().getInteger());
+                                        utf8buf.set(i, (byte)r_1.isIntegerExp().getInteger());
                                     }
                                 }
                                 n = 0;
-                                errmsg = pcopy(utf_decodeChar(ptr(utf8buf), buflen, n, rawvalue));
+                                errmsg = pcopy(utf_decodeChar(utf8buf.ptr(), buflen, n, rawvalue));
                                 break;
                             case 2:
                                 if (rvs)
@@ -6908,11 +6927,11 @@ public class dinterpret {
                                     int i_1 = 0;
                                     for (; (i_1 < buflen);i_1 += 1){
                                         Expression r_2 = (ale.elements.get()).get(indx + i_1);
-                                        utf16buf.value.set(i_1, (char)(int)r_2.isIntegerExp().getInteger());
+                                        utf16buf.set(i_1, (char)(int)r_2.isIntegerExp().getInteger());
                                     }
                                 }
                                 n = 0;
-                                errmsg = pcopy(utf_decodeWchar(ptr(utf16buf), buflen, n, rawvalue));
+                                errmsg = pcopy(utf_decodeWchar(utf16buf.ptr(), buflen, n, rawvalue));
                                 break;
                             case 4:
                                 {
@@ -6995,11 +7014,11 @@ public class dinterpret {
                     {
                         case (int)1L:
                             charlen = utf_codeLengthChar(rawvalue);
-                            utf_encodeChar(ptr(utf8buf), rawvalue);
+                            utf_encodeChar(utf8buf.ptr(), rawvalue);
                             break;
                         case (int)2L:
                             charlen = utf_codeLengthWchar(rawvalue);
-                            utf_encodeWchar(ptr(utf16buf), rawvalue);
+                            utf_encodeWchar(utf16buf.ptr(), rawvalue);
                             break;
                         case (int)4L:
                             break;
@@ -7016,18 +7035,18 @@ public class dinterpret {
                     }
                     Expression val = null;
                     {
-                        int __key993 = 0;
-                        int __limit994 = charlen;
-                        for (; (__key993 < __limit994);__key993 += 1) {
-                            int k = __key993;
+                        int __key1011 = 0;
+                        int __limit1012 = charlen;
+                        for (; (__key1011 < __limit1012);__key1011 += 1) {
+                            int k = __key1011;
                             int codepoint = 0x0ffff;
                             switch ((int)charType.size())
                             {
                                 case (int)1L:
-                                    codepoint = (utf8buf.value.get(k) & 0xFF);
+                                    codepoint = (utf8buf.get(k) & 0xFF);
                                     break;
                                 case (int)2L:
-                                    codepoint = (int)utf16buf.value.get(k);
+                                    codepoint = (int)utf16buf.get(k);
                                     break;
                                 case (int)4L:
                                     codepoint = rawvalue;
@@ -7071,11 +7090,11 @@ public class dinterpret {
                 DArray<Expression> args = args = new DArray<Expression>(nargs);
                 try {
                     {
-                        Slice<Expression> __r997 = args.opSlice().copy();
-                        int __key996 = 0;
-                        for (; (__key996 < __r997.getLength());__key996 += 1) {
-                            Expression arg = __r997.get(__key996);
-                            int i = __key996;
+                        Slice<Expression> __r1015 = args.opSlice().copy();
+                        int __key1014 = 0;
+                        for (; (__key1014 < __r1015.getLength());__key1014 += 1) {
+                            Expression arg = __r1015.get(__key1014);
+                            int i = __key1014;
                             Expression earg = (arguments.get()).get(i);
                             earg = interpret(earg, istate, CtfeGoal.ctfeNeedRvalue);
                             if (exceptionOrCantInterpret(earg))
@@ -7154,11 +7173,11 @@ public class dinterpret {
                 StructLiteralExp se = ((ClassReferenceExp)pthis).value;
                 assert(((arguments.get()).length <= (se.elements.get()).length));
                 {
-                    Slice<Expression> __r999 = (arguments.get()).opSlice().copy();
-                    int __key998 = 0;
-                    for (; (__key998 < __r999.getLength());__key998 += 1) {
-                        Expression arg = __r999.get(__key998);
-                        int i = __key998;
+                    Slice<Expression> __r1017 = (arguments.get()).opSlice().copy();
+                    int __key1016 = 0;
+                    for (; (__key1016 < __r1017.getLength());__key1016 += 1) {
+                        Expression arg = __r1017.get(__key1016);
+                        int i = __key1016;
                         Expression elem = interpret(arg, istate, CtfeGoal.ctfeNeedRvalue);
                         if (exceptionOrCantInterpret(elem))
                         {
@@ -7215,10 +7234,10 @@ public class dinterpret {
             if ((ale) != null)
             {
                 {
-                    Slice<Expression> __r1000 = (ale.elements.get()).opSlice().copy();
-                    int __key1001 = 0;
-                    for (; (__key1001 < __r1000.getLength());__key1001 += 1) {
-                        Expression elem = __r1000.get(__key1001);
+                    Slice<Expression> __r1018 = (ale.elements.get()).opSlice().copy();
+                    int __key1019 = 0;
+                    for (; (__key1019 < __r1018.getLength());__key1019 += 1) {
+                        Expression elem = __r1018.get(__key1019);
                         {
                             Expression ex = evaluatePostblit(istate, elem);
                             if ((ex) != null)
@@ -7265,10 +7284,10 @@ public class dinterpret {
             if ((ale) != null)
             {
                 {
-                    Slice<Expression> __r1002 = (ale.elements.get()).opSlice().copy();
-                    int __key1003 = __r1002.getLength();
-                    for (; __key1003-- != 0;) {
-                        Expression elem = __r1002.get(__key1003);
+                    Slice<Expression> __r1020 = (ale.elements.get()).opSlice().copy();
+                    int __key1021 = __r1020.getLength();
+                    for (; __key1021-- != 0;) {
+                        Expression elem = __r1020.get(__key1021);
                         e = evaluateDtor(istate, elem);
                     }
                 }

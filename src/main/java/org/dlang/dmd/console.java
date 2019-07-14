@@ -47,7 +47,7 @@ public class console {
 
         public static Ptr<Console> create(Ptr<_IO_FILE> fp) {
             Ptr<Console> c = refPtr(new Console(null));
-            (c.get())._fp = fp;
+            (c.get())._fp = pcopy(fp);
             return c;
         }
 

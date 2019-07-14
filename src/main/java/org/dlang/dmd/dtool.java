@@ -914,7 +914,7 @@ public class dtool {
             Ptr<Token> t = ast.tokens;
             for (; t != null;){
                 (this.buf.get()).printf(new BytePtr("%s"), (t.get()).toChars());
-                t = (t.get()).next.value;
+                t = pcopy((t.get()).next.value);
             }
         }
 
@@ -1877,7 +1877,7 @@ public class dtool {
                 p.nextToken();
                 Ptr<DArray<ASTBase.Dsymbol>> decls = p.parseModule();
                 LispyPrint lispPrint = new LispyPrint();
-                lispPrint.buf = refPtr(new OutBuffer(null, 0, 0, 0, false, false));
+                lispPrint.buf = pcopy((refPtr(new OutBuffer(null, 0, 0, 0, false, false))));
                 (lispPrint.buf.get()).doindent = true;
                 {
                     Slice<ASTBase.Dsymbol> __r487 = (decls.get()).opSlice().copy();

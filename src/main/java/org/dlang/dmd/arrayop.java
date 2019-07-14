@@ -31,9 +31,9 @@ public class arrayop {
         private Ptr<DArray<RootObject>> tiargs = null;
         private Ptr<DArray<Expression>> args = null;
         public  BuildArrayOpVisitor(Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, Ptr<DArray<Expression>> args) {
-            this.sc = sc;
-            this.tiargs = tiargs;
-            this.args = args;
+            this.sc = pcopy(sc);
+            this.tiargs = pcopy(tiargs);
+            this.args = pcopy(args);
         }
 
         public  void visit(Expression e) {

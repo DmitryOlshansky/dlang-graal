@@ -28,7 +28,7 @@ public class escape {
     {
         private Ptr<EscapeByResults> er = null;
         public  EscapeVisitor(Ptr<EscapeByResults> er) {
-            this.er = er;
+            this.er = pcopy(er);
         }
 
         public  void visit(Expression e) {
@@ -105,10 +105,10 @@ public class escape {
                     e.basis.value.accept(this);
                 }
                 {
-                    Slice<Expression> __r1298 = (e.elements.get()).opSlice().copy();
-                    int __key1299 = 0;
-                    for (; (__key1299 < __r1298.getLength());__key1299 += 1) {
-                        Expression el = __r1298.get(__key1299);
+                    Slice<Expression> __r1316 = (e.elements.get()).opSlice().copy();
+                    int __key1317 = 0;
+                    for (; (__key1317 < __r1316.getLength());__key1317 += 1) {
+                        Expression el = __r1316.get(__key1317);
                         if (el != null)
                         {
                             el.accept(this);
@@ -122,10 +122,10 @@ public class escape {
             if (e.elements != null)
             {
                 {
-                    Slice<Expression> __r1300 = (e.elements.get()).opSlice().copy();
-                    int __key1301 = 0;
-                    for (; (__key1301 < __r1300.getLength());__key1301 += 1) {
-                        Expression ex = __r1300.get(__key1301);
+                    Slice<Expression> __r1318 = (e.elements.get()).opSlice().copy();
+                    int __key1319 = 0;
+                    for (; (__key1319 < __r1318.getLength());__key1319 += 1) {
+                        Expression ex = __r1318.get(__key1319);
                         if (ex != null)
                         {
                             ex.accept(this);
@@ -140,10 +140,10 @@ public class escape {
             if (((tb.ty & 0xFF) == ENUMTY.Tstruct) && (e.member == null) && (e.arguments != null))
             {
                 {
-                    Slice<Expression> __r1302 = (e.arguments.get()).opSlice().copy();
-                    int __key1303 = 0;
-                    for (; (__key1303 < __r1302.getLength());__key1303 += 1) {
-                        Expression ex = __r1302.get(__key1303);
+                    Slice<Expression> __r1320 = (e.arguments.get()).opSlice().copy();
+                    int __key1321 = 0;
+                    for (; (__key1321 < __r1320.getLength());__key1321 += 1) {
+                        Expression ex = __r1320.get(__key1321);
                         if (ex != null)
                         {
                             ex.accept(this);
@@ -335,7 +335,7 @@ public class escape {
     {
         private Ptr<EscapeByResults> er = null;
         public  EscapeRefVisitor(Ptr<EscapeByResults> er) {
-            this.er = er;
+            this.er = pcopy(er);
         }
 
         public  void visit(Expression e) {
@@ -407,10 +407,10 @@ public class escape {
             if (e.elements != null)
             {
                 {
-                    Slice<Expression> __r1304 = (e.elements.get()).opSlice().copy();
-                    int __key1305 = 0;
-                    for (; (__key1305 < __r1304.getLength());__key1305 += 1) {
-                        Expression ex = __r1304.get(__key1305);
+                    Slice<Expression> __r1322 = (e.elements.get()).opSlice().copy();
+                    int __key1323 = 0;
+                    for (; (__key1323 < __r1322.getLength());__key1323 += 1) {
+                        Expression ex = __r1322.get(__key1323);
                         if (ex != null)
                         {
                             ex.accept(this);
@@ -559,10 +559,10 @@ public class escape {
             errors = checkNewEscape(sc, ae.basis.value, gag);
         }
         {
-            Slice<Expression> __r1254 = (ae.elements.get()).opSlice().copy();
-            int __key1255 = 0;
-            for (; (__key1255 < __r1254.getLength());__key1255 += 1) {
-                Expression ex = __r1254.get(__key1255);
+            Slice<Expression> __r1272 = (ae.elements.get()).opSlice().copy();
+            int __key1273 = 0;
+            for (; (__key1273 < __r1272.getLength());__key1273 += 1) {
+                Expression ex = __r1272.get(__key1273);
                 if (ex != null)
                 {
                     (errors ? 1 : 0) |= (checkNewEscape(sc, ex, gag) ? 1 : 0);
@@ -575,10 +575,10 @@ public class escape {
     public static boolean checkAssocArrayLiteralEscape(Ptr<Scope> sc, AssocArrayLiteralExp ae, boolean gag) {
         boolean errors = false;
         {
-            Slice<Expression> __r1256 = (ae.keys.get()).opSlice().copy();
-            int __key1257 = 0;
-            for (; (__key1257 < __r1256.getLength());__key1257 += 1) {
-                Expression ex = __r1256.get(__key1257);
+            Slice<Expression> __r1274 = (ae.keys.get()).opSlice().copy();
+            int __key1275 = 0;
+            for (; (__key1275 < __r1274.getLength());__key1275 += 1) {
+                Expression ex = __r1274.get(__key1275);
                 if (ex != null)
                 {
                     (errors ? 1 : 0) |= (checkNewEscape(sc, ex, gag) ? 1 : 0);
@@ -586,10 +586,10 @@ public class escape {
             }
         }
         {
-            Slice<Expression> __r1258 = (ae.values.get()).opSlice().copy();
-            int __key1259 = 0;
-            for (; (__key1259 < __r1258.getLength());__key1259 += 1) {
-                Expression ex = __r1258.get(__key1259);
+            Slice<Expression> __r1276 = (ae.values.get()).opSlice().copy();
+            int __key1277 = 0;
+            for (; (__key1277 < __r1276.getLength());__key1277 += 1) {
+                Expression ex = __r1276.get(__key1277);
                 if (ex != null)
                 {
                     (errors ? 1 : 0) |= (checkNewEscape(sc, ex, gag) ? 1 : 0);
@@ -617,24 +617,26 @@ public class escape {
                 return false;
             }
             Ref<Boolean> result = ref(false);
-            Function2<VarDeclaration,BytePtr,Void> unsafeAssign = (v, desc) -> {
-             {
-                if (global.params.vsafe && (sc.get()).func.setUnsafe())
-                {
-                    if (!gag)
+            Function2<VarDeclaration,BytePtr,Void> unsafeAssign = new Function2<VarDeclaration,BytePtr,Void>() {
+                public Void invoke(VarDeclaration v, BytePtr desc) {
+                 {
+                    if (global.params.vsafe && (sc.get()).func.setUnsafe())
                     {
-                        error(arg.loc, new BytePtr("%s `%s` assigned to non-scope parameter `%s` calling %s"), desc, v.toChars(), par != null ? par.toChars() : new BytePtr("this"), fdc != null ? fdc.toPrettyChars(false) : new BytePtr("indirectly"));
+                        if (!gag)
+                        {
+                            error(arg.loc, new BytePtr("%s `%s` assigned to non-scope parameter `%s` calling %s"), desc, v.toChars(), par != null ? par.toChars() : new BytePtr("this"), fdc != null ? fdc.toPrettyChars(false) : new BytePtr("indirectly"));
+                        }
+                        result.value = true;
                     }
-                    result.value = true;
-                }
-                return null;
-            }
+                    return null;
+                }}
+
             };
             {
-                Slice<VarDeclaration> __r1260 = er.value.byvalue.opSlice().copy();
-                int __key1261 = 0;
-                for (; (__key1261 < __r1260.getLength());__key1261 += 1) {
-                    VarDeclaration v = __r1260.get(__key1261);
+                Slice<VarDeclaration> __r1278 = er.value.byvalue.opSlice().copy();
+                int __key1279 = 0;
+                for (; (__key1279 < __r1278.getLength());__key1279 += 1) {
+                    VarDeclaration v = __r1278.get(__key1279);
                     if (false)
                     {
                         printf(new BytePtr("byvalue %s\n"), v.toChars());
@@ -668,10 +670,10 @@ public class escape {
                 }
             }
             {
-                Slice<VarDeclaration> __r1262 = er.value.byref.opSlice().copy();
-                int __key1263 = 0;
-                for (; (__key1263 < __r1262.getLength());__key1263 += 1) {
-                    VarDeclaration v = __r1262.get(__key1263);
+                Slice<VarDeclaration> __r1280 = er.value.byref.opSlice().copy();
+                int __key1281 = 0;
+                for (; (__key1281 < __r1280.getLength());__key1281 += 1) {
+                    VarDeclaration v = __r1280.get(__key1281);
                     if (false)
                     {
                         printf(new BytePtr("byref %s\n"), v.toChars());
@@ -694,18 +696,18 @@ public class escape {
                 }
             }
             {
-                Slice<FuncDeclaration> __r1264 = er.value.byfunc.opSlice().copy();
-                int __key1265 = 0;
-                for (; (__key1265 < __r1264.getLength());__key1265 += 1) {
-                    FuncDeclaration fd = __r1264.get(__key1265);
+                Slice<FuncDeclaration> __r1282 = er.value.byfunc.opSlice().copy();
+                int __key1283 = 0;
+                for (; (__key1283 < __r1282.getLength());__key1283 += 1) {
+                    FuncDeclaration fd = __r1282.get(__key1283);
                     Ref<DArray<VarDeclaration>> vars = ref(new DArray<VarDeclaration>());
                     try {
                         findAllOuterAccessedVariables(fd, ptr(vars));
                         {
-                            Slice<VarDeclaration> __r1266 = vars.value.opSlice().copy();
-                            int __key1267 = 0;
-                            for (; (__key1267 < __r1266.getLength());__key1267 += 1) {
-                                VarDeclaration v = __r1266.get(__key1267);
+                            Slice<VarDeclaration> __r1284 = vars.value.opSlice().copy();
+                            int __key1285 = 0;
+                            for (; (__key1285 < __r1284.getLength());__key1285 += 1) {
+                                VarDeclaration v = __r1284.get(__key1285);
                                 assert(!v.isDataseg());
                                 Dsymbol p = v.toParent2();
                                 notMaybeScope(v);
@@ -722,10 +724,10 @@ public class escape {
                 }
             }
             {
-                Slice<Expression> __r1268 = er.value.byexp.opSlice().copy();
-                int __key1269 = 0;
-                for (; (__key1269 < __r1268.getLength());__key1269 += 1) {
-                    Expression ee = __r1268.get(__key1269);
+                Slice<Expression> __r1286 = er.value.byexp.opSlice().copy();
+                int __key1287 = 0;
+                for (; (__key1287 < __r1286.getLength());__key1287 += 1) {
+                    Expression ee = __r1286.get(__key1287);
                     if ((sc.get()).func.setUnsafe())
                     {
                         if (!gag)
@@ -782,10 +784,10 @@ public class escape {
         int n = (ce.arguments.get()).length;
         boolean j = (tf.linkage == LINK.d) && (tf.parameterList.varargs == VarArg.variadic);
         {
-            int __key1270 = 0;
-            int __limit1271 = n;
-            for (; (__key1270 < __limit1271);__key1270 += 1) {
-                int i = __key1270;
+            int __key1288 = 0;
+            int __limit1289 = n;
+            for (; (__key1288 < __limit1289);__key1288 += 1) {
+                int i = __key1288;
                 Expression arg = (ce.arguments.get()).get(i);
                 if (!arg.type.value.hasPointers())
                 {
@@ -863,32 +865,34 @@ public class escape {
             {
                 printf(new BytePtr("va is ref `%s`\n"), va.toChars());
             }
-            Function0<Boolean> isFirstRef = () -> {
-             {
-                if (!vaIsRef)
-                {
-                    return false;
-                }
-                Dsymbol p = va.toParent2();
-                FuncDeclaration fd = (sc.get()).func;
-                if ((pequals(p, fd)) && (fd.type != null) && ((fd.type.ty & 0xFF) == ENUMTY.Tfunction))
-                {
-                    TypeFunction tf = (TypeFunction)fd.type;
-                    if ((tf.nextOf() == null) || ((tf.nextOf().ty & 0xFF) != ENUMTY.Tvoid) && (fd.isCtorDeclaration() == null))
+            Function0<Boolean> isFirstRef = new Function0<Boolean>() {
+                public Boolean invoke() {
+                 {
+                    if (!vaIsRef)
                     {
                         return false;
                     }
-                    if ((pequals(va, fd.vthis)))
+                    Dsymbol p = va.toParent2();
+                    FuncDeclaration fd = (sc.get()).func;
+                    if ((pequals(p, fd)) && (fd.type != null) && ((fd.type.ty & 0xFF) == ENUMTY.Tfunction))
                     {
-                        return true;
+                        TypeFunction tf = (TypeFunction)fd.type;
+                        if ((tf.nextOf() == null) || ((tf.nextOf().ty & 0xFF) != ENUMTY.Tvoid) && (fd.isCtorDeclaration() == null))
+                        {
+                            return false;
+                        }
+                        if ((pequals(va, fd.vthis)))
+                        {
+                            return true;
+                        }
+                        if ((fd.parameters != null) && ((fd.parameters.get()).length != 0) && (pequals((fd.parameters.get()).get(0), va)))
+                        {
+                            return true;
+                        }
                     }
-                    if ((fd.parameters != null) && ((fd.parameters.get()).length != 0) && (pequals((fd.parameters.get()).get(0), va)))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
+                    return false;
+                }}
+
             };
             boolean vaIsFirstRef = isFirstRef.invoke();
             if (false)
@@ -897,10 +901,10 @@ public class escape {
             }
             boolean result = false;
             {
-                Slice<VarDeclaration> __r1272 = er.value.byvalue.opSlice().copy();
-                int __key1273 = 0;
-                for (; (__key1273 < __r1272.getLength());__key1273 += 1) {
-                    VarDeclaration v = __r1272.get(__key1273);
+                Slice<VarDeclaration> __r1290 = er.value.byvalue.opSlice().copy();
+                int __key1291 = 0;
+                for (; (__key1291 < __r1290.getLength());__key1291 += 1) {
+                    VarDeclaration v = __r1290.get(__key1291);
                     if (false)
                     {
                         printf(new BytePtr("byvalue: %s\n"), v.toChars());
@@ -1019,10 +1023,10 @@ public class escape {
             }
         /*ByRef:*/
             {
-                Slice<VarDeclaration> __r1274 = er.value.byref.opSlice().copy();
-                int __key1275 = 0;
-                for (; (__key1275 < __r1274.getLength());__key1275 += 1) {
-                    VarDeclaration v = __r1274.get(__key1275);
+                Slice<VarDeclaration> __r1292 = er.value.byref.opSlice().copy();
+                int __key1293 = 0;
+                for (; (__key1293 < __r1292.getLength());__key1293 += 1) {
+                    VarDeclaration v = __r1292.get(__key1293);
                     if (false)
                     {
                         printf(new BytePtr("byref: %s\n"), v.toChars());
@@ -1107,10 +1111,10 @@ public class escape {
                 }
             }
             {
-                Slice<FuncDeclaration> __r1276 = er.value.byfunc.opSlice().copy();
-                int __key1277 = 0;
-                for (; (__key1277 < __r1276.getLength());__key1277 += 1) {
-                    FuncDeclaration fd = __r1276.get(__key1277);
+                Slice<FuncDeclaration> __r1294 = er.value.byfunc.opSlice().copy();
+                int __key1295 = 0;
+                for (; (__key1295 < __r1294.getLength());__key1295 += 1) {
+                    FuncDeclaration fd = __r1294.get(__key1295);
                     if (false)
                     {
                         printf(new BytePtr("byfunc: %s, %d\n"), fd.toChars(), fd.tookAddressOf);
@@ -1123,10 +1127,10 @@ public class escape {
                             fd.tookAddressOf -= 1;
                         }
                         {
-                            Slice<VarDeclaration> __r1278 = vars.value.opSlice().copy();
-                            int __key1279 = 0;
-                            for (; (__key1279 < __r1278.getLength());__key1279 += 1) {
-                                VarDeclaration v = __r1278.get(__key1279);
+                            Slice<VarDeclaration> __r1296 = vars.value.opSlice().copy();
+                            int __key1297 = 0;
+                            for (; (__key1297 < __r1296.getLength());__key1297 += 1) {
+                                VarDeclaration v = __r1296.get(__key1297);
                                 assert(!v.isDataseg());
                                 Dsymbol p = v.toParent2();
                                 if (!((va != null) && va.isScope()))
@@ -1157,10 +1161,10 @@ public class escape {
                 }
             }
             {
-                Slice<Expression> __r1280 = er.value.byexp.opSlice().copy();
-                int __key1281 = 0;
-                for (; (__key1281 < __r1280.getLength());__key1281 += 1) {
-                    Expression ee = __r1280.get(__key1281);
+                Slice<Expression> __r1298 = er.value.byexp.opSlice().copy();
+                int __key1299 = 0;
+                for (; (__key1299 < __r1298.getLength());__key1299 += 1) {
+                    Expression ee = __r1298.get(__key1299);
                     if (false)
                     {
                         printf(new BytePtr("byexp: %s\n"), ee.toChars());
@@ -1207,10 +1211,10 @@ public class escape {
             }
             boolean result = false;
             {
-                Slice<VarDeclaration> __r1282 = er.value.byvalue.opSlice().copy();
-                int __key1283 = 0;
-                for (; (__key1283 < __r1282.getLength());__key1283 += 1) {
-                    VarDeclaration v = __r1282.get(__key1283);
+                Slice<VarDeclaration> __r1300 = er.value.byvalue.opSlice().copy();
+                int __key1301 = 0;
+                for (; (__key1301 < __r1300.getLength());__key1301 += 1) {
+                    VarDeclaration v = __r1300.get(__key1301);
                     if (v.isDataseg())
                     {
                         continue;
@@ -1257,10 +1261,10 @@ public class escape {
             }
             Ref<Boolean> result = ref(false);
             {
-                Slice<VarDeclaration> __r1284 = er.value.byvalue.opSlice().copy();
-                int __key1285 = 0;
-                for (; (__key1285 < __r1284.getLength());__key1285 += 1) {
-                    VarDeclaration v = __r1284.get(__key1285);
+                Slice<VarDeclaration> __r1302 = er.value.byvalue.opSlice().copy();
+                int __key1303 = 0;
+                for (; (__key1303 < __r1302.getLength());__key1303 += 1) {
+                    VarDeclaration v = __r1302.get(__key1303);
                     if (false)
                     {
                         printf(new BytePtr("byvalue `%s`\n"), v.toChars());
@@ -1304,24 +1308,26 @@ public class escape {
                 }
             }
             {
-                Slice<VarDeclaration> __r1286 = er.value.byref.opSlice().copy();
-                int __key1287 = 0;
-                for (; (__key1287 < __r1286.getLength());__key1287 += 1) {
-                    VarDeclaration v = __r1286.get(__key1287);
+                Slice<VarDeclaration> __r1304 = er.value.byref.opSlice().copy();
+                int __key1305 = 0;
+                for (; (__key1305 < __r1304.getLength());__key1305 += 1) {
+                    VarDeclaration v = __r1304.get(__key1305);
                     if (false)
                     {
                         printf(new BytePtr("byref `%s`\n"), v.toChars());
                     }
-                    Function1<VarDeclaration,Void> escapingRef = (v) -> {
-                     {
-                        if (!gag)
-                        {
-                            BytePtr kind = pcopy((v.storage_class & 32L) != 0 ? new BytePtr("parameter") : new BytePtr("local"));
-                            error(e.loc, new BytePtr("copying `%s` into allocated memory escapes a reference to %s variable `%s`"), e.toChars(), kind, v.toChars());
-                        }
-                        result.value = true;
-                        return null;
-                    }
+                    Function1<VarDeclaration,Void> escapingRef = new Function1<VarDeclaration,Void>() {
+                        public Void invoke(VarDeclaration v) {
+                         {
+                            if (!gag)
+                            {
+                                BytePtr kind = pcopy((v.storage_class & 32L) != 0 ? new BytePtr("parameter") : new BytePtr("local"));
+                                error(e.loc, new BytePtr("copying `%s` into allocated memory escapes a reference to %s variable `%s`"), e.toChars(), kind, v.toChars());
+                            }
+                            result.value = true;
+                            return null;
+                        }}
+
                     };
                     if (v.isDataseg())
                     {
@@ -1364,10 +1370,10 @@ public class escape {
                 }
             }
             {
-                Slice<Expression> __r1288 = er.value.byexp.opSlice().copy();
-                int __key1289 = 0;
-                for (; (__key1289 < __r1288.getLength());__key1289 += 1) {
-                    Expression ee = __r1288.get(__key1289);
+                Slice<Expression> __r1306 = er.value.byexp.opSlice().copy();
+                int __key1307 = 0;
+                for (; (__key1307 < __r1306.getLength());__key1307 += 1) {
+                    Expression ee = __r1306.get(__key1307);
                     if (false)
                     {
                         printf(new BytePtr("byexp %s\n"), ee.toChars());
@@ -1415,10 +1421,10 @@ public class escape {
             }
             Ref<Boolean> result = ref(false);
             {
-                Slice<VarDeclaration> __r1290 = er.value.byvalue.opSlice().copy();
-                int __key1291 = 0;
-                for (; (__key1291 < __r1290.getLength());__key1291 += 1) {
-                    VarDeclaration v = __r1290.get(__key1291);
+                Slice<VarDeclaration> __r1308 = er.value.byvalue.opSlice().copy();
+                int __key1309 = 0;
+                for (; (__key1309 < __r1308.getLength());__key1309 += 1) {
+                    VarDeclaration v = __r1308.get(__key1309);
                     if (false)
                     {
                         printf(new BytePtr("byvalue `%s`\n"), v.toChars());
@@ -1471,32 +1477,34 @@ public class escape {
                 }
             }
             {
-                Slice<VarDeclaration> __r1292 = er.value.byref.opSlice().copy();
-                int __key1293 = 0;
-                for (; (__key1293 < __r1292.getLength());__key1293 += 1) {
-                    VarDeclaration v = __r1292.get(__key1293);
+                Slice<VarDeclaration> __r1310 = er.value.byref.opSlice().copy();
+                int __key1311 = 0;
+                for (; (__key1311 < __r1310.getLength());__key1311 += 1) {
+                    VarDeclaration v = __r1310.get(__key1311);
                     if (false)
                     {
                         printf(new BytePtr("byref `%s`\n"), v.toChars());
                     }
-                    Function1<VarDeclaration,Void> escapingRef = (v) -> {
-                     {
-                        if (!gag)
-                        {
-                            Ref<BytePtr> msg = ref(null);
-                            if ((v.storage_class & 32L) != 0)
+                    Function1<VarDeclaration,Void> escapingRef = new Function1<VarDeclaration,Void>() {
+                        public Void invoke(VarDeclaration v) {
+                         {
+                            if (!gag)
                             {
-                                msg.value = pcopy(new BytePtr("returning `%s` escapes a reference to parameter `%s`, perhaps annotate with `return`"));
+                                Ref<BytePtr> msg = ref(null);
+                                if ((v.storage_class & 32L) != 0)
+                                {
+                                    msg.value = pcopy(new BytePtr("returning `%s` escapes a reference to parameter `%s`, perhaps annotate with `return`"));
+                                }
+                                else
+                                {
+                                    msg.value = pcopy(new BytePtr("returning `%s` escapes a reference to local variable `%s`"));
+                                }
+                                error(e.loc, msg.value, e.toChars(), v.toChars());
                             }
-                            else
-                            {
-                                msg.value = pcopy(new BytePtr("returning `%s` escapes a reference to local variable `%s`"));
-                            }
-                            error(e.loc, msg.value, e.toChars(), v.toChars());
-                        }
-                        result.value = true;
-                        return null;
-                    }
+                            result.value = true;
+                            return null;
+                        }}
+
                     };
                     if (v.isDataseg())
                     {
@@ -1551,10 +1559,10 @@ public class escape {
                 }
             }
             {
-                Slice<Expression> __r1294 = er.value.byexp.opSlice().copy();
-                int __key1295 = 0;
-                for (; (__key1295 < __r1294.getLength());__key1295 += 1) {
-                    Expression ee = __r1294.get(__key1295);
+                Slice<Expression> __r1312 = er.value.byexp.opSlice().copy();
+                int __key1313 = 0;
+                for (; (__key1313 < __r1312.getLength());__key1313 += 1) {
+                    Expression ee = __r1312.get(__key1313);
                     if (false)
                     {
                         printf(new BytePtr("byexp %s\n"), ee.toChars());
@@ -1590,10 +1598,10 @@ public class escape {
             {
                 int dim = tf.parameterList.length();
                 {
-                    int __key1296 = 0;
-                    int __limit1297 = dim;
-                    for (; (__key1296 < __limit1297);__key1296 += 1) {
-                        int i = __key1296;
+                    int __key1314 = 0;
+                    int __limit1315 = dim;
+                    for (; (__key1314 < __limit1315);__key1314 += 1) {
+                        int i = __key1314;
                         Parameter p = tf.parameterList.get(i);
                         if ((pequals(p.ident, v.ident)))
                         {
@@ -1661,15 +1669,15 @@ public class escape {
                 if (fdp != null)
                 {
                     {
-                        Slice<VarDeclaration> __r1306 = fdp.closureVars.opSlice().copy();
-                        int __key1307 = 0;
-                        for (; (__key1307 < __r1306.getLength());__key1307 += 1) {
-                            VarDeclaration v = __r1306.get(__key1307);
+                        Slice<VarDeclaration> __r1324 = fdp.closureVars.opSlice().copy();
+                        int __key1325 = 0;
+                        for (; (__key1325 < __r1324.getLength());__key1325 += 1) {
+                            VarDeclaration v = __r1324.get(__key1325);
                             {
-                                Slice<FuncDeclaration> __r1308 = v.nestedrefs.opSlice().copy();
-                                int __key1309 = 0;
-                                for (; (__key1309 < __r1308.getLength());__key1309 += 1) {
-                                    FuncDeclaration fdv = __r1308.get(__key1309);
+                                Slice<FuncDeclaration> __r1326 = v.nestedrefs.opSlice().copy();
+                                int __key1327 = 0;
+                                for (; (__key1327 < __r1326.getLength());__key1327 += 1) {
+                                    FuncDeclaration fdv = __r1326.get(__key1327);
                                     if ((pequals(fdv, fd)))
                                     {
                                         (vars.get()).push(v);
@@ -1698,10 +1706,10 @@ public class escape {
             {
                 changes = false;
                 {
-                    Slice<VarDeclaration> __r1310 = array.copy();
-                    int __key1311 = 0;
-                    for (; (__key1311 < __r1310.getLength());__key1311 += 1) {
-                        VarDeclaration va = __r1310.get(__key1311);
+                    Slice<VarDeclaration> __r1328 = array.copy();
+                    int __key1329 = 0;
+                    for (; (__key1329 < __r1328.getLength());__key1329 += 1) {
+                        VarDeclaration va = __r1328.get(__key1329);
                         if (false)
                         {
                             printf(new BytePtr("  va = %s\n"), va.toChars());
@@ -1711,10 +1719,10 @@ public class escape {
                             if (va.maybes != null)
                             {
                                 {
-                                    Slice<VarDeclaration> __r1312 = (va.maybes.get()).opSlice().copy();
-                                    int __key1313 = 0;
-                                    for (; (__key1313 < __r1312.getLength());__key1313 += 1) {
-                                        VarDeclaration v = __r1312.get(__key1313);
+                                    Slice<VarDeclaration> __r1330 = (va.maybes.get()).opSlice().copy();
+                                    int __key1331 = 0;
+                                    for (; (__key1331 < __r1330.getLength());__key1331 += 1) {
+                                        VarDeclaration v = __r1330.get(__key1331);
                                         if (false)
                                         {
                                             printf(new BytePtr("    v = %s\n"), v.toChars());

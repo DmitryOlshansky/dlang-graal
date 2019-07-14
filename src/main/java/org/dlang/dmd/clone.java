@@ -98,7 +98,7 @@ public class clone {
             try {
                 a.value.setDim(1);
                 int errors = global.startGagging();
-                sc = (sc.get()).push();
+                sc = pcopy((sc.get()).push());
                 (sc.get()).tinst = null;
                 (sc.get()).minst = null;
                 a.value.set(0, er);
@@ -108,7 +108,7 @@ public class clone {
                     a.value.set(0, el);
                     f = resolveFuncCall(ad.loc, sc, assign, null, ad.type, ptr(a), FuncResolveFlag.quiet);
                 }
-                sc = (sc.get()).pop();
+                sc = pcopy((sc.get()).pop());
                 global.endGagging(errors);
                 if (f != null)
                 {
@@ -135,10 +135,12 @@ public class clone {
     }
 
     public static boolean needOpAssign(StructDeclaration sd) {
-        Function0<Boolean> isNeeded = () -> {
-         {
-            return true;
-        }
+        Function0<Boolean> isNeeded = new Function0<Boolean>() {
+            public Boolean invoke() {
+             {
+                return true;
+            }}
+
         };
         if (sd.isUnionDeclaration() != null)
         {
@@ -407,7 +409,7 @@ public class clone {
                         }
                         FuncDeclaration f = null;
                         int errors = global.startGagging();
-                        sc = (sc.get()).push();
+                        sc = pcopy((sc.get()).push());
                         (sc.get()).tinst = null;
                         (sc.get()).minst = null;
                         {
@@ -424,7 +426,7 @@ public class clone {
                                 }
                             }
                         }
-                        sc = (sc.get()).pop();
+                        sc = pcopy((sc.get()).pop());
                         global.endGagging(errors);
                         if (f != null)
                         {

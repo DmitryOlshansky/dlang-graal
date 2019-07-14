@@ -126,22 +126,27 @@ public class denum {
         }
 
         public  Expression getMaxMinValue(Loc loc, Identifier id) {
-            Function2<Expression,Ref<Loc>,Expression> pvalToResult = (e, loc) -> {
-             {
-                if (((e.value.op & 0xFF) != 127))
-                {
-                    e.value = e.value.copy();
-                    e.value.loc = loc.copy();
-                }
-                return e.value;
-            }
+            Function2<Expression,Ref<Loc>,Expression> pvalToResult = new Function2<Expression,Ref<Loc>,Expression>() {
+                public Expression invoke(Expression e, Loc loc) {
+                 {
+                    Ref<Expression> e_ref = ref(e);
+                    if (((e_ref.value.op & 0xFF) != 127))
+                    {
+                        e_ref.value = e_ref.value.copy();
+                        e_ref.value.loc.opAssign(loc.copy());
+                    }
+                    return e_ref.value;
+                }}
+
             };
             Ptr<Expression> pval = pcopy((pequals(id, Id.max)) ? ptr(this.maxval) : ptr(this.minval));
-            Function0<Expression> errorReturn = () -> {
-             {
-                pval.set(0, (new ErrorExp()));
-                return pval.get();
-            }
+            Function0<Expression> errorReturn = new Function0<Expression>() {
+                public Expression invoke() {
+                 {
+                    pval.set(0, (new ErrorExp()));
+                    return pval.get();
+                }}
+
             };
             if (this.inuse != 0)
             {
@@ -221,11 +226,13 @@ public class denum {
         }
 
         public  Expression getDefaultValue(Loc loc) {
-            Function0<Expression> handleErrors = () -> {
-             {
-                defaultval = new ErrorExp();
-                return defaultval;
-            }
+            Function0<Expression> handleErrors = new Function0<Expression>() {
+                public Expression invoke() {
+                 {
+                    defaultval = new ErrorExp();
+                    return defaultval;
+                }}
+
             };
             if (this.defaultval != null)
             {
@@ -249,10 +256,10 @@ public class denum {
                 return handleErrors.invoke();
             }
             {
-                int __key923 = 0;
-                int __limit924 = (this.members.get()).length;
-                for (; (__key923 < __limit924);__key923 += 1) {
-                    int i = __key923;
+                int __key941 = 0;
+                int __limit942 = (this.members.get()).length;
+                for (; (__key941 < __limit942);__key941 += 1) {
+                    int i = __key941;
                     EnumMember em = (this.members.get()).get(i).isEnumMember();
                     if (em != null)
                     {
@@ -384,7 +391,7 @@ public class denum {
             this.checkDisabled(loc, sc, false);
             if ((this.depdecl != null) && (this.depdecl._scope == null))
             {
-                this.depdecl._scope = sc;
+                this.depdecl._scope = pcopy(sc);
             }
             this.checkDeprecated(loc, sc);
             if (this.errors)

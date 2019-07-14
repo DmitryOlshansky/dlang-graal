@@ -115,7 +115,7 @@ public class aggregate {
             (sc2.get()).stc &= 60129542144L;
             (sc2.get()).parent.value = this;
             (sc2.get()).inunion = this.isUnionDeclaration();
-            (sc2.get()).protection = new Prot(Prot.Kind.public_).copy();
+            (sc2.get()).protection.opAssign(new Prot(Prot.Kind.public_).copy());
             (sc2.get()).explicitProtection = 0;
             (sc2.get()).aligndecl = null;
             (sc2.get()).userAttribDecl = null;
@@ -140,58 +140,60 @@ public class aggregate {
                 return true;
             }
             this.fields.setDim(0);
-            Function2<Dsymbol,Object,Integer> func = (s, param) -> {
-             {
-                VarDeclaration v = s.isVarDeclaration();
-                if (v == null)
-                {
+            Function2<Dsymbol,Object,Integer> func = new Function2<Dsymbol,Object,Integer>() {
+                public Integer invoke(Dsymbol s, Object param) {
+                 {
+                    VarDeclaration v = s.isVarDeclaration();
+                    if (v == null)
+                    {
+                        return 0;
+                    }
+                    if ((v.storage_class & 8388608L) != 0)
+                    {
+                        return 0;
+                    }
+                    AggregateDeclaration ad = ((AggregateDeclaration)param);
+                    if ((v.semanticRun < PASS.semanticdone))
+                    {
+                        dsymbolSemantic(v, null);
+                    }
+                    if ((ad.sizeok != Sizeok.none))
+                    {
+                        return 1;
+                    }
+                    if (v.aliassym != null)
+                    {
+                        return 0;
+                    }
+                    if ((v.storage_class & 69936087043L) != 0)
+                    {
+                        return 0;
+                    }
+                    if (!v.isField() || (v.semanticRun < PASS.semanticdone))
+                    {
+                        return 1;
+                    }
+                    ad.fields.push(v);
+                    if ((v.storage_class & 2097152L) != 0)
+                    {
+                        return 0;
+                    }
+                    Type tv = v.type.baseElemOf();
+                    if (((tv.ty & 0xFF) != ENUMTY.Tstruct))
+                    {
+                        return 0;
+                    }
+                    if ((pequals(ad, ((TypeStruct)tv).sym)))
+                    {
+                        BytePtr psz = pcopy(((v.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? new BytePtr("static array of ") : new BytePtr(""));
+                        ad.error(new BytePtr("cannot have field `%s` with %ssame struct type"), v.toChars(), psz);
+                        ad.type = Type.terror;
+                        ad.errors = true;
+                        return 1;
+                    }
                     return 0;
-                }
-                if ((v.storage_class & 8388608L) != 0)
-                {
-                    return 0;
-                }
-                AggregateDeclaration ad = ((AggregateDeclaration)param);
-                if ((v.semanticRun < PASS.semanticdone))
-                {
-                    dsymbolSemantic(v, null);
-                }
-                if ((ad.sizeok != Sizeok.none))
-                {
-                    return 1;
-                }
-                if (v.aliassym != null)
-                {
-                    return 0;
-                }
-                if ((v.storage_class & 69936087043L) != 0)
-                {
-                    return 0;
-                }
-                if (!v.isField() || (v.semanticRun < PASS.semanticdone))
-                {
-                    return 1;
-                }
-                ad.fields.push(v);
-                if ((v.storage_class & 2097152L) != 0)
-                {
-                    return 0;
-                }
-                Type tv = v.type.baseElemOf();
-                if (((tv.ty & 0xFF) != ENUMTY.Tstruct))
-                {
-                    return 0;
-                }
-                if ((pequals(ad, ((TypeStruct)tv).sym)))
-                {
-                    BytePtr psz = pcopy(((v.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? new BytePtr("static array of ") : new BytePtr(""));
-                    ad.error(new BytePtr("cannot have field `%s` with %ssame struct type"), v.toChars(), psz);
-                    ad.type = Type.terror;
-                    ad.errors = true;
-                    return 1;
-                }
-                return 0;
-            }
+                }}
+
             };
             {
                 int i = 0;
@@ -623,7 +625,7 @@ public class aggregate {
                 (this.members.get()).push(this.vthis);
                 this.vthis.storage_class |= 64L;
                 this.vthis.parent.value = this;
-                this.vthis.protection = new Prot(Prot.Kind.public_).copy();
+                this.vthis.protection.opAssign(new Prot(Prot.Kind.public_).copy());
                 this.vthis.alignment = t.alignment();
                 this.vthis.semanticRun = PASS.semanticdone;
                 if ((this.sizeok == Sizeok.fwd))
@@ -671,7 +673,7 @@ public class aggregate {
             (this.members.get()).push(this.vthis2);
             this.vthis2.storage_class |= 64L;
             this.vthis2.parent.value = this;
-            this.vthis2.protection = new Prot(Prot.Kind.public_).copy();
+            this.vthis2.protection.opAssign(new Prot(Prot.Kind.public_).copy());
             this.vthis2.alignment = t.alignment();
             this.vthis2.semanticRun = PASS.semanticdone;
             if ((this.sizeok == Sizeok.fwd))

@@ -1482,14 +1482,14 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
     void printLocalFunction(FuncDeclaration func, bool isLambda = false) {
         auto t = func.type.isTypeFunction();
         //stderr.writefln("\tLocal function %s", func.ident.toString);
-        buf.fmt("%s %s%s = (", t.toJavaFunc(opts), func.funcName, tiArgs.str);
-        if (func.parameters)
-            foreach (i, p; *func.parameters) {
-                if(i) buf.put(", ");
-                buf.fmt("%s", p.ident.symbol);
-            }
-        buf.put(") -> {\n");
-        printFunctionBody(func, []);
+        buf.fmt("%s %s%s = new %s() {\n", t.toJavaFunc(opts), func.funcName, tiArgs.str, t.toJavaFunc(opts));
+        buf.indent;
+        buf.fmt("public %s invoke(", t.nextOf.toJava(opts, Boxing.yes));
+        VarDeclaration[] renamedVars = printParameters(func, Boxing.yes, isLambda);
+        buf.fmt(") {\n");
+        printFunctionBody(func, renamedVars);
+        buf.fmt("}\n");
+        buf.outdent;
         buf.put("\n};\n");
     }
 

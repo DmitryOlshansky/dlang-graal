@@ -40,7 +40,7 @@ public class dcast {
         private Ptr<Scope> sc = null;
         private Expression result = null;
         public  ImplicitCastTo(Ptr<Scope> sc, Type t) {
-            this.sc = sc;
+            this.sc = pcopy(sc);
             this.t = t;
         }
 
@@ -371,32 +371,36 @@ public class dcast {
             }
             long value = e.toInteger();
             // from template isLosslesslyConvertibleToFP!(Double)
-            Function0<Boolean> isLosslesslyConvertibleToFPDouble = () -> {
-             {
-                if (e.type.value.isunsigned())
-                {
-                    double f = (double)value;
-                    return (long)f == value;
-                }
-                double f = (double)(long)value;
-                return (long)f == (long)value;
-            }
+            Function0<Boolean> isLosslesslyConvertibleToFPDouble = new Function0<Boolean>() {
+                public Boolean invoke() {
+                 {
+                    if (e.type.value.isunsigned())
+                    {
+                        double f = (double)value;
+                        return (long)f == value;
+                    }
+                    double f = (double)(long)value;
+                    return (long)f == (long)value;
+                }}
+
             };
 
             // from template isLosslesslyConvertibleToFP!(Double)
             // removed duplicate function, [["boolean isLosslesslyConvertibleToFPDouble"]] signature: boolean isLosslesslyConvertibleToFPDouble
 
             // from template isLosslesslyConvertibleToFP!(Float)
-            Function0<Boolean> isLosslesslyConvertibleToFPFloat = () -> {
-             {
-                if (e.type.value.isunsigned())
-                {
-                    float f = (float)value;
-                    return (long)f == value;
-                }
-                float f = (float)(long)value;
-                return (long)f == (long)value;
-            }
+            Function0<Boolean> isLosslesslyConvertibleToFPFloat = new Function0<Boolean>() {
+                public Boolean invoke() {
+                 {
+                    if (e.type.value.isunsigned())
+                    {
+                        float f = (float)value;
+                        return (long)f == value;
+                    }
+                    float f = (float)(long)value;
+                    return (long)f == (long)value;
+                }}
+
             };
 
             {
@@ -794,10 +798,10 @@ public class dcast {
                     }
                 }
                 {
-                    int __key895 = 0;
-                    int __limit896 = edim;
-                    for (; (__key895 < __limit896);__key895 += 1) {
-                        int i = __key895;
+                    int __key913 = 0;
+                    int __limit914 = edim;
+                    for (; (__key913 < __limit914);__key913 += 1) {
+                        int i = __key913;
                         Expression el = (e.elements.get()).get(i);
                         int m = el.implicitConvTo(telement);
                         if ((m < this.result))
@@ -1313,7 +1317,7 @@ public class dcast {
         private Ptr<Scope> sc = null;
         private Expression result = null;
         public  CastTo(Ptr<Scope> sc, Type t) {
-            this.sc = sc;
+            this.sc = pcopy(sc);
             this.t = t;
         }
 
@@ -1329,7 +1333,7 @@ public class dcast {
                 if ((v != null) && ((v.storage_class & 8388608L) != 0))
                 {
                     this.result = e.ctfeInterpret();
-                    this.result.loc = e.loc.copy();
+                    this.result.loc.opAssign(e.loc.copy());
                     this.result = this.result.castTo(this.sc, this.t);
                     return ;
                 }
@@ -1708,10 +1712,12 @@ public class dcast {
                         /*goto Lcast*/throw Dispatch1.INSTANCE;
                     }
                     // from template X!(IntegerInteger)
-                    Function2<Integer,Integer,Integer> XIntegerInteger = (tf, tt) -> {
-                     {
-                        return tf * 256 + tt;
-                    }
+                    Function2<Integer,Integer,Integer> XIntegerInteger = new Function2<Integer,Integer,Integer>() {
+                        public Integer invoke(Integer tf, Integer tt) {
+                         {
+                            return tf * 256 + tt;
+                        }}
+
                     };
 
                     // from template X!(IntegerInteger)
@@ -1976,7 +1982,7 @@ public class dcast {
             }
             TupleExp te = (TupleExp)e.copy();
             te.e0.value = e.e0.value != null ? e.e0.value.copy() : null;
-            te.exps = (e.exps.get()).copy();
+            te.exps = pcopy((e.exps.get()).copy());
             {
                 int i = 0;
                 for (; (i < (te.exps.get()).length);i++){
@@ -2029,7 +2035,7 @@ public class dcast {
                         {
                             ae.basis.value = e.basis.value.castTo(this.sc, tb.nextOf());
                         }
-                        ae.elements = (e.elements.get()).copy();
+                        ae.elements = pcopy((e.elements.get()).copy());
                         {
                             int i = 0;
                             for (; (i < (e.elements.get()).length);i++){
@@ -2069,13 +2075,13 @@ public class dcast {
                     }
                     ae = (ArrayLiteralExp)e.copy();
                     ae.type.value = tbase;
-                    ae.elements = (e.elements.get()).copy();
+                    ae.elements = pcopy((e.elements.get()).copy());
                     Type telement = tv.elementType();
                     {
-                        int __key897 = 0;
-                        int __limit898 = edim;
-                        for (; (__key897 < __limit898);__key897 += 1) {
-                            int i = __key897;
+                        int __key915 = 0;
+                        int __limit916 = edim;
+                        for (; (__key915 < __limit916);__key915 += 1) {
+                            int i = __key915;
                             Expression ex = (e.elements.get()).get(i);
                             ex = ex.castTo(this.sc, telement);
                             ae.elements.get().set(i, ex);
@@ -2083,10 +2089,10 @@ public class dcast {
                     }
                     (ae.elements.get()).setDim((int)tbasedim);
                     {
-                        int __key899 = edim;
-                        int __limit900 = (int)tbasedim;
-                        for (; (__key899 < __limit900);__key899 += 1) {
-                            int i = __key899;
+                        int __key917 = edim;
+                        int __limit918 = (int)tbasedim;
+                        for (; (__key917 < __limit918);__key917 += 1) {
+                            int i = __key917;
                             Expression ex = typeb.nextOf().defaultInitLiteral(e.loc);
                             ex = ex.castTo(this.sc, telement);
                             ae.elements.get().set(i, ex);
@@ -2114,8 +2120,8 @@ public class dcast {
             if (((tb.ty & 0xFF) == ENUMTY.Taarray) && ((typeb.ty & 0xFF) == ENUMTY.Taarray) && ((tb.nextOf().toBasetype().ty & 0xFF) != ENUMTY.Tvoid))
             {
                 AssocArrayLiteralExp ae = (AssocArrayLiteralExp)e.copy();
-                ae.keys = (e.keys.get()).copy();
-                ae.values = (e.values.get()).copy();
+                ae.keys = pcopy((e.keys.get()).copy());
+                ae.values = pcopy((e.values.get()).copy());
                 assert(((e.keys.get()).length == (e.values.get()).length));
                 {
                     int i = 0;
@@ -2452,39 +2458,39 @@ public class dcast {
     {
         private IntRange range = new IntRange();
         public  void visit(Expression e) {
-            this.range = IntRange.fromType(e.type.value).copy();
+            this.range.opAssign(IntRange.fromType(e.type.value).copy());
         }
 
         public  void visit(IntegerExp e) {
-            this.range = new IntRange(new SignExtendedNumber(e.getInteger(), false))._cast(e.type.value).copy();
+            this.range.opAssign(new IntRange(new SignExtendedNumber(e.getInteger(), false))._cast(e.type.value).copy());
         }
 
         public  void visit(CastExp e) {
-            this.range = getIntRange(e.e1.value)._cast(e.type.value).copy();
+            this.range.opAssign(getIntRange(e.e1.value)._cast(e.type.value).copy());
         }
 
         public  void visit(AddExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
-            this.range = ir1.opBinary_plus(ir2)._cast(e.type.value).copy();
+            this.range.opAssign(ir1.opBinary_plus(ir2)._cast(e.type.value).copy());
         }
 
         public  void visit(MinExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
-            this.range = ir1.opBinary_minus(ir2)._cast(e.type.value).copy();
+            this.range.opAssign(ir1.opBinary_minus(ir2)._cast(e.type.value).copy());
         }
 
         public  void visit(DivExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
-            this.range = ir1.opBinary_div(ir2)._cast(e.type.value).copy();
+            this.range.opAssign(ir1.opBinary_div(ir2)._cast(e.type.value).copy());
         }
 
         public  void visit(MulExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
-            this.range = ir1.opBinary_mul(ir2)._cast(e.type.value).copy();
+            this.range.opAssign(ir1.opBinary_mul(ir2)._cast(e.type.value).copy());
         }
 
         public  void visit(ModExp e) {
@@ -2495,7 +2501,7 @@ public class dcast {
                 this.visit((Expression)e);
                 return ;
             }
-            this.range = ir1.opBinary_mod(ir2)._cast(e.type.value).copy();
+            this.range.opAssign(ir1.opBinary_mod(ir2)._cast(e.type.value).copy());
         }
 
         public  void visit(AndExp e) {
@@ -2503,7 +2509,7 @@ public class dcast {
             Ref<Boolean> hasResult = ref(false);
             result.unionOrAssign(getIntRange(e.e1.value).opBinary__(getIntRange(e.e2.value)), hasResult);
             assert(hasResult.value);
-            this.range = result._cast(e.type.value).copy();
+            this.range.opAssign(result._cast(e.type.value).copy());
         }
 
         public  void visit(OrExp e) {
@@ -2511,7 +2517,7 @@ public class dcast {
             Ref<Boolean> hasResult = ref(false);
             result.unionOrAssign(getIntRange(e.e1.value).opBinary__(getIntRange(e.e2.value)), hasResult);
             assert(hasResult.value);
-            this.range = result._cast(e.type.value).copy();
+            this.range.opAssign(result._cast(e.type.value).copy());
         }
 
         public  void visit(XorExp e) {
@@ -2519,35 +2525,35 @@ public class dcast {
             Ref<Boolean> hasResult = ref(false);
             result.unionOrAssign(getIntRange(e.e1.value).opBinary__(getIntRange(e.e2.value)), hasResult);
             assert(hasResult.value);
-            this.range = result._cast(e.type.value).copy();
+            this.range.opAssign(result._cast(e.type.value).copy());
         }
 
         public  void visit(ShlExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
-            this.range = ir1.opBinary_ll(ir2)._cast(e.type.value).copy();
+            this.range.opAssign(ir1.opBinary_ll(ir2)._cast(e.type.value).copy());
         }
 
         public  void visit(ShrExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
-            this.range = ir1.opBinary_rr(ir2)._cast(e.type.value).copy();
+            this.range.opAssign(ir1.opBinary_rr(ir2)._cast(e.type.value).copy());
         }
 
         public  void visit(UshrExp e) {
             IntRange ir1 = getIntRange(e.e1.value).castUnsigned(e.e1.value.type.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
-            this.range = ir1.opBinary_rrr(ir2)._cast(e.type.value).copy();
+            this.range.opAssign(ir1.opBinary_rrr(ir2)._cast(e.type.value).copy());
         }
 
         public  void visit(AssignExp e) {
-            this.range = getIntRange(e.e2.value)._cast(e.type.value).copy();
+            this.range.opAssign(getIntRange(e.e2.value)._cast(e.type.value).copy());
         }
 
         public  void visit(CondExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
-            this.range = ir1.unionWith(ir2)._cast(e.type.value).copy();
+            this.range.opAssign(ir1.unionWith(ir2)._cast(e.type.value).copy());
         }
 
         public  void visit(VarExp e) {
@@ -2555,7 +2561,7 @@ public class dcast {
             VarDeclaration vd = e.var.isVarDeclaration();
             if ((vd != null) && (vd.range != null))
             {
-                this.range = (vd.range.get())._cast(e.type.value).copy();
+                this.range.opAssign((vd.range.get())._cast(e.type.value).copy());
             }
             else if ((vd != null) && (vd._init != null) && !vd.type.isMutable() && ((ie = vd.getConstInitializer(true)) != null))
             {
@@ -2573,12 +2579,12 @@ public class dcast {
 
         public  void visit(ComExp e) {
             IntRange ir = getIntRange(e.e1.value).copy();
-            this.range = new IntRange(new SignExtendedNumber(~ir.imax.value, !ir.imax.negative), new SignExtendedNumber(~ir.imin.value, !ir.imin.negative))._cast(e.type.value).copy();
+            this.range.opAssign(new IntRange(new SignExtendedNumber(~ir.imax.value, !ir.imax.negative), new SignExtendedNumber(~ir.imin.value, !ir.imin.negative))._cast(e.type.value).copy());
         }
 
         public  void visit(NegExp e) {
             IntRange ir = getIntRange(e.e1.value).copy();
-            this.range = ir.opUnary_minus()._cast(e.type.value).copy();
+            this.range.opAssign(ir.opUnary_minus()._cast(e.type.value).copy());
         }
 
 
@@ -2749,35 +2755,43 @@ public class dcast {
         Type t1b = e1.value.type.value.toBasetype();
         Type t2b = e2.value.type.value.toBasetype();
         Ref<Type> t = ref(null);
-        Function0<Boolean> Lret = () -> {
-         {
-            if (pt.get() == null)
-            {
-                pt.set(0, t.value);
-            }
-            pe1.set(0, e1.value);
-            pe2.set(0, e2.value);
-            return true;
-        }
+        Function0<Boolean> Lret = new Function0<Boolean>() {
+            public Boolean invoke() {
+             {
+                if (pt.get() == null)
+                {
+                    pt.set(0, t.value);
+                }
+                pe1.set(0, e1.value);
+                pe2.set(0, e2.value);
+                return true;
+            }}
+
         };
-        Function0<Boolean> Lt1 = () -> {
-         {
-            e2.value = e2.value.castTo(sc, t1);
-            t.value = t1;
-            return Lret.invoke();
-        }
+        Function0<Boolean> Lt1 = new Function0<Boolean>() {
+            public Boolean invoke() {
+             {
+                e2.value = e2.value.castTo(sc, t1);
+                t.value = t1;
+                return Lret.invoke();
+            }}
+
         };
-        Function0<Boolean> Lt2 = () -> {
-         {
-            e1.value = e1.value.castTo(sc, t2);
-            t.value = t2;
-            return Lret.invoke();
-        }
+        Function0<Boolean> Lt2 = new Function0<Boolean>() {
+            public Boolean invoke() {
+             {
+                e1.value = e1.value.castTo(sc, t2);
+                t.value = t2;
+                return Lret.invoke();
+            }}
+
         };
-        Function0<Boolean> Lincompatible = () -> {
-         {
-            return false;
-        }
+        Function0<Boolean> Lincompatible = new Function0<Boolean>() {
+            public Boolean invoke() {
+             {
+                return false;
+            }}
+
         };
         if (((op & 0xFF) != 100) || ((t1b.ty & 0xFF) != (t2b.ty & 0xFF)) && (t1b.isTypeBasic() != null) && (t2b.isTypeBasic() != null))
         {
@@ -3434,15 +3448,17 @@ public class dcast {
     }
 
     public static Expression typeCombine(BinExp be, Ptr<Scope> sc) {
-        Function0<Expression> errorReturn = () -> {
-         {
-            Expression ex = be.incompatibleTypes();
-            if (((ex.op & 0xFF) == 127))
-            {
-                return ex;
-            }
-            return new ErrorExp();
-        }
+        Function0<Expression> errorReturn = new Function0<Expression>() {
+            public Expression invoke() {
+             {
+                Expression ex = be.incompatibleTypes();
+                if (((ex.op & 0xFF) == 127))
+                {
+                    return ex;
+                }
+                return new ErrorExp();
+            }}
+
         };
         Type t1 = be.e1.value.type.value.toBasetype();
         Type t2 = be.e2.value.type.value.toBasetype();

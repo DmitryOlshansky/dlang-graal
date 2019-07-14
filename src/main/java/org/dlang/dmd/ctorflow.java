@@ -71,10 +71,10 @@ public class ctorflow {
         public  void orCSX(int csx) {
             this.callSuper.value |= csx;
             {
-                Slice<FieldInit> __r886 = this.fieldinit.copy();
-                int __key887 = 0;
-                for (; (__key887 < __r886.getLength());__key887 += 1) {
-                    FieldInit u = __r886.get(__key887).copy();
+                Slice<FieldInit> __r904 = this.fieldinit.copy();
+                int __key905 = 0;
+                for (; (__key905 < __r904.getLength());__key905 += 1) {
+                    FieldInit u = __r904.get(__key905).copy();
                     u.csx.value |= csx;
                 }
             }
@@ -86,16 +86,16 @@ public class ctorflow {
             {
                 assert((this.fieldinit.getLength() == ctorflow.fieldinit.getLength()));
                 {
-                    Slice<FieldInit> __r889 = ctorflow.fieldinit.copy();
-                    int __key888 = 0;
-                    for (; (__key888 < __r889.getLength());__key888 += 1) {
-                        FieldInit u = __r889.get(__key888).copy();
-                        int i = __key888;
+                    Slice<FieldInit> __r907 = ctorflow.fieldinit.copy();
+                    int __key906 = 0;
+                    for (; (__key906 < __r907.getLength());__key906 += 1) {
+                        FieldInit u = __r907.get(__key906).copy();
+                        int i = __key906;
                         Ptr<FieldInit> fi = ptr(this.fieldinit.get(i));
                         (fi.get()).csx.value |= u.csx.value;
                         if (((fi.get()).loc == new Loc(null, 0, 0)))
                         {
-                            (fi.get()).loc = u.loc.copy();
+                            (fi.get()).loc.opAssign(u.loc.copy());
                         }
                     }
                 }

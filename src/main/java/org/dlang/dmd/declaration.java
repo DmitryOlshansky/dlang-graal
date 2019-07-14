@@ -131,15 +131,15 @@ public class declaration {
                         }
                     }
                     (fieldInit.get()).csx.value |= 1;
-                    (fieldInit.get()).loc = e1.loc.copy();
+                    (fieldInit.get()).loc.opAssign(e1.loc.copy());
                     if (var.overlapped)
                     {
                         {
-                            Slice<VarDeclaration> __r916 = ad.fields.opSlice().copy();
-                            int __key915 = 0;
-                            for (; (__key915 < __r916.getLength());__key915 += 1) {
-                                VarDeclaration v = __r916.get(__key915);
-                                int j = __key915;
+                            Slice<VarDeclaration> __r934 = ad.fields.opSlice().copy();
+                            int __key933 = 0;
+                            for (; (__key933 < __r934.getLength());__key933 += 1) {
+                                VarDeclaration v = __r934.get(__key933);
+                                int j = __key933;
                                 if ((v == var) || !var.isOverlappedWith(v))
                                 {
                                     continue;
@@ -358,7 +358,7 @@ public class declaration {
             {
                 {
                     Ptr<Scope> scx = sc;
-                    for (; scx != null;scx = (scx.get()).enclosing){
+                    for (; scx != null;scx = pcopy((scx.get()).enclosing)){
                         if ((pequals((scx.get()).func, this.parent.value)) && (((scx.get()).flags & 96) != 0))
                         {
                             BytePtr s = pcopy(this.isParameter() && (!pequals(this.parent.value.ident, Id.ensure)) ? new BytePtr("parameter") : new BytePtr("result"));
@@ -376,7 +376,7 @@ public class declaration {
                 VarDeclaration vthis = ((ThisExp)e1).var;
                 {
                     Ptr<Scope> scx = sc;
-                    for (; scx != null;scx = (scx.get()).enclosing){
+                    for (; scx != null;scx = pcopy((scx.get()).enclosing)){
                         if ((pequals((scx.get()).func, vthis.parent.value)) && (((scx.get()).flags & 96) != 0))
                         {
                             if (flag == 0)
@@ -537,7 +537,7 @@ public class declaration {
         public TypeTuple tupletype = null;
         public  TupleDeclaration(Loc loc, Identifier ident, Ptr<DArray<RootObject>> objects) {
             super(loc, ident);
-            this.objects = objects;
+            this.objects = pcopy(objects);
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {
@@ -717,7 +717,7 @@ public class declaration {
                     if ((fd) != null)
                     {
                         FuncAliasDeclaration fa = new FuncAliasDeclaration(this.ident, fd, true);
-                        fa.protection = this.protection.copy();
+                        fa.protection.opAssign(this.protection.copy());
                         fa.parent.value = this.parent.value;
                         this.aliassym = fa;
                         return this.aliassym.overloadInsert(s);
@@ -728,7 +728,7 @@ public class declaration {
                     if ((td) != null)
                     {
                         OverDeclaration od = new OverDeclaration(this.ident, td, true);
-                        od.protection = this.protection.copy();
+                        od.protection.opAssign(this.protection.copy());
                         od.parent.value = this.parent.value;
                         this.aliassym = od;
                         return this.aliassym.overloadInsert(s);
@@ -741,7 +741,7 @@ public class declaration {
                         if ((!pequals(sa.ident, this.ident)) || (!pequals(sa.parent.value, this.parent.value)))
                         {
                             od = new OverDeclaration(this.ident, od, true);
-                            od.protection = this.protection.copy();
+                            od.protection.opAssign(this.protection.copy());
                             od.parent.value = this.parent.value;
                             this.aliassym = od;
                         }
@@ -1045,19 +1045,21 @@ public class declaration {
                 }
             }
             Dsymbol result = null;
-            Function1<Dsymbol,Integer> __lambda1 = (s) -> {
-             {
-                if (result != null)
-                {
-                    result = null;
-                    return 1;
-                }
-                else
-                {
-                    result = s;
-                    return 0;
-                }
-            }
+            Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
+                public Integer invoke(Dsymbol s) {
+                 {
+                    if (result != null)
+                    {
+                        result = null;
+                        return 1;
+                    }
+                    else
+                    {
+                        result = s;
+                        return 0;
+                    }
+                }}
+
             };
             overloadApply(this.aliassym, __lambda1, null);
             return result;
@@ -1434,7 +1436,7 @@ public class declaration {
                 return new ErrorExp();
             }
             e = e.copy();
-            e.loc = loc.copy();
+            e.loc.opAssign(loc.copy());
             return e;
         }
 
@@ -1552,7 +1554,7 @@ public class declaration {
         public  void addMaybe(VarDeclaration v) {
             if (this.maybes == null)
             {
-                this.maybes = refPtr(new DArray<VarDeclaration>());
+                this.maybes = pcopy((refPtr(new DArray<VarDeclaration>())));
             }
             (this.maybes.get()).push(v);
         }
@@ -1663,7 +1665,7 @@ public class declaration {
             super(Loc.initial, Type.dtypeinfo.type, tinfo.getTypeInfoIdent(), null, 0L);
             this.tinfo = tinfo;
             this.storage_class = 1073741825L;
-            this.protection = new Prot(Prot.Kind.public_).copy();
+            this.protection.opAssign(new Prot(Prot.Kind.public_).copy());
             this.linkage = LINK.c;
             this.alignment = target.ptrsize;
         }

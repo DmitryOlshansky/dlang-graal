@@ -173,10 +173,10 @@ public class hdrgen {
             (buf.get()).writenl();
         }
         {
-            Slice<Dsymbol> __r1415 = (m.members.get()).opSlice().copy();
-            int __key1416 = 0;
-            for (; (__key1416 < __r1415.getLength());__key1416 += 1) {
-                Dsymbol s = __r1415.get(__key1416);
+            Slice<Dsymbol> __r1433 = (m.members.get()).opSlice().copy();
+            int __key1434 = 0;
+            for (; (__key1434 < __r1433.getLength());__key1434 += 1) {
+                Dsymbol s = __r1433.get(__key1434);
                 dsymbolToBuffer(s, buf, hgs);
             }
         }
@@ -192,8 +192,8 @@ public class hdrgen {
         public Ptr<OutBuffer> buf = null;
         public Ptr<HdrGenState> hgs = null;
         public  StatementPrettyPrintVisitor(Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-            this.buf = buf;
-            this.hgs = hgs;
+            this.buf = pcopy(buf);
+            this.hgs = pcopy(hgs);
         }
 
         public  void visit(Statement s) {
@@ -236,10 +236,10 @@ public class hdrgen {
 
         public  void visit(CompoundStatement s) {
             {
-                Slice<Statement> __r1417 = (s.statements.get()).opSlice().copy();
-                int __key1418 = 0;
-                for (; (__key1418 < __r1417.getLength());__key1418 += 1) {
-                    Statement sx = __r1417.get(__key1418);
+                Slice<Statement> __r1435 = (s.statements.get()).opSlice().copy();
+                int __key1436 = 0;
+                for (; (__key1436 < __r1435.getLength());__key1436 += 1) {
+                    Statement sx = __r1435.get(__key1436);
                     if (sx != null)
                     {
                         sx.accept(this);
@@ -251,10 +251,10 @@ public class hdrgen {
         public  void visit(CompoundDeclarationStatement s) {
             boolean anywritten = false;
             {
-                Slice<Statement> __r1419 = (s.statements.get()).opSlice().copy();
-                int __key1420 = 0;
-                for (; (__key1420 < __r1419.getLength());__key1420 += 1) {
-                    Statement sx = __r1419.get(__key1420);
+                Slice<Statement> __r1437 = (s.statements.get()).opSlice().copy();
+                int __key1438 = 0;
+                for (; (__key1438 < __r1437.getLength());__key1438 += 1) {
+                    Statement sx = __r1437.get(__key1438);
                     ExpStatement ds = sx != null ? sx.isExpStatement() : null;
                     if ((ds != null) && ((ds.exp.op & 0xFF) == 38))
                     {
@@ -288,10 +288,10 @@ public class hdrgen {
             (this.buf.get()).writenl();
             (this.buf.get()).level++;
             {
-                Slice<Statement> __r1421 = (s.statements.get()).opSlice().copy();
-                int __key1422 = 0;
-                for (; (__key1422 < __r1421.getLength());__key1422 += 1) {
-                    Statement sx = __r1421.get(__key1422);
+                Slice<Statement> __r1439 = (s.statements.get()).opSlice().copy();
+                int __key1440 = 0;
+                for (; (__key1440 < __r1439.getLength());__key1440 += 1) {
+                    Statement sx = __r1439.get(__key1440);
                     if (sx != null)
                     {
                         sx.accept(this);
@@ -381,11 +381,11 @@ public class hdrgen {
             (this.buf.get()).writestring(Token.asString(s.op));
             (this.buf.get()).writestring(new ByteSlice(" ("));
             {
-                Slice<Parameter> __r1424 = (s.parameters.get()).opSlice().copy();
-                int __key1423 = 0;
-                for (; (__key1423 < __r1424.getLength());__key1423 += 1) {
-                    Parameter p = __r1424.get(__key1423);
-                    int i = __key1423;
+                Slice<Parameter> __r1442 = (s.parameters.get()).opSlice().copy();
+                int __key1441 = 0;
+                for (; (__key1441 < __r1442.getLength());__key1441 += 1) {
+                    Parameter p = __r1442.get(__key1441);
+                    int i = __key1441;
                     if (i != 0)
                     {
                         (this.buf.get()).writestring(new ByteSlice(", "));
@@ -735,10 +735,10 @@ public class hdrgen {
                 }
             }
             {
-                Slice<Catch> __r1425 = (s.catches.get()).opSlice().copy();
-                int __key1426 = 0;
-                for (; (__key1426 < __r1425.getLength());__key1426 += 1) {
-                    Catch c = __r1425.get(__key1426);
+                Slice<Catch> __r1443 = (s.catches.get()).opSlice().copy();
+                int __key1444 = 0;
+                for (; (__key1444 < __r1443.getLength());__key1444 += 1) {
+                    Catch c = __r1443.get(__key1444);
                     this.visit(c);
                 }
             }
@@ -818,7 +818,7 @@ public class hdrgen {
                 {
                     (this.buf.get()).writeByte(32);
                 }
-                t = (t.get()).next.value;
+                t = pcopy((t.get()).next.value);
             }
             (this.buf.get()).level--;
             (this.buf.get()).writestring(new ByteSlice("; }"));
@@ -827,10 +827,10 @@ public class hdrgen {
 
         public  void visit(ImportStatement s) {
             {
-                Slice<Dsymbol> __r1427 = (s.imports.get()).opSlice().copy();
-                int __key1428 = 0;
-                for (; (__key1428 < __r1427.getLength());__key1428 += 1) {
-                    Dsymbol imp = __r1427.get(__key1428);
+                Slice<Dsymbol> __r1445 = (s.imports.get()).opSlice().copy();
+                int __key1446 = 0;
+                for (; (__key1446 < __r1445.getLength());__key1446 += 1) {
+                    Dsymbol imp = __r1445.get(__key1446);
                     dsymbolToBuffer(imp, this.buf, this.hgs);
                 }
             }
@@ -877,8 +877,8 @@ public class hdrgen {
         public Ptr<OutBuffer> buf = null;
         public Ptr<HdrGenState> hgs = null;
         public  DsymbolPrettyPrintVisitor(Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-            this.buf = buf;
-            this.hgs = hgs;
+            this.buf = pcopy(buf);
+            this.hgs = pcopy(hgs);
         }
 
         public  void visit(Dsymbol s) {
@@ -959,10 +959,10 @@ public class hdrgen {
             if ((imp.packages != null) && ((imp.packages.get()).length != 0))
             {
                 {
-                    Slice<Identifier> __r1429 = (imp.packages.get()).opSlice().copy();
-                    int __key1430 = 0;
-                    for (; (__key1430 < __r1429.getLength());__key1430 += 1) {
-                        Identifier pid = __r1429.get(__key1430);
+                    Slice<Identifier> __r1447 = (imp.packages.get()).opSlice().copy();
+                    int __key1448 = 0;
+                    for (; (__key1448 < __r1447.getLength());__key1448 += 1) {
+                        Identifier pid = __r1447.get(__key1448);
                         (this.buf.get()).printf(new BytePtr("%s."), pid.toChars());
                     }
                 }
@@ -972,11 +972,11 @@ public class hdrgen {
             {
                 (this.buf.get()).writestring(new ByteSlice(" : "));
                 {
-                    Slice<Identifier> __r1432 = imp.names.opSlice().copy();
-                    int __key1431 = 0;
-                    for (; (__key1431 < __r1432.getLength());__key1431 += 1) {
-                        Identifier name = __r1432.get(__key1431);
-                        int i = __key1431;
+                    Slice<Identifier> __r1450 = imp.names.opSlice().copy();
+                    int __key1449 = 0;
+                    for (; (__key1449 < __r1450.getLength());__key1449 += 1) {
+                        Identifier name = __r1450.get(__key1449);
+                        int i = __key1449;
                         if (i != 0)
                         {
                             (this.buf.get()).writestring(new ByteSlice(", "));
@@ -1030,10 +1030,10 @@ public class hdrgen {
                 (this.buf.get()).writenl();
                 (this.buf.get()).level++;
                 {
-                    Slice<Dsymbol> __r1433 = (d.decl.get()).opSlice().copy();
-                    int __key1434 = 0;
-                    for (; (__key1434 < __r1433.getLength());__key1434 += 1) {
-                        Dsymbol de = __r1433.get(__key1434);
+                    Slice<Dsymbol> __r1451 = (d.decl.get()).opSlice().copy();
+                    int __key1452 = 0;
+                    for (; (__key1452 < __r1451.getLength());__key1452 += 1) {
+                        Dsymbol de = __r1451.get(__key1452);
                         de.accept(this);
                     }
                 }
@@ -1118,10 +1118,10 @@ public class hdrgen {
             if (d.decl != null)
             {
                 {
-                    Slice<Dsymbol> __r1435 = (d.decl.get()).opSlice().copy();
-                    int __key1436 = 0;
-                    for (; (__key1436 < __r1435.getLength());__key1436 += 1) {
-                        Dsymbol de = __r1435.get(__key1436);
+                    Slice<Dsymbol> __r1453 = (d.decl.get()).opSlice().copy();
+                    int __key1454 = 0;
+                    for (; (__key1454 < __r1453.getLength());__key1454 += 1) {
+                        Dsymbol de = __r1453.get(__key1454);
                         de.accept(this);
                     }
                 }
@@ -1154,10 +1154,10 @@ public class hdrgen {
                 if (d.decl != null)
                 {
                     {
-                        Slice<Dsymbol> __r1437 = (d.decl.get()).opSlice().copy();
-                        int __key1438 = 0;
-                        for (; (__key1438 < __r1437.getLength());__key1438 += 1) {
-                            Dsymbol de = __r1437.get(__key1438);
+                        Slice<Dsymbol> __r1455 = (d.decl.get()).opSlice().copy();
+                        int __key1456 = 0;
+                        for (; (__key1456 < __r1455.getLength());__key1456 += 1) {
+                            Dsymbol de = __r1455.get(__key1456);
                             de.accept(this);
                         }
                     }
@@ -1173,10 +1173,10 @@ public class hdrgen {
                     (this.buf.get()).writenl();
                     (this.buf.get()).level++;
                     {
-                        Slice<Dsymbol> __r1439 = (d.elsedecl.get()).opSlice().copy();
-                        int __key1440 = 0;
-                        for (; (__key1440 < __r1439.getLength());__key1440 += 1) {
-                            Dsymbol de = __r1439.get(__key1440);
+                        Slice<Dsymbol> __r1457 = (d.elsedecl.get()).opSlice().copy();
+                        int __key1458 = 0;
+                        for (; (__key1458 < __r1457.getLength());__key1458 += 1) {
+                            Dsymbol de = __r1457.get(__key1458);
                             de.accept(this);
                         }
                     }
@@ -1192,61 +1192,65 @@ public class hdrgen {
         }
 
         public  void visit(StaticForeachDeclaration s) {
-            Function1<ForeachStatement,Void> foreachWithoutBody = (s) -> {
-             {
-                (buf.get()).writestring(Token.asString(s.op));
-                (buf.get()).writestring(new ByteSlice(" ("));
-                {
-                    Slice<Parameter> __r1442 = (s.parameters.get()).opSlice().copy();
-                    Ref<Integer> __key1441 = ref(0);
-                    for (; (__key1441.value < __r1442.getLength());__key1441.value += 1) {
-                        Parameter p = __r1442.get(__key1441.value);
-                        int i = __key1441.value;
-                        if (i != 0)
-                        {
-                            (buf.get()).writestring(new ByteSlice(", "));
-                        }
-                        if (stcToBuffer(buf, p.storageClass))
-                        {
-                            (buf.get()).writeByte(32);
-                        }
-                        if (p.type != null)
-                        {
-                            typeToBuffer(p.type, p.ident, buf, hgs);
-                        }
-                        else
-                        {
-                            (buf.get()).writestring(p.ident.asString());
+            Function1<ForeachStatement,Void> foreachWithoutBody = new Function1<ForeachStatement,Void>() {
+                public Void invoke(ForeachStatement s) {
+                 {
+                    (buf.get()).writestring(Token.asString(s.op));
+                    (buf.get()).writestring(new ByteSlice(" ("));
+                    {
+                        Slice<Parameter> __r1460 = (s.parameters.get()).opSlice().copy();
+                        Ref<Integer> __key1459 = ref(0);
+                        for (; (__key1459.value < __r1460.getLength());__key1459.value += 1) {
+                            Parameter p = __r1460.get(__key1459.value);
+                            int i = __key1459.value;
+                            if (i != 0)
+                            {
+                                (buf.get()).writestring(new ByteSlice(", "));
+                            }
+                            if (stcToBuffer(buf, p.storageClass))
+                            {
+                                (buf.get()).writeByte(32);
+                            }
+                            if (p.type != null)
+                            {
+                                typeToBuffer(p.type, p.ident, buf, hgs);
+                            }
+                            else
+                            {
+                                (buf.get()).writestring(p.ident.asString());
+                            }
                         }
                     }
-                }
-                (buf.get()).writestring(new ByteSlice("; "));
-                expressionToBuffer(s.aggr.value, buf, hgs);
-                (buf.get()).writeByte(41);
-                (buf.get()).writenl();
-                return null;
-            }
+                    (buf.get()).writestring(new ByteSlice("; "));
+                    expressionToBuffer(s.aggr.value, buf, hgs);
+                    (buf.get()).writeByte(41);
+                    (buf.get()).writenl();
+                    return null;
+                }}
+
             };
-            Function1<ForeachRangeStatement,Void> foreachRangeWithoutBody = (s) -> {
-             {
-                (buf.get()).writestring(Token.asString(s.op));
-                (buf.get()).writestring(new ByteSlice(" ("));
-                if (s.prm.type != null)
-                {
-                    typeToBuffer(s.prm.type, s.prm.ident, buf, hgs);
-                }
-                else
-                {
-                    (buf.get()).writestring(s.prm.ident.asString());
-                }
-                (buf.get()).writestring(new ByteSlice("; "));
-                expressionToBuffer(s.lwr, buf, hgs);
-                (buf.get()).writestring(new ByteSlice(" .. "));
-                expressionToBuffer(s.upr, buf, hgs);
-                (buf.get()).writeByte(41);
-                (buf.get()).writenl();
-                return null;
-            }
+            Function1<ForeachRangeStatement,Void> foreachRangeWithoutBody = new Function1<ForeachRangeStatement,Void>() {
+                public Void invoke(ForeachRangeStatement s) {
+                 {
+                    (buf.get()).writestring(Token.asString(s.op));
+                    (buf.get()).writestring(new ByteSlice(" ("));
+                    if (s.prm.type != null)
+                    {
+                        typeToBuffer(s.prm.type, s.prm.ident, buf, hgs);
+                    }
+                    else
+                    {
+                        (buf.get()).writestring(s.prm.ident.asString());
+                    }
+                    (buf.get()).writestring(new ByteSlice("; "));
+                    expressionToBuffer(s.lwr, buf, hgs);
+                    (buf.get()).writestring(new ByteSlice(" .. "));
+                    expressionToBuffer(s.upr, buf, hgs);
+                    (buf.get()).writeByte(41);
+                    (buf.get()).writenl();
+                    return null;
+                }}
+
             };
             (this.buf.get()).writestring(new ByteSlice("static "));
             if (s.sfe.aggrfe != null)
@@ -1308,10 +1312,10 @@ public class hdrgen {
                 (this.buf.get()).writenl();
                 (this.buf.get()).level++;
                 {
-                    Slice<Dsymbol> __r1443 = (d.members.get()).opSlice().copy();
-                    int __key1444 = 0;
-                    for (; (__key1444 < __r1443.getLength());__key1444 += 1) {
-                        Dsymbol s = __r1443.get(__key1444);
+                    Slice<Dsymbol> __r1461 = (d.members.get()).opSlice().copy();
+                    int __key1462 = 0;
+                    for (; (__key1462 < __r1461.getLength());__key1462 += 1) {
+                        Dsymbol s = __r1461.get(__key1462);
                         s.accept(this);
                     }
                 }
@@ -1369,10 +1373,10 @@ public class hdrgen {
                         (this.buf.get()).writenl();
                         (this.buf.get()).level++;
                         {
-                            Slice<Dsymbol> __r1445 = (ad.members.get()).opSlice().copy();
-                            int __key1446 = 0;
-                            for (; (__key1446 < __r1445.getLength());__key1446 += 1) {
-                                Dsymbol s = __r1445.get(__key1446);
+                            Slice<Dsymbol> __r1463 = (ad.members.get()).opSlice().copy();
+                            int __key1464 = 0;
+                            for (; (__key1464 < __r1463.getLength());__key1464 += 1) {
+                                Dsymbol s = __r1463.get(__key1464);
                                 s.accept(this);
                             }
                         }
@@ -1438,11 +1442,11 @@ public class hdrgen {
                 return ;
             }
             {
-                Slice<TemplateParameter> __r1448 = (parameters.get()).opSlice().copy();
-                int __key1447 = 0;
-                for (; (__key1447 < __r1448.getLength());__key1447 += 1) {
-                    TemplateParameter p = __r1448.get(__key1447);
-                    int i = __key1447;
+                Slice<TemplateParameter> __r1466 = (parameters.get()).opSlice().copy();
+                int __key1465 = 0;
+                for (; (__key1465 < __r1466.getLength());__key1465 += 1) {
+                    TemplateParameter p = __r1466.get(__key1465);
+                    int i = __key1465;
                     if (i != 0)
                     {
                         (this.buf.get()).writestring(new ByteSlice(", "));
@@ -1515,10 +1519,10 @@ public class hdrgen {
                 (this.buf.get()).writenl();
                 (this.buf.get()).level++;
                 {
-                    Slice<Dsymbol> __r1449 = (d.members.get()).opSlice().copy();
-                    int __key1450 = 0;
-                    for (; (__key1450 < __r1449.getLength());__key1450 += 1) {
-                        Dsymbol em = __r1449.get(__key1450);
+                    Slice<Dsymbol> __r1467 = (d.members.get()).opSlice().copy();
+                    int __key1468 = 0;
+                    for (; (__key1468 < __r1467.getLength());__key1468 += 1) {
+                        Dsymbol em = __r1467.get(__key1468);
                         if (em == null)
                         {
                             continue;
@@ -1546,10 +1550,10 @@ public class hdrgen {
             (this.buf.get()).writenl();
             (this.buf.get()).level++;
             {
-                Slice<Dsymbol> __r1451 = (d.members.get()).opSlice().copy();
-                int __key1452 = 0;
-                for (; (__key1452 < __r1451.getLength());__key1452 += 1) {
-                    Dsymbol s = __r1451.get(__key1452);
+                Slice<Dsymbol> __r1469 = (d.members.get()).opSlice().copy();
+                int __key1470 = 0;
+                for (; (__key1470 < __r1469.getLength());__key1470 += 1) {
+                    Dsymbol s = __r1469.get(__key1470);
                     s.accept(this);
                 }
             }
@@ -1576,10 +1580,10 @@ public class hdrgen {
             (this.buf.get()).writenl();
             (this.buf.get()).level++;
             {
-                Slice<Dsymbol> __r1453 = (d.members.get()).opSlice().copy();
-                int __key1454 = 0;
-                for (; (__key1454 < __r1453.getLength());__key1454 += 1) {
-                    Dsymbol s = __r1453.get(__key1454);
+                Slice<Dsymbol> __r1471 = (d.members.get()).opSlice().copy();
+                int __key1472 = 0;
+                for (; (__key1472 < __r1471.getLength());__key1472 += 1) {
+                    Dsymbol s = __r1471.get(__key1472);
                     s.accept(this);
                 }
             }
@@ -1603,10 +1607,10 @@ public class hdrgen {
                 (this.buf.get()).writenl();
                 (this.buf.get()).level++;
                 {
-                    Slice<Dsymbol> __r1455 = (d.members.get()).opSlice().copy();
-                    int __key1456 = 0;
-                    for (; (__key1456 < __r1455.getLength());__key1456 += 1) {
-                        Dsymbol s = __r1455.get(__key1456);
+                    Slice<Dsymbol> __r1473 = (d.members.get()).opSlice().copy();
+                    int __key1474 = 0;
+                    for (; (__key1474 < __r1473.getLength());__key1474 += 1) {
+                        Dsymbol s = __r1473.get(__key1474);
                         s.accept(this);
                     }
                 }
@@ -1630,11 +1634,11 @@ public class hdrgen {
                 (this.buf.get()).writestring(new ByteSlice(" : "));
             }
             {
-                Slice<Ptr<BaseClass>> __r1458 = (d.baseclasses.get()).opSlice().copy();
-                int __key1457 = 0;
-                for (; (__key1457 < __r1458.getLength());__key1457 += 1) {
-                    Ptr<BaseClass> b = __r1458.get(__key1457);
-                    int i = __key1457;
+                Slice<Ptr<BaseClass>> __r1476 = (d.baseclasses.get()).opSlice().copy();
+                int __key1475 = 0;
+                for (; (__key1475 < __r1476.getLength());__key1475 += 1) {
+                    Ptr<BaseClass> b = __r1476.get(__key1475);
+                    int i = __key1475;
                     if (i != 0)
                     {
                         (this.buf.get()).writestring(new ByteSlice(", "));
@@ -1777,10 +1781,10 @@ public class hdrgen {
             if (f.frequires != null)
             {
                 {
-                    Slice<Statement> __r1459 = (f.frequires.get()).opSlice().copy();
-                    int __key1460 = 0;
-                    for (; (__key1460 < __r1459.getLength());__key1460 += 1) {
-                        Statement frequire = __r1459.get(__key1460);
+                    Slice<Statement> __r1477 = (f.frequires.get()).opSlice().copy();
+                    int __key1478 = 0;
+                    for (; (__key1478 < __r1477.getLength());__key1478 += 1) {
+                        Statement frequire = __r1477.get(__key1478);
                         (this.buf.get()).writestring(new ByteSlice("in"));
                         {
                             ExpStatement es = frequire.isExpStatement();
@@ -1806,10 +1810,10 @@ public class hdrgen {
             if (f.fensures != null)
             {
                 {
-                    Slice<Ensure> __r1461 = (f.fensures.get()).opSlice().copy();
-                    int __key1462 = 0;
-                    for (; (__key1462 < __r1461.getLength());__key1462 += 1) {
-                        Ensure fensure = __r1461.get(__key1462).copy();
+                    Slice<Ensure> __r1479 = (f.fensures.get()).opSlice().copy();
+                    int __key1480 = 0;
+                    for (; (__key1480 < __r1479.getLength());__key1480 += 1) {
+                        Ensure fensure = __r1479.get(__key1480).copy();
                         (this.buf.get()).writestring(new ByteSlice("out"));
                         {
                             ExpStatement es = fensure.ensure.isExpStatement();
@@ -2051,8 +2055,8 @@ public class hdrgen {
         public Ptr<OutBuffer> buf = null;
         public Ptr<HdrGenState> hgs = null;
         public  ExpressionPrettyPrintVisitor(Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-            this.buf = buf;
-            this.hgs = hgs;
+            this.buf = pcopy(buf);
+            this.hgs = pcopy(hgs);
         }
 
         public  void visit(Expression e) {
@@ -2078,10 +2082,10 @@ public class hdrgen {
                                     EnumDeclaration sym = te.sym;
                                     if ((!pequals((this.hgs.get()).inEnumDecl, sym)))
                                     {
-                                        int __key1463 = 0;
-                                        int __limit1464 = (sym.members.get()).length;
-                                        for (; (__key1463 < __limit1464);__key1463 += 1) {
-                                            int i = __key1463;
+                                        int __key1481 = 0;
+                                        int __limit1482 = (sym.members.get()).length;
+                                        for (; (__key1481 < __limit1482);__key1481 += 1) {
+                                            int i = __key1481;
                                             EnumMember em = (EnumMember)(sym.members.get()).get(i);
                                             if ((em.value().toInteger() == v))
                                             {
@@ -2194,18 +2198,18 @@ public class hdrgen {
 
         public  void floatToBuffer(Type type, double value) {
             int BUFFER_LEN = 58;
-            Ref<ByteSlice> buffer = ref((byte)255);
-            CTFloat.sprint(ptr(buffer), (byte)103, value);
-            assert((strlen(ptr(buffer)) < 58));
+            ByteSlice buffer = (byte)255;
+            CTFloat.sprint(buffer.ptr(), (byte)103, value);
+            assert((strlen(buffer.ptr()) < 58));
             if ((this.hgs.get()).hdrgen)
             {
-                double r = CTFloat.parse(ptr(buffer), null);
+                double r = CTFloat.parse(buffer.ptr(), null);
                 if ((r != value))
                 {
-                    CTFloat.sprint(ptr(buffer), (byte)97, value);
+                    CTFloat.sprint(buffer.ptr(), (byte)97, value);
                 }
             }
-            (this.buf.get()).writestring(ptr(buffer));
+            (this.buf.get()).writestring(buffer.ptr());
             if (type != null)
             {
                 Type t = type.toBasetype();
@@ -2335,11 +2339,11 @@ public class hdrgen {
         public  void visit(AssocArrayLiteralExp e) {
             (this.buf.get()).writeByte(91);
             {
-                Slice<Expression> __r1466 = (e.keys.get()).opSlice().copy();
-                int __key1465 = 0;
-                for (; (__key1465 < __r1466.getLength());__key1465 += 1) {
-                    Expression key = __r1466.get(__key1465);
-                    int i = __key1465;
+                Slice<Expression> __r1484 = (e.keys.get()).opSlice().copy();
+                int __key1483 = 0;
+                for (; (__key1483 < __r1484.getLength());__key1483 += 1) {
+                    Expression key = __r1484.get(__key1483);
+                    int i = __key1483;
                     if (i != 0)
                     {
                         (this.buf.get()).writestring(new ByteSlice(", "));
@@ -2533,10 +2537,10 @@ public class hdrgen {
             if (e.args != null)
             {
                 {
-                    Slice<RootObject> __r1467 = (e.args.get()).opSlice().copy();
-                    int __key1468 = 0;
-                    for (; (__key1468 < __r1467.getLength());__key1468 += 1) {
-                        RootObject arg = __r1467.get(__key1468);
+                    Slice<RootObject> __r1485 = (e.args.get()).opSlice().copy();
+                    int __key1486 = 0;
+                    for (; (__key1486 < __r1485.getLength());__key1486 += 1) {
+                        RootObject arg = __r1485.get(__key1486);
                         (this.buf.get()).writestring(new ByteSlice(", "));
                         objectToBuffer(arg, this.buf, this.hgs);
                     }
@@ -2823,8 +2827,8 @@ public class hdrgen {
         public Ptr<OutBuffer> buf = null;
         public Ptr<HdrGenState> hgs = null;
         public  TemplateParameterPrettyPrintVisitor(Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-            this.buf = buf;
-            this.hgs = hgs;
+            this.buf = pcopy(buf);
+            this.hgs = pcopy(hgs);
         }
 
         public  void visit(TemplateTypeParameter tp) {
@@ -2907,8 +2911,8 @@ public class hdrgen {
         public Ptr<OutBuffer> buf = null;
         public Ptr<HdrGenState> hgs = null;
         public  ConditionPrettyPrintVisitor(Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-            this.buf = buf;
-            this.hgs = hgs;
+            this.buf = pcopy(buf);
+            this.hgs = pcopy(hgs);
         }
 
         public  void visit(DebugCondition c) {
@@ -3159,11 +3163,11 @@ public class hdrgen {
         }
         Ref<HdrGenState> hgs = ref(new HdrGenState());
         {
-            Slice<Expression> __r1470 = (arguments.get()).opSlice().copy();
-            int __key1469 = 0;
-            for (; (__key1469 < __r1470.getLength());__key1469 += 1) {
-                Expression arg = __r1470.get(__key1469);
-                int i = __key1469;
+            Slice<Expression> __r1488 = (arguments.get()).opSlice().copy();
+            int __key1487 = 0;
+            for (; (__key1487 < __r1488.getLength());__key1487 += 1) {
+                Expression arg = __r1488.get(__key1487);
+                int i = __key1487;
                 if (i != 0)
                 {
                     (buf.get()).writestring(new ByteSlice(", "));
@@ -3185,11 +3189,11 @@ public class hdrgen {
         }
         Ref<HdrGenState> hgs = ref(new HdrGenState());
         {
-            Slice<RootObject> __r1472 = (objects.get()).opSlice().copy();
-            int __key1471 = 0;
-            for (; (__key1471 < __r1472.getLength());__key1471 += 1) {
-                RootObject o = __r1472.get(__key1471);
-                int i = __key1471;
+            Slice<RootObject> __r1490 = (objects.get()).opSlice().copy();
+            int __key1489 = 0;
+            for (; (__key1489 < __r1490.getLength());__key1489 += 1) {
+                RootObject o = __r1490.get(__key1489);
+                int i = __key1489;
                 if (i != 0)
                 {
                     (buf.get()).writestring(new ByteSlice(", "));
@@ -3229,10 +3233,10 @@ public class hdrgen {
     public static void parametersToBuffer(ParameterList pl, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         (buf.get()).writeByte(40);
         {
-            int __key1473 = 0;
-            int __limit1474 = pl.length();
-            for (; (__key1473 < __limit1474);__key1473 += 1) {
-                int i = __key1473;
+            int __key1491 = 0;
+            int __limit1492 = pl.length();
+            for (; (__key1491 < __limit1492);__key1491 += 1) {
+                int i = __key1491;
                 if (i != 0)
                 {
                     (buf.get()).writestring(new ByteSlice(", "));
@@ -3348,11 +3352,11 @@ public class hdrgen {
             return ;
         }
         {
-            Slice<Expression> __r1476 = (expressions.get()).opSlice().copy();
-            int __key1475 = 0;
-            for (; (__key1475 < __r1476.getLength());__key1475 += 1) {
-                Expression el = __r1476.get(__key1475);
-                int i = __key1475;
+            Slice<Expression> __r1494 = (expressions.get()).opSlice().copy();
+            int __key1493 = 0;
+            for (; (__key1493 < __r1494.getLength());__key1493 += 1) {
+                Expression el = __r1494.get(__key1493);
+                int i = __key1493;
                 if (i != 0)
                 {
                     (buf.get()).writestring(new ByteSlice(", "));
@@ -3497,10 +3501,10 @@ public class hdrgen {
         else if (ti.members != null)
         {
             {
-                Slice<Dsymbol> __r1477 = (ti.members.get()).opSlice().copy();
-                int __key1478 = 0;
-                for (; (__key1478 < __r1477.getLength());__key1478 += 1) {
-                    Dsymbol m = __r1477.get(__key1478);
+                Slice<Dsymbol> __r1495 = (ti.members.get()).opSlice().copy();
+                int __key1496 = 0;
+                for (; (__key1496 < __r1495.getLength());__key1496 += 1) {
+                    Dsymbol m = __r1495.get(__key1496);
                     dsymbolToBuffer(m, buf, hgs);
                 }
             }
@@ -3551,11 +3555,11 @@ public class hdrgen {
         (buf.get()).writeByte(40);
         ti.nest++;
         {
-            Slice<RootObject> __r1480 = (ti.tiargs.get()).opSlice().copy();
-            int __key1479 = 0;
-            for (; (__key1479 < __r1480.getLength());__key1479 += 1) {
-                RootObject arg = __r1480.get(__key1479);
-                int i = __key1479;
+            Slice<RootObject> __r1498 = (ti.tiargs.get()).opSlice().copy();
+            int __key1497 = 0;
+            for (; (__key1497 < __r1498.getLength());__key1497 += 1) {
+                RootObject arg = __r1498.get(__key1497);
+                int i = __key1497;
                 if (i != 0)
                 {
                     (buf.get()).writestring(new ByteSlice(", "));
@@ -3597,11 +3601,11 @@ public class hdrgen {
                         {
                             Ptr<DArray<RootObject>> args = ptr(v.objects);
                             {
-                                Slice<RootObject> __r1482 = (args.get()).opSlice().copy();
-                                int __key1481 = 0;
-                                for (; (__key1481 < __r1482.getLength());__key1481 += 1) {
-                                    RootObject arg = __r1482.get(__key1481);
-                                    int i = __key1481;
+                                Slice<RootObject> __r1500 = (args.get()).opSlice().copy();
+                                int __key1499 = 0;
+                                for (; (__key1499 < __r1500.getLength());__key1499 += 1) {
+                                    RootObject arg = __r1500.get(__key1499);
+                                    int i = __key1499;
                                     if (i != 0)
                                     {
                                         (buf.get()).writestring(new ByteSlice(", "));
@@ -3658,12 +3662,14 @@ public class hdrgen {
             (buf.get()).writeByte(32);
             MODtoBuffer(buf, t.mod);
         }
-        Function1<ByteSlice,Void> dg = (str) -> {
-         {
-            (buf.get()).writeByte(32);
-            (buf.get()).writestring(str);
-            return null;
-        }
+        Function1<ByteSlice,Void> dg = new Function1<ByteSlice,Void>() {
+            public Void invoke(ByteSlice str) {
+             {
+                (buf.get()).writeByte(32);
+                (buf.get()).writestring(str);
+                return null;
+            }}
+
         };
         attributesApply(t, dg, TRUSTformat.TRUSTformatDefault);
         t.inuse--;
@@ -3681,19 +3687,21 @@ public class hdrgen {
             MODtoBuffer(buf, t.mod);
             (buf.get()).writeByte(32);
         }
-        Function1<ByteSlice,Void> ignoreReturn = (str) -> {
-         {
-            if (!__equals(str, new ByteSlice("return")))
-            {
-                if ((pequals(ident, Id.ctor)) && __equals(str, new ByteSlice("ref")))
+        Function1<ByteSlice,Void> ignoreReturn = new Function1<ByteSlice,Void>() {
+            public Void invoke(ByteSlice str) {
+             {
+                if (!__equals(str, new ByteSlice("return")))
                 {
-                    return null;
+                    if ((pequals(ident, Id.ctor)) && __equals(str, new ByteSlice("ref")))
+                    {
+                        return null;
+                    }
+                    (buf.get()).writestring(str);
+                    (buf.get()).writeByte(32);
                 }
-                (buf.get()).writestring(str);
-                (buf.get()).writeByte(32);
-            }
-            return null;
-        }
+                return null;
+            }}
+
         };
         attributesApply(t, ignoreReturn, TRUSTformat.TRUSTformatDefault);
         if ((t.linkage > LINK.d) && (((hgs.get()).ddoc ? 1 : 0) != 1) && !(hgs.get()).hdrgen)
@@ -3724,11 +3732,11 @@ public class hdrgen {
         {
             (buf.get()).writeByte(40);
             {
-                Slice<TemplateParameter> __r1484 = (td.origParameters.get()).opSlice().copy();
-                int __key1483 = 0;
-                for (; (__key1483 < __r1484.getLength());__key1483 += 1) {
-                    TemplateParameter p = __r1484.get(__key1483);
-                    int i = __key1483;
+                Slice<TemplateParameter> __r1502 = (td.origParameters.get()).opSlice().copy();
+                int __key1501 = 0;
+                for (; (__key1501 < __r1502.getLength());__key1501 += 1) {
+                    TemplateParameter p = __r1502.get(__key1501);
+                    int i = __key1501;
                     if (i != 0)
                     {
                         (buf.get()).writestring(new ByteSlice(", "));
@@ -3747,85 +3755,95 @@ public class hdrgen {
     }
 
     public static void initializerToBuffer(Initializer inx, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-        Function1<ErrorInitializer,Void> visitError = (iz) -> {
-         {
-            (buf.get()).writestring(new ByteSlice("__error__"));
-            return null;
-        }
+        Function1<ErrorInitializer,Void> visitError = new Function1<ErrorInitializer,Void>() {
+            public Void invoke(ErrorInitializer iz) {
+             {
+                (buf.get()).writestring(new ByteSlice("__error__"));
+                return null;
+            }}
+
         };
-        Function1<VoidInitializer,Void> visitVoid = (iz) -> {
-         {
-            (buf.get()).writestring(new ByteSlice("void"));
-            return null;
-        }
+        Function1<VoidInitializer,Void> visitVoid = new Function1<VoidInitializer,Void>() {
+            public Void invoke(VoidInitializer iz) {
+             {
+                (buf.get()).writestring(new ByteSlice("void"));
+                return null;
+            }}
+
         };
-        Function1<StructInitializer,Void> visitStruct = (si) -> {
-         {
-            (buf.get()).writeByte(123);
-            {
-                Slice<Identifier> __r1486 = si.field.opSlice().copy();
-                Ref<Integer> __key1485 = ref(0);
-                for (; (__key1485.value < __r1486.getLength());__key1485.value += 1) {
-                    Identifier id = __r1486.get(__key1485.value);
-                    int i = __key1485.value;
-                    if (i != 0)
-                    {
-                        (buf.get()).writestring(new ByteSlice(", "));
-                    }
-                    if (id != null)
-                    {
-                        (buf.get()).writestring(id.asString());
-                        (buf.get()).writeByte(58);
-                    }
-                    {
-                        Initializer iz = si.value.get(i);
-                        if ((iz) != null)
+        Function1<StructInitializer,Void> visitStruct = new Function1<StructInitializer,Void>() {
+            public Void invoke(StructInitializer si) {
+             {
+                (buf.get()).writeByte(123);
+                {
+                    Slice<Identifier> __r1504 = si.field.opSlice().copy();
+                    Ref<Integer> __key1503 = ref(0);
+                    for (; (__key1503.value < __r1504.getLength());__key1503.value += 1) {
+                        Identifier id = __r1504.get(__key1503.value);
+                        int i = __key1503.value;
+                        if (i != 0)
                         {
-                            initializerToBuffer(iz, buf, hgs);
+                            (buf.get()).writestring(new ByteSlice(", "));
+                        }
+                        if (id != null)
+                        {
+                            (buf.get()).writestring(id.asString());
+                            (buf.get()).writeByte(58);
+                        }
+                        {
+                            Initializer iz = si.value.get(i);
+                            if ((iz) != null)
+                            {
+                                initializerToBuffer(iz, buf, hgs);
+                            }
                         }
                     }
                 }
-            }
-            (buf.get()).writeByte(125);
-            return null;
-        }
+                (buf.get()).writeByte(125);
+                return null;
+            }}
+
         };
-        Function1<ArrayInitializer,Void> visitArray = (ai) -> {
-         {
-            (buf.get()).writeByte(91);
-            {
-                Slice<Expression> __r1488 = ai.index.opSlice().copy();
-                Ref<Integer> __key1487 = ref(0);
-                for (; (__key1487.value < __r1488.getLength());__key1487.value += 1) {
-                    Expression ex = __r1488.get(__key1487.value);
-                    int i = __key1487.value;
-                    if (i != 0)
-                    {
-                        (buf.get()).writestring(new ByteSlice(", "));
-                    }
-                    if (ex != null)
-                    {
-                        expressionToBuffer(ex, buf, hgs);
-                        (buf.get()).writeByte(58);
-                    }
-                    {
-                        Initializer iz = ai.value.get(i);
-                        if ((iz) != null)
+        Function1<ArrayInitializer,Void> visitArray = new Function1<ArrayInitializer,Void>() {
+            public Void invoke(ArrayInitializer ai) {
+             {
+                (buf.get()).writeByte(91);
+                {
+                    Slice<Expression> __r1506 = ai.index.opSlice().copy();
+                    Ref<Integer> __key1505 = ref(0);
+                    for (; (__key1505.value < __r1506.getLength());__key1505.value += 1) {
+                        Expression ex = __r1506.get(__key1505.value);
+                        int i = __key1505.value;
+                        if (i != 0)
                         {
-                            initializerToBuffer(iz, buf, hgs);
+                            (buf.get()).writestring(new ByteSlice(", "));
+                        }
+                        if (ex != null)
+                        {
+                            expressionToBuffer(ex, buf, hgs);
+                            (buf.get()).writeByte(58);
+                        }
+                        {
+                            Initializer iz = ai.value.get(i);
+                            if ((iz) != null)
+                            {
+                                initializerToBuffer(iz, buf, hgs);
+                            }
                         }
                     }
                 }
-            }
-            (buf.get()).writeByte(93);
-            return null;
-        }
+                (buf.get()).writeByte(93);
+                return null;
+            }}
+
         };
-        Function1<ExpInitializer,Void> visitExp = (ei) -> {
-         {
-            expressionToBuffer(ei.exp, buf, hgs);
-            return null;
-        }
+        Function1<ExpInitializer,Void> visitExp = new Function1<ExpInitializer,Void>() {
+            public Void invoke(ExpInitializer ei) {
+             {
+                expressionToBuffer(ei.exp, buf, hgs);
+                return null;
+            }}
+
         };
         switch ((inx.kind & 0xFF))
         {
@@ -3850,239 +3868,285 @@ public class hdrgen {
     }
 
     public static void typeToBufferx(Type t, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-        Function1<Type,Void> visitType = (t) -> {
-         {
-            printf(new BytePtr("t = %p, ty = %d\n"), t, (t.ty & 0xFF));
-            throw new AssertionError("Unreachable code!");
-        }
+        Function1<Type,Void> visitType = new Function1<Type,Void>() {
+            public Void invoke(Type t) {
+             {
+                printf(new BytePtr("t = %p, ty = %d\n"), t, (t.ty & 0xFF));
+                throw new AssertionError("Unreachable code!");
+            }}
+
         };
-        Function1<TypeError,Void> visitError = (t) -> {
-         {
-            (buf.get()).writestring(new ByteSlice("_error_"));
-            return null;
-        }
+        Function1<TypeError,Void> visitError = new Function1<TypeError,Void>() {
+            public Void invoke(TypeError t) {
+             {
+                (buf.get()).writestring(new ByteSlice("_error_"));
+                return null;
+            }}
+
         };
-        Function1<TypeBasic,Void> visitBasic = (t) -> {
-         {
-            (buf.get()).writestring(t.dstring);
-            return null;
-        }
+        Function1<TypeBasic,Void> visitBasic = new Function1<TypeBasic,Void>() {
+            public Void invoke(TypeBasic t) {
+             {
+                (buf.get()).writestring(t.dstring);
+                return null;
+            }}
+
         };
-        Function1<TypeTraits,Void> visitTraits = (t) -> {
-         {
-            expressionToBuffer(t.exp, buf, hgs);
-            return null;
-        }
+        Function1<TypeTraits,Void> visitTraits = new Function1<TypeTraits,Void>() {
+            public Void invoke(TypeTraits t) {
+             {
+                expressionToBuffer(t.exp, buf, hgs);
+                return null;
+            }}
+
         };
-        Function1<TypeVector,Void> visitVector = (t) -> {
-         {
-            (buf.get()).writestring(new ByteSlice("__vector("));
-            visitWithMask(t.basetype, t.mod, buf, hgs);
-            (buf.get()).writestring(new ByteSlice(")"));
-            return null;
-        }
+        Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>() {
+            public Void invoke(TypeVector t) {
+             {
+                (buf.get()).writestring(new ByteSlice("__vector("));
+                visitWithMask(t.basetype, t.mod, buf, hgs);
+                (buf.get()).writestring(new ByteSlice(")"));
+                return null;
+            }}
+
         };
-        Function1<TypeSArray,Void> visitSArray = (t) -> {
-         {
-            visitWithMask(t.next.value, t.mod, buf, hgs);
-            (buf.get()).writeByte(91);
-            sizeToBuffer(t.dim, buf, hgs);
-            (buf.get()).writeByte(93);
-            return null;
-        }
-        };
-        Function1<TypeDArray,Void> visitDArray = (t) -> {
-         {
-            Type ut = t.castMod((byte)0);
-            if ((hgs.get()).declstring)
-            {
-                /*goto L1*//*unrolled goto*/
-                (buf.get()).writestring(new ByteSlice("dstring"));
-            }
-            if (ut.equals(Type.tstring))
-            {
-                (buf.get()).writestring(new ByteSlice("string"));
-            }
-            else if (ut.equals(Type.twstring))
-            {
-                (buf.get()).writestring(new ByteSlice("wstring"));
-            }
-            else if (ut.equals(Type.tdstring))
-            {
-                (buf.get()).writestring(new ByteSlice("dstring"));
-            }
-            else
-            {
-            /*L1:*/
+        Function1<TypeSArray,Void> visitSArray = new Function1<TypeSArray,Void>() {
+            public Void invoke(TypeSArray t) {
+             {
                 visitWithMask(t.next.value, t.mod, buf, hgs);
-                (buf.get()).writestring(new ByteSlice("[]"));
-            }
-            return null;
-        }
+                (buf.get()).writeByte(91);
+                sizeToBuffer(t.dim, buf, hgs);
+                (buf.get()).writeByte(93);
+                return null;
+            }}
+
         };
-        Function1<TypeAArray,Void> visitAArray = (t) -> {
-         {
-            visitWithMask(t.next.value, t.mod, buf, hgs);
-            (buf.get()).writeByte(91);
-            visitWithMask(t.index, (byte)0, buf, hgs);
-            (buf.get()).writeByte(93);
-            return null;
-        }
+        Function1<TypeDArray,Void> visitDArray = new Function1<TypeDArray,Void>() {
+            public Void invoke(TypeDArray t) {
+             {
+                Type ut = t.castMod((byte)0);
+                if ((hgs.get()).declstring)
+                {
+                    /*goto L1*//*unrolled goto*/
+                    (buf.get()).writestring(new ByteSlice("dstring"));
+                }
+                if (ut.equals(Type.tstring))
+                {
+                    (buf.get()).writestring(new ByteSlice("string"));
+                }
+                else if (ut.equals(Type.twstring))
+                {
+                    (buf.get()).writestring(new ByteSlice("wstring"));
+                }
+                else if (ut.equals(Type.tdstring))
+                {
+                    (buf.get()).writestring(new ByteSlice("dstring"));
+                }
+                else
+                {
+                /*L1:*/
+                    visitWithMask(t.next.value, t.mod, buf, hgs);
+                    (buf.get()).writestring(new ByteSlice("[]"));
+                }
+                return null;
+            }}
+
         };
-        Function1<TypePointer,Void> visitPointer = (t) -> {
-         {
-            if (((t.next.value.ty & 0xFF) == ENUMTY.Tfunction))
-            {
-                visitFuncIdentWithPostfix((TypeFunction)t.next.value, new ByteSlice("function"), buf, hgs);
-            }
-            else
-            {
+        Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>() {
+            public Void invoke(TypeAArray t) {
+             {
                 visitWithMask(t.next.value, t.mod, buf, hgs);
-                (buf.get()).writeByte(42);
-            }
-            return null;
-        }
+                (buf.get()).writeByte(91);
+                visitWithMask(t.index, (byte)0, buf, hgs);
+                (buf.get()).writeByte(93);
+                return null;
+            }}
+
         };
-        Function1<TypeReference,Void> visitReference = (t) -> {
-         {
-            visitWithMask(t.next.value, t.mod, buf, hgs);
-            (buf.get()).writeByte(38);
-            return null;
-        }
+        Function1<TypePointer,Void> visitPointer = new Function1<TypePointer,Void>() {
+            public Void invoke(TypePointer t) {
+             {
+                if (((t.next.value.ty & 0xFF) == ENUMTY.Tfunction))
+                {
+                    visitFuncIdentWithPostfix((TypeFunction)t.next.value, new ByteSlice("function"), buf, hgs);
+                }
+                else
+                {
+                    visitWithMask(t.next.value, t.mod, buf, hgs);
+                    (buf.get()).writeByte(42);
+                }
+                return null;
+            }}
+
         };
-        Function1<TypeFunction,Void> visitFunction = (t) -> {
-         {
-            visitFuncIdentWithPostfix(t, new ByteSlice(), buf, hgs);
-            return null;
-        }
+        Function1<TypeReference,Void> visitReference = new Function1<TypeReference,Void>() {
+            public Void invoke(TypeReference t) {
+             {
+                visitWithMask(t.next.value, t.mod, buf, hgs);
+                (buf.get()).writeByte(38);
+                return null;
+            }}
+
         };
-        Function1<TypeDelegate,Void> visitDelegate = (t) -> {
-         {
-            visitFuncIdentWithPostfix((TypeFunction)t.next.value, new ByteSlice("delegate"), buf, hgs);
-            return null;
-        }
+        Function1<TypeFunction,Void> visitFunction = new Function1<TypeFunction,Void>() {
+            public Void invoke(TypeFunction t) {
+             {
+                visitFuncIdentWithPostfix(t, new ByteSlice(), buf, hgs);
+                return null;
+            }}
+
         };
-        Function1<TypeQualified,Void> visitTypeQualifiedHelper = (t) -> {
-         {
-            {
-                Slice<RootObject> __r1489 = t.idents.opSlice().copy();
-                Ref<Integer> __key1490 = ref(0);
-                for (; (__key1490.value < __r1489.getLength());__key1490.value += 1) {
-                    RootObject id = __r1489.get(__key1490.value);
-                    if ((id.dyncast() == DYNCAST.dsymbol))
-                    {
-                        (buf.get()).writeByte(46);
-                        TemplateInstance ti = (TemplateInstance)id;
-                        dsymbolToBuffer(ti, buf, hgs);
-                    }
-                    else if ((id.dyncast() == DYNCAST.expression))
-                    {
-                        (buf.get()).writeByte(91);
-                        expressionToBuffer((Expression)id, buf, hgs);
-                        (buf.get()).writeByte(93);
-                    }
-                    else if ((id.dyncast() == DYNCAST.type))
-                    {
-                        (buf.get()).writeByte(91);
-                        typeToBufferx((Type)id, buf, hgs);
-                        (buf.get()).writeByte(93);
-                    }
-                    else
-                    {
-                        (buf.get()).writeByte(46);
-                        (buf.get()).writestring(id.asString());
+        Function1<TypeDelegate,Void> visitDelegate = new Function1<TypeDelegate,Void>() {
+            public Void invoke(TypeDelegate t) {
+             {
+                visitFuncIdentWithPostfix((TypeFunction)t.next.value, new ByteSlice("delegate"), buf, hgs);
+                return null;
+            }}
+
+        };
+        Function1<TypeQualified,Void> visitTypeQualifiedHelper = new Function1<TypeQualified,Void>() {
+            public Void invoke(TypeQualified t) {
+             {
+                {
+                    Slice<RootObject> __r1507 = t.idents.opSlice().copy();
+                    Ref<Integer> __key1508 = ref(0);
+                    for (; (__key1508.value < __r1507.getLength());__key1508.value += 1) {
+                        RootObject id = __r1507.get(__key1508.value);
+                        if ((id.dyncast() == DYNCAST.dsymbol))
+                        {
+                            (buf.get()).writeByte(46);
+                            TemplateInstance ti = (TemplateInstance)id;
+                            dsymbolToBuffer(ti, buf, hgs);
+                        }
+                        else if ((id.dyncast() == DYNCAST.expression))
+                        {
+                            (buf.get()).writeByte(91);
+                            expressionToBuffer((Expression)id, buf, hgs);
+                            (buf.get()).writeByte(93);
+                        }
+                        else if ((id.dyncast() == DYNCAST.type))
+                        {
+                            (buf.get()).writeByte(91);
+                            typeToBufferx((Type)id, buf, hgs);
+                            (buf.get()).writeByte(93);
+                        }
+                        else
+                        {
+                            (buf.get()).writeByte(46);
+                            (buf.get()).writestring(id.asString());
+                        }
                     }
                 }
-            }
-            return null;
-        }
+                return null;
+            }}
+
         };
-        Function1<TypeIdentifier,Void> visitIdentifier = (t) -> {
-         {
-            (buf.get()).writestring(t.ident.asString());
-            visitTypeQualifiedHelper.invoke(t);
-            return null;
-        }
+        Function1<TypeIdentifier,Void> visitIdentifier = new Function1<TypeIdentifier,Void>() {
+            public Void invoke(TypeIdentifier t) {
+             {
+                (buf.get()).writestring(t.ident.asString());
+                visitTypeQualifiedHelper.invoke(t);
+                return null;
+            }}
+
         };
-        Function1<TypeInstance,Void> visitInstance = (t) -> {
-         {
-            dsymbolToBuffer(t.tempinst, buf, hgs);
-            visitTypeQualifiedHelper.invoke(t);
-            return null;
-        }
+        Function1<TypeInstance,Void> visitInstance = new Function1<TypeInstance,Void>() {
+            public Void invoke(TypeInstance t) {
+             {
+                dsymbolToBuffer(t.tempinst, buf, hgs);
+                visitTypeQualifiedHelper.invoke(t);
+                return null;
+            }}
+
         };
-        Function1<TypeTypeof,Void> visitTypeof = (t) -> {
-         {
-            (buf.get()).writestring(new ByteSlice("typeof("));
-            expressionToBuffer(t.exp, buf, hgs);
-            (buf.get()).writeByte(41);
-            visitTypeQualifiedHelper.invoke(t);
-            return null;
-        }
+        Function1<TypeTypeof,Void> visitTypeof = new Function1<TypeTypeof,Void>() {
+            public Void invoke(TypeTypeof t) {
+             {
+                (buf.get()).writestring(new ByteSlice("typeof("));
+                expressionToBuffer(t.exp, buf, hgs);
+                (buf.get()).writeByte(41);
+                visitTypeQualifiedHelper.invoke(t);
+                return null;
+            }}
+
         };
-        Function1<TypeReturn,Void> visitReturn = (t) -> {
-         {
-            (buf.get()).writestring(new ByteSlice("typeof(return)"));
-            visitTypeQualifiedHelper.invoke(t);
-            return null;
-        }
+        Function1<TypeReturn,Void> visitReturn = new Function1<TypeReturn,Void>() {
+            public Void invoke(TypeReturn t) {
+             {
+                (buf.get()).writestring(new ByteSlice("typeof(return)"));
+                visitTypeQualifiedHelper.invoke(t);
+                return null;
+            }}
+
         };
-        Function1<TypeEnum,Void> visitEnum = (t) -> {
-         {
-            (buf.get()).writestring((hgs.get()).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
-            return null;
-        }
-        };
-        Function1<TypeStruct,Void> visitStruct = (t) -> {
-         {
-            TemplateInstance ti = t.sym.parent.value != null ? t.sym.parent.value.isTemplateInstance() : null;
-            if ((ti != null) && (pequals(ti.aliasdecl, t.sym)))
-            {
-                (buf.get()).writestring((hgs.get()).fullQual ? ti.toPrettyChars(false) : ti.toChars());
-            }
-            else
-            {
+        Function1<TypeEnum,Void> visitEnum = new Function1<TypeEnum,Void>() {
+            public Void invoke(TypeEnum t) {
+             {
                 (buf.get()).writestring((hgs.get()).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
-            }
-            return null;
-        }
+                return null;
+            }}
+
         };
-        Function1<TypeClass,Void> visitClass = (t) -> {
-         {
-            TemplateInstance ti = t.sym.parent.value.isTemplateInstance();
-            if ((ti != null) && (pequals(ti.aliasdecl, t.sym)))
-            {
-                (buf.get()).writestring((hgs.get()).fullQual ? ti.toPrettyChars(false) : ti.toChars());
-            }
-            else
-            {
-                (buf.get()).writestring((hgs.get()).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
-            }
-            return null;
-        }
+        Function1<TypeStruct,Void> visitStruct = new Function1<TypeStruct,Void>() {
+            public Void invoke(TypeStruct t) {
+             {
+                TemplateInstance ti = t.sym.parent.value != null ? t.sym.parent.value.isTemplateInstance() : null;
+                if ((ti != null) && (pequals(ti.aliasdecl, t.sym)))
+                {
+                    (buf.get()).writestring((hgs.get()).fullQual ? ti.toPrettyChars(false) : ti.toChars());
+                }
+                else
+                {
+                    (buf.get()).writestring((hgs.get()).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
+                }
+                return null;
+            }}
+
         };
-        Function1<TypeTuple,Void> visitTuple = (t) -> {
-         {
-            parametersToBuffer(new ParameterList(t.arguments, VarArg.none), buf, hgs);
-            return null;
-        }
+        Function1<TypeClass,Void> visitClass = new Function1<TypeClass,Void>() {
+            public Void invoke(TypeClass t) {
+             {
+                TemplateInstance ti = t.sym.parent.value.isTemplateInstance();
+                if ((ti != null) && (pequals(ti.aliasdecl, t.sym)))
+                {
+                    (buf.get()).writestring((hgs.get()).fullQual ? ti.toPrettyChars(false) : ti.toChars());
+                }
+                else
+                {
+                    (buf.get()).writestring((hgs.get()).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
+                }
+                return null;
+            }}
+
         };
-        Function1<TypeSlice,Void> visitSlice = (t) -> {
-         {
-            visitWithMask(t.next.value, t.mod, buf, hgs);
-            (buf.get()).writeByte(91);
-            sizeToBuffer(t.lwr, buf, hgs);
-            (buf.get()).writestring(new ByteSlice(" .. "));
-            sizeToBuffer(t.upr, buf, hgs);
-            (buf.get()).writeByte(93);
-            return null;
-        }
+        Function1<TypeTuple,Void> visitTuple = new Function1<TypeTuple,Void>() {
+            public Void invoke(TypeTuple t) {
+             {
+                parametersToBuffer(new ParameterList(t.arguments, VarArg.none), buf, hgs);
+                return null;
+            }}
+
         };
-        Function1<TypeNull,Void> visitNull = (t) -> {
-         {
-            (buf.get()).writestring(new ByteSlice("typeof(null)"));
-            return null;
-        }
+        Function1<TypeSlice,Void> visitSlice = new Function1<TypeSlice,Void>() {
+            public Void invoke(TypeSlice t) {
+             {
+                visitWithMask(t.next.value, t.mod, buf, hgs);
+                (buf.get()).writeByte(91);
+                sizeToBuffer(t.lwr, buf, hgs);
+                (buf.get()).writestring(new ByteSlice(" .. "));
+                sizeToBuffer(t.upr, buf, hgs);
+                (buf.get()).writeByte(93);
+                return null;
+            }}
+
+        };
+        Function1<TypeNull,Void> visitNull = new Function1<TypeNull,Void>() {
+            public Void invoke(TypeNull t) {
+             {
+                (buf.get()).writestring(new ByteSlice("typeof(null)"));
+                return null;
+            }}
+
         };
         switch ((t.ty & 0xFF))
         {

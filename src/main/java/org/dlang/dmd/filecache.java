@@ -16,13 +16,13 @@ public class filecache {
         public Ref<Ptr<FileBuffer>> buffer = ref(null);
         public Ref<Slice<ByteSlice>> lines = ref(new Slice<ByteSlice>());
         public  FileAndLines(ByteSlice filename) {
-            this.file.value = refPtr(new FileName(filename));
+            this.file.value = pcopy((refPtr(new FileName(filename))));
             this.readAndSplit();
         }
 
         public  void readAndSplit() {
             File.ReadResult readResult = File.read((this.file.value.get()).toChars()).copy();
-            this.buffer.value = refPtr(new FileBuffer(readResult.extractData()));
+            this.buffer.value = pcopy((refPtr(new FileBuffer(readResult.extractData()))));
             BytePtr buf = pcopy(toBytePtr(this.buffer.value.get().data));
             for (; buf.get() != 0;){
                 BytePtr prevBuf = pcopy(buf);
@@ -81,11 +81,14 @@ public class filecache {
         }
 
         public  void deinitialize() {
-            Function1<Ptr<StringValue>,Integer> __foreachbody1 = (sv) -> {
-             {
-                destroy(sv);
-                return 0;
-            }
+            Function1<Ptr<StringValue>,Integer> __foreachbody1 = new Function1<Ptr<StringValue>,Integer>() {
+                public Integer invoke(Ptr<StringValue> sv) {
+                 {
+                    Ref<Ptr<StringValue>> sv_ref = ref(sv);
+                    destroy(sv_ref);
+                    return 0;
+                }}
+
             };
             this.files.opApply(__foreachbody1);
             this.files.reset(0);

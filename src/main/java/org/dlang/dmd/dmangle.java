@@ -78,7 +78,7 @@ public class dmangle {
         public AssocArrayIdentifierInteger idents = new AssocArrayIdentifierInteger();
         public Ptr<OutBuffer> buf = null;
         public  Mangler(Ptr<OutBuffer> buf) {
-            this.buf = buf;
+            this.buf = pcopy(buf);
         }
 
         public  void writeBackRef(int pos) {
@@ -796,7 +796,7 @@ public class dmangle {
                     else if (va != null)
                     {
                         assert((i + 1 == (args.get()).length));
-                        args = ptr(va.objects);
+                        args = pcopy((ptr(va.objects)));
                         i = -1;
                     }
                     else
@@ -859,14 +859,14 @@ public class dmangle {
                 (this.buf.get()).writestring(new ByteSlice("INF"));
                 return ;
             }
-            Ref<ByteSlice> buffer = ref(new ByteSlice(new byte[36]));
-            int n = CTFloat.sprint(ptr(buffer), (byte)65, value);
+            ByteSlice buffer = new ByteSlice(new byte[36]);
+            int n = CTFloat.sprint(buffer.ptr(), (byte)65, value);
             assert((n < 36));
             {
-                ByteSlice __r1004 = buffer.value.slice(2,n).copy();
-                int __key1005 = 0;
-                for (; (__key1005 < __r1004.getLength());__key1005 += 1) {
-                    byte c = __r1004.get(__key1005);
+                ByteSlice __r1022 = buffer.slice(2,n).copy();
+                int __key1023 = 0;
+                for (; (__key1023 < __r1022.getLength());__key1023 += 1) {
+                    byte c = __r1022.get(__key1023);
                     switch ((c & 0xFF))
                     {
                         case 45:
@@ -927,10 +927,10 @@ public class dmangle {
                     case 4:
                         m = (byte)100;
                         {
-                            int __key1006 = 0;
-                            int __limit1007 = e.len;
-                            for (; (__key1006 < __limit1007);__key1006 += 1) {
-                                int u_1 = __key1006;
+                            int __key1024 = 0;
+                            int __limit1025 = e.len;
+                            for (; (__key1024 < __limit1025);__key1024 += 1) {
+                                int u_1 = __key1024;
                                 int c_1 = (toPtr<Integer>(e.string)).get(u_1);
                                 if (!utf_isValidDchar(c_1))
                                 {
@@ -973,10 +973,10 @@ public class dmangle {
             (this.buf.get()).writeByte(65);
             (this.buf.get()).print((long)dim);
             {
-                int __key1008 = 0;
-                int __limit1009 = dim;
-                for (; (__key1008 < __limit1009);__key1008 += 1) {
-                    int i = __key1008;
+                int __key1026 = 0;
+                int __limit1027 = dim;
+                for (; (__key1026 < __limit1027);__key1026 += 1) {
+                    int i = __key1026;
                     e.getElement(i).accept(this);
                 }
             }
@@ -987,10 +987,10 @@ public class dmangle {
             (this.buf.get()).writeByte(65);
             (this.buf.get()).print((long)dim);
             {
-                int __key1010 = 0;
-                int __limit1011 = dim;
-                for (; (__key1010 < __limit1011);__key1010 += 1) {
-                    int i = __key1010;
+                int __key1028 = 0;
+                int __limit1029 = dim;
+                for (; (__key1028 < __limit1029);__key1028 += 1) {
+                    int i = __key1028;
                     (e.keys.get()).get(i).accept(this);
                     (e.values.get()).get(i).accept(this);
                 }
@@ -1002,10 +1002,10 @@ public class dmangle {
             (this.buf.get()).writeByte(83);
             (this.buf.get()).print((long)dim);
             {
-                int __key1012 = 0;
-                int __limit1013 = dim;
-                for (; (__key1012 < __limit1013);__key1012 += 1) {
-                    int i = __key1012;
+                int __key1030 = 0;
+                int __limit1031 = dim;
+                for (; (__key1030 < __limit1031);__key1030 += 1) {
+                    int i = __key1030;
                     Expression ex = (e.elements.get()).get(i);
                     if (ex != null)
                     {
@@ -1020,11 +1020,13 @@ public class dmangle {
         }
 
         public  void paramsToDecoBuffer(Ptr<DArray<Parameter>> parameters) {
-            Function2<Integer,Parameter,Integer> paramsToDecoBufferDg = (n, p) -> {
-             {
-                p.accept(this);
-                return 0;
-            }
+            Function2<Integer,Parameter,Integer> paramsToDecoBufferDg = new Function2<Integer,Parameter,Integer>() {
+                public Integer invoke(Integer n, Parameter p) {
+                 {
+                    p.accept(this);
+                    return 0;
+                }}
+
             };
             Parameter._foreach(parameters, paramsToDecoBufferDg, null);
         }

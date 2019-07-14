@@ -74,10 +74,10 @@ public class expressionsem {
             return false;
         }
         {
-            Slice<Expression> __r1350 = (exps.get()).opSlice().copy();
-            int __key1351 = 0;
-            for (; (__key1351 < __r1350.getLength());__key1351 += 1) {
-                Expression ex = __r1350.get(__key1351);
+            Slice<Expression> __r1368 = (exps.get()).opSlice().copy();
+            int __key1369 = 0;
+            for (; (__key1369 < __r1368.getLength());__key1369 += 1) {
+                Expression ex = __r1368.get(__key1369);
                 if (ex == null)
                 {
                     continue;
@@ -126,10 +126,10 @@ public class expressionsem {
     }
 
     public static StringExp semanticString(Ptr<Scope> sc, Expression exp, BytePtr s) {
-        sc = (sc.get()).startCTFE();
+        sc = pcopy((sc.get()).startCTFE());
         exp = expressionSemantic(exp, sc);
         exp = resolveProperties(sc, exp);
-        sc = (sc.get()).endCTFE();
+        sc = pcopy((sc.get()).endCTFE());
         if (((exp.op & 0xFF) == 127))
         {
             return null;
@@ -172,12 +172,12 @@ public class expressionsem {
         AggregateDeclaration ad = isAggregate(ae.e1.value.type.value);
         Dsymbol slice = search_function(ad, Id.slice);
         {
-            Slice<Expression> __r1353 = (ae.arguments.get()).opSlice().copy();
-            int __key1352 = 0;
+            Slice<Expression> __r1371 = (ae.arguments.get()).opSlice().copy();
+            int __key1370 = 0;
         L_outer1:
-            for (; (__key1352 < __r1353.getLength());__key1352 += 1) {
-                Expression e = __r1353.get(__key1352);
-                int i = __key1352;
+            for (; (__key1370 < __r1371.getLength());__key1370 += 1) {
+                Expression e = __r1371.get(__key1370);
+                int i = __key1370;
                 if ((i == 0))
                 {
                     pe0.set(0, extractOpDollarSideEffect(sc, ae));
@@ -194,7 +194,7 @@ public class expressionsem {
                 }
                 ArrayScopeSymbol sym = new ArrayScopeSymbol(sc, ae);
                 sym.parent.value = (sc.get()).scopesym;
-                sc = (sc.get()).push(sym);
+                sc = pcopy((sc.get()).push(sym));
                 ae.lengthVar.value = null;
                 ae.currentDimension = i;
                 e = expressionSemantic(e, sc);
@@ -205,7 +205,7 @@ public class expressionsem {
                     de = expressionSemantic(de, sc);
                     pe0.set(0, Expression.combine(pe0.get(), de));
                 }
-                sc = (sc.get()).pop();
+                sc = pcopy((sc.get()).pop());
                 if (((e.op & 0xFF) == 231))
                 {
                     IntervalExp ie = (IntervalExp)e;
@@ -217,9 +217,9 @@ public class expressionsem {
                     fargs.get().set(0, ie.lwr.value);
                     fargs.get().set(1, ie.upr.value);
                     int xerrors = global.startGagging();
-                    sc = (sc.get()).push();
+                    sc = pcopy((sc.get()).push());
                     FuncDeclaration fslice = resolveFuncCall(ae.loc, sc, slice, tiargs, ae.e1.value.type.value, fargs, FuncResolveFlag.quiet);
-                    sc = (sc.get()).pop();
+                    sc = pcopy((sc.get()).pop());
                     global.endGagging(xerrors);
                     if (fslice == null)
                     {
@@ -252,12 +252,12 @@ public class expressionsem {
         VarDeclaration lengthVar = ae.lengthVar.value;
         ArrayScopeSymbol sym = new ArrayScopeSymbol(sc, ae);
         sym.parent.value = (sc.get()).scopesym;
-        sc = (sc.get()).push(sym);
+        sc = pcopy((sc.get()).push(sym));
         {
-            int __key1354 = 0;
-            int __limit1355 = 2;
-            for (; (__key1354 < __limit1355);__key1354 += 1) {
-                int i = __key1354;
+            int __key1372 = 0;
+            int __limit1373 = 2;
+            for (; (__key1372 < __limit1373);__key1372 += 1) {
+                int i = __key1372;
                 Expression e = (i == 0) ? ie.lwr.value : ie.upr.value;
                 e = expressionSemantic(e, sc);
                 e = resolveProperties(sc, e);
@@ -275,7 +275,7 @@ public class expressionsem {
             de = expressionSemantic(de, sc);
             pe0.set(0, Expression.combine(pe0.get(), de));
         }
-        sc = (sc.get()).pop();
+        sc = pcopy((sc.get()).pop());
         return ae;
     }
 
@@ -284,10 +284,10 @@ public class expressionsem {
         if (exps != null)
         {
             {
-                Slice<Expression> __r1356 = (exps.get()).opSlice().copy();
-                int __key1357 = 0;
-                for (; (__key1357 < __r1356.getLength());__key1357 += 1) {
-                    Expression e = __r1356.get(__key1357);
+                Slice<Expression> __r1374 = (exps.get()).opSlice().copy();
+                int __key1375 = 0;
+                for (; (__key1375 < __r1374.getLength());__key1375 += 1) {
+                    Expression e = __r1374.get(__key1375);
                     if (e != null)
                     {
                         Expression e2 = expressionSemantic(e, sc);
@@ -348,52 +348,55 @@ public class expressionsem {
 
     public static Expression searchUFCS(Ptr<Scope> sc, UnaExp ue, Identifier ident) {
         Loc loc = ue.loc.copy();
-        Function1<Integer,Dsymbol> searchScopes = (flags) -> {
-         {
-            Ref<Dsymbol> s = ref(null);
-            {
-                Ref<Ptr<Scope>> scx = ref(sc);
-                for (; scx.value != null;scx.value = (scx.value.get()).enclosing){
-                    if ((scx.value.get()).scopesym == null)
-                    {
-                        continue;
-                    }
-                    if ((scx.value.get()).scopesym.isModule() != null)
-                    {
-                        flags.value |= 32;
-                    }
-                    s.value = (scx.value.get()).scopesym.search(loc, ident, flags.value);
-                    if (s.value != null)
-                    {
-                        if (s.value.isOverloadSet() != null)
+        Function1<Integer,Dsymbol> searchScopes = new Function1<Integer,Dsymbol>() {
+            public Dsymbol invoke(Integer flags) {
+             {
+                Ref<Integer> flags_ref = ref(flags);
+                Ref<Dsymbol> s = ref(null);
+                {
+                    Ref<Ptr<Scope>> scx = ref(sc);
+                    for (; scx.value != null;scx.value = pcopy((scx.value.get()).enclosing)){
+                        if ((scx.value.get()).scopesym == null)
                         {
-                            break;
+                            continue;
                         }
+                        if ((scx.value.get()).scopesym.isModule() != null)
                         {
-                            AliasDeclaration ad = s.value.isAliasDeclaration();
-                            if ((ad) != null)
+                            flags_ref.value |= 32;
+                        }
+                        s.value = (scx.value.get()).scopesym.search(loc, ident, flags_ref.value);
+                        if (s.value != null)
+                        {
+                            if (s.value.isOverloadSet() != null)
                             {
-                                if (ad._import != null)
+                                break;
+                            }
+                            {
+                                AliasDeclaration ad = s.value.isAliasDeclaration();
+                                if ((ad) != null)
                                 {
-                                    break;
+                                    if (ad._import != null)
+                                    {
+                                        break;
+                                    }
                                 }
                             }
+                            Dsymbol p = s.value.toParent2();
+                            if ((p != null) && (p.isModule() != null))
+                            {
+                                break;
+                            }
                         }
-                        Dsymbol p = s.value.toParent2();
-                        if ((p != null) && (p.isModule() != null))
+                        s.value = null;
+                        if (((scx.value.get()).scopesym.isModule() != null) && !(((scx.value.get()).enclosing != null) && (((scx.value.get()).enclosing.get()).enclosing == null)))
                         {
                             break;
                         }
                     }
-                    s.value = null;
-                    if (((scx.value.get()).scopesym.isModule() != null) && !(((scx.value.get()).enclosing != null) && (((scx.value.get()).enclosing.get()).enclosing == null)))
-                    {
-                        break;
-                    }
                 }
-            }
-            return s.value;
-        }
+                return s.value;
+            }}
+
         };
         int flags = 0;
         Dsymbol s = null;
@@ -559,7 +562,7 @@ public class expressionsem {
         ce.e1.value = e;
         if (ce.arguments == null)
         {
-            ce.arguments = refPtr(new DArray<Expression>());
+            ce.arguments = pcopy((refPtr(new DArray<Expression>())));
         }
         (ce.arguments.get()).shift(eleft);
         return null;
@@ -649,10 +652,10 @@ public class expressionsem {
             /*Los:*/
                 assert(os != null);
                 {
-                    Slice<Dsymbol> __r1358 = os.a.opSlice().copy();
-                    int __key1359 = 0;
-                    for (; (__key1359 < __r1358.getLength());__key1359 += 1) {
-                        Dsymbol s = __r1358.get(__key1359);
+                    Slice<Dsymbol> __r1376 = os.a.opSlice().copy();
+                    int __key1377 = 0;
+                    for (; (__key1377 < __r1376.getLength());__key1377 += 1) {
+                        Dsymbol s = __r1376.get(__key1377);
                         fd = s.isFuncDeclaration();
                         td = s.isTemplateDeclaration();
                         if (fd != null)
@@ -679,10 +682,10 @@ public class expressionsem {
         /*Los:*/
             assert(os != null);
             {
-                Slice<Dsymbol> __r1358 = os.a.opSlice().copy();
-                int __key1359 = 0;
-                for (; (__key1359 < __r1358.getLength());__key1359 += 1) {
-                    Dsymbol s = __r1358.get(__key1359);
+                Slice<Dsymbol> __r1376 = os.a.opSlice().copy();
+                int __key1377 = 0;
+                for (; (__key1377 < __r1376.getLength());__key1377 += 1) {
+                    Dsymbol s = __r1376.get(__key1377);
                     fd = s.isFuncDeclaration();
                     td = s.isTemplateDeclaration();
                     if (fd != null)
@@ -1288,7 +1291,7 @@ public class expressionsem {
                     {
                         /*goto Leprop*/throw Dispatch0.INSTANCE;
                     }
-                    tiargs = dti.ti.tiargs;
+                    tiargs = pcopy(dti.ti.tiargs);
                     tthis = dti.e1.value.type.value;
                     if (((os = dti.ti.tempdecl.isOverloadSet()) != null))
                     {
@@ -1441,7 +1444,7 @@ public class expressionsem {
                         {
                             /*goto Leprop*/throw Dispatch0.INSTANCE;
                         }
-                        tiargs = ti.tiargs;
+                        tiargs = pcopy(ti.tiargs);
                         tthis = null;
                         if (((os = ti.tempdecl.isOverloadSet()) != null))
                         {
@@ -1843,7 +1846,7 @@ public class expressionsem {
                     condexp.type.value = null;
                     condexp.e1.value = e0;
                     condexp.e2.value = e;
-                    condexp.loc = e.loc.copy();
+                    condexp.loc.opAssign(e.loc.copy());
                     Expression ex = expressionSemantic(condexp, sc);
                     if (((ex.op & 0xFF) == 127))
                     {
@@ -2043,19 +2046,21 @@ public class expressionsem {
         byte wildmatch = (tthis != null) && !isCtorCall ? (byte)(tthis.deduceWild(tf, false) & 0xFF) : (byte)0;
         boolean done = false;
         {
-            int __key1362 = 0;
-            int __limit1363 = n;
+            int __key1380 = 0;
+            int __limit1381 = n;
         L_outer4:
-            for (; (__key1362 < __limit1363);__key1362 += 1) {
-                int i = __key1362;
+            for (; (__key1380 < __limit1381);__key1380 += 1) {
+                int i = __key1380;
                 Expression arg = (i < nargs) ? (arguments.get()).get(i) : null;
                 if ((i < nparams))
                 {
-                    Function0<Boolean> errorArgs = () -> {
-                     {
-                        error(loc, new BytePtr("expected %llu function arguments, not %llu"), (long)nparams, (long)nargs);
-                        return true;
-                    }
+                    Function0<Boolean> errorArgs = new Function0<Boolean>() {
+                        public Boolean invoke() {
+                         {
+                            error(loc, new BytePtr("expected %llu function arguments, not %llu"), (long)nparams, (long)nargs);
+                            return true;
+                        }}
+
                     };
                     Parameter p = tf.parameterList.get(i);
                     if (arg == null)
@@ -2075,10 +2080,10 @@ public class expressionsem {
                                         Type tret = p.isLazyArray();
                                         Ptr<DArray<Expression>> elements = refPtr(new DArray<Expression>(nargs - i));
                                         {
-                                            int __key1364 = 0;
-                                            int __limit1365 = (elements.get()).length;
-                                            for (; (__key1364 < __limit1365);__key1364 += 1) {
-                                                int u = __key1364;
+                                            int __key1382 = 0;
+                                            int __limit1383 = (elements.get()).length;
+                                            for (; (__key1382 < __limit1383);__key1382 += 1) {
+                                                int u = __key1382;
                                                 Expression a = (arguments.get()).get(i + u);
                                                 if ((tret != null) && (a.implicitConvTo(tret) != 0))
                                                 {
@@ -2102,10 +2107,10 @@ public class expressionsem {
                                     case 7:
                                         Ptr<DArray<Expression>> args = refPtr(new DArray<Expression>(nargs - i));
                                         {
-                                            int __key1366 = i;
-                                            int __limit1367 = nargs;
-                                            for (; (__key1366 < __limit1367);__key1366 += 1) {
-                                                int u_1 = __key1366;
+                                            int __key1384 = i;
+                                            int __limit1385 = nargs;
+                                            for (; (__key1384 < __limit1385);__key1384 += 1) {
+                                                int u_1 = __key1384;
                                                 args.get().set(u_1 - i, (arguments.get()).get(u_1));
                                             }
                                         }
@@ -2172,10 +2177,10 @@ public class expressionsem {
                                     Type tret = p.isLazyArray();
                                     Ptr<DArray<Expression>> elements = refPtr(new DArray<Expression>(nargs - i));
                                     {
-                                        int __key1364 = 0;
-                                        int __limit1365 = (elements.get()).length;
-                                        for (; (__key1364 < __limit1365);__key1364 += 1) {
-                                            int u = __key1364;
+                                        int __key1382 = 0;
+                                        int __limit1383 = (elements.get()).length;
+                                        for (; (__key1382 < __limit1383);__key1382 += 1) {
+                                            int u = __key1382;
                                             Expression a = (arguments.get()).get(i + u);
                                             if ((tret != null) && (a.implicitConvTo(tret) != 0))
                                             {
@@ -2199,10 +2204,10 @@ public class expressionsem {
                                 case 7:
                                     Ptr<DArray<Expression>> args = refPtr(new DArray<Expression>(nargs - i));
                                     {
-                                        int __key1366 = i;
-                                        int __limit1367 = nargs;
-                                        for (; (__key1366 < __limit1367);__key1366 += 1) {
-                                            int u_1 = __key1366;
+                                        int __key1384 = i;
+                                        int __limit1385 = nargs;
+                                        for (; (__key1384 < __limit1385);__key1384 += 1) {
+                                            int u_1 = __key1384;
                                             args.get().set(u_1 - i, (arguments.get()).get(u_1));
                                         }
                                     }
@@ -2245,62 +2250,68 @@ public class expressionsem {
         }
         if (((wildmatch & 0xFF) == MODFlags.mutable) || ((wildmatch & 0xFF) == MODFlags.immutable_) && (tf.next.value != null) && (tf.next.value.hasWild() != 0) && tf.isref || (tf.next.value.implicitConvTo(tf.next.value.immutableOf()) == 0))
         {
-            Function1<Byte,Boolean> errorInout = (wildmatch) -> {
-             {
-                BytePtr s = pcopy(((wildmatch & 0xFF) == MODFlags.mutable) ? new BytePtr("mutable") : MODtoChars(wildmatch));
-                error(loc, new BytePtr("modify `inout` to `%s` is not allowed inside `inout` function"), s);
-                return true;
-            }
+            Function1<Byte,Boolean> errorInout = new Function1<Byte,Boolean>() {
+                public Boolean invoke(Byte wildmatch) {
+                 {
+                    BytePtr s = pcopy(((wildmatch & 0xFF) == MODFlags.mutable) ? new BytePtr("mutable") : MODtoChars(wildmatch));
+                    error(loc, new BytePtr("modify `inout` to `%s` is not allowed inside `inout` function"), s);
+                    return true;
+                }}
+
             };
             if (fd != null)
             {
-                Function1<Dsymbol,Boolean> checkEnclosingWild = (s) -> {
-                 {
-                    Function1<Dsymbol,Boolean> checkWild = (s) -> {
+                Function1<Dsymbol,Boolean> checkEnclosingWild = new Function1<Dsymbol,Boolean>() {
+                    public Boolean invoke(Dsymbol s) {
                      {
-                        if (s == null)
+                        Function1<Dsymbol,Boolean> checkWild = new Function1<Dsymbol,Boolean>() {
+                            public Boolean invoke(Dsymbol s) {
+                             {
+                                if (s == null)
+                                {
+                                    return false;
+                                }
+                                {
+                                    AggregateDeclaration ad = s.isAggregateDeclaration();
+                                    if ((ad) != null)
+                                    {
+                                        if (ad.isNested())
+                                        {
+                                            return checkEnclosingWild.invoke(s);
+                                        }
+                                    }
+                                    else {
+                                        FuncDeclaration ff = s.isFuncDeclaration();
+                                        if ((ff) != null)
+                                        {
+                                            if (((TypeFunction)ff.type).iswild != 0)
+                                            {
+                                                return errorInout.invoke(wildmatch);
+                                            }
+                                            if (ff.isNested() || (ff.isThis() != null))
+                                            {
+                                                return checkEnclosingWild.invoke(s);
+                                            }
+                                        }
+                                    }
+                                }
+                                return false;
+                            }}
+
+                        };
+                        Dsymbol ctx0 = s.toParent2();
+                        Dsymbol ctx1 = s.toParentLocal();
+                        if (checkWild.invoke(ctx0))
                         {
-                            return false;
+                            return true;
                         }
+                        if ((!pequals(ctx0, ctx1)))
                         {
-                            AggregateDeclaration ad = s.isAggregateDeclaration();
-                            if ((ad) != null)
-                            {
-                                if (ad.isNested())
-                                {
-                                    return checkEnclosingWild.invoke(s);
-                                }
-                            }
-                            else {
-                                FuncDeclaration ff = s.isFuncDeclaration();
-                                if ((ff) != null)
-                                {
-                                    if (((TypeFunction)ff.type).iswild != 0)
-                                    {
-                                        return errorInout.invoke(wildmatch);
-                                    }
-                                    if (ff.isNested() || (ff.isThis() != null))
-                                    {
-                                        return checkEnclosingWild.invoke(s);
-                                    }
-                                }
-                            }
+                            return checkWild.invoke(ctx1);
                         }
                         return false;
-                    }
-                    };
-                    Dsymbol ctx0 = s.toParent2();
-                    Dsymbol ctx1 = s.toParentLocal();
-                    if (checkWild.invoke(ctx0))
-                    {
-                        return true;
-                    }
-                    if ((!pequals(ctx0, ctx1)))
-                    {
-                        return checkWild.invoke(ctx1);
-                    }
-                    return false;
-                }
+                    }}
+
                 };
                 if ((fd.isThis() != null) || fd.isNested() && checkEnclosingWild.invoke(fd))
                 {
@@ -2315,11 +2326,11 @@ public class expressionsem {
         Expression firstArg = (tf.next.value != null) && ((tf.next.value.ty & 0xFF) == ENUMTY.Tvoid) || isCtorCall && (tthis != null) && tthis.isMutable() && ((tthis.toBasetype().ty & 0xFF) == ENUMTY.Tstruct) && tthis.hasPointers() ? ethis : null;
         assert((nargs >= nparams));
         {
-            Slice<Expression> __r1369 = (arguments.get()).opSlice(0, nargs).copy();
-            int __key1368 = 0;
-            for (; (__key1368 < __r1369.getLength());__key1368 += 1) {
-                Expression arg = __r1369.get(__key1368);
-                int i = __key1368;
+            Slice<Expression> __r1387 = (arguments.get()).opSlice(0, nargs).copy();
+            int __key1386 = 0;
+            for (; (__key1386 < __r1387.getLength());__key1386 += 1) {
+                Expression arg = __r1387.get(__key1386);
+                int i = __key1386;
                 assert(arg != null);
                 if ((i < nparams))
                 {
@@ -2685,7 +2696,7 @@ public class expressionsem {
         public Ptr<Scope> sc = null;
         public Expression result = null;
         public  ExpressionSemanticVisitor(Ptr<Scope> sc) {
-            this.sc = sc;
+            this.sc = pcopy(sc);
         }
 
         public  void setError() {
@@ -2761,12 +2772,12 @@ public class expressionsem {
                 {
                     Ptr<Scope> scwith = this.sc;
                     for (; (!pequals((scwith.get()).scopesym, scopesym.value));){
-                        scwith = (scwith.get()).enclosing;
+                        scwith = pcopy((scwith.get()).enclosing);
                         assert(scwith != null);
                     }
                     {
                         Ptr<Scope> scx = scwith;
-                        for (; (scx != null) && (pequals((scx.get()).func, (scwith.get()).func));scx = (scx.get()).enclosing){
+                        for (; (scx != null) && (pequals((scx.get()).func, (scwith.get()).func));scx = pcopy((scx.get()).enclosing)){
                             Dsymbol s2 = null;
                             if (((scx.get()).scopesym != null) && ((scx.get()).scopesym.symtab != null) && ((s2 = (scx.get()).scopesym.symtab.lookup(s.ident)) != null) && (!pequals(s, s2)))
                             {
@@ -2872,7 +2883,7 @@ public class expressionsem {
             }
             {
                 Ptr<Scope> sc2 = this.sc;
-                for (; sc2 != null;sc2 = (sc2.get()).enclosing){
+                for (; sc2 != null;sc2 = pcopy((sc2.get()).enclosing)){
                     if ((sc2.get()).scopesym == null)
                     {
                         continue;
@@ -3558,9 +3569,9 @@ public class expressionsem {
                     this.setError();
                     return ;
                 }
-                this.sc = (this.sc.get()).push(cdthis);
+                this.sc = pcopy((this.sc.get()).push(cdthis));
                 exp.type.value = typeSemantic(exp.newtype, exp.loc, this.sc);
-                this.sc = (this.sc.get()).pop();
+                this.sc = pcopy((this.sc.get()).pop());
             }
             else
             {
@@ -3585,7 +3596,7 @@ public class expressionsem {
                 }
                 else
                 {
-                    exp.arguments = refPtr(new DArray<Expression>());
+                    exp.arguments = pcopy((refPtr(new DArray<Expression>())));
                     (exp.arguments.get()).push(edim);
                     exp.type.value = exp.type.value.arrayOf();
                 }
@@ -3758,7 +3769,7 @@ public class expressionsem {
                     Expression e = new IntegerExp(exp.loc, cd.size(exp.loc), Type.tsize_t);
                     if (exp.newargs == null)
                     {
-                        exp.newargs = refPtr(new DArray<Expression>());
+                        exp.newargs = pcopy((refPtr(new DArray<Expression>())));
                     }
                     (exp.newargs.get()).shift(e);
                     FuncDeclaration f = resolveFuncCall(exp.loc, this.sc, cd.aggNew, null, tb, exp.newargs, FuncResolveFlag.standard);
@@ -3801,7 +3812,7 @@ public class expressionsem {
                     TypeFunction tf = (TypeFunction)f.type;
                     if (exp.arguments == null)
                     {
-                        exp.arguments = refPtr(new DArray<Expression>());
+                        exp.arguments = pcopy((refPtr(new DArray<Expression>())));
                     }
                     if (functionParameters(exp.loc, this.sc, tf, null, exp.type.value, exp.arguments, f, ptr(exp.type), ptr(exp.argprefix)))
                     {
@@ -3823,10 +3834,10 @@ public class expressionsem {
                         ClassDeclaration c = cd;
                         for (; c != null;c = c.baseClass){
                             {
-                                Slice<VarDeclaration> __r1370 = c.fields.opSlice().copy();
-                                int __key1371 = 0;
-                                for (; (__key1371 < __r1370.getLength());__key1371 += 1) {
-                                    VarDeclaration v = __r1370.get(__key1371);
+                                Slice<VarDeclaration> __r1388 = c.fields.opSlice().copy();
+                                int __key1389 = 0;
+                                for (; (__key1389 < __r1388.getLength());__key1389 += 1) {
+                                    VarDeclaration v = __r1388.get(__key1389);
                                     if ((v.inuse != 0) || (v._scope == null) || (v._init == null) || (v._init.isVoidInitializer() != null))
                                     {
                                         continue;
@@ -3864,7 +3875,7 @@ public class expressionsem {
                     Expression e = new IntegerExp(exp.loc, sd.size(exp.loc), Type.tsize_t);
                     if (exp.newargs == null)
                     {
-                        exp.newargs = refPtr(new DArray<Expression>());
+                        exp.newargs = pcopy((refPtr(new DArray<Expression>())));
                     }
                     (exp.newargs.get()).shift(e);
                     FuncDeclaration f = resolveFuncCall(exp.loc, this.sc, sd.aggNew, null, tb, exp.newargs, FuncResolveFlag.standard);
@@ -3907,7 +3918,7 @@ public class expressionsem {
                     TypeFunction tf = (TypeFunction)f.type;
                     if (exp.arguments == null)
                     {
-                        exp.arguments = refPtr(new DArray<Expression>());
+                        exp.arguments = pcopy((refPtr(new DArray<Expression>())));
                     }
                     if (functionParameters(exp.loc, this.sc, tf, null, exp.type.value, exp.arguments, f, ptr(exp.type), ptr(exp.argprefix)))
                     {
@@ -3926,7 +3937,7 @@ public class expressionsem {
                 {
                     if (exp.arguments == null)
                     {
-                        exp.arguments = refPtr(new DArray<Expression>());
+                        exp.arguments = pcopy((refPtr(new DArray<Expression>())));
                     }
                     if (!sd.fit(exp.loc, this.sc, exp.arguments, tb))
                     {
@@ -3946,10 +3957,10 @@ public class expressionsem {
                     if (global.params.vsafe)
                     {
                         {
-                            Slice<Expression> __r1372 = (exp.arguments.get()).opSlice().copy();
-                            int __key1373 = 0;
-                            for (; (__key1373 < __r1372.getLength());__key1373 += 1) {
-                                Expression arg = __r1372.get(__key1373);
+                            Slice<Expression> __r1390 = (exp.arguments.get()).opSlice().copy();
+                            int __key1391 = 0;
+                            for (; (__key1391 < __r1390.getLength());__key1391 += 1) {
+                                Expression arg = __r1390.get(__key1391);
                                 if ((arg != null) && checkNewEscape(this.sc, arg, false))
                                 {
                                     this.setError();
@@ -4037,16 +4048,16 @@ public class expressionsem {
 
         public  void visit(NewAnonClassExp e) {
             Expression d = new DeclarationExp(e.loc, e.cd);
-            this.sc = (this.sc.get()).push();
+            this.sc = pcopy((this.sc.get()).push());
             (this.sc.get()).flags &= -129;
             d = expressionSemantic(d, this.sc);
-            this.sc = (this.sc.get()).pop();
+            this.sc = pcopy((this.sc.get()).pop());
             if (!e.cd.errors && ((this.sc.get()).intypeof != 0) && !(this.sc.get()).parent.value.inNonRoot())
             {
                 ScopeDsymbol sds = (this.sc.get()).tinst != null ? (this.sc.get()).tinst : (this.sc.get())._module;
                 if (sds.members == null)
                 {
-                    sds.members = refPtr(new DArray<Dsymbol>());
+                    sds.members = pcopy((refPtr(new DArray<Dsymbol>())));
                 }
                 (sds.members.get()).push(e.cd);
             }
@@ -4147,9 +4158,9 @@ public class expressionsem {
             }
             Expression e = exp;
             int olderrors = 0;
-            this.sc = (this.sc.get()).push();
+            this.sc = pcopy((this.sc.get()).push());
             (this.sc.get()).flags &= -129;
-            (this.sc.get()).protection = new Prot(Prot.Kind.public_).copy();
+            (this.sc.get()).protection.opAssign(new Prot(Prot.Kind.public_).copy());
             exp.genIdent(this.sc);
             if ((exp.fd.treq != null) && (exp.fd.type.nextOf() == null))
             {
@@ -4223,7 +4234,7 @@ public class expressionsem {
             }
             catch(Dispatch0 __d){}
         /*Ldone:*/
-            this.sc = (this.sc.get()).pop();
+            this.sc = pcopy((this.sc.get()).pop());
             this.result = e;
         }
 
@@ -4354,7 +4365,7 @@ public class expressionsem {
                         }
                         if (ti.needsTypeInference(this.sc, 1))
                         {
-                            tiargs = ti.tiargs;
+                            tiargs = pcopy(ti.tiargs);
                             assert(ti.tempdecl != null);
                             {
                                 TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
@@ -4402,7 +4413,7 @@ public class expressionsem {
                     }
                     if (ti.needsTypeInference(this.sc, 1))
                     {
-                        tiargs = ti.tiargs;
+                        tiargs = pcopy(ti.tiargs);
                         assert(ti.tempdecl != null);
                         {
                             TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
@@ -4657,48 +4668,50 @@ public class expressionsem {
                         return ;
                     }
                 }
-                Function6<Loc,Ptr<Scope>,OverloadSet,Ptr<DArray<RootObject>>,Type,Ptr<DArray<Expression>>,FuncDeclaration> resolveOverloadSet = (loc, sc, os, tiargs, tthis, arguments) -> {
-                 {
-                    Ref<FuncDeclaration> f = ref(null);
-                    {
-                        Slice<Dsymbol> __r1374 = os.a.opSlice().copy();
-                        Ref<Integer> __key1375 = ref(0);
-                        for (; (__key1375.value < __r1374.getLength());__key1375.value += 1) {
-                            Dsymbol s = __r1374.get(__key1375.value);
-                            if ((tiargs != null) && (s.isFuncDeclaration() != null))
-                            {
-                                continue;
-                            }
-                            {
-                                FuncDeclaration f2 = resolveFuncCall(loc, sc, s, tiargs, tthis, arguments, FuncResolveFlag.quiet);
-                                if ((f2) != null)
+                Function6<Loc,Ptr<Scope>,OverloadSet,Ptr<DArray<RootObject>>,Type,Ptr<DArray<Expression>>,FuncDeclaration> resolveOverloadSet = new Function6<Loc,Ptr<Scope>,OverloadSet,Ptr<DArray<RootObject>>,Type,Ptr<DArray<Expression>>,FuncDeclaration>() {
+                    public FuncDeclaration invoke(Loc loc, Ptr<Scope> sc, OverloadSet os, Ptr<DArray<RootObject>> tiargs, Type tthis, Ptr<DArray<Expression>> arguments) {
+                     {
+                        Ref<FuncDeclaration> f = ref(null);
+                        {
+                            Slice<Dsymbol> __r1392 = os.a.opSlice().copy();
+                            Ref<Integer> __key1393 = ref(0);
+                            for (; (__key1393.value < __r1392.getLength());__key1393.value += 1) {
+                                Dsymbol s = __r1392.get(__key1393.value);
+                                if ((tiargs != null) && (s.isFuncDeclaration() != null))
                                 {
-                                    if (f2.errors)
+                                    continue;
+                                }
+                                {
+                                    FuncDeclaration f2 = resolveFuncCall(loc, sc, s, tiargs, tthis, arguments, FuncResolveFlag.quiet);
+                                    if ((f2) != null)
                                     {
-                                        return null;
-                                    }
-                                    if (f.value != null)
-                                    {
-                                        ScopeDsymbol.multiplyDefined(loc, f.value, f2);
-                                    }
-                                    else
-                                    {
-                                        f.value = f2;
+                                        if (f2.errors)
+                                        {
+                                            return null;
+                                        }
+                                        if (f.value != null)
+                                        {
+                                            ScopeDsymbol.multiplyDefined(loc, f.value, f2);
+                                        }
+                                        else
+                                        {
+                                            f.value = f2;
+                                        }
                                     }
                                 }
                             }
                         }
-                    }
-                    if (f.value == null)
-                    {
-                        error(loc, new BytePtr("no overload matches for `%s`"), os.toChars());
-                    }
-                    else if (f.value.errors)
-                    {
-                        f.value = null;
-                    }
-                    return f.value;
-                }
+                        if (f.value == null)
+                        {
+                            error(loc, new BytePtr("no overload matches for `%s`"), os.toChars());
+                        }
+                        else if (f.value.errors)
+                        {
+                            f.value = null;
+                        }
+                        return f.value;
+                    }}
+
                 };
                 boolean isSuper = false;
                 if (((exp.e1.value.op & 0xFF) == 27) && ((t1.ty & 0xFF) == ENUMTY.Tfunction) || ((exp.e1.value.op & 0xFF) == 37))
@@ -4862,10 +4875,10 @@ public class expressionsem {
                             return ;
                         }
                         {
-                            Slice<FieldInit> __r1376 = (this.sc.get()).ctorflow.fieldinit.copy();
-                            int __key1377 = 0;
-                            for (; (__key1377 < __r1376.getLength());__key1377 += 1) {
-                                FieldInit field = __r1376.get(__key1377).copy();
+                            Slice<FieldInit> __r1394 = (this.sc.get()).ctorflow.fieldinit.copy();
+                            int __key1395 = 0;
+                            for (; (__key1395 < __r1394.getLength());__key1395 += 1) {
+                                FieldInit field = __r1394.get(__key1395).copy();
                                 field.csx.value |= 65;
                             }
                         }
@@ -5198,7 +5211,7 @@ public class expressionsem {
                 Ref<Expression> argprefix = ref(null);
                 if (exp.arguments == null)
                 {
-                    exp.arguments = refPtr(new DArray<Expression>());
+                    exp.arguments = pcopy((refPtr(new DArray<Expression>())));
                 }
                 if (functionParameters(exp.loc, this.sc, (TypeFunction)t1, ethis, tthis, exp.arguments, exp.f, ptr(exp.type), ptr(argprefix)))
                 {
@@ -5325,7 +5338,7 @@ public class expressionsem {
                     {
                         {
                             Ptr<Scope> scx = (this.sc.get()).enclosing;
-                            for (; (scx != null) && (pequals((scx.get()).func, (this.sc.get()).func));scx = (scx.get()).enclosing){
+                            for (; (scx != null) && (pequals((scx.get()).func, (this.sc.get()).func));scx = pcopy((scx.get()).enclosing)){
                                 Dsymbol s2 = null;
                                 if (((scx.get()).scopesym != null) && ((scx.get()).scopesym.symtab != null) && ((s2 = (scx.get()).scopesym.symtab.lookup(s.ident)) != null) && (!pequals(s, s2)))
                                 {
@@ -5347,7 +5360,7 @@ public class expressionsem {
                 Ptr<Scope> sc2 = this.sc;
                 if (((sc2.get()).stc & 4398147174400L) != 0)
                 {
-                    sc2 = (this.sc.get()).push();
+                    sc2 = pcopy((this.sc.get()).push());
                 }
                 (sc2.get()).stc &= -4398147174401L;
                 dsymbolSemantic(e.declaration, sc2);
@@ -7253,25 +7266,27 @@ public class expressionsem {
             TypeVector tv = (TypeVector)tb;
             Type te = tv.elementType();
             exp.dim = (int)(tv.size(exp.loc) / te.size(exp.loc));
-            Function1<Expression,Boolean> checkElem = (elem) -> {
-             {
-                if ((elem.isConst() == 1))
-                {
-                    return false;
-                }
-                exp.error(new BytePtr("constant expression expected, not `%s`"), elem.toChars());
-                return true;
-            }
+            Function1<Expression,Boolean> checkElem = new Function1<Expression,Boolean>() {
+                public Boolean invoke(Expression elem) {
+                 {
+                    if ((elem.isConst() == 1))
+                    {
+                        return false;
+                    }
+                    exp.error(new BytePtr("constant expression expected, not `%s`"), elem.toChars());
+                    return true;
+                }}
+
             };
             exp.e1.value = exp.e1.value.optimize(0, false);
             boolean res = false;
             if (((exp.e1.value.op & 0xFF) == 47))
             {
                 {
-                    int __key1380 = 0;
-                    int __limit1381 = exp.dim;
-                    for (; (__key1380 < __limit1381);__key1380 += 1) {
-                        int i = __key1380;
+                    int __key1398 = 0;
+                    int __limit1399 = exp.dim;
+                    for (; (__key1398 < __limit1399);__key1398 += 1) {
+                        int i = __key1398;
                         (res ? 1 : 0) |= (checkElem.invoke(((ArrayLiteralExp)exp.e1.value).getElement(i)) ? 1 : 0);
                     }
                 }
@@ -7447,19 +7462,19 @@ public class expressionsem {
             {
                 ScopeDsymbol sym = new ArrayScopeSymbol(this.sc, exp);
                 sym.parent.value = (this.sc.get()).scopesym;
-                this.sc = (this.sc.get()).push(sym);
+                this.sc = pcopy((this.sc.get()).push(sym));
             }
             if (exp.lwr.value != null)
             {
                 if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
                 {
-                    this.sc = (this.sc.get()).startCTFE();
+                    this.sc = pcopy((this.sc.get()).startCTFE());
                 }
                 exp.lwr.value = expressionSemantic(exp.lwr.value, this.sc);
                 exp.lwr.value = resolveProperties(this.sc, exp.lwr.value);
                 if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
                 {
-                    this.sc = (this.sc.get()).endCTFE();
+                    this.sc = pcopy((this.sc.get()).endCTFE());
                 }
                 exp.lwr.value = exp.lwr.value.implicitCastTo(this.sc, Type.tsize_t);
             }
@@ -7467,19 +7482,19 @@ public class expressionsem {
             {
                 if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
                 {
-                    this.sc = (this.sc.get()).startCTFE();
+                    this.sc = pcopy((this.sc.get()).startCTFE());
                 }
                 exp.upr.value = expressionSemantic(exp.upr.value, this.sc);
                 exp.upr.value = resolveProperties(this.sc, exp.upr.value);
                 if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
                 {
-                    this.sc = (this.sc.get()).endCTFE();
+                    this.sc = pcopy((this.sc.get()).endCTFE());
                 }
                 exp.upr.value = exp.upr.value.implicitCastTo(this.sc, Type.tsize_t);
             }
             if ((this.sc != scx))
             {
-                this.sc = (this.sc.get()).pop();
+                this.sc = pcopy((this.sc.get()).pop());
             }
             if ((exp.lwr.value != null) && (pequals(exp.lwr.value.type.value, Type.terror)) || (exp.upr.value != null) && (pequals(exp.upr.value.type.value, Type.terror)))
             {
@@ -7808,17 +7823,17 @@ public class expressionsem {
             {
                 ScopeDsymbol sym = new ArrayScopeSymbol(this.sc, exp);
                 sym.parent.value = (this.sc.get()).scopesym;
-                this.sc = (this.sc.get()).push(sym);
+                this.sc = pcopy((this.sc.get()).push(sym));
             }
             if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
             {
-                this.sc = (this.sc.get()).startCTFE();
+                this.sc = pcopy((this.sc.get()).startCTFE());
             }
             exp.e2.value = expressionSemantic(exp.e2.value, this.sc);
             exp.e2.value = resolveProperties(this.sc, exp.e2.value);
             if (((t1b.ty & 0xFF) == ENUMTY.Ttuple))
             {
-                this.sc = (this.sc.get()).endCTFE();
+                this.sc = pcopy((this.sc.get()).endCTFE());
             }
             if (((exp.e2.value.op & 0xFF) == 126))
             {
@@ -7830,7 +7845,7 @@ public class expressionsem {
             }
             if ((this.sc != scx))
             {
-                this.sc = (this.sc.get()).pop();
+                this.sc = pcopy((this.sc.get()).pop());
             }
             if ((pequals(exp.e2.value.type.value, Type.terror)))
             {
@@ -8102,11 +8117,13 @@ public class expressionsem {
         }
 
         public  void visit(AssignExp exp) {
-            Function2<Expression,Integer,Void> setResult = (e, line) -> {
-             {
-                result = e;
-                return null;
-            }
+            Function2<Expression,Integer,Void> setResult = new Function2<Expression,Integer,Void>() {
+                public Void invoke(Expression e, Integer line) {
+                 {
+                    result = e;
+                    return null;
+                }}
+
             };
             if (exp.type.value != null)
             {
@@ -9223,47 +9240,51 @@ public class expressionsem {
             }
             else
             {
-                Function2<BinAssignExp,Ptr<Scope>,Expression> tryAliasThisForLhs = (exp, sc) -> {
-                 {
-                    AggregateDeclaration ad1 = isAggregate(exp.e1.value.type.value);
-                    if ((ad1 == null) || (ad1.aliasthis == null))
-                    {
-                        return null;
-                    }
-                    if ((exp.att1 != null) && (pequals(exp.e1.value.type.value, exp.att1)))
-                    {
-                        return null;
-                    }
-                    Expression e1 = new DotIdExp(exp.loc, exp.e1.value, ad1.aliasthis.ident);
-                    BinExp be = (BinExp)exp.copy();
-                    if ((be.att1 == null) && exp.e1.value.type.value.checkAliasThisRec())
-                    {
-                        be.att1 = exp.e1.value.type.value;
-                    }
-                    be.e1.value = e1;
-                    return trySemantic(be, sc);
-                }
+                Function2<BinAssignExp,Ptr<Scope>,Expression> tryAliasThisForLhs = new Function2<BinAssignExp,Ptr<Scope>,Expression>() {
+                    public Expression invoke(BinAssignExp exp, Ptr<Scope> sc) {
+                     {
+                        AggregateDeclaration ad1 = isAggregate(exp.e1.value.type.value);
+                        if ((ad1 == null) || (ad1.aliasthis == null))
+                        {
+                            return null;
+                        }
+                        if ((exp.att1 != null) && (pequals(exp.e1.value.type.value, exp.att1)))
+                        {
+                            return null;
+                        }
+                        Expression e1 = new DotIdExp(exp.loc, exp.e1.value, ad1.aliasthis.ident);
+                        BinExp be = (BinExp)exp.copy();
+                        if ((be.att1 == null) && exp.e1.value.type.value.checkAliasThisRec())
+                        {
+                            be.att1 = exp.e1.value.type.value;
+                        }
+                        be.e1.value = e1;
+                        return trySemantic(be, sc);
+                    }}
+
                 };
-                Function2<BinAssignExp,Ptr<Scope>,Expression> tryAliasThisForRhs = (exp, sc) -> {
-                 {
-                    AggregateDeclaration ad2 = isAggregate(exp.e2.value.type.value);
-                    if ((ad2 == null) || (ad2.aliasthis == null))
-                    {
-                        return null;
-                    }
-                    if ((exp.att2 != null) && (pequals(exp.e2.value.type.value, exp.att2)))
-                    {
-                        return null;
-                    }
-                    Expression e2 = new DotIdExp(exp.loc, exp.e2.value, ad2.aliasthis.ident);
-                    BinExp be = (BinExp)exp.copy();
-                    if ((be.att2 == null) && exp.e2.value.type.value.checkAliasThisRec())
-                    {
-                        be.att2 = exp.e2.value.type.value;
-                    }
-                    be.e2.value = e2;
-                    return trySemantic(be, sc);
-                }
+                Function2<BinAssignExp,Ptr<Scope>,Expression> tryAliasThisForRhs = new Function2<BinAssignExp,Ptr<Scope>,Expression>() {
+                    public Expression invoke(BinAssignExp exp, Ptr<Scope> sc) {
+                     {
+                        AggregateDeclaration ad2 = isAggregate(exp.e2.value.type.value);
+                        if ((ad2 == null) || (ad2.aliasthis == null))
+                        {
+                            return null;
+                        }
+                        if ((exp.att2 != null) && (pequals(exp.e2.value.type.value, exp.att2)))
+                        {
+                            return null;
+                        }
+                        Expression e2 = new DotIdExp(exp.loc, exp.e2.value, ad2.aliasthis.ident);
+                        BinExp be = (BinExp)exp.copy();
+                        if ((be.att2 == null) && exp.e2.value.type.value.checkAliasThisRec())
+                        {
+                            be.att2 = exp.e2.value.type.value;
+                        }
+                        be.e2.value = e2;
+                        return trySemantic(be, sc);
+                    }}
+
                 };
             /*Laliasthis:*/
                 this.result = tryAliasThisForLhs.invoke(exp, this.sc);
@@ -10699,32 +10720,34 @@ public class expressionsem {
             }
             Type t1 = exp.e1.value.type.value.toBasetype();
             Type t2 = exp.e2.value.type.value.toBasetype();
-            Function2<Type,Type,Boolean> needsDirectEq = (t1, t2) -> {
-             {
-                Type t1n = t1.nextOf().toBasetype();
-                Type t2n = t2.nextOf().toBasetype();
-                if (((t1n.ty & 0xFF) == ENUMTY.Tchar) || ((t1n.ty & 0xFF) == ENUMTY.Twchar) || ((t1n.ty & 0xFF) == ENUMTY.Tdchar) && ((t2n.ty & 0xFF) == ENUMTY.Tchar) || ((t2n.ty & 0xFF) == ENUMTY.Twchar) || ((t2n.ty & 0xFF) == ENUMTY.Tdchar) || ((t1n.ty & 0xFF) == ENUMTY.Tvoid) || ((t2n.ty & 0xFF) == ENUMTY.Tvoid))
-                {
-                    return false;
-                }
-                if ((!pequals(t1n.constOf(), t2n.constOf())))
-                {
-                    return true;
-                }
-                Ref<Type> t = ref(t1n);
-                for (; t.value.toBasetype().nextOf() != null;) {
-                    t.value = t.value.nextOf().toBasetype();
-                }
-                if (((t.value.ty & 0xFF) != ENUMTY.Tstruct))
-                {
-                    return false;
-                }
-                if (global.params.useTypeInfo && (Type.dtypeinfo != null))
-                {
-                    semanticTypeInfo(sc, t.value);
-                }
-                return ((TypeStruct)t.value).sym.hasIdentityEquals;
-            }
+            Function2<Type,Type,Boolean> needsDirectEq = new Function2<Type,Type,Boolean>() {
+                public Boolean invoke(Type t1, Type t2) {
+                 {
+                    Type t1n = t1.nextOf().toBasetype();
+                    Type t2n = t2.nextOf().toBasetype();
+                    if (((t1n.ty & 0xFF) == ENUMTY.Tchar) || ((t1n.ty & 0xFF) == ENUMTY.Twchar) || ((t1n.ty & 0xFF) == ENUMTY.Tdchar) && ((t2n.ty & 0xFF) == ENUMTY.Tchar) || ((t2n.ty & 0xFF) == ENUMTY.Twchar) || ((t2n.ty & 0xFF) == ENUMTY.Tdchar) || ((t1n.ty & 0xFF) == ENUMTY.Tvoid) || ((t2n.ty & 0xFF) == ENUMTY.Tvoid))
+                    {
+                        return false;
+                    }
+                    if ((!pequals(t1n.constOf(), t2n.constOf())))
+                    {
+                        return true;
+                    }
+                    Ref<Type> t = ref(t1n);
+                    for (; t.value.toBasetype().nextOf() != null;) {
+                        t.value = t.value.nextOf().toBasetype();
+                    }
+                    if (((t.value.ty & 0xFF) != ENUMTY.Tstruct))
+                    {
+                        return false;
+                    }
+                    if (global.params.useTypeInfo && (Type.dtypeinfo != null))
+                    {
+                        semanticTypeInfo(sc, t.value);
+                    }
+                    return ((TypeStruct)t.value).sym.hasIdentityEquals;
+                }}
+
             };
             {
                 Expression e = op_overload(exp, this.sc, null);
@@ -10879,7 +10902,7 @@ public class expressionsem {
             Expression e1x = expressionSemantic(exp.e1.value, this.sc);
             e1x = resolveProperties(this.sc, e1x);
             CtorFlow ctorflow1 = (this.sc.get()).ctorflow.copy();
-            (this.sc.get()).ctorflow = ctorflow_root.copy();
+            (this.sc.get()).ctorflow.opAssign(ctorflow_root.copy());
             Expression e2x = expressionSemantic(exp.e2.value, this.sc);
             e2x = resolveProperties(this.sc, e2x);
             (this.sc.get()).merge(exp.loc, ctorflow1);
@@ -11506,10 +11529,12 @@ public class expressionsem {
     }
 
     public static Expression semanticY(DotTemplateInstanceExp exp, Ptr<Scope> sc, int flag) {
-        Function0<Expression> errorExp = () -> {
-         {
-            return new ErrorExp();
-        }
+        Function0<Expression> errorExp = new Function0<Expression>() {
+            public Expression invoke() {
+             {
+                return new ErrorExp();
+            }}
+
         };
         DotIdExp die = new DotIdExp(exp.loc, exp.e1.value, exp.ti.name);
         Expression e = semanticX(die, sc);

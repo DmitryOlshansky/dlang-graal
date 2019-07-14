@@ -88,10 +88,11 @@ fun strstr(ptr: BytePtr, needle: ByteSlice): BytePtr? {
     return null
 }
 
-fun strcat(dest: BytePtr, src: ByteSlice) {
+fun strcat(dest: BytePtr, src: BytePtr) {
     val len = strlen(dest)
-    src.data.copyInto(dest.data, dest.offset + len, src.beg, src.end)
-    dest.data[src.length + len] = 0.toByte()
+    val slen = strlen(src)
+    src.data.copyInto(dest.data, dest.offset + len, src.offset, src.offset + slen)
+    dest.data[slen + len] = 0.toByte()
 }
 
 fun strdup(src: BytePtr) = BytePtr(src.data.copyOf(), src.offset)

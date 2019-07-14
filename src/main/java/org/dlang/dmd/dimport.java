@@ -35,25 +35,27 @@ public class dimport {
         public Ref<dmodule.Package> pkg = ref(null);
         public DArray<AliasDeclaration> aliasdecls = new DArray<AliasDeclaration>();
         public  Import(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Identifier aliasId, int isstatic) {
-            Function0<Identifier> selectIdent = () -> {
-             {
-                if (aliasId != null)
-                {
-                    return aliasId;
-                }
-                else if ((packages != null) && ((packages.get()).length != 0))
-                {
-                    return (packages.get()).get(0);
-                }
-                else
-                {
-                    return id;
-                }
-            }
+            Function0<Identifier> selectIdent = new Function0<Identifier>() {
+                public Identifier invoke() {
+                 {
+                    if (aliasId != null)
+                    {
+                        return aliasId;
+                    }
+                    else if ((packages != null) && ((packages.get()).length != 0))
+                    {
+                        return (packages.get()).get(0);
+                    }
+                    else
+                    {
+                        return id;
+                    }
+                }}
+
             };
             super(loc, selectIdent.invoke());
             assert(id != null);
-            this.packages = packages;
+            this.packages = pcopy(packages);
             this.id = id;
             this.aliasId = aliasId;
             this.isstatic = isstatic;
@@ -196,7 +198,7 @@ public class dimport {
             }
             if ((sc.get()).explicitProtection != 0)
             {
-                this.protection = (sc.get()).protection.copy();
+                this.protection.opAssign((sc.get()).protection.copy());
             }
             if ((this.isstatic == 0) && (this.aliasId == null) && (this.names.length == 0))
             {
@@ -248,17 +250,17 @@ public class dimport {
                 {
                     this.importAll(sc);
                 }
-                sc = (sc.get()).push(this.mod);
-                (sc.get()).protection = this.protection.copy();
+                sc = pcopy((sc.get()).push(this.mod));
+                (sc.get()).protection.opAssign(this.protection.copy());
                 {
-                    Slice<AliasDeclaration> __r925 = this.aliasdecls.opSlice().copy();
-                    int __key926 = 0;
-                    for (; (__key926 < __r925.getLength());__key926 += 1) {
-                        AliasDeclaration ad = __r925.get(__key926);
+                    Slice<AliasDeclaration> __r943 = this.aliasdecls.opSlice().copy();
+                    int __key944 = 0;
+                    for (; (__key944 < __r943.getLength());__key944 += 1) {
+                        AliasDeclaration ad = __r943.get(__key944);
                         ad.setScope(sc);
                     }
                 }
-                sc = (sc.get()).pop();
+                sc = pcopy((sc.get()).pop());
             }
         }
 
