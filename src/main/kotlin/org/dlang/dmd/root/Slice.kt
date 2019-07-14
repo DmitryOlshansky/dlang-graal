@@ -314,8 +314,6 @@ class IntSlice(val data: IntArray, var beg: Int, var end: Int) : RootObject() {
 
     operator fun get(idx: Int): Int = data[beg+idx]
 
-    fun ptr() = RawIntPtr(data, beg)
-
     fun slice(from:Int, to:Int): IntSlice {
         return IntSlice(data, from+beg, to+beg)
     }

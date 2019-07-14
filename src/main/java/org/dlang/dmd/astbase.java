@@ -5947,7 +5947,7 @@ public class astbase {
                                 break;
                             case 31:
                             case 14:
-                                this.value = (long)(byte)this.value;
+                                this.value = (long)(int)this.value;
                                 break;
                             case 15:
                                 this.value = (long)(int)this.value;

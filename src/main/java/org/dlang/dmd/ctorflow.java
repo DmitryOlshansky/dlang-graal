@@ -37,7 +37,7 @@ public class ctorflow {
             r.loc = loc.copy();
             return r;
         }
-        public FieldInit(int csx, Loc loc) {
+        public FieldInit(Ref<Integer> csx, Loc loc) {
             this.csx = csx;
             this.loc = loc;
         }
@@ -110,7 +110,7 @@ public class ctorflow {
             r.fieldinit = fieldinit.copy();
             return r;
         }
-        public CtorFlow(int callSuper, Slice<FieldInit> fieldinit) {
+        public CtorFlow(Ref<Integer> callSuper, Slice<FieldInit> fieldinit) {
             this.callSuper = callSuper;
             this.fieldinit = fieldinit;
         }

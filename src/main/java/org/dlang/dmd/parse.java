@@ -76,7 +76,7 @@ public class parse {
             r.comment = comment;
             return r;
         }
-        public PrefixAttributesASTBase(long storageClass, ASTBase.Expression depmsg, int link, ASTBase.Prot protection, boolean setAlignment, ASTBase.Expression ealign, Ptr<DArray<ASTBase.Expression>> udas, BytePtr comment) {
+        public PrefixAttributesASTBase(long storageClass, Ref<ASTBase.Expression> depmsg, int link, ASTBase.Prot protection, boolean setAlignment, ASTBase.Expression ealign, Ptr<DArray<ASTBase.Expression>> udas, BytePtr comment) {
             this.storageClass = storageClass;
             this.depmsg = depmsg;
             this.link = link;
@@ -126,7 +126,7 @@ public class parse {
             r.comment = comment;
             return r;
         }
-        public PrefixAttributesASTCodegen(long storageClass, Expression depmsg, int link, Prot protection, boolean setAlignment, Expression ealign, Ptr<DArray<Expression>> udas, BytePtr comment) {
+        public PrefixAttributesASTCodegen(long storageClass, Ref<Expression> depmsg, int link, Prot protection, boolean setAlignment, Expression ealign, Ptr<DArray<Expression>> udas, BytePtr comment) {
             this.storageClass = storageClass;
             this.depmsg = depmsg;
             this.link = link;
@@ -3643,9 +3643,9 @@ public class parse {
                     default:
                     return t;
                 }
-                throw new AssertionError("Unreachable code!");
+                //throw new AssertionError("Unreachable code!");
             }
-            throw new AssertionError("Unreachable code!");
+            //throw new AssertionError("Unreachable code!");
         }
 
         public  ASTBase.Type parseDeclarator(ASTBase.Type t, Ptr<Integer> palt, Ptr<Identifier> pident, Ptr<Ptr<DArray<ASTBase.TemplateParameter>>> tpl, long storageClass, Ptr<Integer> pdisable, Ptr<Ptr<DArray<ASTBase.Expression>>> pudas) {
@@ -4468,7 +4468,8 @@ public class parse {
             boolean literal = f.isFuncLiteralDeclaration() != null;
             this.linkage = LINK.d;
             boolean requireDo = false;
-        /*L1:*/
+        L1:
+            while(true)
             {
                 int __dispatch23 = 0;
                 dispatched_23:
@@ -4529,7 +4530,7 @@ public class parse {
                                 (f.frequires.get()).push(this.parseStatement(6, null, null));
                                 requireDo = true;
                             }
-                            /*goto L1*/throw Dispatch0.INSTANCE;
+                            /*goto L1*/continue L1;
                         case 176:
                             Loc loc_1 = this.token.value.loc.copy();
                             this.nextToken();
@@ -4618,6 +4619,7 @@ public class parse {
                         break;
                     }
                 } while(__dispatch23 != 0);
+                break;
             }
             if (literal && (f.fbody == null))
             {
@@ -5041,6 +5043,9 @@ public class parse {
                 return new ASTBase.StaticForeachDeclaration(new ASTBase.StaticForeach(loc, aggrfe, null), this.parseBlock(pLastDecl, null));
             }
         }
+            long stc = 0;
+            long storageClass = 0;
+            ASTBase.Parameter param = null;
 
 
         public  ASTBase.Statement parseStatement(int flags, Ptr<BytePtr> endPtr, Ptr<Loc> pEndloc) {
@@ -5275,7 +5280,7 @@ public class parse {
                                 }
                                 else
                                 {
-                                    s = new ASTBase.ExpStatement(loc, null);
+                                    s = new ASTBase.ExpStatement(loc, (ASTBase.Dsymbol)null);
                                 }
                                 if ((flags & ParseStatementFlags.scope_) != 0)
                                 {
@@ -5384,7 +5389,7 @@ public class parse {
                                 }
                             }
                             this.nextToken();
-                            s = new ASTBase.ExpStatement(loc, null);
+                            s = new ASTBase.ExpStatement(loc, (ASTBase.Expression)null);
                             break;
                         case 187:
                             ASTBase.Statement _body_1 = null;
@@ -5455,12 +5460,11 @@ public class parse {
                             s = this.parseForeach00(loc);
                             break;
                         case 183:
-                            ASTBase.Parameter param = null;
                             ASTBase.Expression condition_3 = null;
                             this.nextToken();
                             this.check(TOK.leftParentheses);
-                            long storageClass = 0L;
-                            long stc = 0L;
+                            storageClass = 0L;
+                            stc = 0L;
                         /*LagainStc:*/
                         case -5:
                         __dispatch27 = 0;
@@ -6328,6 +6332,7 @@ public class parse {
                     }
                 } while(__dispatch30 != 0);
             }
+            return null;
         }
 
         public  ASTBase.Expression parseDefaultInitExp() {
@@ -6402,7 +6407,7 @@ public class parse {
         }
 
 
-        public static class NeedDeclaratorId 
+        public static class NeedDeclaratorId
         {
             public static final int no = 0;
             public static final int opt = 1;
@@ -6882,7 +6887,7 @@ public class parse {
                     } while(__dispatch39 != 0);
                 }
             }
-            throw new AssertionError("Unreachable code!");
+            //throw new AssertionError("Unreachable code!");
         }
 
         // defaulted all parameters starting with #5
@@ -6900,7 +6905,7 @@ public class parse {
         L_outer20:
             for (; 1 != 0;t.value = this.peek(t.value)){
             /*L1:*/
-                {
+                while (true) try {
                     int __dispatch41 = 0;
                     dispatched_41:
                     do {
@@ -6937,7 +6942,7 @@ public class parse {
                                 }
                                 /*goto L1*/throw Dispatch0.INSTANCE;
                             default:
-                            {
+
                                 if (!this.isBasicType(ptr(t)))
                                 {
                                     return false;
@@ -6957,7 +6962,7 @@ public class parse {
                                     {
                                         return false;
                                     }
-                                }
+
                                 if ((((t.value.get()).value & 0xFF) == 10))
                                 {
                                     t.value = this.peek(t.value);
@@ -6971,7 +6976,8 @@ public class parse {
                             break;
                         }
                     } while(__dispatch41 != 0);
-                }
+                    break;
+                } catch(Dispatch0 __d0) {}
                 break;
             }
             if ((((t.value.get()).value & 0xFF) != 2))

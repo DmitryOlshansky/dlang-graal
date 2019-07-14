@@ -1357,7 +1357,6 @@ public class lexer {
                     } while(__dispatch10 != 0);
                 }
             }
-            throw new AssertionError("Unreachable code!");
         }
 
         public  void delimitedStringConstant(Ptr<Token> result) {

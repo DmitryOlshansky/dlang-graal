@@ -1219,6 +1219,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     override void visit(StructDeclaration d)
     {
+        if (nameOf(d) == "FPTypePropertiesDouble" && (d in opts.templates).types[0].ty == Tfloat80) return;
         if (nameOf(d) == "UnionExp") return;
         if (opts.funcs.length) return; // inner structs are done separately
         if (nameOf(d) in generatedClasses) {
@@ -1285,7 +1286,10 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     buf.fmt("public %s(", nameOf(d));
                     foreach(i, m; members.all) {
                         if(i) buf.put(", ");
-                        buf.fmt("%s %s", typeOf(m.type), m.ident.toString);
+                        buf.fmt("%s %s",
+                            m in opts.refParams.top ? refTypeOf(m.type) : typeOf(m.type), 
+                            m.ident.toString
+                        );
                     }
                     buf.put(") {\n");
                     buf.indent;

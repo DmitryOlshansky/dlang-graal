@@ -2069,7 +2069,7 @@ public class doc {
             r.a = a.copy();
             return r;
         }
-        public DocComment(DArray<Section> sections, Section summary, Section copyright, Section macros, Ptr<Ptr<Macro>> pmacrotable, Ptr<Escape> escapetable, DArray<Dsymbol> a) {
+        public DocComment(DArray<Section> sections, Section summary, Section copyright, Section macros, Ptr<Ptr<Macro>> pmacrotable, Ptr<Escape> escapetable, Ref<DArray<Dsymbol>> a) {
             this.sections = sections;
             this.summary = summary;
             this.copyright = copyright;
@@ -3013,7 +3013,7 @@ public class doc {
             r.type = type;
             return r;
         }
-        public MarkdownList(ByteSlice orderedStart, int iStart, int iContentStart, int delimiterIndent, int contentIndent, int macroLevel, byte type) {
+        public MarkdownList(ByteSlice orderedStart, Ref<Integer> iStart, int iContentStart, int delimiterIndent, int contentIndent, int macroLevel, byte type) {
             this.orderedStart = orderedStart;
             this.iStart = iStart;
             this.iContentStart = iContentStart;
@@ -3551,7 +3551,7 @@ public class doc {
             r.symbol = symbol;
             return r;
         }
-        public MarkdownLink(ByteSlice href, ByteSlice title, ByteSlice label, Dsymbol symbol) {
+        public MarkdownLink(ByteSlice href, ByteSlice title, Ref<ByteSlice> label, Dsymbol symbol) {
             this.href = href;
             this.title = title;
             this.label = label;

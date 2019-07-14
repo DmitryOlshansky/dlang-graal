@@ -136,16 +136,16 @@ fun realloc(ptr: BytePtr?, size: Int): BytePtr  {
 @Suppress("UNUSED_PARAMETER")
 fun getcwd(s: BytePtr?, i: Int) = BytePtr(Paths.get(".").toAbsolutePath().normalize().toString())
 
-fun time(s: IntPtr): Int {
+fun time(s: Ptr<Int>): Int {
     val unixTime = System.currentTimeMillis() / 1000
     s.set(0, unixTime.toInt())
     return unixTime.toInt()
 }
 
 
-fun ctime(s: IntPtr): BytePtr {
+fun ctime(s: Ptr<Int>): BytePtr {
     val df = SimpleDateFormat("EEE MMM dd HH:mm:ss yyyy\n")
-    val unix = Date(s.get(0)*1000L)
+    val unix = Date(s[0]!!*1000L)
     return BytePtr(df.format(unix))
 }
 
@@ -256,8 +256,6 @@ fun<T> pcopy(ptr: Ptr<T>?): Ptr<T>? = ptr?.copy()
 
 fun pcopy(ptr: BytePtr?) = ptr?.copy()
 
-fun pcopy(ptr: IntPtr?) = ptr?.copy()
-
 fun<T> pcopy(any: T?) = any
 
 fun toByteSlice(slice: ByteSlice) = slice
@@ -275,16 +273,6 @@ fun toCharPtr(any: Any): CharPtr =
         is CharPtr -> any
         else -> throw Exception("Not implemented toCharPtr for $any")
     }
-
-fun toIntPtr(any: Any): IntPtr =
-    when (any) {
-        is BytePtr -> any.toIntPtr()
-        is IntPtr -> any
-        else -> throw Exception("Not implemented toCharPtr for $any")
-    }
-
-
-
 
 fun<T> ref(v: T?) = Ref(v)
 
