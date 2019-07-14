@@ -1,5 +1,5 @@
 diff --git a/src/main/java/org/dlang/dmd/astbase.java b/src/main/java/org/dlang/dmd/astbase.java
-index 68ca637..18a23f3 100644
+index d946482..7ba9007 100644
 --- a/src/main/java/org/dlang/dmd/astbase.java
 +++ b/src/main/java/org/dlang/dmd/astbase.java
 @@ -5951,7 +5951,7 @@ public class astbase {
@@ -12,7 +12,7 @@ index 68ca637..18a23f3 100644
                              case 15:
                                  this.value = (long)(int)this.value;
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
-index 3f005db..4e93611 100644
+index 24b62d8..e4857c6 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
 +++ b/src/main/java/org/dlang/dmd/lexer.java
 @@ -1357,6 +1357,7 @@ public class lexer {
@@ -53,10 +53,27 @@ index 3f005db..4e93611 100644
                                      break;
                                  default:
 diff --git a/src/main/java/org/dlang/dmd/parse.java b/src/main/java/org/dlang/dmd/parse.java
-index 38dee87..0c8372c 100644
+index 1fc98c7..5970e81 100644
 --- a/src/main/java/org/dlang/dmd/parse.java
 +++ b/src/main/java/org/dlang/dmd/parse.java
-@@ -3643,9 +3643,9 @@ public class parse {
+@@ -2711,13 +2711,14 @@ public class parse {
+                                         }
+                                         else
+                                         {
+-                                            /*goto _else*/
+-                                            at = this.parseType(ptr(ai), null);
++                                            /*goto _else*/{ __dispatch9 = -2; continue dispatched_9; }
+                                         }
+                                     }
+                                     else
+                                     {
+                                     /*_else:*/
++                                    case -2:
++                                    __dispatch9 = 0;
+                                         at = this.parseType(ptr(ai), null);
+                                     }
+                                     ae = null;
+@@ -3642,9 +3643,9 @@ public class parse {
                      default:
                      return t;
                  }
@@ -68,7 +85,7 @@ index 38dee87..0c8372c 100644
          }
  
          public  ASTBase.Type parseDeclarator(ASTBase.Type t, Ptr<Integer> palt, Ptr<Identifier> pident, Ptr<Ptr<DArray<ASTBase.TemplateParameter>>> tpl, long storageClass, Ptr<Integer> pdisable, Ptr<Ptr<DArray<ASTBase.Expression>>> pudas) {
-@@ -4470,8 +4470,7 @@ public class parse {
+@@ -4469,8 +4470,7 @@ public class parse {
              boolean literal = f.isFuncLiteralDeclaration() != null;
              this.linkage = LINK.d;
              boolean requireDo = false;
@@ -78,7 +95,7 @@ index 38dee87..0c8372c 100644
              {
                  int __dispatch23 = 0;
                  dispatched_23:
-@@ -4532,7 +4531,7 @@ public class parse {
+@@ -4531,7 +4531,7 @@ public class parse {
                                  (f.frequires.get()).push(this.parseStatement(6, null, null));
                                  requireDo = true;
                              }
@@ -87,7 +104,7 @@ index 38dee87..0c8372c 100644
                          case 176:
                              Loc loc_1 = this.token.value.loc.copy();
                              this.nextToken();
-@@ -4621,7 +4620,6 @@ public class parse {
+@@ -4620,7 +4620,6 @@ public class parse {
                          break;
                      }
                  } while(__dispatch23 != 0);
@@ -95,7 +112,7 @@ index 38dee87..0c8372c 100644
              }
              if (literal && (f.fbody == null))
              {
-@@ -5045,9 +5043,6 @@ public class parse {
+@@ -5044,9 +5043,6 @@ public class parse {
                  return new ASTBase.StaticForeachDeclaration(new ASTBase.StaticForeach(loc, aggrfe, null), this.parseBlock(pLastDecl, null));
              }
          }
@@ -105,7 +122,7 @@ index 38dee87..0c8372c 100644
  
  
          public  ASTBase.Statement parseStatement(int flags, Ptr<BytePtr> endPtr, Ptr<Loc> pEndloc) {
-@@ -5282,7 +5277,7 @@ public class parse {
+@@ -5281,7 +5277,7 @@ public class parse {
                                  }
                                  else
                                  {
@@ -114,7 +131,7 @@ index 38dee87..0c8372c 100644
                                  }
                                  if ((flags & ParseStatementFlags.scope_) != 0)
                                  {
-@@ -5391,7 +5386,7 @@ public class parse {
+@@ -5390,7 +5386,7 @@ public class parse {
                                  }
                              }
                              this.nextToken();
@@ -123,7 +140,7 @@ index 38dee87..0c8372c 100644
                              break;
                          case 187:
                              ASTBase.Statement _body_1 = null;
-@@ -5462,11 +5457,12 @@ public class parse {
+@@ -5461,11 +5457,12 @@ public class parse {
                              s = this.parseForeach00(loc);
                              break;
                          case 183:
@@ -138,7 +155,7 @@ index 38dee87..0c8372c 100644
                          /*LagainStc:*/
                          case -5:
                          __dispatch27 = 0;
-@@ -6334,7 +6330,6 @@ public class parse {
+@@ -6333,7 +6330,6 @@ public class parse {
                      }
                  } while(__dispatch30 != 0);
              }
@@ -146,7 +163,7 @@ index 38dee87..0c8372c 100644
          }
  
          public  ASTBase.Expression parseDefaultInitExp() {
-@@ -6409,7 +6404,7 @@ public class parse {
+@@ -6408,7 +6404,7 @@ public class parse {
          }
  
  
@@ -155,7 +172,199 @@ index 38dee87..0c8372c 100644
          {
              public static final int no = 0;
              public static final int opt = 1;
-@@ -6889,7 +6884,7 @@ public class parse {
+@@ -6502,98 +6498,102 @@ public class parse {
+                                     /*goto L4*/throw Dispatch.INSTANCE;
+                                 }
+                                 /*goto L3*/{ __dispatch36 = -3; continue dispatched_36; }
+-                            /*L2:*/
+-                            case -2:
+-                            __dispatch36 = 0;
+-                                t.value = pcopy(this.peek(t.value));
+-                            /*L3:*/
+-                            case -3:
+-                            __dispatch36 = 0;
+-                                if ((((t.value.get()).value & 0xFF) == 97))
+-                                {
+-                                /*Ldot:*/
+-                                    t.value = pcopy(this.peek(t.value));
+-                                    if ((((t.value.get()).value & 0xFF) != 120))
+-                                    {
+-                                        /*goto Lfalse*/throw Dispatch0.INSTANCE;
+-                                    }
+-                                    t.value = pcopy(this.peek(t.value));
+-                                    if ((((t.value.get()).value & 0xFF) != 91))
+-                                    {
+-                                        /*goto L3*/{ __dispatch36 = -3; continue dispatched_36; }
+-                                    }
+-                                /*L4:*/
++                            L_outer18:
++                                for (; 1 != 0;){
++                                /*L2:*/
++                                case -2:
++                                __dispatch36 = 0;
+                                     t.value = pcopy(this.peek(t.value));
++                                /*L3:*/
++                                case -3:
++                                __dispatch36 = 0;
++                                    if ((((t.value.get()).value & 0xFF) == 97))
+                                     {
+-                                        int __dispatch37 = 0;
+-                                        dispatched_37:
+-                                        do {
+-                                            switch (__dispatch37 != 0 ? __dispatch37 : ((t.value.get()).value & 0xFF))
+-                                            {
+-                                                case 120:
+-                                                    /*goto L5*/{ __dispatch36 = -1; continue dispatched_36; }
+-                                                case 1:
+-                                                    if (!this.skipParens(t.value, ptr(t)))
+-                                                    {
+-                                                        /*goto Lfalse*/throw Dispatch0.INSTANCE;
+-                                                    }
+-                                                    /*goto L3*/{ __dispatch36 = -3; continue dispatched_36; }
+-                                                case 149:
+-                                                case 150:
+-                                                case 151:
+-                                                case 148:
+-                                                case 129:
+-                                                case 130:
+-                                                case 131:
+-                                                case 132:
+-                                                case 133:
+-                                                case 134:
+-                                                case 135:
+-                                                case 136:
+-                                                case 137:
+-                                                case 138:
+-                                                case 139:
+-                                                case 140:
+-                                                case 141:
+-                                                case 142:
+-                                                case 143:
+-                                                case 144:
+-                                                case 145:
+-                                                case 146:
+-                                                case 147:
+-                                                case 128:
+-                                                case 105:
+-                                                case 106:
+-                                                case 107:
+-                                                case 108:
+-                                                case 109:
+-                                                case 110:
+-                                                case 111:
+-                                                case 112:
+-                                                case 113:
+-                                                case 114:
+-                                                case 115:
+-                                                case 116:
+-                                                case 13:
+-                                                case 15:
+-                                                case 16:
+-                                                case 117:
+-                                                case 118:
+-                                                case 119:
+-                                                case 121:
+-                                                case 122:
+-                                                case 219:
+-                                                case 220:
+-                                                case 218:
+-                                                case 221:
+-                                                case 222:
+-                                                case 223:
+-                                                    /*goto L2*/{ __dispatch36 = -2; continue dispatched_36; }
+-                                                default:
+-                                                /*goto Lfalse*/throw Dispatch0.INSTANCE;
+-                                            }
+-                                        } while(__dispatch37 != 0);
++                                    /*Ldot:*/
++                                        t.value = pcopy(this.peek(t.value));
++                                        if ((((t.value.get()).value & 0xFF) != 120))
++                                        {
++                                            /*goto Lfalse*/throw Dispatch0.INSTANCE;
++                                        }
++                                        t.value = pcopy(this.peek(t.value));
++                                        if ((((t.value.get()).value & 0xFF) != 91))
++                                        {
++                                            /*goto L3*/{ __dispatch36 = -3; continue dispatched_36; }
++                                        }
++                                    /*L4:*/
++                                        t.value = pcopy(this.peek(t.value));
++                                        {
++                                            int __dispatch37 = 0;
++                                            dispatched_37:
++                                            do {
++                                                switch (__dispatch37 != 0 ? __dispatch37 : ((t.value.get()).value & 0xFF))
++                                                {
++                                                    case 120:
++                                                        /*goto L5*/{ __dispatch36 = -1; continue dispatched_36; }
++                                                    case 1:
++                                                        if (!this.skipParens(t.value, ptr(t)))
++                                                        {
++                                                            /*goto Lfalse*/throw Dispatch0.INSTANCE;
++                                                        }
++                                                        /*goto L3*/{ __dispatch36 = -3; continue dispatched_36; }
++                                                    case 149:
++                                                    case 150:
++                                                    case 151:
++                                                    case 148:
++                                                    case 129:
++                                                    case 130:
++                                                    case 131:
++                                                    case 132:
++                                                    case 133:
++                                                    case 134:
++                                                    case 135:
++                                                    case 136:
++                                                    case 137:
++                                                    case 138:
++                                                    case 139:
++                                                    case 140:
++                                                    case 141:
++                                                    case 142:
++                                                    case 143:
++                                                    case 144:
++                                                    case 145:
++                                                    case 146:
++                                                    case 147:
++                                                    case 128:
++                                                    case 105:
++                                                    case 106:
++                                                    case 107:
++                                                    case 108:
++                                                    case 109:
++                                                    case 110:
++                                                    case 111:
++                                                    case 112:
++                                                    case 113:
++                                                    case 114:
++                                                    case 115:
++                                                    case 116:
++                                                    case 13:
++                                                    case 15:
++                                                    case 16:
++                                                    case 117:
++                                                    case 118:
++                                                    case 119:
++                                                    case 121:
++                                                    case 122:
++                                                    case 219:
++                                                    case 220:
++                                                    case 218:
++                                                    case 221:
++                                                    case 222:
++                                                    case 223:
++                                                        /*goto L2*/{ __dispatch36 = -2; continue dispatched_36; }
++                                                    default:
++                                                    /*goto Lfalse*/throw Dispatch0.INSTANCE;
++                                                }
++                                            } while(__dispatch37 != 0);
++                                        }
+                                     }
++                                    break;
+                                 }
+                                 break;
+                             case 97:
+@@ -6884,7 +6884,7 @@ public class parse {
                      } while(__dispatch39 != 0);
                  }
              }
@@ -164,7 +373,7 @@ index 38dee87..0c8372c 100644
          }
  
          // defaulted all parameters starting with #5
-@@ -6907,7 +6902,7 @@ public class parse {
+@@ -6902,7 +6902,7 @@ public class parse {
          L_outer20:
              for (; 1 != 0;t.value = pcopy(this.peek(t.value))){
              /*L1:*/
@@ -173,7 +382,7 @@ index 38dee87..0c8372c 100644
                      int __dispatch41 = 0;
                      dispatched_41:
                      do {
-@@ -6944,7 +6939,7 @@ public class parse {
+@@ -6939,7 +6939,7 @@ public class parse {
                                  }
                                  /*goto L1*/throw Dispatch0.INSTANCE;
                              default:
@@ -182,7 +391,7 @@ index 38dee87..0c8372c 100644
                                  if (!this.isBasicType(ptr(t)))
                                  {
                                      return false;
-@@ -6964,7 +6959,7 @@ public class parse {
+@@ -6959,7 +6959,7 @@ public class parse {
                                      {
                                          return false;
                                      }
@@ -191,12 +400,258 @@ index 38dee87..0c8372c 100644
                                  if ((((t.value.get()).value & 0xFF) == 10))
                                  {
                                      t.value = pcopy(this.peek(t.value));
-@@ -6978,8 +6973,7 @@ public class parse {
+@@ -6973,8 +6973,7 @@ public class parse {
                              break;
                          }
                      } while(__dispatch41 != 0);
 -                    break;
 -                } catch(Dispatch0 __d0) {}
++                }
+                 break;
+             }
+             if ((((t.value.get()).value & 0xFF) != 2))
+@@ -11018,12 +11017,14 @@ public class parse {
+                                         }
+                                         else
+                                         {
+-                                            /*goto _else*/
+-                                            at = this.parseType(ptr(ai), null);
++                                            /*goto _else*/{ __dispatch64 = -2; continue dispatched_64; }
+                                         }
+                                     }
+                                     else
+                                     {
++                                    /*_else:*/
++                                    case -2:
++                                    __dispatch64 = 0;
+                                         at = this.parseType(ptr(ai), null);
+                                     }
+                                     ae = null;
+@@ -14800,103 +14801,109 @@ public class parse {
+                                 t.value = pcopy(this.peek(t.value));
+                                 if ((((t.value.get()).value & 0xFF) == 91))
+                                 {
+-                                    /*goto L4*/{ __dispatch91 = -5; continue dispatched_91; }
++                                    /*goto L4*/throw Dispatch.INSTANCE;
+                                 }
+                                 /*goto L3*/{ __dispatch91 = -3; continue dispatched_91; }
+-                            /*L2:*/
+-                            case -2:
+-                            __dispatch91 = 0;
+-                                t.value = pcopy(this.peek(t.value));
+-                            /*L3:*/
+-                            case -3:
+-                            __dispatch91 = 0;
+-                                if ((((t.value.get()).value & 0xFF) != 97)) break;
+-                            /*Ldot:*/
+-                            case -4:
+-                                t.value = pcopy(this.peek(t.value));
+-                                if ((((t.value.get()).value & 0xFF) != 120))
+-                                {
+-                                    /*goto Lfalse*/throw Dispatch0.INSTANCE;
+-                                }
+-                                t.value = pcopy(this.peek(t.value));
+-                                if ((((t.value.get()).value & 0xFF) != 91))
+-                                {
+-                                    /*goto L3*/{ __dispatch91 = -3; continue dispatched_91; }
+-                                }
+-                            /*L4:*/
+-                            case -5:
+-                                t.value = pcopy(this.peek(t.value));
+-                                int __dispatch92 = 0;
+-                                dispatched_92:
+-                                do {
+-                                    switch (__dispatch92 != 0 ? __dispatch92 : ((t.value.get()).value & 0xFF))
++                            L_outer40:
++                                for (; 1 != 0;){
++                                /*L2:*/
++                                case -2:
++                                __dispatch91 = 0;
++                                    t.value = pcopy(this.peek(t.value));
++                                /*L3:*/
++                                case -3:
++                                __dispatch91 = 0;
++                                    if ((((t.value.get()).value & 0xFF) == 97))
+                                     {
+-                                        case 120:
+-                                            /*goto L5*/{ __dispatch91 = -1; continue dispatched_91; }
+-                                        case 1:
+-                                            if (!this.skipParens(t.value, ptr(t)))
+-                                            {
+-                                                /*goto Lfalse*/throw Dispatch0.INSTANCE;
+-                                            }
++                                    /*Ldot:*/
++                                        t.value = pcopy(this.peek(t.value));
++                                        if ((((t.value.get()).value & 0xFF) != 120))
++                                        {
++                                            /*goto Lfalse*/throw Dispatch0.INSTANCE;
++                                        }
++                                        t.value = pcopy(this.peek(t.value));
++                                        if ((((t.value.get()).value & 0xFF) != 91))
++                                        {
+                                             /*goto L3*/{ __dispatch91 = -3; continue dispatched_91; }
+-                                        case 149:
+-                                        case 150:
+-                                        case 151:
+-                                        case 148:
+-                                        case 129:
+-                                        case 130:
+-                                        case 131:
+-                                        case 132:
+-                                        case 133:
+-                                        case 134:
+-                                        case 135:
+-                                        case 136:
+-                                        case 137:
+-                                        case 138:
+-                                        case 139:
+-                                        case 140:
+-                                        case 141:
+-                                        case 142:
+-                                        case 143:
+-                                        case 144:
+-                                        case 145:
+-                                        case 146:
+-                                        case 147:
+-                                        case 128:
+-                                        case 105:
+-                                        case 106:
+-                                        case 107:
+-                                        case 108:
+-                                        case 109:
+-                                        case 110:
+-                                        case 111:
+-                                        case 112:
+-                                        case 113:
+-                                        case 114:
+-                                        case 115:
+-                                        case 116:
+-                                        case 13:
+-                                        case 15:
+-                                        case 16:
+-                                        case 117:
+-                                        case 118:
+-                                        case 119:
+-                                        case 121:
+-                                        case 122:
+-                                        case 219:
+-                                        case 220:
+-                                        case 218:
+-                                        case 221:
+-                                        case 222:
+-                                        case 223:
+-                                            /*goto L2*/{ __dispatch91 = -2; continue dispatched_91; }
+-                                        default:
+-                                        /*goto Lfalse*/throw Dispatch0.INSTANCE;
++                                        }
++                                    /*L4:*/
++                                        t.value = pcopy(this.peek(t.value));
++                                        {
++                                            int __dispatch92 = 0;
++                                            dispatched_92:
++                                            do {
++                                                switch (__dispatch92 != 0 ? __dispatch92 : ((t.value.get()).value & 0xFF))
++                                                {
++                                                    case 120:
++                                                        /*goto L5*/{ __dispatch91 = -1; continue dispatched_91; }
++                                                    case 1:
++                                                        if (!this.skipParens(t.value, ptr(t)))
++                                                        {
++                                                            /*goto Lfalse*/throw Dispatch0.INSTANCE;
++                                                        }
++                                                        /*goto L3*/{ __dispatch91 = -3; continue dispatched_91; }
++                                                    case 149:
++                                                    case 150:
++                                                    case 151:
++                                                    case 148:
++                                                    case 129:
++                                                    case 130:
++                                                    case 131:
++                                                    case 132:
++                                                    case 133:
++                                                    case 134:
++                                                    case 135:
++                                                    case 136:
++                                                    case 137:
++                                                    case 138:
++                                                    case 139:
++                                                    case 140:
++                                                    case 141:
++                                                    case 142:
++                                                    case 143:
++                                                    case 144:
++                                                    case 145:
++                                                    case 146:
++                                                    case 147:
++                                                    case 128:
++                                                    case 105:
++                                                    case 106:
++                                                    case 107:
++                                                    case 108:
++                                                    case 109:
++                                                    case 110:
++                                                    case 111:
++                                                    case 112:
++                                                    case 113:
++                                                    case 114:
++                                                    case 115:
++                                                    case 116:
++                                                    case 13:
++                                                    case 15:
++                                                    case 16:
++                                                    case 117:
++                                                    case 118:
++                                                    case 119:
++                                                    case 121:
++                                                    case 122:
++                                                    case 219:
++                                                    case 220:
++                                                    case 218:
++                                                    case 221:
++                                                    case 222:
++                                                    case 223:
++                                                        /*goto L2*/{ __dispatch91 = -2; continue dispatched_91; }
++                                                    default:
++                                                    /*goto Lfalse*/throw Dispatch0.INSTANCE;
++                                                }
++                                            } while(__dispatch92 != 0);
++                                        }
+                                     }
+-                                } while(__dispatch92 != 0);
++                                    break;
++                                }
+                                 break;
+                             case 97:
+-                                /*goto Ldot*/{ __dispatch91 = -4; continue dispatched_91; }
++                                /*goto Ldot*/throw Dispatch.INSTANCE;
+                             case 39:
+                             case 229:
+                                 t.value = pcopy(this.peek(t.value));
+@@ -15201,7 +15208,7 @@ public class parse {
+         L_outer42:
+             for (; 1 != 0;t.value = pcopy(this.peek(t.value))){
+             /*L1:*/
+-                while (true) try {
++                {
+                     int __dispatch96 = 0;
+                     dispatched_96:
+                     do {
+@@ -15238,6 +15245,7 @@ public class parse {
+                                 }
+                                 /*goto L1*/throw Dispatch0.INSTANCE;
+                             default:
++                            {
+                                 if (!this.isBasicType(ptr(t)))
+                                 {
+                                     return false;
+@@ -15269,9 +15277,9 @@ public class parse {
+                                 continue L_outer42;
+                             }
+                             break;
++                        }
+                     } while(__dispatch96 != 0);
+-                    break;
+-                } catch (Dispatch0 __dispatch) {}
 +                }
                  break;
              }
