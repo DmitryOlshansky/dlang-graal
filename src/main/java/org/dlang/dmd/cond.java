@@ -128,7 +128,7 @@ public class cond {
         public  Expression wrapAndCall(Loc loc, Statement s) {
             TypeFunction tf = new TypeFunction(new ParameterList(null, VarArg.none), null, LINK.default_, 0L);
             FuncLiteralDeclaration fd = new FuncLiteralDeclaration(loc, loc, tf, TOK.reserved, null, null);
-            fd.fbody = s;
+            fd.fbody.value = s;
             FuncExp fe = new FuncExp(loc, fd);
             CallExp ce = new CallExp(loc, fe, refPtr(new DArray<Expression>()));
             return ce;

@@ -565,10 +565,10 @@ public class objc {
                 return ;
             }
             {
-                Slice<Dsymbol> __r1545 = (symbols.get()).opSlice().copy();
-                int __key1546 = 0;
-                for (; (__key1546 < __r1545.getLength());__key1546 += 1) {
-                    Dsymbol symbol = __r1545.get(__key1546);
+                Slice<Dsymbol> __r1555 = (symbols.get()).opSlice().copy();
+                int __key1556 = 0;
+                for (; (__key1556 < __r1555.getLength());__key1556 += 1) {
+                    Dsymbol symbol = __r1555.get(__key1556);
                     symbol.addObjcSymbols(classes, categories);
                 }
             }
@@ -630,10 +630,10 @@ public class objc {
             }
             Ptr<DArray<Ptr<BaseClass>>> metaBases = refPtr(new DArray<Ptr<BaseClass>>());
             {
-                Slice<Ptr<BaseClass>> __r1543 = (__withSym.baseclasses.get()).opSlice().copy();
-                int __key1544 = 0;
-                for (; (__key1544 < __r1543.getLength());__key1544 += 1) {
-                    Ptr<BaseClass> base = __r1543.get(__key1544);
+                Slice<Ptr<BaseClass>> __r1553 = (__withSym.baseclasses.get()).opSlice().copy();
+                int __key1554 = 0;
+                for (; (__key1554 < __r1553.getLength());__key1554 += 1) {
+                    Ptr<BaseClass> base = __r1553.get(__key1554);
                     ClassDeclaration baseCd = (base.get()).sym;
                     assert(baseCd != null);
                     if ((baseCd.classKind == ClassKind.objc))
@@ -682,10 +682,10 @@ public class objc {
             }
             Ptr<DArray<Ptr<BaseClass>>> metaBases = refPtr(new DArray<Ptr<BaseClass>>());
             {
-                Slice<Ptr<BaseClass>> __r1541 = (__withSym.baseclasses.get()).opSlice().copy();
-                int __key1542 = 0;
-                for (; (__key1542 < __r1541.getLength());__key1542 += 1) {
-                    Ptr<BaseClass> base = __r1541.get(__key1542);
+                Slice<Ptr<BaseClass>> __r1551 = (__withSym.baseclasses.get()).opSlice().copy();
+                int __key1552 = 0;
+                for (; (__key1552 < __r1551.getLength());__key1552 += 1) {
+                    Ptr<BaseClass> base = __r1551.get(__key1552);
                     ClassDeclaration baseCd = (base.get()).sym;
                     assert(baseCd != null);
                     if ((baseCd.classKind == ClassKind.objc))

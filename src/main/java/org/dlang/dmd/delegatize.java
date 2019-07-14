@@ -199,7 +199,7 @@ public class delegatize {
         {
             s = new ReturnStatement(loc, e);
         }
-        fld.fbody = s;
+        fld.fbody.value = s;
         e = new FuncExp(loc, fld);
         e = expressionSemantic(e, sc);
         return e;

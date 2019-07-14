@@ -65,9 +65,12 @@ vendor/dmd/src/dmd/expressionsem.d
 vendor/dmd/src/dmd/func.d
 # vendor/dmd/src/dmd/gluelayer.d
 vendor/dmd/src/dmd/hdrgen.d
+# vendor/dmd/src/dmd/imphint.d # stubed out
+vendor/dmd/src/dmd/impcnvtab.d
 vendor/dmd/src/dmd/init.d
 vendor/dmd/src/dmd/intrange.d
 vendor/dmd/src/dmd/initsem.d
+vendor/dmd/src/dmd/lambdacomp.d
 # vendor/dmd/src/dmd/mars.d # simpler to roll our own entry point + shims
 vendor/dmd/src/dmd/mtype.d
 vendor/dmd/src/dmd/nogc.d
@@ -75,16 +78,20 @@ vendor/dmd/src/dmd/nspace.d
 vendor/dmd/src/dmd/objc.d
 vendor/dmd/src/dmd/opover.d
 vendor/dmd/src/dmd/optimize.d
+vendor/dmd/src/dmd/printast.d
 vendor/dmd/src/dmd/safe.d
 vendor/dmd/src/dmd/sapply.d
 vendor/dmd/src/dmd/semantic2.d
 vendor/dmd/src/dmd/semantic3.d
 vendor/dmd/src/dmd/sideeffect.d
 vendor/dmd/src/dmd/statement.d
+vendor/dmd/src/dmd/statement_rewrite_walker.d
 vendor/dmd/src/dmd/statementsem.d
 vendor/dmd/src/dmd/staticassert.d
 vendor/dmd/src/dmd/staticcond.d
 vendor/dmd/src/dmd/target.d
+vendor/dmd/src/dmd/templateparamsem.d
+vendor/dmd/src/dmd/traits.d
 vendor/dmd/src/dmd/typesem.d
 vendor/dmd/src/dmd/typinf.d
 # entry point, rewrite to something less fancy w/o Phobos templates

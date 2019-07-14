@@ -465,21 +465,21 @@ public class typesem {
                 if (parameters != null)
                 {
                     {
-                        Slice<Parameter> __r1662 = (parameters.get()).opSlice().copy();
-                        Ref<Integer> __key1661 = ref(0);
-                        for (; (__key1661.value < __r1662.getLength());__key1661.value += 1) {
-                            Parameter p = __r1662.get(__key1661.value);
-                            int i = __key1661.value;
+                        Slice<Parameter> __r1714 = (parameters.get()).opSlice().copy();
+                        Ref<Integer> __key1713 = ref(0);
+                        for (; (__key1713.value < __r1714.getLength());__key1713.value += 1) {
+                            Parameter p = __r1714.get(__key1713.value);
+                            int i = __key1713.value;
                             Parameter ps = stripParameter.invoke(p);
                             if (ps != null)
                             {
                                 Ptr<DArray<Parameter>> nparams = refPtr(new DArray<Parameter>((parameters.get()).length));
                                 {
-                                    Slice<Parameter> __r1664 = (nparams.get()).opSlice().copy();
-                                    Ref<Integer> __key1663 = ref(0);
-                                    for (; (__key1663.value < __r1664.getLength());__key1663.value += 1) {
-                                        Ref<Parameter> np = ref(__r1664.get(__key1663.value));
-                                        int j = __key1663.value;
+                                    Slice<Parameter> __r1716 = (nparams.get()).opSlice().copy();
+                                    Ref<Integer> __key1715 = ref(0);
+                                    for (; (__key1715.value < __r1716.getLength());__key1715.value += 1) {
+                                        Ref<Parameter> np = ref(__r1716.get(__key1715.value));
+                                        int j = __key1715.value;
                                         Parameter pj = (parameters.get()).get(j);
                                         if ((j < i))
                                         {
@@ -623,10 +623,10 @@ public class typesem {
 
     public static Expression typeToExpressionHelper(TypeQualified t, Expression e, int i) {
         {
-            Slice<RootObject> __r1665 = t.idents.opSlice(i, t.idents.length).copy();
-            int __key1666 = 0;
-            for (; (__key1666 < __r1665.getLength());__key1666 += 1) {
-                RootObject id = __r1665.get(__key1666);
+            Slice<RootObject> __r1717 = t.idents.opSlice(i, t.idents.length).copy();
+            int __key1718 = 0;
+            for (; (__key1718 < __r1717.getLength());__key1718 += 1) {
+                RootObject id = __r1717.get(__key1718);
                 switch (id.dyncast())
                 {
                     case DYNCAST.identifier:
@@ -1817,10 +1817,10 @@ public class typesem {
                 Ptr<DArray<Parameter>> args = refPtr(new DArray<Parameter>());
                 (args.get()).reserve((int)(i2 - i1));
                 {
-                    Slice<Parameter> __r1667 = (tt.arguments.get()).opSlice((int)i1, (int)i2).copy();
-                    Ref<Integer> __key1668 = ref(0);
-                    for (; (__key1668.value < __r1667.getLength());__key1668.value += 1) {
-                        Parameter arg = __r1667.get(__key1668.value);
+                    Slice<Parameter> __r1719 = (tt.arguments.get()).opSlice((int)i1, (int)i2).copy();
+                    Ref<Integer> __key1720 = ref(0);
+                    for (; (__key1720.value < __r1719.getLength());__key1720.value += 1) {
+                        Parameter arg = __r1719.get(__key1720.value);
                         (args.get()).push(arg);
                     }
                 }

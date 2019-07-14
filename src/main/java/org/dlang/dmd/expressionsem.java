@@ -5246,7 +5246,7 @@ public class expressionsem {
                 {
                     AggregateDeclaration ad = (this.sc.get()).func != null ? (this.sc.get()).func.isThis() : null;
                     ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
-                    if ((cd != null) && (cd.classKind == ClassKind.cpp) && (exp.f != null) && (exp.f.fbody == null))
+                    if ((cd != null) && (cd.classKind == ClassKind.cpp) && (exp.f != null) && (exp.f.fbody.value == null))
                     {
                         Loc loc = exp.loc.copy();
                         DotIdExp vptr = new DotIdExp(loc, new ThisExp(loc), Id.__vptr);

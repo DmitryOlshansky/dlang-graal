@@ -236,10 +236,10 @@ public class semantic2 {
                                     public Boolean invoke(Ptr<DArray<Expression>> elems) {
                                      {
                                         {
-                                            Slice<Expression> __r1553 = (elems.get()).opSlice().copy();
-                                            Ref<Integer> __key1554 = ref(0);
-                                            for (; (__key1554.value < __r1553.getLength());__key1554.value += 1) {
-                                                Expression e = __r1553.get(__key1554.value);
+                                            Slice<Expression> __r1565 = (elems.get()).opSlice().copy();
+                                            Ref<Integer> __key1566 = ref(0);
+                                            for (; (__key1566.value < __r1565.getLength());__key1566.value += 1) {
+                                                Expression e = __r1565.get(__key1566.value);
                                                 if ((e != null) && hasInvalidEnumInitializer.invoke(e))
                                                 {
                                                     return true;
@@ -352,7 +352,7 @@ public class semantic2 {
                                     {
                                         return 0;
                                     }
-                                    if ((((f1.fbody != null) ? 1 : 0) != ((f2.fbody != null) ? 1 : 0)))
+                                    if ((((f1.fbody.value != null) ? 1 : 0) != ((f2.fbody.value != null) ? 1 : 0)))
                                     {
                                         return 0;
                                     }
@@ -362,7 +362,7 @@ public class semantic2 {
                                     }
                                     if ((pequals(f1.ident, f2.ident)) && (pequals(f1.toParent2(), f2.toParent2())) && (f1.linkage != LINK.d) && (f1.linkage != LINK.cpp) && (f2.linkage != LINK.d) && (f2.linkage != LINK.cpp))
                                     {
-                                        if ((f1.fbody == null) || (f2.fbody == null))
+                                        if ((f1.fbody.value == null) || (f2.fbody.value == null))
                                         {
                                             return 0;
                                         }
@@ -403,10 +403,10 @@ public class semantic2 {
             }
             TypeFunction f = (TypeFunction)fd.type;
             {
-                int __key1555 = 0;
-                int __limit1556 = f.parameterList.length();
-                for (; (__key1555 < __limit1556);__key1555 += 1) {
-                    int i = __key1555;
+                int __key1567 = 0;
+                int __limit1568 = f.parameterList.length();
+                for (; (__key1567 < __limit1568);__key1567 += 1) {
+                    int i = __key1567;
                     Parameter param = f.parameterList.get(i);
                     if ((param != null) && (param.userAttribDecl != null))
                     {
@@ -442,10 +442,10 @@ public class semantic2 {
                 this.sc = pcopy((this.sc.get()).push(ns));
                 (this.sc.get()).linkage = LINK.cpp;
                 {
-                    Slice<Dsymbol> __r1557 = (ns.members.get()).opSlice().copy();
-                    int __key1558 = 0;
-                    for (; (__key1558 < __r1557.getLength());__key1558 += 1) {
-                        Dsymbol s = __r1557.get(__key1558);
+                    Slice<Dsymbol> __r1569 = (ns.members.get()).opSlice().copy();
+                    int __key1570 = 0;
+                    for (; (__key1570 < __r1569.getLength());__key1570 += 1) {
+                        Dsymbol s = __r1569.get(__key1570);
                         semantic2(s, this.sc);
                     }
                 }
@@ -489,10 +489,10 @@ public class semantic2 {
                     public Void invoke(Ptr<Scope> sc, Ptr<DArray<Expression>> exps) {
                      {
                         {
-                            Slice<Expression> __r1559 = (exps.get()).opSlice().copy();
-                            Ref<Integer> __key1560 = ref(0);
-                            for (; (__key1560.value < __r1559.getLength());__key1560.value += 1) {
-                                Ref<Expression> e = ref(__r1559.get(__key1560.value));
+                            Slice<Expression> __r1571 = (exps.get()).opSlice().copy();
+                            Ref<Integer> __key1572 = ref(0);
+                            for (; (__key1572.value < __r1571.getLength());__key1572.value += 1) {
+                                Ref<Expression> e = ref(__r1571.get(__key1572.value));
                                 if (e.value != null)
                                 {
                                     e.value = expressionSemantic(e.value, sc);

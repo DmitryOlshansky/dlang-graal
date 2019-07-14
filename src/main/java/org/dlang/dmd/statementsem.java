@@ -71,7 +71,7 @@ public class statementsem {
     }
 
     public static LabelStatement checkLabeledLoop(Ptr<Scope> sc, Statement statement) {
-        if (((sc.get()).slabel != null) && (pequals((sc.get()).slabel.statement, statement)))
+        if (((sc.get()).slabel != null) && (pequals((sc.get()).slabel.statement.value, statement)))
         {
             return (sc.get()).slabel;
         }
@@ -115,7 +115,7 @@ public class statementsem {
         }
 
         public  void visit(PeelStatement s) {
-            this.result = s.s;
+            this.result = s.s.value;
         }
 
         public  void visit(ExpStatement s) {
@@ -202,10 +202,10 @@ public class statementsem {
                                     public Boolean invoke(Slice<Statement> statements) {
                                      {
                                         {
-                                            Slice<Statement> __r1605 = statements.copy();
-                                            Ref<Integer> __key1606 = ref(0);
-                                            for (; (__key1606.value < __r1605.getLength());__key1606.value += 1) {
-                                                Statement s = __r1605.get(__key1606.value);
+                                            Slice<Statement> __r1617 = statements.copy();
+                                            Ref<Integer> __key1618 = ref(0);
+                                            for (; (__key1618.value < __r1617.getLength());__key1618.value += 1) {
+                                                Statement s = __r1617.get(__key1618.value);
                                                 {
                                                     CompoundStatement cs = s.isCompoundStatement();
                                                     if ((cs) != null)
@@ -314,10 +314,10 @@ public class statementsem {
             };
             flatten.invoke(cs.statements);
             {
-                Slice<Statement> __r1607 = (cs.statements.get()).opSlice().copy();
-                int __key1608 = 0;
-                for (; (__key1608 < __r1607.getLength());__key1608 += 1) {
-                    Statement s = __r1607.get(__key1608);
+                Slice<Statement> __r1619 = (cs.statements.get()).opSlice().copy();
+                int __key1620 = 0;
+                for (; (__key1620 < __r1619.getLength());__key1620 += 1) {
+                    Statement s = __r1619.get(__key1620);
                     if (s == null)
                     {
                         continue;
@@ -346,11 +346,11 @@ public class statementsem {
             (scd.get()).scontinue = uls;
             Statement serror = null;
             {
-                Slice<Statement> __r1610 = (uls.statements.get()).opSlice().copy();
-                int __key1609 = 0;
-                for (; (__key1609 < __r1610.getLength());__key1609 += 1) {
-                    Statement s = __r1610.get(__key1609);
-                    int i = __key1609;
+                Slice<Statement> __r1622 = (uls.statements.get()).opSlice().copy();
+                int __key1621 = 0;
+                for (; (__key1621 < __r1622.getLength());__key1621 += 1) {
+                    Statement s = __r1622.get(__key1621);
+                    int i = __key1621;
                     if (s != null)
                     {
                         s = statementSemantic(s, scd);
@@ -366,36 +366,36 @@ public class statementsem {
         }
 
         public  void visit(ScopeStatement ss) {
-            if (ss.statement != null)
+            if (ss.statement.value != null)
             {
                 ScopeDsymbol sym = new ScopeDsymbol();
                 sym.parent.value = (this.sc.get()).scopesym;
                 sym.endlinnum = ss.endloc.linnum;
                 this.sc = pcopy((this.sc.get()).push(sym));
-                Ptr<DArray<Statement>> a = ss.statement.flatten(this.sc);
+                Ptr<DArray<Statement>> a = ss.statement.value.flatten(this.sc);
                 if (a != null)
                 {
-                    ss.statement = new CompoundStatement(ss.loc, a);
+                    ss.statement.value = new CompoundStatement(ss.loc, a);
                 }
-                ss.statement = statementSemantic(ss.statement, this.sc);
-                if (ss.statement != null)
+                ss.statement.value = statementSemantic(ss.statement.value, this.sc);
+                if (ss.statement.value != null)
                 {
-                    if (ss.statement.isErrorStatement() != null)
+                    if (ss.statement.value.isErrorStatement() != null)
                     {
                         (this.sc.get()).pop();
-                        this.result = ss.statement;
+                        this.result = ss.statement.value;
                         return ;
                     }
                     Ref<Statement> sentry = ref(null);
                     Ref<Statement> sexception = ref(null);
                     Ref<Statement> sfinally = ref(null);
-                    ss.statement = ss.statement.scopeCode(this.sc, ptr(sentry), ptr(sexception), ptr(sfinally));
+                    ss.statement.value = ss.statement.value.scopeCode(this.sc, ptr(sentry), ptr(sexception), ptr(sfinally));
                     assert(sentry.value == null);
                     assert(sexception.value == null);
                     if (sfinally.value != null)
                     {
                         sfinally.value = statementSemantic(sfinally.value, this.sc);
-                        ss.statement = new CompoundStatement(ss.loc, slice(new Statement[]{ss.statement, sfinally.value}));
+                        ss.statement.value = new CompoundStatement(ss.loc, slice(new Statement[]{ss.statement.value, sfinally.value}));
                     }
                 }
                 (this.sc.get()).pop();
@@ -421,7 +421,7 @@ public class statementsem {
         }
 
         public  void visit(WhileStatement ws) {
-            Statement s = new ForStatement(ws.loc, null, ws.condition, null, ws._body, ws.endloc);
+            Statement s = new ForStatement(ws.loc, null, ws.condition, null, ws._body.value, ws.endloc);
             s = statementSemantic(s, this.sc);
             this.result = s;
         }
@@ -429,9 +429,9 @@ public class statementsem {
         public  void visit(DoStatement ds) {
             boolean inLoopSave = (this.sc.get()).inLoop;
             (this.sc.get()).inLoop = true;
-            if (ds._body != null)
+            if (ds._body.value != null)
             {
-                ds._body = semanticScope(ds._body, this.sc, ds, ds);
+                ds._body.value = semanticScope(ds._body.value, this.sc, ds, ds);
             }
             (this.sc.get()).inLoop = inLoopSave;
             if (((ds.condition.op & 0xFF) == 28))
@@ -453,20 +453,20 @@ public class statementsem {
                 this.setError();
                 return ;
             }
-            if ((ds._body != null) && (ds._body.isErrorStatement() != null))
+            if ((ds._body.value != null) && (ds._body.value.isErrorStatement() != null))
             {
-                this.result = ds._body;
+                this.result = ds._body.value;
                 return ;
             }
             this.result = ds;
         }
 
         public  void visit(ForStatement fs) {
-            if (fs._init != null)
+            if (fs._init.value != null)
             {
                 Ptr<DArray<Statement>> ainit = refPtr(new DArray<Statement>());
-                (ainit.get()).push(fs._init);
-                fs._init = null;
+                (ainit.get()).push(fs._init.value);
+                fs._init.value = null;
                 (ainit.get()).push(fs);
                 Statement s = new CompoundStatement(fs.loc, ainit);
                 s = new ScopeStatement(fs.loc, s, fs.endloc);
@@ -485,7 +485,7 @@ public class statementsem {
                 this.result = s;
                 return ;
             }
-            assert((fs._init == null));
+            assert((fs._init.value == null));
             ScopeDsymbol sym = new ScopeDsymbol();
             sym.parent.value = (this.sc.get()).scopesym;
             sym.endlinnum = fs.endloc.linnum;
@@ -522,12 +522,12 @@ public class statementsem {
             }
             (this.sc.get()).sbreak = fs;
             (this.sc.get()).scontinue = fs;
-            if (fs._body != null)
+            if (fs._body.value != null)
             {
-                fs._body = semanticNoScope(fs._body, this.sc);
+                fs._body.value = semanticNoScope(fs._body.value, this.sc);
             }
             (this.sc.get()).pop();
-            if ((fs.condition != null) && ((fs.condition.op & 0xFF) == 127) || (fs.increment != null) && ((fs.increment.op & 0xFF) == 127) || (fs._body != null) && (fs._body.isErrorStatement() != null))
+            if ((fs.condition != null) && ((fs.condition.op & 0xFF) == 127) || (fs.increment != null) && ((fs.increment.op & 0xFF) == 127) || (fs._body.value != null) && (fs._body.value.isErrorStatement() != null))
             {
                 this.setError();
                 return ;
@@ -591,10 +591,10 @@ public class statementsem {
                 throw new AssertionError("Unreachable code!");
             }
             {
-                int __key1613 = 0;
-                int __limit1614 = n;
-                for (; (__key1613 < __limit1614);__key1613 += 1) {
-                    int j = __key1613;
+                int __key1625 = 0;
+                int __limit1626 = n;
+                for (; (__key1625 < __limit1626);__key1625 += 1) {
+                    int j = __key1625;
                     int k = ((fs.op & 0xFF) == 201) ? j : n - 1 - j;
                     Expression e = null;
                     Type t = null;
@@ -847,10 +847,10 @@ public class statementsem {
                 throw new AssertionError("Unreachable code!");
             }
             {
-                int __key1591 = 0;
-                int __limit1592 = n;
-                for (; (__key1591 < __limit1592);__key1591 += 1) {
-                    int j = __key1591;
+                int __key1603 = 0;
+                int __limit1604 = n;
+                for (; (__key1603 < __limit1604);__key1603 += 1) {
+                    int j = __key1603;
                     int k = ((fs.op & 0xFF) == 201) ? j : n - 1 - j;
                     Expression e = null;
                     Type t = null;
@@ -1054,10 +1054,10 @@ public class statementsem {
                             return ;
                         }
                         {
-                            int __key1593 = 0;
-                            int __limit1594 = dim;
-                            for (; (__key1593 < __limit1594);__key1593 += 1) {
-                                int l = __key1593;
+                            int __key1605 = 0;
+                            int __limit1606 = dim;
+                            for (; (__key1605 < __limit1606);__key1605 += 1) {
+                                int l = __key1605;
                                 Parameter cp = (fs.parameters.get()).get(l);
                                 Expression init_ = new IndexExp(loc, access, new IntegerExp(loc, (long)l, Type.tsize_t));
                                 init_ = expressionSemantic(init_, this.sc);
@@ -1364,10 +1364,10 @@ public class statementsem {
                  {
                     Ref<Boolean> result = ref(false);
                     {
-                        Slice<Parameter> __r1611 = (fs.parameters.get()).opSlice().copy();
-                        Ref<Integer> __key1612 = ref(0);
-                        for (; (__key1612.value < __r1611.getLength());__key1612.value += 1) {
-                            Parameter p = __r1611.get(__key1612.value);
+                        Slice<Parameter> __r1623 = (fs.parameters.get()).opSlice().copy();
+                        Ref<Integer> __key1624 = ref(0);
+                        for (; (__key1624.value < __r1623.getLength());__key1624.value += 1) {
+                            Parameter p = __r1623.get(__key1624.value);
                             if (p.type == null)
                             {
                                 fs.error(new BytePtr("cannot infer type for `foreach` variable `%s`, perhaps set it explicitly"), p.ident.toChars());
@@ -1473,10 +1473,10 @@ public class statementsem {
             Ptr<Scope> sc2 = (this.sc.get()).push(sym);
             (sc2.get()).inLoop = true;
             {
-                Slice<Parameter> __r1615 = (fs.parameters.get()).opSlice().copy();
-                int __key1616 = 0;
-                for (; (__key1616 < __r1615.getLength());__key1616 += 1) {
-                    Parameter p = __r1615.get(__key1616);
+                Slice<Parameter> __r1627 = (fs.parameters.get()).opSlice().copy();
+                int __key1628 = 0;
+                for (; (__key1628 < __r1627.getLength());__key1628 += 1) {
+                    Parameter p = __r1627.get(__key1628);
                     if ((p.storageClass & 8388608L) != 0)
                     {
                         fs.error(new BytePtr("cannot declare `enum` loop variables for non-unrolled foreach"));
@@ -1506,10 +1506,10 @@ public class statementsem {
                                 /*goto case*/{ __dispatch0 = 34; continue dispatched_0; }
                             }
                             {
-                                int __key1617 = 0;
-                                int __limit1618 = dim;
-                                for (; (__key1617 < __limit1618);__key1617 += 1) {
-                                    int i = __key1617;
+                                int __key1629 = 0;
+                                int __limit1630 = dim;
+                                for (; (__key1629 < __limit1630);__key1629 += 1) {
+                                    int i = __key1629;
                                     Parameter p = (fs.parameters.get()).get(i);
                                     p.type = typeSemantic(p.type, loc, sc2);
                                     p.type = p.type.addStorageClass(p.storageClass);
@@ -1555,11 +1555,11 @@ public class statementsem {
                                 }
                             }
                             {
-                                int __key1619 = 0;
-                                int __limit1620 = dim;
+                                int __key1631 = 0;
+                                int __limit1632 = dim;
                             L_outer1:
-                                for (; (__key1619 < __limit1620);__key1619 += 1) {
-                                    int i_2 = __key1619;
+                                for (; (__key1631 < __limit1632);__key1631 += 1) {
+                                    int i_2 = __key1631;
                                     Parameter p_2 = (fs.parameters.get()).get(i_2);
                                     VarDeclaration var = null;
                                     if ((dim == 2) && (i_2 == 0))
@@ -1877,11 +1877,11 @@ public class statementsem {
                                         /*goto case*/{ __dispatch0 = 34; continue dispatched_0; }
                                     }
                                     {
-                                        int __key1621 = 0;
-                                        int __limit1622 = dim;
+                                        int __key1633 = 0;
+                                        int __limit1634 = dim;
                                     L_outer2:
-                                        for (; (__key1621 < __limit1622);__key1621 += 1) {
-                                            int i_3 = __key1621;
+                                        for (; (__key1633 < __limit1634);__key1633 += 1) {
+                                            int i_3 = __key1633;
                                             Parameter p_5 = (fs.parameters.get()).get(i_3);
                                             Expression exp = (exps.get()).get(i_3);
                                             if (p_5.type == null)
@@ -1973,16 +1973,16 @@ public class statementsem {
                                     /*goto case*/{ __dispatch0 = 34; continue dispatched_0; }
                                 }
                                 {
-                                    int __key1623 = 0;
-                                    int __limit1624 = (fs.gotos.get()).length;
-                                    for (; (__key1623 < __limit1624);__key1623 += 1) {
-                                        int i_4 = __key1623;
-                                        GotoStatement gs = (GotoStatement)(fs.gotos.get()).get(i_4).statement;
+                                    int __key1635 = 0;
+                                    int __limit1636 = (fs.gotos.get()).length;
+                                    for (; (__key1635 < __limit1636);__key1635 += 1) {
+                                        int i_4 = __key1635;
+                                        GotoStatement gs = (GotoStatement)(fs.gotos.get()).get(i_4).statement.value;
                                         if (gs.label.statement == null)
                                         {
                                             (fs.cases.get()).push(gs);
                                             s = new ReturnStatement(Loc.initial, new IntegerExp((long)((fs.cases.get()).length + 1)));
-                                            (fs.gotos.get()).get(i_4).statement = s;
+                                            (fs.gotos.get()).get(i_4).statement.value = s;
                                         }
                                     }
                                 }
@@ -2172,11 +2172,11 @@ public class statementsem {
                                     s = new DefaultStatement(Loc.initial, s);
                                     (a_1.get()).push(s);
                                     {
-                                        Slice<Statement> __r1626 = (fs.cases.get()).opSlice().copy();
-                                        int __key1625 = 0;
-                                        for (; (__key1625 < __r1626.getLength());__key1625 += 1) {
-                                            Statement c = __r1626.get(__key1625);
-                                            int i_6 = __key1625;
+                                        Slice<Statement> __r1638 = (fs.cases.get()).opSlice().copy();
+                                        int __key1637 = 0;
+                                        for (; (__key1637 < __r1638.getLength());__key1637 += 1) {
+                                            Statement c = __r1638.get(__key1637);
+                                            int i_6 = __key1637;
                                             s = new CaseStatement(Loc.initial, new IntegerExp((long)(i_6 + 2)), c);
                                             (a_1.get()).push(s);
                                         }
@@ -2205,11 +2205,11 @@ public class statementsem {
         public static FuncExp foreachBodyToFunction(Ptr<Scope> sc, ForeachStatement fs, TypeFunction tfld) {
             Ptr<DArray<Parameter>> params = refPtr(new DArray<Parameter>());
             {
-                int __key1627 = 0;
-                int __limit1628 = (fs.parameters.get()).length;
+                int __key1639 = 0;
+                int __limit1640 = (fs.parameters.get()).length;
             L_outer3:
-                for (; (__key1627 < __limit1628);__key1627 += 1) {
-                    int i = __key1627;
+                for (; (__key1639 < __limit1640);__key1639 += 1) {
+                    int i = __key1639;
                     Parameter p = (fs.parameters.get()).get(i);
                     long stc = 2097152L;
                     Identifier id = null;
@@ -2253,7 +2253,7 @@ public class statementsem {
             fs.cases = pcopy((refPtr(new DArray<Statement>())));
             fs.gotos = pcopy((refPtr(new DArray<ScopeStatement>())));
             FuncLiteralDeclaration fld = new FuncLiteralDeclaration(fs.loc, fs.endloc, tf, TOK.delegate_, fs, null);
-            fld.fbody = fs._body.value;
+            fld.fbody.value = fs._body.value;
             Expression flde = new FuncExp(fs.loc, fld);
             flde = expressionSemantic(flde, sc);
             fld.tookAddressOf = 0;
@@ -2446,16 +2446,16 @@ public class statementsem {
                 {
                     Statement sdtor = new DtorExpStatement(ifs.loc, ifs.match.edtor, ifs.match);
                     sdtor = new ScopeGuardStatement(ifs.loc, TOK.onScopeExit, sdtor);
-                    ifs.ifbody = new CompoundStatement(ifs.loc, slice(new Statement[]{sdtor, ifs.ifbody}));
+                    ifs.ifbody.value = new CompoundStatement(ifs.loc, slice(new Statement[]{sdtor, ifs.ifbody.value}));
                     ifs.match.storage_class |= 16777216L;
                     Statement sdtor2 = new DtorExpStatement(ifs.loc, ifs.match.edtor, ifs.match);
-                    if (ifs.elsebody != null)
+                    if (ifs.elsebody.value != null)
                     {
-                        ifs.elsebody = new CompoundStatement(ifs.loc, slice(new Statement[]{sdtor2, ifs.elsebody}));
+                        ifs.elsebody.value = new CompoundStatement(ifs.loc, slice(new Statement[]{sdtor2, ifs.elsebody.value}));
                     }
                     else
                     {
-                        ifs.elsebody = sdtor2;
+                        ifs.elsebody.value = sdtor2;
                     }
                 }
             }
@@ -2477,17 +2477,17 @@ public class statementsem {
             ifs.condition = ifs.condition.toBoolean(scd);
             ifs.condition = ifs.condition.optimize(0, false);
             CtorFlow ctorflow_root = (scd.get()).ctorflow.clone().copy();
-            ifs.ifbody = semanticNoScope(ifs.ifbody, scd);
+            ifs.ifbody.value = semanticNoScope(ifs.ifbody.value, scd);
             (scd.get()).pop();
             CtorFlow ctorflow_then = (this.sc.get()).ctorflow.copy();
             (this.sc.get()).ctorflow.opAssign(ctorflow_root.copy());
-            if (ifs.elsebody != null)
+            if (ifs.elsebody.value != null)
             {
-                ifs.elsebody = semanticScope(ifs.elsebody, this.sc, null, null);
+                ifs.elsebody.value = semanticScope(ifs.elsebody.value, this.sc, null, null);
             }
             (this.sc.get()).merge(ifs.loc, ctorflow_then);
             ctorflow_then.freeFieldinit();
-            if (((ifs.condition.op & 0xFF) == 127) || (ifs.ifbody != null) && (ifs.ifbody.isErrorStatement() != null) || (ifs.elsebody != null) && (ifs.elsebody.isErrorStatement() != null))
+            if (((ifs.condition.op & 0xFF) == 127) || (ifs.ifbody.value != null) && (ifs.ifbody.value.isErrorStatement() != null) || (ifs.elsebody.value != null) && (ifs.elsebody.value.isErrorStatement() != null))
             {
                 this.setError();
                 return ;
@@ -2528,10 +2528,10 @@ public class statementsem {
                 if (ps.args != null)
                 {
                     {
-                        Slice<Expression> __r1629 = (ps.args.get()).opSlice().copy();
-                        int __key1630 = 0;
-                        for (; (__key1630 < __r1629.getLength());__key1630 += 1) {
-                            Expression arg = __r1629.get(__key1630);
+                        Slice<Expression> __r1641 = (ps.args.get()).opSlice().copy();
+                        int __key1642 = 0;
+                        for (; (__key1642 < __r1641.getLength());__key1642 += 1) {
+                            Expression arg = __r1641.get(__key1642);
                             this.sc = pcopy((this.sc.get()).startCTFE());
                             Expression e = expressionSemantic(arg, this.sc);
                             e = resolveProperties(this.sc, e);
@@ -2740,9 +2740,9 @@ public class statementsem {
             ss.cases = pcopy((refPtr(new DArray<CaseStatement>())));
             boolean inLoopSave = (this.sc.get()).inLoop;
             (this.sc.get()).inLoop = true;
-            ss._body = statementSemantic(ss._body, this.sc);
+            ss._body.value = statementSemantic(ss._body.value, this.sc);
             (this.sc.get()).inLoop = inLoopSave;
-            if (conditionError || (ss._body != null) && (ss._body.isErrorStatement() != null))
+            if (conditionError || (ss._body.value != null) && (ss._body.value.isErrorStatement() != null))
             {
                 (this.sc.get()).pop();
                 this.setError();
@@ -2750,10 +2750,10 @@ public class statementsem {
             }
         /*Lgotocase:*/
             {
-                Slice<GotoCaseStatement> __r1631 = ss.gotoCases.opSlice().copy();
-                int __key1632 = 0;
-                for (; (__key1632 < __r1631.getLength());__key1632 += 1) {
-                    GotoCaseStatement gcs = __r1631.get(__key1632);
+                Slice<GotoCaseStatement> __r1643 = ss.gotoCases.opSlice().copy();
+                int __key1644 = 0;
+                for (; (__key1644 < __r1643.getLength());__key1644 += 1) {
+                    GotoCaseStatement gcs = __r1643.get(__key1644);
                     if (gcs.exp == null)
                     {
                         gcs.error(new BytePtr("no `case` statement following `goto case;`"));
@@ -2769,10 +2769,10 @@ public class statementsem {
                                 continue;
                             }
                             {
-                                Slice<CaseStatement> __r1633 = ((scx.get()).sw.cases.get()).opSlice().copy();
-                                int __key1634 = 0;
-                                for (; (__key1634 < __r1633.getLength());__key1634 += 1) {
-                                    CaseStatement cs = __r1633.get(__key1634);
+                                Slice<CaseStatement> __r1645 = ((scx.get()).sw.cases.get()).opSlice().copy();
+                                int __key1646 = 0;
+                                for (; (__key1646 < __r1645.getLength());__key1646 += 1) {
+                                    CaseStatement cs = __r1645.get(__key1646);
                                     if (cs.exp.equals(gcs.exp))
                                     {
                                         gcs.cs = cs;
@@ -2805,18 +2805,18 @@ public class statementsem {
                 {
                 /*Lmembers:*/
                     {
-                        Slice<Dsymbol> __r1635 = (ed.members.get()).opSlice().copy();
-                        int __key1636 = 0;
-                        for (; (__key1636 < __r1635.getLength());__key1636 += 1) {
-                            Dsymbol es = __r1635.get(__key1636);
+                        Slice<Dsymbol> __r1647 = (ed.members.get()).opSlice().copy();
+                        int __key1648 = 0;
+                        for (; (__key1648 < __r1647.getLength());__key1648 += 1) {
+                            Dsymbol es = __r1647.get(__key1648);
                             EnumMember em = es.isEnumMember();
                             if (em != null)
                             {
                                 {
-                                    Slice<CaseStatement> __r1637 = (ss.cases.get()).opSlice().copy();
-                                    int __key1638 = 0;
-                                    for (; (__key1638 < __r1637.getLength());__key1638 += 1) {
-                                        CaseStatement cs = __r1637.get(__key1638);
+                                    Slice<CaseStatement> __r1649 = (ss.cases.get()).opSlice().copy();
+                                    int __key1650 = 0;
+                                    for (; (__key1650 < __r1649.getLength());__key1650 += 1) {
+                                        CaseStatement cs = __r1649.get(__key1650);
                                         if (cs.exp.equals(em.value()) || !cs.exp.type.value.isString() && !em.value().type.value.isString() && (cs.exp.toInteger() == em.value().toInteger()))
                                         {
                                             continue Lmembers;
@@ -2839,7 +2839,7 @@ public class statementsem {
             if (((this.sc.get()).sw.sdefault == null) && !ss.isFinal || needswitcherror || ((global.params.useAssert & 0xFF) == 2))
             {
                 ss.hasNoDefault = 1;
-                if (!ss.isFinal && (ss._body == null) || (ss._body.isErrorStatement() == null))
+                if (!ss.isFinal && (ss._body.value == null) || (ss._body.value.isErrorStatement() == null))
                 {
                     ss.error(new BytePtr("`switch` statement without a `default`; use `final switch` or add `default: assert(0);` or add `default: break;`"));
                 }
@@ -2876,14 +2876,14 @@ public class statementsem {
                 }
                 (a.get()).reserve(2);
                 (this.sc.get()).sw.sdefault = new DefaultStatement(ss.loc, s);
-                (a.get()).push(ss._body);
-                if ((blockExit(ss._body, (this.sc.get()).func, false) & BE.fallthru) != 0)
+                (a.get()).push(ss._body.value);
+                if ((blockExit(ss._body.value, (this.sc.get()).func, false) & BE.fallthru) != 0)
                 {
                     (a.get()).push(new BreakStatement(Loc.initial, null));
                 }
                 (a.get()).push((this.sc.get()).sw.sdefault);
                 cs = new CompoundStatement(ss.loc, a);
-                ss._body = cs;
+                ss._body.value = cs;
             }
             if (ss.checkLabel())
             {
@@ -2931,10 +2931,10 @@ public class statementsem {
                 Ptr<DArray<RootObject>> compileTimeArgs = refPtr(new DArray<RootObject>());
                 (compileTimeArgs.get()).push(new TypeExp(ss.loc, ss.condition.type.value.nextOf()));
                 {
-                    Slice<CaseStatement> __r1639 = (csCopy.get()).opSlice().copy();
-                    int __key1640 = 0;
-                    for (; (__key1640 < __r1639.getLength());__key1640 += 1) {
-                        CaseStatement caseString = __r1639.get(__key1640);
+                    Slice<CaseStatement> __r1651 = (csCopy.get()).opSlice().copy();
+                    int __key1652 = 0;
+                    for (; (__key1652 < __r1651.getLength());__key1652 += 1) {
+                        CaseStatement caseString = __r1651.get(__key1652);
                         (compileTimeArgs.get()).push(caseString.exp);
                     }
                 }
@@ -2946,10 +2946,10 @@ public class statementsem {
                 ss.condition = sl;
                 int i = 0;
                 {
-                    Slice<CaseStatement> __r1641 = (csCopy.get()).opSlice().copy();
-                    int __key1642 = 0;
-                    for (; (__key1642 < __r1641.getLength());__key1642 += 1) {
-                        CaseStatement c = __r1641.get(__key1642);
+                    Slice<CaseStatement> __r1653 = (csCopy.get()).opSlice().copy();
+                    int __key1654 = 0;
+                    for (; (__key1654 < __r1653.getLength());__key1654 += 1) {
+                        CaseStatement c = __r1653.get(__key1654);
                         (ss.cases.get()).get(c.index).exp = new IntegerExp((long)i++);
                     }
                 }
@@ -3031,10 +3031,10 @@ public class statementsem {
                 catch(Dispatch0 __d){}
             /*L1:*/
                 {
-                    Slice<CaseStatement> __r1643 = (sw.cases.get()).opSlice().copy();
-                    int __key1644 = 0;
-                    for (; (__key1644 < __r1643.getLength());__key1644 += 1) {
-                        CaseStatement cs2 = __r1643.get(__key1644);
+                    Slice<CaseStatement> __r1655 = (sw.cases.get()).opSlice().copy();
+                    int __key1656 = 0;
+                    for (; (__key1656 < __r1655.getLength());__key1656 += 1) {
+                        CaseStatement cs2 = __r1655.get(__key1656);
                         if (cs2.exp.equals(cs.exp))
                         {
                             cs.error(new BytePtr("duplicate `case %s` in `switch` statement"), cs.exp.toChars());
@@ -3069,10 +3069,10 @@ public class statementsem {
                 errors = true;
             }
             (this.sc.get()).ctorflow.orCSX(CSX.label);
-            cs.statement = statementSemantic(cs.statement, this.sc);
-            if (cs.statement.isErrorStatement() != null)
+            cs.statement.value = statementSemantic(cs.statement.value, this.sc);
+            if (cs.statement.value.isErrorStatement() != null)
             {
-                this.result = cs.statement;
+                this.result = cs.statement.value;
                 return ;
             }
             if (errors || ((cs.exp.op & 0xFF) == 127))
@@ -3112,9 +3112,9 @@ public class statementsem {
             crs.last = crs.last.ctfeInterpret();
             if (((crs.first.op & 0xFF) == 127) || ((crs.last.op & 0xFF) == 127) || errors)
             {
-                if (crs.statement != null)
+                if (crs.statement.value != null)
                 {
-                    statementSemantic(crs.statement, this.sc);
+                    statementSemantic(crs.statement.value, this.sc);
                 }
                 this.setError();
                 return ;
@@ -3142,7 +3142,7 @@ public class statementsem {
             {
                 long i = fval;
                 for (; (i != lval + 1L);i++){
-                    Statement s = crs.statement;
+                    Statement s = crs.statement.value;
                     if ((i != lval))
                     {
                         s = new ExpStatement(crs.loc, null);
@@ -3185,8 +3185,8 @@ public class statementsem {
                 errors = true;
             }
             (this.sc.get()).ctorflow.orCSX(CSX.label);
-            ds.statement = statementSemantic(ds.statement, this.sc);
-            if (errors || (ds.statement.isErrorStatement() != null))
+            ds.statement.value = statementSemantic(ds.statement.value, this.sc);
+            if (errors || (ds.statement.value.isErrorStatement() != null))
             {
                 this.setError();
                 return ;
@@ -3502,11 +3502,11 @@ public class statementsem {
                 AggregateDeclaration ad = fd.isMemberLocal();
                 assert(ad != null);
                 {
-                    Slice<VarDeclaration> __r1646 = ad.fields.opSlice().copy();
-                    int __key1645 = 0;
-                    for (; (__key1645 < __r1646.getLength());__key1645 += 1) {
-                        VarDeclaration v = __r1646.get(__key1645);
-                        int i = __key1645;
+                    Slice<VarDeclaration> __r1658 = ad.fields.opSlice().copy();
+                    int __key1657 = 0;
+                    for (; (__key1657 < __r1658.getLength());__key1657 += 1) {
+                        VarDeclaration v = __r1658.get(__key1657);
+                        int i = __key1657;
                         boolean mustInit = ((v.storage_class & 549755813888L) != 0) || v.type.needsNested();
                         if (mustInit && (((this.sc.get()).ctorflow.fieldinit.get(i).csx.value & 1) == 0))
                         {
@@ -3591,7 +3591,7 @@ public class statementsem {
                         LabelStatement ls = (scx.get()).slabel;
                         if ((ls != null) && (pequals(ls.ident, bs.ident)))
                         {
-                            Statement s = ls.statement;
+                            Statement s = ls.statement.value;
                             if ((s == null) || !s.hasBreak())
                             {
                                 bs.error(new BytePtr("label `%s` has no `break`"), bs.ident.toChars());
@@ -3656,7 +3656,7 @@ public class statementsem {
                             {
                                 for (; scx != null;scx = pcopy((scx.get()).enclosing)){
                                     ls = (scx.get()).slabel;
-                                    if ((ls != null) && (pequals(ls.ident, cs.ident)) && (pequals(ls.statement, (this.sc.get()).fes)))
+                                    if ((ls != null) && (pequals(ls.ident, cs.ident)) && (pequals(ls.statement.value, (this.sc.get()).fes)))
                                     {
                                         this.result = new ReturnStatement(Loc.initial, literal_B6589FC6AB0DC82C());
                                         return ;
@@ -3671,7 +3671,7 @@ public class statementsem {
                         ls = (scx.get()).slabel;
                         if ((ls != null) && (pequals(ls.ident, cs.ident)))
                         {
-                            Statement s = ls.statement;
+                            Statement s = ls.statement.value;
                             if ((s == null) || !s.hasContinue())
                             {
                                 cs.error(new BytePtr("label `%s` has no `continue`"), cs.ident.toChars());
@@ -3728,9 +3728,9 @@ public class statementsem {
                 ss.exp = checkGC(this.sc, ss.exp);
                 if (((ss.exp.op & 0xFF) == 127))
                 {
-                    if (ss._body != null)
+                    if (ss._body.value != null)
                     {
-                        ss._body = statementSemantic(ss._body, this.sc);
+                        ss._body.value = statementSemantic(ss._body.value, this.sc);
                     }
                     this.setError();
                     return ;
@@ -3769,7 +3769,7 @@ public class statementsem {
                 e = new CallExp(ss.loc, fdexit, new VarExp(ss.loc, tmp, true));
                 e.type.value = Type.tvoid;
                 Statement s = new ExpStatement(ss.loc, e);
-                s = new TryFinallyStatement(ss.loc, ss._body, s);
+                s = new TryFinallyStatement(ss.loc, ss._body.value, s);
                 (cs.get()).push(s);
                 s = new CompoundStatement(ss.loc, cs);
                 this.result = statementSemantic(s, this.sc);
@@ -3801,7 +3801,7 @@ public class statementsem {
                 e = new CallExp(ss.loc, fdexit, e);
                 e.type.value = Type.tvoid;
                 Statement s = new ExpStatement(ss.loc, e);
-                s = new TryFinallyStatement(ss.loc, ss._body, s);
+                s = new TryFinallyStatement(ss.loc, ss._body.value, s);
                 (cs.get()).push(s);
                 s = new CompoundStatement(ss.loc, cs);
                 this.result = statementSemantic(s, this.sc);
@@ -3889,16 +3889,16 @@ public class statementsem {
                     return ;
                 }
             }
-            if (ws._body != null)
+            if (ws._body.value != null)
             {
                 sym._scope = pcopy(this.sc);
                 this.sc = pcopy((this.sc.get()).push(sym));
                 (this.sc.get()).insert(sym);
-                ws._body = statementSemantic(ws._body, this.sc);
+                ws._body.value = statementSemantic(ws._body.value, this.sc);
                 (this.sc.get()).pop();
-                if ((ws._body != null) && (ws._body.isErrorStatement() != null))
+                if ((ws._body.value != null) && (ws._body.value.isErrorStatement() != null))
                 {
-                    this.result = ws._body;
+                    this.result = ws._body.value;
                     return ;
                 }
             }
@@ -3921,15 +3921,15 @@ public class statementsem {
             int flags = 0;
             int FLAGcpp = 1;
             int FLAGd = 2;
-            tcs._body = semanticScope(tcs._body, this.sc, null, null);
-            assert(tcs._body != null);
+            tcs._body.value = semanticScope(tcs._body.value, this.sc, null, null);
+            assert(tcs._body.value != null);
             boolean catchErrors = false;
             {
-                Slice<Catch> __r1648 = (tcs.catches.get()).opSlice().copy();
-                int __key1647 = 0;
-                for (; (__key1647 < __r1648.getLength());__key1647 += 1) {
-                    Catch c = __r1648.get(__key1647);
-                    int i = __key1647;
+                Slice<Catch> __r1660 = (tcs.catches.get()).opSlice().copy();
+                int __key1659 = 0;
+                for (; (__key1659 < __r1660.getLength());__key1659 += 1) {
+                    Catch c = __r1660.get(__key1659);
+                    int i = __key1659;
                     catchSemantic(c, this.sc);
                     if (c.errors)
                     {
@@ -3939,10 +3939,10 @@ public class statementsem {
                     ClassDeclaration cd = c.type.toBasetype().isClassHandle();
                     flags |= cd.isCPPclass() ? 1 : 2;
                     {
-                        int __key1649 = 0;
-                        int __limit1650 = i;
-                        for (; (__key1649 < __limit1650);__key1649 += 1) {
-                            int j = __key1649;
+                        int __key1661 = 0;
+                        int __limit1662 = i;
+                        for (; (__key1661 < __limit1662);__key1661 += 1) {
+                            int j = __key1661;
                             Catch cj = (tcs.catches.get()).get(j);
                             BytePtr si = pcopy(c.loc.toChars(global.params.showColumns));
                             BytePtr sj = pcopy(cj.loc.toChars(global.params.showColumns));
@@ -3969,20 +3969,20 @@ public class statementsem {
                 this.setError();
                 return ;
             }
-            if (tcs._body.isErrorStatement() != null)
+            if (tcs._body.value.isErrorStatement() != null)
             {
-                this.result = tcs._body;
+                this.result = tcs._body.value;
                 return ;
             }
-            if (((blockExit(tcs._body, (this.sc.get()).func, false) & BE.throw_) == 0) && (ClassDeclaration.exception != null))
+            if (((blockExit(tcs._body.value, (this.sc.get()).func, false) & BE.throw_) == 0) && (ClassDeclaration.exception != null))
             {
                 {
-                    int __limit1652 = 0;
-                    int __key1651 = (tcs.catches.get()).length;
-                    for (; (__key1651-- > __limit1652);) {
-                        int i = __key1651;
+                    int __limit1664 = 0;
+                    int __key1663 = (tcs.catches.get()).length;
+                    for (; (__key1663-- > __limit1664);) {
+                        int i = __key1663;
                         Catch c = (tcs.catches.get()).get(i);
-                        if ((c.type.toBasetype().implicitConvTo(ClassDeclaration.exception.type) != 0) && (c.handler == null) || !c.handler.comeFrom())
+                        if ((c.type.toBasetype().implicitConvTo(ClassDeclaration.exception.type) != 0) && (c.handler.value == null) || !c.handler.value.comeFrom())
                         {
                             (tcs.catches.get()).remove(i);
                         }
@@ -3991,38 +3991,38 @@ public class statementsem {
             }
             if (((tcs.catches.get()).length == 0))
             {
-                this.result = tcs._body.hasCode() ? tcs._body : null;
+                this.result = tcs._body.value.hasCode() ? tcs._body.value : null;
                 return ;
             }
             this.result = tcs;
         }
 
         public  void visit(TryFinallyStatement tfs) {
-            tfs._body = statementSemantic(tfs._body, this.sc);
+            tfs._body.value = statementSemantic(tfs._body.value, this.sc);
             this.sc = pcopy((this.sc.get()).push());
             (this.sc.get()).tf = tfs;
             (this.sc.get()).sbreak = null;
             (this.sc.get()).scontinue = null;
-            tfs.finalbody = semanticNoScope(tfs.finalbody, this.sc);
+            tfs.finalbody.value = semanticNoScope(tfs.finalbody.value, this.sc);
             (this.sc.get()).pop();
-            if (tfs._body == null)
+            if (tfs._body.value == null)
             {
-                this.result = tfs.finalbody;
+                this.result = tfs.finalbody.value;
                 return ;
             }
-            if (tfs.finalbody == null)
+            if (tfs.finalbody.value == null)
             {
-                this.result = tfs._body;
+                this.result = tfs._body.value;
                 return ;
             }
-            int blockexit = blockExit(tfs._body, (this.sc.get()).func, false);
+            int blockexit = blockExit(tfs._body.value, (this.sc.get()).func, false);
             if (!(global.params.useExceptions && (ClassDeclaration.throwable != null)))
             {
                 blockexit &= -3;
             }
             if (((blockexit & -17) == BE.fallthru))
             {
-                this.result = new CompoundStatement(tfs.loc, slice(new Statement[]{tfs._body, tfs.finalbody}));
+                this.result = new CompoundStatement(tfs.loc, slice(new Statement[]{tfs._body.value, tfs.finalbody.value}));
                 return ;
             }
             tfs.bodyFallsThru = (blockexit & BE.fallthru) != 0;
@@ -4103,14 +4103,14 @@ public class statementsem {
         }
 
         public  void visit(DebugStatement ds) {
-            if (ds.statement != null)
+            if (ds.statement.value != null)
             {
                 this.sc = pcopy((this.sc.get()).push());
                 (this.sc.get()).flags |= 8;
-                ds.statement = statementSemantic(ds.statement, this.sc);
+                ds.statement.value = statementSemantic(ds.statement.value, this.sc);
                 (this.sc.get()).pop();
             }
-            this.result = ds.statement;
+            this.result = ds.statement.value;
         }
 
         public  void visit(GotoStatement gs) {
@@ -4164,9 +4164,9 @@ public class statementsem {
             (this.sc.get()).scopesym = ((this.sc.get()).enclosing.get()).scopesym;
             (this.sc.get()).ctorflow.orCSX(CSX.label);
             (this.sc.get()).slabel = ls;
-            if (ls.statement != null)
+            if (ls.statement.value != null)
             {
-                ls.statement = statementSemantic(ls.statement, this.sc);
+                ls.statement.value = statementSemantic(ls.statement.value, this.sc);
             }
             (this.sc.get()).pop();
             this.result = ls;
@@ -4180,10 +4180,10 @@ public class statementsem {
             this.sc = pcopy((this.sc.get()).push());
             (this.sc.get()).stc |= cas.stc;
             {
-                Slice<Statement> __r1653 = (cas.statements.get()).opSlice().copy();
-                int __key1654 = 0;
-                for (; (__key1654 < __r1653.getLength());__key1654 += 1) {
-                    Statement s = __r1653.get(__key1654);
+                Slice<Statement> __r1665 = (cas.statements.get()).opSlice().copy();
+                int __key1666 = 0;
+                for (; (__key1666 < __r1665.getLength());__key1666 += 1) {
+                    Statement s = __r1665.get(__key1666);
                     s = s != null ? statementSemantic(s, this.sc) : null;
                 }
             }
@@ -4207,18 +4207,18 @@ public class statementsem {
 
         public  void visit(ImportStatement imps) {
             {
-                int __key1655 = 0;
-                int __limit1656 = (imps.imports.get()).length;
-                for (; (__key1655 < __limit1656);__key1655 += 1) {
-                    int i = __key1655;
+                int __key1667 = 0;
+                int __limit1668 = (imps.imports.get()).length;
+                for (; (__key1667 < __limit1668);__key1667 += 1) {
+                    int i = __key1667;
                     Import s = (imps.imports.get()).get(i).isImport();
                     assert(s.aliasdecls.length == 0);
                     {
-                        Slice<Identifier> __r1658 = s.names.opSlice().copy();
-                        int __key1657 = 0;
-                        for (; (__key1657 < __r1658.getLength());__key1657 += 1) {
-                            Identifier name = __r1658.get(__key1657);
-                            int j = __key1657;
+                        Slice<Identifier> __r1670 = s.names.opSlice().copy();
+                        int __key1669 = 0;
+                        for (; (__key1669 < __r1670.getLength());__key1669 += 1) {
+                            Identifier name = __r1670.get(__key1669);
+                            int j = __key1669;
                             Identifier _alias = s.aliases.get(j);
                             if (_alias == null)
                             {
@@ -4236,10 +4236,10 @@ public class statementsem {
                         dmodule.Module.addDeferredSemantic2(s);
                         (this.sc.get()).insert(s);
                         {
-                            Slice<AliasDeclaration> __r1659 = s.aliasdecls.opSlice().copy();
-                            int __key1660 = 0;
-                            for (; (__key1660 < __r1659.getLength());__key1660 += 1) {
-                                AliasDeclaration aliasdecl = __r1659.get(__key1660);
+                            Slice<AliasDeclaration> __r1671 = s.aliasdecls.opSlice().copy();
+                            int __key1672 = 0;
+                            for (; (__key1672 < __r1671.getLength());__key1672 += 1) {
+                                AliasDeclaration aliasdecl = __r1671.get(__key1672);
                                 (this.sc.get()).insert(aliasdecl);
                             }
                         }
@@ -4336,11 +4336,11 @@ public class statementsem {
                     Expression ec = new IdentifierExp(loc, Id.ctfe);
                     ec = new NotExp(loc, ec);
                     Statement s = new IfStatement(loc, null, ec, new ExpStatement(loc, e), null, loc);
-                    c.handler = new TryFinallyStatement(loc, c.handler, s);
+                    c.handler.value = new TryFinallyStatement(loc, c.handler.value, s);
                 }
             }
-            c.handler = statementSemantic(c.handler, sc);
-            if ((c.handler != null) && (c.handler.isErrorStatement() != null))
+            c.handler.value = statementSemantic(c.handler.value, sc);
+            if ((c.handler.value != null) && (c.handler.value.isErrorStatement() != null))
             {
                 c.errors = true;
             }

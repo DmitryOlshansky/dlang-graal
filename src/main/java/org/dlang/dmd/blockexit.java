@@ -90,10 +90,10 @@ public class blockexit {
                             {
                                 CaseStatement sc = slast.isCaseStatement();
                                 DefaultStatement sd = slast.isDefaultStatement();
-                                if ((sc != null) && !sc.statement.hasCode() || (sc.statement.isCaseStatement() != null) || (sc.statement.isErrorStatement() != null))
+                                if ((sc != null) && !sc.statement.value.hasCode() || (sc.statement.value.isCaseStatement() != null) || (sc.statement.value.isErrorStatement() != null))
                                 {
                                 }
-                                else if ((sd != null) && !sd.statement.hasCode() || (sd.statement.isCaseStatement() != null) || (sd.statement.isErrorStatement() != null))
+                                else if ((sd != null) && !sd.statement.value.hasCode() || (sd.statement.value.isCaseStatement() != null) || (sd.statement.value.isErrorStatement() != null))
                                 {
                                 }
                                 else
@@ -142,7 +142,7 @@ public class blockexit {
         }
 
         public  void visit(ScopeStatement s) {
-            this.result = blockExit(s.statement, this.func, this.mustNotThrow);
+            this.result = blockExit(s.statement.value, this.func, this.mustNotThrow);
         }
 
         public  void visit(WhileStatement s) {
@@ -151,9 +151,9 @@ public class blockexit {
         }
 
         public  void visit(DoStatement s) {
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                this.result = blockExit(s._body, this.func, this.mustNotThrow);
+                this.result = blockExit(s._body.value, this.func, this.mustNotThrow);
                 if ((this.result == BE.break_))
                 {
                     this.result = 1;
@@ -184,9 +184,9 @@ public class blockexit {
 
         public  void visit(ForStatement s) {
             this.result = 1;
-            if (s._init != null)
+            if (s._init.value != null)
             {
-                this.result = blockExit(s._init, this.func, this.mustNotThrow);
+                this.result = blockExit(s._init.value, this.func, this.mustNotThrow);
                 if ((this.result & BE.fallthru) == 0)
                 {
                     return ;
@@ -211,9 +211,9 @@ public class blockexit {
             {
                 this.result &= -2;
             }
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                int r = blockExit(s._body, this.func, this.mustNotThrow);
+                int r = blockExit(s._body.value, this.func, this.mustNotThrow);
                 if ((r & 40) != 0)
                 {
                     this.result |= BE.fallthru;
@@ -251,16 +251,16 @@ public class blockexit {
             }
             if (s.condition.isBool(true))
             {
-                this.result |= blockExit(s.ifbody, this.func, this.mustNotThrow);
+                this.result |= blockExit(s.ifbody.value, this.func, this.mustNotThrow);
             }
             else if (s.condition.isBool(false))
             {
-                this.result |= blockExit(s.elsebody, this.func, this.mustNotThrow);
+                this.result |= blockExit(s.elsebody.value, this.func, this.mustNotThrow);
             }
             else
             {
-                this.result |= blockExit(s.ifbody, this.func, this.mustNotThrow);
-                this.result |= blockExit(s.elsebody, this.func, this.mustNotThrow);
+                this.result |= blockExit(s.ifbody.value, this.func, this.mustNotThrow);
+                this.result |= blockExit(s.elsebody.value, this.func, this.mustNotThrow);
             }
         }
 
@@ -286,9 +286,9 @@ public class blockexit {
             {
                 this.result |= BE.throw_;
             }
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                this.result |= blockExit(s._body, this.func, this.mustNotThrow);
+                this.result |= blockExit(s._body.value, this.func, this.mustNotThrow);
                 if ((this.result & BE.break_) != 0)
                 {
                     this.result |= BE.fallthru;
@@ -302,11 +302,11 @@ public class blockexit {
         }
 
         public  void visit(CaseStatement s) {
-            this.result = blockExit(s.statement, this.func, this.mustNotThrow);
+            this.result = blockExit(s.statement.value, this.func, this.mustNotThrow);
         }
 
         public  void visit(DefaultStatement s) {
-            this.result = blockExit(s.statement, this.func, this.mustNotThrow);
+            this.result = blockExit(s.statement.value, this.func, this.mustNotThrow);
         }
 
         public  void visit(GotoDefaultStatement s) {
@@ -338,7 +338,7 @@ public class blockexit {
         }
 
         public  void visit(SynchronizedStatement s) {
-            this.result = blockExit(s._body, this.func, this.mustNotThrow);
+            this.result = blockExit(s._body.value, this.func, this.mustNotThrow);
         }
 
         public  void visit(WithStatement s) {
@@ -347,12 +347,12 @@ public class blockexit {
             {
                 this.result = 2;
             }
-            this.result |= blockExit(s._body, this.func, this.mustNotThrow);
+            this.result |= blockExit(s._body.value, this.func, this.mustNotThrow);
         }
 
         public  void visit(TryCatchStatement s) {
-            assert(s._body != null);
-            this.result = blockExit(s._body, this.func, false);
+            assert(s._body.value != null);
+            this.result = blockExit(s._body.value, this.func, false);
             int catchresult = 0;
             {
                 Slice<Catch> __r801 = (s.catches.get()).opSlice().copy();
@@ -363,7 +363,7 @@ public class blockexit {
                     {
                         continue;
                     }
-                    int cresult = blockExit(c.handler, this.func, this.mustNotThrow);
+                    int cresult = blockExit(c.handler.value, this.func, this.mustNotThrow);
                     Identifier id = c.type.toBasetype().isClassHandle().ident;
                     if (c.internalCatch && ((cresult & BE.fallthru) != 0))
                     {
@@ -382,21 +382,21 @@ public class blockexit {
             }
             if (this.mustNotThrow && ((this.result & BE.throw_) != 0))
             {
-                blockExit(s._body, this.func, this.mustNotThrow);
+                blockExit(s._body.value, this.func, this.mustNotThrow);
             }
             this.result |= catchresult;
         }
 
         public  void visit(TryFinallyStatement s) {
             this.result = 1;
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                this.result = blockExit(s._body, this.func, false);
+                this.result = blockExit(s._body.value, this.func, false);
             }
             int finalresult = 1;
-            if (s.finalbody != null)
+            if (s.finalbody.value != null)
             {
-                finalresult = blockExit(s.finalbody, this.func, false);
+                finalresult = blockExit(s.finalbody.value, this.func, false);
             }
             if ((this.result == BE.halt))
             {
@@ -408,13 +408,13 @@ public class blockexit {
             }
             if (this.mustNotThrow)
             {
-                if ((s._body != null) && ((this.result & BE.throw_) != 0))
+                if ((s._body.value != null) && ((this.result & BE.throw_) != 0))
                 {
-                    blockExit(s._body, this.func, this.mustNotThrow);
+                    blockExit(s._body.value, this.func, this.mustNotThrow);
                 }
-                if ((s.finalbody != null) && ((finalresult & BE.throw_) != 0))
+                if ((s.finalbody.value != null) && ((finalresult & BE.throw_) != 0))
                 {
-                    blockExit(s.finalbody, this.func, this.mustNotThrow);
+                    blockExit(s.finalbody.value, this.func, this.mustNotThrow);
                 }
             }
             if ((finalresult & BE.fallthru) == 0)
@@ -454,7 +454,7 @@ public class blockexit {
         }
 
         public  void visit(LabelStatement s) {
-            this.result = blockExit(s.statement, this.func, this.mustNotThrow);
+            this.result = blockExit(s.statement.value, this.func, this.mustNotThrow);
             if (s.breaks)
             {
                 this.result |= BE.fallthru;

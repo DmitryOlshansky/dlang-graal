@@ -307,9 +307,9 @@ public class hdrgen {
             (this.buf.get()).writeByte(123);
             (this.buf.get()).writenl();
             (this.buf.get()).level++;
-            if (s.statement != null)
+            if (s.statement.value != null)
             {
-                s.statement.accept(this);
+                s.statement.value.accept(this);
             }
             (this.buf.get()).level--;
             (this.buf.get()).writeByte(125);
@@ -321,18 +321,18 @@ public class hdrgen {
             expressionToBuffer(s.condition, this.buf, this.hgs);
             (this.buf.get()).writeByte(41);
             (this.buf.get()).writenl();
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                s._body.accept(this);
+                s._body.value.accept(this);
             }
         }
 
         public  void visit(DoStatement s) {
             (this.buf.get()).writestring(new ByteSlice("do"));
             (this.buf.get()).writenl();
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                s._body.accept(this);
+                s._body.value.accept(this);
             }
             (this.buf.get()).writestring(new ByteSlice("while ("));
             expressionToBuffer(s.condition, this.buf, this.hgs);
@@ -342,10 +342,10 @@ public class hdrgen {
 
         public  void visit(ForStatement s) {
             (this.buf.get()).writestring(new ByteSlice("for ("));
-            if (s._init != null)
+            if (s._init.value != null)
             {
                 (this.hgs.get()).forStmtInit++;
-                s._init.accept(this);
+                s._init.value.accept(this);
                 (this.hgs.get()).forStmtInit--;
             }
             else
@@ -368,9 +368,9 @@ public class hdrgen {
             (this.buf.get()).writeByte(123);
             (this.buf.get()).writenl();
             (this.buf.get()).level++;
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                s._body.accept(this);
+                s._body.value.accept(this);
             }
             (this.buf.get()).level--;
             (this.buf.get()).writeByte(125);
@@ -499,20 +499,20 @@ public class hdrgen {
             expressionToBuffer(s.condition, this.buf, this.hgs);
             (this.buf.get()).writeByte(41);
             (this.buf.get()).writenl();
-            if (s.ifbody.isScopeStatement() != null)
+            if (s.ifbody.value.isScopeStatement() != null)
             {
-                s.ifbody.accept(this);
+                s.ifbody.value.accept(this);
             }
             else
             {
                 (this.buf.get()).level++;
-                s.ifbody.accept(this);
+                s.ifbody.value.accept(this);
                 (this.buf.get()).level--;
             }
-            if (s.elsebody != null)
+            if (s.elsebody.value != null)
             {
                 (this.buf.get()).writestring(new ByteSlice("else"));
-                if (s.elsebody.isIfStatement() == null)
+                if (s.elsebody.value.isIfStatement() == null)
                 {
                     (this.buf.get()).writenl();
                 }
@@ -520,14 +520,14 @@ public class hdrgen {
                 {
                     (this.buf.get()).writeByte(32);
                 }
-                if ((s.elsebody.isScopeStatement() != null) || (s.elsebody.isIfStatement() != null))
+                if ((s.elsebody.value.isScopeStatement() != null) || (s.elsebody.value.isIfStatement() != null))
                 {
-                    s.elsebody.accept(this);
+                    s.elsebody.value.accept(this);
                 }
                 else
                 {
                     (this.buf.get()).level++;
-                    s.elsebody.accept(this);
+                    s.elsebody.value.accept(this);
                     (this.buf.get()).level--;
                 }
             }
@@ -596,21 +596,21 @@ public class hdrgen {
             expressionToBuffer(s.condition, this.buf, this.hgs);
             (this.buf.get()).writeByte(41);
             (this.buf.get()).writenl();
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                if (s._body.isScopeStatement() == null)
+                if (s._body.value.isScopeStatement() == null)
                 {
                     (this.buf.get()).writeByte(123);
                     (this.buf.get()).writenl();
                     (this.buf.get()).level++;
-                    s._body.accept(this);
+                    s._body.value.accept(this);
                     (this.buf.get()).level--;
                     (this.buf.get()).writeByte(125);
                     (this.buf.get()).writenl();
                 }
                 else
                 {
-                    s._body.accept(this);
+                    s._body.value.accept(this);
                 }
             }
         }
@@ -620,7 +620,7 @@ public class hdrgen {
             expressionToBuffer(s.exp, this.buf, this.hgs);
             (this.buf.get()).writeByte(58);
             (this.buf.get()).writenl();
-            s.statement.accept(this);
+            s.statement.value.accept(this);
         }
 
         public  void visit(CaseRangeStatement s) {
@@ -630,13 +630,13 @@ public class hdrgen {
             expressionToBuffer(s.last, this.buf, this.hgs);
             (this.buf.get()).writeByte(58);
             (this.buf.get()).writenl();
-            s.statement.accept(this);
+            s.statement.value.accept(this);
         }
 
         public  void visit(DefaultStatement s) {
             (this.buf.get()).writestring(new ByteSlice("default:"));
             (this.buf.get()).writenl();
-            s.statement.accept(this);
+            s.statement.value.accept(this);
         }
 
         public  void visit(GotoDefaultStatement s) {
@@ -700,10 +700,10 @@ public class hdrgen {
                 expressionToBuffer(s.exp, this.buf, this.hgs);
                 (this.buf.get()).writeByte(41);
             }
-            if (s._body != null)
+            if (s._body.value != null)
             {
                 (this.buf.get()).writeByte(32);
-                s._body.accept(this);
+                s._body.value.accept(this);
             }
         }
 
@@ -712,25 +712,25 @@ public class hdrgen {
             expressionToBuffer(s.exp, this.buf, this.hgs);
             (this.buf.get()).writestring(new ByteSlice(")"));
             (this.buf.get()).writenl();
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                s._body.accept(this);
+                s._body.value.accept(this);
             }
         }
 
         public  void visit(TryCatchStatement s) {
             (this.buf.get()).writestring(new ByteSlice("try"));
             (this.buf.get()).writenl();
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                if (s._body.isScopeStatement() != null)
+                if (s._body.value.isScopeStatement() != null)
                 {
-                    s._body.accept(this);
+                    s._body.value.accept(this);
                 }
                 else
                 {
                     (this.buf.get()).level++;
-                    s._body.accept(this);
+                    s._body.value.accept(this);
                     (this.buf.get()).level--;
                 }
             }
@@ -750,20 +750,20 @@ public class hdrgen {
             (this.buf.get()).writeByte(123);
             (this.buf.get()).writenl();
             (this.buf.get()).level++;
-            s._body.accept(this);
+            s._body.value.accept(this);
             (this.buf.get()).level--;
             (this.buf.get()).writeByte(125);
             (this.buf.get()).writenl();
             (this.buf.get()).writestring(new ByteSlice("finally"));
             (this.buf.get()).writenl();
-            if (s.finalbody.isScopeStatement() != null)
+            if (s.finalbody.value.isScopeStatement() != null)
             {
-                s.finalbody.accept(this);
+                s.finalbody.value.accept(this);
             }
             else
             {
                 (this.buf.get()).level++;
-                s.finalbody.accept(this);
+                s.finalbody.value.accept(this);
                 (this.buf.get()).level--;
             }
         }
@@ -785,9 +785,9 @@ public class hdrgen {
         }
 
         public  void visit(DebugStatement s) {
-            if (s.statement != null)
+            if (s.statement.value != null)
             {
-                s.statement.accept(this);
+                s.statement.value.accept(this);
             }
         }
 
@@ -802,9 +802,9 @@ public class hdrgen {
             (this.buf.get()).writestring(s.ident.asString());
             (this.buf.get()).writeByte(58);
             (this.buf.get()).writenl();
-            if (s.statement != null)
+            if (s.statement.value != null)
             {
-                s.statement.accept(this);
+                s.statement.value.accept(this);
             }
         }
 
@@ -848,9 +848,9 @@ public class hdrgen {
             (this.buf.get()).writeByte(123);
             (this.buf.get()).writenl();
             (this.buf.get()).level++;
-            if (c.handler != null)
+            if (c.handler.value != null)
             {
-                c.handler.accept(this);
+                c.handler.value.accept(this);
             }
             (this.buf.get()).level--;
             (this.buf.get()).writeByte(125);
@@ -1766,7 +1766,7 @@ public class hdrgen {
         }
 
         public  void bodyToBuffer(FuncDeclaration f) {
-            if ((f.fbody == null) || (this.hgs.get()).hdrgen && global.params.hdrStripPlainFunctions && ((this.hgs.get()).autoMember == 0) && ((this.hgs.get()).tpltMember == 0))
+            if ((f.fbody.value == null) || (this.hgs.get()).hdrgen && global.params.hdrStripPlainFunctions && ((this.hgs.get()).autoMember == 0) && ((this.hgs.get()).tpltMember == 0))
             {
                 (this.buf.get()).writeByte(59);
                 (this.buf.get()).writenl();
@@ -1855,7 +1855,7 @@ public class hdrgen {
             (this.buf.get()).writeByte(123);
             (this.buf.get()).writenl();
             (this.buf.get()).level++;
-            statementToBuffer(f.fbody, this.buf, this.hgs);
+            statementToBuffer(f.fbody.value, this.buf, this.hgs);
             (this.buf.get()).level--;
             (this.buf.get()).writeByte(125);
             (this.buf.get()).writenl();
@@ -1880,7 +1880,7 @@ public class hdrgen {
                 typeToBuffer(tf.next.value, null, this.buf, this.hgs);
             }
             parametersToBuffer(tf.parameterList, this.buf, this.hgs);
-            CompoundStatement cs = f.fbody.isCompoundStatement();
+            CompoundStatement cs = f.fbody.value.isCompoundStatement();
             Statement s1 = null;
             if ((f.semanticRun >= PASS.semantic3done) && (cs != null))
             {
@@ -1888,7 +1888,7 @@ public class hdrgen {
             }
             else
             {
-                s1 = cs == null ? f.fbody : null;
+                s1 = cs == null ? f.fbody.value : null;
             }
             ReturnStatement rs = s1 != null ? s1.isReturnStatement() : null;
             if ((rs != null) && (rs.exp != null))
@@ -1987,7 +1987,7 @@ public class hdrgen {
             }
             (this.buf.get()).writestring(new ByteSlice("invariant"));
             {
-                ExpStatement es = d.fbody.isExpStatement();
+                ExpStatement es = d.fbody.value.isExpStatement();
                 if ((es) != null)
                 {
                     assert((es.exp != null) && ((es.exp.op & 0xFF) == 14));

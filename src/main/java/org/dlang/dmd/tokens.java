@@ -278,20 +278,20 @@ public class tokens {
         static {
             Identifier.initTable();
             {
-                ByteSlice __r104 = keywords.copy();
-                int __key105 = 0;
-                for (; (__key105 < __r104.getLength());__key105 += 1) {
-                    byte kw = __r104.get(__key105);
+                ByteSlice __r130 = keywords.copy();
+                int __key131 = 0;
+                for (; (__key131 < __r130.getLength());__key131 += 1) {
+                    byte kw = __r130.get(__key131);
                     Identifier.idPool(toBytePtr(tochars.get((kw & 0xFF))), tochars.get((kw & 0xFF)).getLength(), (kw & 0xFF));
                 }
             }
         }
         public  int isKeyword() {
             {
-                ByteSlice __r106 = keywords.copy();
-                int __key107 = 0;
-                for (; (__key107 < __r106.getLength());__key107 += 1) {
-                    byte kw = __r106.get(__key107);
+                ByteSlice __r132 = keywords.copy();
+                int __key133 = 0;
+                for (; (__key133 < __r132.getLength());__key133 += 1) {
+                    byte kw = __r132.get(__key133);
                     if (((kw & 0xFF) == (this.value & 0xFF)))
                     {
                         return 1;
@@ -434,10 +434,10 @@ public class tokens {
                                 buf.writeByte(120);
                                 buf.writeByte(34);
                                 {
-                                    int __key108 = 0;
-                                    int __limit109 = this.len;
-                                    for (; (__key108 < __limit109);__key108 += 1) {
-                                        int i_1 = __key108;
+                                    int __key134 = 0;
+                                    int __limit135 = this.len;
+                                    for (; (__key134 < __limit135);__key134 += 1) {
+                                        int i_1 = __key134;
                                         if (i_1 != 0)
                                         {
                                             buf.writeByte(32);

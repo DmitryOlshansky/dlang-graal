@@ -281,7 +281,7 @@ public class clone {
             Statement s1 = new ExpStatement(loc, e);
             ThisExp er = new ThisExp(loc);
             Statement s2 = new ReturnStatement(loc, er);
-            fop.fbody = new CompoundStatement(loc, slice(new Statement[]{s1, s2}));
+            fop.fbody.value = new CompoundStatement(loc, slice(new Statement[]{s1, s2}));
             tf.isreturn = true;
         }
         (sd.members.get()).push(fop);
@@ -297,7 +297,7 @@ public class clone {
         if (global.endGagging(errors))
         {
             fop.storage_class |= 137438953472L;
-            fop.fbody = null;
+            fop.fbody.value = null;
         }
         return fop;
     }
@@ -506,7 +506,7 @@ public class clone {
         Expression e1 = new IdentifierExp(loc, Id.p);
         Expression e2 = new IdentifierExp(loc, Id.q);
         Expression e = new EqualExp(TOK.equal, loc, e1, e2);
-        fop.fbody = new ReturnStatement(loc, e);
+        fop.fbody.value = new ReturnStatement(loc, e);
         int errors = global.startGagging();
         Ptr<Scope> sc2 = (sc.get()).push();
         (sc2.get()).stc = 0L;
@@ -575,7 +575,7 @@ public class clone {
         Expression e1 = new IdentifierExp(loc, Id.p);
         Expression e2 = new IdentifierExp(loc, Id.q);
         Expression e = new CallExp(loc, new DotIdExp(loc, e2, Id.cmp), e1);
-        fop.fbody = new ReturnStatement(loc, e);
+        fop.fbody.value = new ReturnStatement(loc, e);
         int errors = global.startGagging();
         Ptr<Scope> sc2 = (sc.get()).push();
         (sc2.get()).stc = 0L;
@@ -697,7 +697,7 @@ public class clone {
         FuncDeclaration fop = new FuncDeclaration(declLoc, Loc.initial, id, 1L, tf);
         fop.generated = true;
         BytePtr code = pcopy(new BytePtr("size_t h = 0;foreach (i, T; typeof(p.tupleof))    static if(is(T* : const(.object.Object)*))         h = h * 33 + typeid(const(.object.Object)).getHash(cast(const void*)&p.tupleof[i]);    else         h = h * 33 + typeid(T).getHash(cast(const void*)&p.tupleof[i]);return h;"));
-        fop.fbody = new CompileStatement(loc, new StringExp(loc, code));
+        fop.fbody.value = new CompileStatement(loc, new StringExp(loc, code));
         Ptr<Scope> sc2 = (sc.get()).push();
         (sc2.get()).stc = 0L;
         (sc2.get()).linkage = LINK.d;
@@ -715,7 +715,7 @@ public class clone {
         long stc = 4406737108992L;
         Loc declLoc = ad.dtors.length != 0 ? ad.dtors.get(0).loc : ad.loc.copy();
         Loc loc = new Loc();
-        boolean dtorIsCppPrototype = (ad.dtors.length == 1) && (ad.dtors.get(0).linkage == LINK.cpp) && (ad.dtors.get(0).fbody == null);
+        boolean dtorIsCppPrototype = (ad.dtors.length == 1) && (ad.dtors.get(0).linkage == LINK.cpp) && (ad.dtors.get(0).fbody.value == null);
         if (!dtorIsCppPrototype)
         {
             Expression e = null;
@@ -808,7 +808,7 @@ public class clone {
                 DtorDeclaration dd = new DtorDeclaration(declLoc, Loc.initial, stc, Id.__fieldDtor);
                 dd.generated = true;
                 dd.storage_class |= 70368744177664L;
-                dd.fbody = new ExpStatement(loc, e);
+                dd.fbody.value = new ExpStatement(loc, e);
                 ad.dtors.shift(dd);
                 (ad.members.get()).push(dd);
                 dsymbolSemantic(dd, sc);
@@ -847,7 +847,7 @@ public class clone {
             DtorDeclaration dd = new DtorDeclaration(declLoc, Loc.initial, stc, Id.__aggrDtor);
             dd.generated = true;
             dd.storage_class |= 70368744177664L;
-            dd.fbody = new ExpStatement(loc, e);
+            dd.fbody.value = new ExpStatement(loc, e);
             (ad.members.get()).push(dd);
             dsymbolSemantic(dd, sc);
             xdtor = dd;
@@ -880,7 +880,7 @@ public class clone {
         TypeFunction ftype = new TypeFunction(new ParameterList(params, VarArg.none), Type.tvoidptr, LINK.cpp, dtor.storage_class);
         DtorDeclaration func = new DtorDeclaration(dtor.loc, dtor.loc, dtor.storage_class, Id.cppdtor);
         func.type = ftype;
-        if (dtor.fbody != null)
+        if (dtor.fbody.value != null)
         {
             Loc loc = dtor.loc.copy();
             Ptr<DArray<Statement>> stmts = refPtr(new DArray<Statement>());
@@ -888,7 +888,7 @@ public class clone {
             call.directcall = true;
             (stmts.get()).push(new ExpStatement(loc, call));
             (stmts.get()).push(new ReturnStatement(loc, new CastExp(loc, new ThisExp(loc), Type.tvoidptr)));
-            func.fbody = new CompoundStatement(loc, stmts);
+            func.fbody.value = new CompoundStatement(loc, stmts);
             func.generated = true;
         }
         Ptr<Scope> sc2 = (sc.get()).push();
@@ -916,7 +916,7 @@ public class clone {
         func.type = ftype;
         CallExp call = new CallExp(dtor.loc, dtor, null);
         call.directcall = true;
-        func.fbody = new ExpStatement(dtor.loc, call);
+        func.fbody.value = new ExpStatement(dtor.loc, call);
         func.generated = true;
         func.storage_class |= 70368744177664L;
         Ptr<Scope> sc2 = (sc.get()).push();

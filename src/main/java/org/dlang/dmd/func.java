@@ -164,12 +164,12 @@ public class func {
 
         public  void visit(TryFinallyStatement s) {
             DtorExpStatement des = null;
-            if (this.fd.nrvo_can && (s.finalbody != null) && ((des = s.finalbody.isDtorExpStatement()) != null) && (pequals(this.fd.nrvo_var, des.var)))
+            if (this.fd.nrvo_can && (s.finalbody.value != null) && ((des = s.finalbody.value.isDtorExpStatement()) != null) && (pequals(this.fd.nrvo_var, des.var)))
             {
                 if (!(global.params.useExceptions && (ClassDeclaration.throwable != null)))
                 {
-                    this.replaceCurrent(s._body);
-                    s._body.accept(this);
+                    this.replaceCurrent(s._body.value);
+                    s._body.value.accept(this);
                     return ;
                 }
                 Statement sexception = new DtorExpStatement(Loc.initial, this.fd.nrvo_var.edtor, this.fd.nrvo_var);
@@ -186,7 +186,7 @@ public class func {
                 ctch.internalCatch = true;
                 catchSemantic(ctch, this.sc);
                 (catches.get()).push(ctch);
-                Statement s2 = new TryCatchStatement(Loc.initial, s._body, catches);
+                Statement s2 = new TryCatchStatement(Loc.initial, s._body.value, catches);
                 this.fd.eh_none = false;
                 this.replaceCurrent(s2);
                 s2.accept(this);
@@ -300,7 +300,7 @@ public class func {
         public Ptr<DArray<Ensure>> fensures = null;
         public Statement frequire = null;
         public Statement fensure = null;
-        public Statement fbody = null;
+        public Ref<Statement> fbody = ref(null);
         public DArray<FuncDeclaration> foverrides = new DArray<FuncDeclaration>();
         public FuncDeclaration fdrequire = null;
         public FuncDeclaration fdensure = null;
@@ -372,7 +372,7 @@ public class func {
             FuncDeclaration f = s != null ? (FuncDeclaration)s : new FuncDeclaration(this.loc, this.endloc, this.ident, this.storage_class, this.type.syntaxCopy());
             f.frequires = pcopy((this.frequires != null ? Statement.arraySyntaxCopy(this.frequires) : null));
             f.fensures = pcopy((this.fensures != null ? Ensure.arraySyntaxCopy(this.fensures) : null));
-            f.fbody = this.fbody != null ? this.fbody.syntaxCopy() : null;
+            f.fbody.value = this.fbody.value != null ? this.fbody.value.syntaxCopy() : null;
             return f;
         }
 
@@ -1130,7 +1130,7 @@ public class func {
         }
 
         public  boolean isImportedSymbol() {
-            return (this.protection.kind == Prot.Kind.export_) && (this.fbody == null);
+            return (this.protection.kind == Prot.Kind.export_) && (this.fbody.value == null);
         }
 
         public  boolean isCodeseg() {
@@ -1167,7 +1167,7 @@ public class func {
         }
 
         public  boolean canInferAttributes(Ptr<Scope> sc) {
-            if (this.fbody == null)
+            if (this.fbody.value == null)
             {
                 return false;
             }
@@ -2018,7 +2018,7 @@ public class func {
                 tf.purity = f.purity;
                 tf.trust = f.trust;
                 FuncDeclaration fd = new FuncDeclaration(loc, loc, Id.require, 0L, tf);
-                fd.fbody = this.frequire;
+                fd.fbody.value = this.frequire;
                 Statement s1 = new ExpStatement(loc, fd);
                 Expression e = new CallExp(loc, new VarExp(loc, fd, false), this.fdrequireParams);
                 Statement s2 = new ExpStatement(loc, e);
@@ -2058,7 +2058,7 @@ public class func {
                 tf.purity = f.purity;
                 tf.trust = f.trust;
                 FuncDeclaration fd = new FuncDeclaration(loc, loc, Id.ensure, 0L, tf);
-                fd.fbody = this.fensure;
+                fd.fbody.value = this.fensure;
                 Statement s1 = new ExpStatement(loc, fd);
                 Expression e = new CallExp(loc, new VarExp(loc, fd, false), this.fdensureParams);
                 Statement s2 = new ExpStatement(loc, e);
@@ -3352,7 +3352,7 @@ public class func {
             w.sc = pcopy(sc);
             w.tret = tret;
             w.fld = this;
-            this.fbody.accept(w);
+            this.fbody.value.accept(w);
             if (this.inferRetType && (!pequals(this.type.nextOf(), tret)))
             {
                 this.type.toTypeFunction().next.value = tret;
@@ -4346,7 +4346,7 @@ public class func {
     {
         public  InvariantDeclaration(Loc loc, Loc endloc, long stc, Identifier id, Statement fbody) {
             super(loc, endloc, id != null ? id : Identifier.generateId(new BytePtr("__invariant")), stc, null);
-            this.fbody = fbody;
+            this.fbody.value = fbody;
         }
 
         public  Dsymbol syntaxCopy(Dsymbol s) {

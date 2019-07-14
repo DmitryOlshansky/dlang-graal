@@ -230,7 +230,7 @@ public class dsymbolsem {
             PostBlitDeclaration dd = new PostBlitDeclaration(declLoc, Loc.initial, stc.value, Id.__fieldPostblit);
             dd.generated = true;
             dd.storage_class |= 70368744177664L;
-            dd.fbody = (stc.value & 137438953472L) != 0 ? null : new CompoundStatement(loc, postblitCalls);
+            dd.fbody.value = (stc.value & 137438953472L) != 0 ? null : new CompoundStatement(loc, postblitCalls);
             sd.postblits.shift(dd);
             (sd.members.get()).push(dd);
             dsymbolSemantic(dd, sc);
@@ -266,7 +266,7 @@ public class dsymbolsem {
             PostBlitDeclaration dd = new PostBlitDeclaration(declLoc, Loc.initial, stc.value, Id.__aggrPostblit);
             dd.generated = true;
             dd.storage_class |= 70368744177664L;
-            dd.fbody = new ExpStatement(loc, e);
+            dd.fbody.value = new ExpStatement(loc, e);
             (sd.members.get()).push(dd);
             dsymbolSemantic(dd, sc);
             xpostblit = dd;
@@ -434,7 +434,7 @@ public class dsymbolsem {
         byte funcMod = (byte)8;
         CtorDeclaration ccd = generateCopyCtorDeclaration(sd, ModToStc(8), ModToStc(8));
         Statement copyCtorBody = generateCopyCtorBody(sd);
-        ccd.fbody = copyCtorBody;
+        ccd.fbody.value = copyCtorBody;
         (sd.members.get()).push(ccd);
         ccd.addMember(sc, sd);
         int errors = global.startGagging();
@@ -448,7 +448,7 @@ public class dsymbolsem {
         if (global.endGagging(errors))
         {
             ccd.storage_class |= 137438953472L;
-            ccd.fbody = null;
+            ccd.fbody.value = null;
         }
         return true;
     }
@@ -540,7 +540,7 @@ public class dsymbolsem {
     }
 
     public static boolean allowsContractWithoutBody(FuncDeclaration funcdecl) {
-        assert(funcdecl.fbody == null);
+        assert(funcdecl.fbody.value == null);
         Dsymbol parent = funcdecl.toParent();
         InterfaceDeclaration id = parent.isInterfaceDeclaration();
         if (!funcdecl.isAbstract() && (funcdecl.fensures != null) || (funcdecl.frequires != null) && !((id != null) && funcdecl.isVirtual()))
@@ -3342,7 +3342,7 @@ public class dsymbolsem {
                 {
                     funcdecl.error(new BytePtr("constructors, destructors, postblits, invariants, new and delete functions are not allowed in interface `%s`"), id.toChars());
                 }
-                if ((funcdecl.fbody != null) && funcdecl.isVirtual())
+                if ((funcdecl.fbody.value != null) && funcdecl.isVirtual())
                 {
                     funcdecl.error(new BytePtr("function body only allowed in `final` functions in interface `%s`"), id.toChars());
                 }
@@ -3755,7 +3755,7 @@ public class dsymbolsem {
             }
             catch(Dispatch0 __d){}
         /*Ldone:*/
-            if ((funcdecl.fbody == null) && !allowsContractWithoutBody(funcdecl))
+            if ((funcdecl.fbody.value == null) && !allowsContractWithoutBody(funcdecl))
             {
                 funcdecl.error(new BytePtr("`in` and `out` contracts can only appear without a body when they are virtual interface functions or abstract"));
             }
@@ -3802,7 +3802,7 @@ public class dsymbolsem {
                     message(new BytePtr("entry     %-10s\u0009%s"), type, name);
                 }
             }
-            if ((funcdecl.fbody != null) && funcdecl.isMain() && (this.sc.get())._module.isRoot())
+            if ((funcdecl.fbody.value != null) && funcdecl.isMain() && (this.sc.get())._module.isRoot())
             {
                 Compiler.genCmain(this.sc);
             }
@@ -3875,11 +3875,11 @@ public class dsymbolsem {
                     {
                         if ((dim == 0) && (tf.parameterList.varargs == VarArg.none))
                         {
-                            if ((ctd.fbody != null) || ((ctd.storage_class & 137438953472L) == 0))
+                            if ((ctd.fbody.value != null) || ((ctd.storage_class & 137438953472L) == 0))
                             {
                                 ctd.error(new BytePtr("default constructor for structs only allowed with `@disable`, no body, and no parameters"));
                                 ctd.storage_class |= 137438953472L;
-                                ctd.fbody = null;
+                                ctd.fbody.value = null;
                             }
                             sd.noDefaultCtor = true;
                         }
@@ -4047,11 +4047,11 @@ public class dsymbolsem {
                 e = new EqualExp(TOK.notEqual, Loc.initial, e, literal_356A192B7913B04C());
                 s = new IfStatement(Loc.initial, null, e, new ReturnStatement(Loc.initial, null), null, Loc.initial);
                 (sa.get()).push(s);
-                if (scd.fbody != null)
+                if (scd.fbody.value != null)
                 {
-                    (sa.get()).push(scd.fbody);
+                    (sa.get()).push(scd.fbody.value);
                 }
-                scd.fbody = new CompoundStatement(Loc.initial, sa);
+                scd.fbody.value = new CompoundStatement(Loc.initial, sa);
             }
             this.funcDeclarationSemantic(scd);
             dmodule.Module m = scd.getModule();
@@ -4101,11 +4101,11 @@ public class dsymbolsem {
                 e = new EqualExp(TOK.notEqual, Loc.initial, e, literal_B6589FC6AB0DC82C());
                 s = new IfStatement(Loc.initial, null, e, new ReturnStatement(Loc.initial, null), null, Loc.initial);
                 (sa.get()).push(s);
-                if (sdd.fbody != null)
+                if (sdd.fbody.value != null)
                 {
-                    (sa.get()).push(sdd.fbody);
+                    (sa.get()).push(sdd.fbody.value);
                 }
-                sdd.fbody = new CompoundStatement(Loc.initial, sa);
+                sdd.fbody.value = new CompoundStatement(Loc.initial, sa);
                 sdd.vgate = v;
             }
             this.funcDeclarationSemantic(sdd);
@@ -5115,7 +5115,7 @@ public class dsymbolsem {
                         tf.isnogc = btf.isnogc;
                         tf.trust = btf.trust;
                         CtorDeclaration ctor = new CtorDeclaration(cldec.loc, Loc.initial, 0L, tf, false);
-                        ctor.fbody = new CompoundStatement(Loc.initial, refPtr(new DArray<Statement>()));
+                        ctor.fbody.value = new CompoundStatement(Loc.initial, refPtr(new DArray<Statement>()));
                         (cldec.members.get()).push(ctor);
                         ctor.addMember(this.sc, cldec);
                         dsymbolSemantic(ctor, sc2);

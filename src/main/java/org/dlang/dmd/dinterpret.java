@@ -589,13 +589,13 @@ public class dinterpret {
 
         public  void visit(IfStatement s) {
             (this.ccf.get()).onExpression(s.condition);
-            if (s.ifbody != null)
+            if (s.ifbody.value != null)
             {
-                this.ctfeCompile(s.ifbody);
+                this.ctfeCompile(s.ifbody.value);
             }
-            if (s.elsebody != null)
+            if (s.elsebody.value != null)
             {
-                this.ctfeCompile(s.elsebody);
+                this.ctfeCompile(s.elsebody.value);
             }
         }
 
@@ -605,9 +605,9 @@ public class dinterpret {
 
         public  void visit(DoStatement s) {
             (this.ccf.get()).onExpression(s.condition);
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                this.ctfeCompile(s._body);
+                this.ctfeCompile(s._body.value);
             }
         }
 
@@ -616,9 +616,9 @@ public class dinterpret {
         }
 
         public  void visit(ForStatement s) {
-            if (s._init != null)
+            if (s._init.value != null)
             {
-                this.ctfeCompile(s._init);
+                this.ctfeCompile(s._init.value);
             }
             if (s.condition != null)
             {
@@ -628,9 +628,9 @@ public class dinterpret {
             {
                 (this.ccf.get()).onExpression(s.increment);
             }
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                this.ctfeCompile(s._body);
+                this.ctfeCompile(s._body.value);
             }
         }
 
@@ -648,16 +648,16 @@ public class dinterpret {
                     (this.ccf.get()).onExpression(cs.exp);
                 }
             }
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                this.ctfeCompile(s._body);
+                this.ctfeCompile(s._body.value);
             }
         }
 
         public  void visit(CaseStatement s) {
-            if (s.statement != null)
+            if (s.statement.value != null)
             {
-                this.ctfeCompile(s.statement);
+                this.ctfeCompile(s.statement.value);
             }
         }
 
@@ -692,16 +692,16 @@ public class dinterpret {
                 (this.ccf.get()).onDeclaration(s.wthis);
                 (this.ccf.get()).onExpression(s.exp);
             }
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                this.ctfeCompile(s._body);
+                this.ctfeCompile(s._body.value);
             }
         }
 
         public  void visit(TryCatchStatement s) {
-            if (s._body != null)
+            if (s._body.value != null)
             {
-                this.ctfeCompile(s._body);
+                this.ctfeCompile(s._body.value);
             }
             {
                 Slice<Catch> __r951 = (s.catches.get()).opSlice().copy();
@@ -712,9 +712,9 @@ public class dinterpret {
                     {
                         (this.ccf.get()).onDeclaration(ca.var);
                     }
-                    if (ca.handler != null)
+                    if (ca.handler.value != null)
                     {
-                        this.ctfeCompile(ca.handler);
+                        this.ctfeCompile(ca.handler.value);
                     }
                 }
             }
@@ -773,7 +773,7 @@ public class dinterpret {
             (fd.ctfeCode.pimpl.get()).onDeclaration(fd.vresult);
         }
         CtfeCompiler v = new CtfeCompiler(fd.ctfeCode.pimpl);
-        v.ctfeCompile(fd.fbody);
+        v.ctfeCompile(fd.fbody.value);
     }
 
     public static Expression interpretFunction(Ptr<UnionExp> pue, FuncDeclaration fd, Ptr<InterState> istate, Ptr<DArray<Expression>> arguments, Expression thisarg) {
@@ -944,7 +944,7 @@ public class dinterpret {
                     e = CTFEExp.cantexp;
                     break;
                 }
-                e = interpret(pue, fd.fbody, ptr(istatex));
+                e = interpret(pue, fd.fbody.value, ptr(istatex));
                 if (CTFEExp.isCantExp(e))
                 if (istatex.value.start != null)
                 {
@@ -1149,10 +1149,10 @@ public class dinterpret {
             if ((this.istate.get()).start != null)
             {
                 Expression e = null;
-                e = interpret(s.ifbody, this.istate);
+                e = interpret(s.ifbody.value, this.istate);
                 if ((e == null) && ((this.istate.get()).start != null))
                 {
-                    e = interpret(s.elsebody, this.istate);
+                    e = interpret(s.elsebody.value, this.istate);
                 }
                 this.result = e;
                 return ;
@@ -1166,11 +1166,11 @@ public class dinterpret {
             }
             if (isTrueBool(e))
             {
-                this.result = interpret(this.pue, s.ifbody, this.istate);
+                this.result = interpret(this.pue, s.ifbody.value, this.istate);
             }
             else if (e.isBool(false))
             {
-                this.result = interpret(this.pue, s.elsebody, this.istate);
+                this.result = interpret(this.pue, s.elsebody.value, this.istate);
             }
             else
             {
@@ -1183,7 +1183,7 @@ public class dinterpret {
             {
                 (this.istate.get()).start = null;
             }
-            this.result = interpret(this.pue, s.statement, this.istate);
+            this.result = interpret(this.pue, s.statement.value, this.istate);
         }
 
         public static boolean stopPointersEscaping(Loc loc, Expression e) {
@@ -1320,7 +1320,7 @@ public class dinterpret {
                 LabelDsymbol label = (istate.get()).fd.searchLabel(ident);
                 assert((label != null) && (label.statement != null));
                 LabelStatement ls = label.statement;
-                target = ls.gotoTarget != null ? ls.gotoTarget : ls.statement;
+                target = ls.gotoTarget != null ? ls.gotoTarget : ls.statement.value;
             }
             return target;
         }
@@ -1361,7 +1361,7 @@ public class dinterpret {
                 (this.istate.get()).start = null;
             }
             for (; 1 != 0;){
-                Expression e = interpret(s._body, this.istate);
+                Expression e = interpret(s._body.value, this.istate);
                 if ((e == null) && ((this.istate.get()).start != null))
                 {
                     return ;
@@ -1422,7 +1422,7 @@ public class dinterpret {
                 (this.istate.get()).start = null;
             }
             Ref<UnionExp> ueinit = ref(null);
-            Expression ei = interpret(ptr(ueinit), s._init, this.istate);
+            Expression ei = interpret(ptr(ueinit), s._init.value, this.istate);
             if (this.exceptionOrCant(ei))
             {
                 return ;
@@ -1443,7 +1443,7 @@ public class dinterpret {
                     }
                     assert(isTrueBool(e));
                 }
-                Expression e = interpret(this.pue, s._body, this.istate);
+                Expression e = interpret(this.pue, s._body.value, this.istate);
                 if ((e == null) && ((this.istate.get()).start != null))
                 {
                     return ;
@@ -1503,7 +1503,7 @@ public class dinterpret {
             }
             if ((this.istate.get()).start != null)
             {
-                Expression e = interpret(s._body, this.istate);
+                Expression e = interpret(s._body.value, this.istate);
                 if ((this.istate.get()).start != null)
                 {
                     return ;
@@ -1561,7 +1561,7 @@ public class dinterpret {
             }
             assert(scase != null);
             (this.istate.get()).start = scase;
-            Expression e = interpret(this.pue, s._body, this.istate);
+            Expression e = interpret(this.pue, s._body.value, this.istate);
             assert((this.istate.get()).start == null);
             if ((e != null) && ((e.op & 0xFF) == 191))
             {
@@ -1581,7 +1581,7 @@ public class dinterpret {
             {
                 (this.istate.get()).start = null;
             }
-            this.result = interpret(this.pue, s.statement, this.istate);
+            this.result = interpret(this.pue, s.statement.value, this.istate);
         }
 
         public  void visit(DefaultStatement s) {
@@ -1589,7 +1589,7 @@ public class dinterpret {
             {
                 (this.istate.get()).start = null;
             }
-            this.result = interpret(this.pue, s.statement, this.istate);
+            this.result = interpret(this.pue, s.statement.value, this.istate);
         }
 
         public  void visit(GotoStatement s) {
@@ -1639,7 +1639,7 @@ public class dinterpret {
             {
                 (this.istate.get()).start = null;
             }
-            this.result = interpret(this.pue, s.statement, this.istate);
+            this.result = interpret(this.pue, s.statement.value, this.istate);
         }
 
         public  void visit(TryCatchStatement s) {
@@ -1650,7 +1650,7 @@ public class dinterpret {
             if ((this.istate.get()).start != null)
             {
                 Expression e = null;
-                e = interpret(this.pue, s._body, this.istate);
+                e = interpret(this.pue, s._body.value, this.istate);
                 {
                     Slice<Catch> __r964 = (s.catches.get()).opSlice().copy();
                     int __key965 = 0;
@@ -1660,13 +1660,13 @@ public class dinterpret {
                         {
                             break;
                         }
-                        e = interpret(this.pue, ca.handler, this.istate);
+                        e = interpret(this.pue, ca.handler.value, this.istate);
                     }
                 }
                 this.result = e;
                 return ;
             }
-            Expression e = interpret(s._body, this.istate);
+            Expression e = interpret(s._body.value, this.istate);
             if ((e != null) && ((e.op & 0xFF) == 51))
             {
                 ThrownExceptionExp ex = (ThrownExceptionExp)e;
@@ -1686,13 +1686,13 @@ public class dinterpret {
                             ctfeStack.push(ca.var);
                             setValue(ca.var, ex.thrown);
                         }
-                        e = interpret(ca.handler, this.istate);
+                        e = interpret(ca.handler.value, this.istate);
                         if (CTFEExp.isGotoExp(e))
                         {
                             Ref<InterState> istatex = ref(this.istate.get().copy());
                             istatex.value.start = (this.istate.get()).gotoTarget;
                             istatex.value.gotoTarget = null;
-                            Expression eh = interpret(ca.handler, ptr(istatex));
+                            Expression eh = interpret(ca.handler.value, ptr(istatex));
                             if (istatex.value.start == null)
                             {
                                 (this.istate.get()).gotoTarget = null;
@@ -1741,11 +1741,11 @@ public class dinterpret {
             if ((this.istate.get()).start != null)
             {
                 Expression e = null;
-                e = interpret(this.pue, s._body, this.istate);
+                e = interpret(this.pue, s._body.value, this.istate);
                 this.result = e;
                 return ;
             }
-            Expression ex = interpret(s._body, this.istate);
+            Expression ex = interpret(s._body.value, this.istate);
             if (CTFEExp.isCantExp(ex))
             {
                 this.result = ex;
@@ -1755,7 +1755,7 @@ public class dinterpret {
                 Ref<InterState> istatex = ref(this.istate.get().copy());
                 istatex.value.start = (this.istate.get()).gotoTarget;
                 istatex.value.gotoTarget = null;
-                Expression bex = interpret(s._body, ptr(istatex));
+                Expression bex = interpret(s._body.value, ptr(istatex));
                 if (istatex.value.start != null)
                 {
                     break;
@@ -1768,7 +1768,7 @@ public class dinterpret {
                 this.istate.set(0, istatex.value);
                 ex = bex;
             }
-            Expression ey = interpret(s.finalbody, this.istate);
+            Expression ey = interpret(s.finalbody.value, this.istate);
             if (CTFEExp.isCantExp(ey))
             {
                 this.result = ey;
@@ -1817,12 +1817,12 @@ public class dinterpret {
             }
             if ((this.istate.get()).start != null)
             {
-                this.result = s._body != null ? interpret(s._body, this.istate) : null;
+                this.result = s._body.value != null ? interpret(s._body.value, this.istate) : null;
                 return ;
             }
             if (((s.exp.op & 0xFF) == 203) || ((s.exp.op & 0xFF) == 20))
             {
-                this.result = interpret(this.pue, s._body, this.istate);
+                this.result = interpret(this.pue, s._body.value, this.istate);
                 return ;
             }
             Expression e = interpret(s.exp, this.istate, CtfeGoal.ctfeNeedRvalue);
@@ -1836,13 +1836,13 @@ public class dinterpret {
             }
             ctfeStack.push(s.wthis);
             setValue(s.wthis, e);
-            e = interpret(s._body, this.istate);
+            e = interpret(s._body.value, this.istate);
             if (CTFEExp.isGotoExp(e))
             {
                 Ref<InterState> istatex = ref(this.istate.get().copy());
                 istatex.value.start = (this.istate.get()).gotoTarget;
                 istatex.value.gotoTarget = null;
-                Expression ex = interpret(s._body, ptr(istatex));
+                Expression ex = interpret(s._body.value, ptr(istatex));
                 if (istatex.value.start == null)
                 {
                     (this.istate.get()).gotoTarget = null;
@@ -2955,7 +2955,7 @@ public class dinterpret {
                     Expression eref = (this.pue.get()).exp();
                     if (e.member != null)
                     {
-                        if (e.member.fbody == null)
+                        if (e.member.fbody.value == null)
                         {
                             Expression ctorfail = evaluateIfBuiltin(this.pue, this.istate, e.loc, e.member, e.arguments, eref);
                             if (ctorfail != null)
@@ -4777,7 +4777,7 @@ public class dinterpret {
             {
                 return ;
             }
-            if (fd.fbody == null)
+            if (fd.fbody.value == null)
             {
                 e.error(new BytePtr("`%s` cannot be interpreted at compile time, because it has no available source code"), fd.toChars());
                 this.result = CTFEExp.showcontext;
@@ -6767,7 +6767,7 @@ public class dinterpret {
                 }
             }
         }
-        assert((fd != null) && (fd.fbody != null));
+        assert((fd != null) && (fd.fbody.value != null));
         assert(fd.parameters != null);
         int numParams = (fd.parameters.get()).length;
         assert((numParams == 1) || (numParams == 2));
@@ -6837,7 +6837,7 @@ public class dinterpret {
                 }
             }
         }
-        assert((fd != null) && (fd.fbody != null));
+        assert((fd != null) && (fd.fbody.value != null));
         assert(fd.parameters != null);
         int numParams = (fd.parameters.get()).length;
         assert((numParams == 1) || (numParams == 2));
@@ -7166,7 +7166,7 @@ public class dinterpret {
                 }
             }
         }
-        if ((pthis != null) && (fd.fbody == null) && (fd.isCtorDeclaration() != null) && (fd.parent.value != null) && (fd.parent.value.parent.value != null) && (pequals(fd.parent.value.parent.value.ident, Id.object)))
+        if ((pthis != null) && (fd.fbody.value == null) && (fd.isCtorDeclaration() != null) && (fd.parent.value != null) && (fd.parent.value.parent.value != null) && (pequals(fd.parent.value.parent.value.ident, Id.object)))
         {
             if (((pthis.op & 0xFF) == 50) && (pequals(fd.parent.value.ident, Id.Throwable)))
             {

@@ -256,10 +256,10 @@ public class errors {
                 {
                     fprintf(stderr, new BytePtr("%.*s\n"), line.getLength(), toBytePtr(line));
                     {
-                        int __key100 = 1;
-                        int __limit101 = loc.charnum;
-                        for (; (__key100 < __limit101);__key100 += 1) {
-                            int __ = __key100;
+                        int __key126 = 1;
+                        int __limit127 = loc.charnum;
+                        for (; (__key126 < __limit127);__key126 += 1) {
+                            int __ = __key126;
                             fputc(32, stderr);
                         }
                     }

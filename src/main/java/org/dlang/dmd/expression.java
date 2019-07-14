@@ -4031,7 +4031,7 @@ public class expression {
                 this.fd = (this.td.members.get()).get(0).isFuncLiteralDeclaration();
             }
             this.tok = this.fd.tok;
-            assert(this.fd.fbody != null);
+            assert(this.fd.fbody.value != null);
         }
 
         public  boolean equals(RootObject o) {

@@ -222,7 +222,7 @@ public class initsem {
                     byte tok = ((t_ref.value.ty & 0xFF) == ENUMTY.Tdelegate) ? TOK.delegate_ : TOK.function_;
                     Type tf = new TypeFunction(new ParameterList(null, VarArg.none), null, LINK.d, 0L);
                     FuncLiteralDeclaration fd = new FuncLiteralDeclaration(i.loc, Loc.initial, tf, tok, null, null);
-                    fd.fbody = new CompoundStatement(i.loc, refPtr(new DArray<Statement>()));
+                    fd.fbody.value = new CompoundStatement(i.loc, refPtr(new DArray<Statement>()));
                     fd.endloc.opAssign(i.loc.copy());
                     Expression e = new FuncExp(i.loc, fd);
                     ExpInitializer ie = new ExpInitializer(i.loc, e);

@@ -186,10 +186,10 @@ public class typinf {
                 if (t.arguments != null)
                 {
                     {
-                        Slice<Parameter> __r1669 = (t.arguments.get()).opSlice().copy();
-                        Ref<Integer> __key1670 = ref(0);
-                        for (; (__key1670.value < __r1669.getLength());__key1670.value += 1) {
-                            Parameter arg = __r1669.get(__key1670.value);
+                        Slice<Parameter> __r1721 = (t.arguments.get()).opSlice().copy();
+                        Ref<Integer> __key1722 = ref(0);
+                        for (; (__key1722.value < __r1721.getLength());__key1722.value += 1) {
+                            Parameter arg = __r1721.get(__key1722.value);
                             if (isSpeculativeType(arg.type))
                             {
                                 return true;

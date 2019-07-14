@@ -3959,11 +3959,11 @@ public class dtemplate {
                             }
                             if (tf.equals(m.lastf.type) && (fd.storage_class == m.lastf.storage_class) && (pequals(fd.parent.value, m.lastf.parent.value)) && fd.protection.opEquals(m.lastf.protection) && (fd.linkage == m.lastf.linkage))
                             {
-                                if ((fd.fbody != null) && (m.lastf.fbody == null))
+                                if ((fd.fbody.value != null) && (m.lastf.fbody.value == null))
                                 {
                                     /*goto LfIsBetter*/throw Dispatch1.INSTANCE;
                                 }
-                                if ((fd.fbody == null) && (m.lastf.fbody != null))
+                                if ((fd.fbody.value == null) && (m.lastf.fbody.value != null))
                                 {
                                     /*goto LlastIsBetter*/throw Dispatch0.INSTANCE;
                                 }
@@ -5212,7 +5212,7 @@ public class dtemplate {
                 {
                     Dsymbol si = isDsymbol(oarg);
                     FuncDeclaration f = si != null ? si.isFuncDeclaration() : null;
-                    if ((f == null) || (f.fbody == null) || f.needThis())
+                    if ((f == null) || (f.fbody.value == null) || f.needThis())
                     {
                         /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                     }

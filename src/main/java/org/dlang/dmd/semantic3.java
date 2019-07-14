@@ -213,7 +213,7 @@ public class semantic3 {
                     if (global.endGagging(oldErrors))
                     {
                         funcdecl.storage_class |= 137438953472L;
-                        funcdecl.fbody = null;
+                        funcdecl.fbody.value = null;
                         funcdecl.semantic3Errors = false;
                     }
                     return ;
@@ -234,7 +234,7 @@ public class semantic3 {
             {
                 return ;
             }
-            if ((funcdecl.fbody == null) && funcdecl.inferRetType && (f.next.value == null))
+            if ((funcdecl.fbody.value == null) && funcdecl.inferRetType && (f.next.value == null))
             {
                 funcdecl.error(new BytePtr("has no function body with return type inference"));
                 return ;
@@ -243,7 +243,7 @@ public class semantic3 {
             FuncDeclSem3 fds = fds = new FuncDeclSem3(funcdecl, this.sc);
             fds.checkInContractOverrides();
             boolean needEnsure = FuncDeclaration.needsFensure(funcdecl);
-            if ((funcdecl.fbody != null) || (funcdecl.frequires != null) || needEnsure)
+            if ((funcdecl.fbody.value != null) || (funcdecl.frequires != null) || needEnsure)
             {
                 funcdecl.localsymtab = new DsymbolTable();
                 ScopeDsymbol ss = new ScopeDsymbol(funcdecl.loc, null);
@@ -472,7 +472,7 @@ public class semantic3 {
                         fpostinv = new ExpStatement(Loc.initial, e);
                     }
                 }
-                if (funcdecl.fbody == null)
+                if (funcdecl.fbody.value == null)
                 {
                     funcdecl.buildEnsureRequire();
                 }
@@ -499,7 +499,7 @@ public class semantic3 {
                     sym.endlinnum = fensure_endlin;
                     scout = pcopy((sc2.get()).push(sym));
                 }
-                if (funcdecl.fbody != null)
+                if (funcdecl.fbody.value != null)
                 {
                     ScopeDsymbol sym = new ScopeDsymbol(funcdecl.loc, null);
                     sym.parent.value = (sc2.get()).scopesym;
@@ -510,10 +510,10 @@ public class semantic3 {
                     {
                         (sc2.get()).ctorflow.allocFieldinit(ad2.fields.length);
                         {
-                            Slice<VarDeclaration> __r1561 = ad2.fields.opSlice().copy();
-                            int __key1562 = 0;
-                            for (; (__key1562 < __r1561.getLength());__key1562 += 1) {
-                                VarDeclaration v = __r1561.get(__key1562);
+                            Slice<VarDeclaration> __r1573 = ad2.fields.opSlice().copy();
+                            int __key1574 = 0;
+                            for (; (__key1574 < __r1573.getLength());__key1574 += 1) {
+                                VarDeclaration v = __r1573.get(__key1574);
                                 v.ctorinit = false;
                             }
                         }
@@ -523,10 +523,10 @@ public class semantic3 {
                         funcdecl.nrvo_can = false;
                     }
                     boolean inferRef = f.isref && ((funcdecl.storage_class & 256L) != 0);
-                    funcdecl.fbody = statementSemantic(funcdecl.fbody, sc2);
-                    if (funcdecl.fbody == null)
+                    funcdecl.fbody.value = statementSemantic(funcdecl.fbody.value, sc2);
+                    if (funcdecl.fbody.value == null)
                     {
-                        funcdecl.fbody = new CompoundStatement(Loc.initial, refPtr(new DArray<Statement>()));
+                        funcdecl.fbody.value = new CompoundStatement(Loc.initial, refPtr(new DArray<Statement>()));
                     }
                     if (funcdecl.naked)
                     {
@@ -543,14 +543,14 @@ public class semantic3 {
                         }
                         if (f.checkRetType(funcdecl.loc))
                         {
-                            funcdecl.fbody = new ErrorStatement();
+                            funcdecl.fbody.value = new ErrorStatement();
                         }
                     }
                     if (global.params.vcomplex && (f.next.value != null))
                     {
                         f.next.value.checkComplexTransition(funcdecl.loc, this.sc);
                     }
-                    if ((funcdecl.returns != null) && (funcdecl.fbody.isErrorStatement() == null))
+                    if ((funcdecl.returns != null) && (funcdecl.fbody.value.isErrorStatement() == null))
                     {
                         {
                             int i = 0;
@@ -588,7 +588,7 @@ public class semantic3 {
                     {
                         funcdecl.nrvo_can = false;
                     }
-                    if (funcdecl.fbody.isErrorStatement() != null)
+                    if (funcdecl.fbody.value.isErrorStatement() != null)
                     {
                     }
                     else if (funcdecl.isStaticCtorDeclaration() != null)
@@ -608,11 +608,11 @@ public class semantic3 {
                         if (((sc2.get()).ctorflow.callSuper.value & 1) == 0)
                         {
                             {
-                                Slice<VarDeclaration> __r1564 = ad2.fields.opSlice().copy();
-                                int __key1563 = 0;
-                                for (; (__key1563 < __r1564.getLength());__key1563 += 1) {
-                                    VarDeclaration v = __r1564.get(__key1563);
-                                    int i = __key1563;
+                                Slice<VarDeclaration> __r1576 = ad2.fields.opSlice().copy();
+                                int __key1575 = 0;
+                                for (; (__key1575 < __r1576.getLength());__key1575 += 1) {
+                                    VarDeclaration v = __r1576.get(__key1575);
+                                    int i = __key1575;
                                     if (v.isThisDeclaration() != null)
                                     {
                                         continue;
@@ -663,12 +663,12 @@ public class semantic3 {
                                 Expression e = new CallExp(Loc.initial, e1);
                                 e = expressionSemantic(e, sc2);
                                 Statement s = new ExpStatement(Loc.initial, e);
-                                funcdecl.fbody = new CompoundStatement(Loc.initial, slice(new Statement[]{s, funcdecl.fbody}));
+                                funcdecl.fbody.value = new CompoundStatement(Loc.initial, slice(new Statement[]{s, funcdecl.fbody.value}));
                             }
                         }
                     }
                     funcdecl.buildEnsureRequire();
-                    int blockexit = blockExit(funcdecl.fbody, funcdecl, f.isnothrow);
+                    int blockexit = blockExit(funcdecl.fbody.value, funcdecl, f.isnothrow);
                     if (f.isnothrow && ((blockexit & 2) != 0))
                     {
                         error(funcdecl.loc, new BytePtr("`nothrow` %s `%s` may throw"), funcdecl.kind(), funcdecl.toPrettyChars(false));
@@ -685,7 +685,7 @@ public class semantic3 {
                         }
                         f.isnothrow = (blockexit & 2) == 0;
                     }
-                    if (funcdecl.fbody.isErrorStatement() != null)
+                    if (funcdecl.fbody.value.isErrorStatement() != null)
                     {
                     }
                     else if ((ad2 != null) && (funcdecl.isCtorDeclaration() != null))
@@ -694,7 +694,7 @@ public class semantic3 {
                         {
                             Statement s = new ReturnStatement(funcdecl.loc, null);
                             s = statementSemantic(s, sc2);
-                            funcdecl.fbody = new CompoundStatement(funcdecl.loc, slice(new Statement[]{funcdecl.fbody, s}));
+                            funcdecl.fbody.value = new CompoundStatement(funcdecl.loc, slice(new Statement[]{funcdecl.fbody.value, s}));
                             funcdecl.hasReturnExp |= (funcdecl.hasReturnExp & 1) != 0 ? 16 : 1;
                         }
                     }
@@ -704,7 +704,7 @@ public class semantic3 {
                         {
                             Expression e = literal_B6589FC6AB0DC82C();
                             Statement s = new ReturnStatement(Loc.initial, e);
-                            funcdecl.fbody = new CompoundStatement(Loc.initial, slice(new Statement[]{funcdecl.fbody, s}));
+                            funcdecl.fbody.value = new CompoundStatement(Loc.initial, slice(new Statement[]{funcdecl.fbody.value, s}));
                             funcdecl.hasReturnExp |= (funcdecl.hasReturnExp & 1) != 0 ? 16 : 1;
                         }
                         assert(funcdecl.returnLabel == null);
@@ -734,7 +734,7 @@ public class semantic3 {
                             e = new CommaExp(Loc.initial, e, defaultInit(f.next.value, Loc.initial), true);
                             e = expressionSemantic(e, sc2);
                             Statement s = new ExpStatement(Loc.initial, e);
-                            funcdecl.fbody = new CompoundStatement(Loc.initial, slice(new Statement[]{funcdecl.fbody, s}));
+                            funcdecl.fbody.value = new CompoundStatement(Loc.initial, slice(new Statement[]{funcdecl.fbody.value, s}));
                         }
                     }
                     if (funcdecl.returns != null)
@@ -823,7 +823,7 @@ public class semantic3 {
                         NrvoWalker nw = new NrvoWalker();
                         nw.fd = funcdecl;
                         nw.sc = pcopy(sc2);
-                        nw.visitStmt(funcdecl.fbody);
+                        nw.visitStmt(fbody);
                     }
                     sc2 = pcopy((sc2.get()).pop());
                 }
@@ -852,10 +852,10 @@ public class semantic3 {
                     if (((f.next.value.ty & 0xFF) == ENUMTY.Tvoid) && (funcdecl.fensures != null))
                     {
                         {
-                            Slice<Ensure> __r1565 = (funcdecl.fensures.get()).opSlice().copy();
-                            int __key1566 = 0;
-                            for (; (__key1566 < __r1565.getLength());__key1566 += 1) {
-                                Ensure e = __r1565.get(__key1566).copy();
+                            Slice<Ensure> __r1577 = (funcdecl.fensures.get()).opSlice().copy();
+                            int __key1578 = 0;
+                            for (; (__key1578 < __r1577.getLength());__key1578 += 1) {
+                                Ensure e = __r1577.get(__key1578).copy();
                                 if (e.id != null)
                                 {
                                     funcdecl.error(e.ensure.loc, new BytePtr("`void` functions have no result"));
@@ -878,7 +878,7 @@ public class semantic3 {
                         fens = null;
                     }
                 }
-                if ((funcdecl.fbody != null) && (funcdecl.fbody.isErrorStatement() != null))
+                if ((funcdecl.fbody.value != null) && (funcdecl.fbody.value.isErrorStatement() != null))
                 {
                 }
                 else
@@ -935,9 +935,9 @@ public class semantic3 {
                         }
                         (a.get()).push(freq);
                     }
-                    if (funcdecl.fbody != null)
+                    if (funcdecl.fbody.value != null)
                     {
-                        (a.get()).push(funcdecl.fbody);
+                        (a.get()).push(funcdecl.fbody.value);
                     }
                     if ((fens != null) || (fpostinv != null))
                     {
@@ -973,10 +973,10 @@ public class semantic3 {
                     if (funcdecl.parameters != null)
                     {
                         {
-                            Slice<VarDeclaration> __r1567 = (funcdecl.parameters.get()).opSlice().copy();
-                            int __key1568 = 0;
-                            for (; (__key1568 < __r1567.getLength());__key1568 += 1) {
-                                VarDeclaration v = __r1567.get(__key1568);
+                            Slice<VarDeclaration> __r1579 = (funcdecl.parameters.get()).opSlice().copy();
+                            int __key1580 = 0;
+                            for (; (__key1580 < __r1579.getLength());__key1580 += 1) {
+                                VarDeclaration v = __r1579.get(__key1580);
                                 if ((v.storage_class & 2109440L) != 0)
                                 {
                                     continue;
@@ -1047,9 +1047,9 @@ public class semantic3 {
                             funcdecl.error(new BytePtr("synchronized function `%s` must be a member of a class"), funcdecl.toChars());
                         }
                     }
-                    if ((funcdecl.fbody != null) || allowsContractWithoutBody(funcdecl))
+                    if ((funcdecl.fbody.value != null) || allowsContractWithoutBody(funcdecl))
                     {
-                        funcdecl.fbody = sbody;
+                        funcdecl.fbody.value = sbody;
                     }
                 }
                 if (funcdecl.gotos != null)
@@ -1136,10 +1136,10 @@ public class semantic3 {
                 if (funcdecl.parameters != null)
                 {
                     {
-                        Slice<VarDeclaration> __r1569 = (funcdecl.parameters.get()).opSlice().copy();
-                        int __key1570 = 0;
-                        for (; (__key1570 < __r1569.getLength());__key1570 += 1) {
-                            VarDeclaration v = __r1569.get(__key1570);
+                        Slice<VarDeclaration> __r1581 = (funcdecl.parameters.get()).opSlice().copy();
+                        int __key1582 = 0;
+                        for (; (__key1582 < __r1581.getLength());__key1582 += 1) {
+                            VarDeclaration v = __r1581.get(__key1582);
                             array.set(n++, v);
                         }
                     }
@@ -1155,11 +1155,11 @@ public class semantic3 {
                 int nfparams = f.parameterList.length();
                 assert((nfparams == (funcdecl.parameters.get()).length));
                 {
-                    Slice<VarDeclaration> __r1572 = (funcdecl.parameters.get()).opSlice().copy();
-                    int __key1571 = 0;
-                    for (; (__key1571 < __r1572.getLength());__key1571 += 1) {
-                        VarDeclaration v = __r1572.get(__key1571);
-                        int u = __key1571;
+                    Slice<VarDeclaration> __r1584 = (funcdecl.parameters.get()).opSlice().copy();
+                    int __key1583 = 0;
+                    for (; (__key1583 < __r1584.getLength());__key1583 += 1) {
+                        VarDeclaration v = __r1584.get(__key1583);
+                        int u = __key1583;
                         if ((v.storage_class & 281474976710656L) != 0)
                         {
                             Parameter p = f.parameterList.get(u);
@@ -1195,7 +1195,7 @@ public class semantic3 {
                 this.sc = pcopy((this.sc.get()).pop());
             }
             funcdecl.semanticRun = PASS.semantic3done;
-            funcdecl.semantic3Errors = (global.errors != oldErrors) || (funcdecl.fbody != null) && (funcdecl.fbody.isErrorStatement() != null);
+            funcdecl.semantic3Errors = (global.errors != oldErrors) || (funcdecl.fbody.value != null) && (funcdecl.fbody.value.isErrorStatement() != null);
             if (((funcdecl.type.ty & 0xFF) == ENUMTY.Terror))
             {
                 funcdecl.errors = true;
@@ -1222,7 +1222,7 @@ public class semantic3 {
                 Ptr<DArray<Catch>> catches = refPtr(new DArray<Catch>());
                 Catch ctch = new Catch(ctor.loc, getException(), id, handler);
                 (catches.get()).push(ctch);
-                ctor.fbody = new TryCatchStatement(ctor.loc, ctor.fbody, catches);
+                ctor.fbody.value = new TryCatchStatement(ctor.loc, ctor.fbody.value, catches);
             }
             this.visit((FuncDeclaration)ctor);
         }
@@ -1238,10 +1238,10 @@ public class semantic3 {
                 this.sc = pcopy((this.sc.get()).push(ns));
                 (this.sc.get()).linkage = LINK.cpp;
                 {
-                    Slice<Dsymbol> __r1573 = (ns.members.get()).opSlice().copy();
-                    int __key1574 = 0;
-                    for (; (__key1574 < __r1573.getLength());__key1574 += 1) {
-                        Dsymbol s = __r1573.get(__key1574);
+                    Slice<Dsymbol> __r1585 = (ns.members.get()).opSlice().copy();
+                    int __key1586 = 0;
+                    for (; (__key1586 < __r1585.getLength());__key1586 += 1) {
+                        Dsymbol s = __r1585.get(__key1586);
                         semantic3(s, this.sc);
                     }
                 }
@@ -1341,7 +1341,7 @@ public class semantic3 {
                     int i = 0;
                     for (; (i < this.funcdecl.foverrides.length);i++){
                         FuncDeclaration fdv = this.funcdecl.foverrides.get(i);
-                        if ((fdv.fbody != null) && (fdv.frequires == null))
+                        if ((fdv.fbody.value != null) && (fdv.frequires == null))
                         {
                             this.funcdecl.error(new BytePtr("cannot have an in contract when overridden function `%s` does not have an in contract"), fdv.toPrettyChars(false));
                             break;

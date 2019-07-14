@@ -85,10 +85,10 @@ public class dtool {
             if (decls != null)
             {
                 {
-                    Slice<ASTBase.Dsymbol> __r258 = (decls.get()).opSlice().copy();
-                    int __key259 = 0;
-                    for (; (__key259 < __r258.getLength());__key259 += 1) {
-                        ASTBase.Dsymbol m = __r258.get(__key259);
+                    Slice<ASTBase.Dsymbol> __r284 = (decls.get()).opSlice().copy();
+                    int __key285 = 0;
+                    for (; (__key285 < __r284.getLength());__key285 += 1) {
+                        ASTBase.Dsymbol m = __r284.get(__key285);
                         m.accept(this);
                     }
                 }
@@ -99,11 +99,11 @@ public class dtool {
             if (exps != null)
             {
                 {
-                    Slice<ASTBase.Expression> __r261 = (exps.get()).opSlice().copy();
-                    int __key260 = 0;
-                    for (; (__key260 < __r261.getLength());__key260 += 1) {
-                        ASTBase.Expression e = __r261.get(__key260);
-                        int i = __key260;
+                    Slice<ASTBase.Expression> __r287 = (exps.get()).opSlice().copy();
+                    int __key286 = 0;
+                    for (; (__key286 < __r287.getLength());__key286 += 1) {
+                        ASTBase.Expression e = __r287.get(__key286);
+                        int i = __key286;
                         if (i != 0)
                         {
                             (this.buf.get()).printf(new BytePtr(" "));
@@ -117,11 +117,11 @@ public class dtool {
         public  void visitStatements(Ptr<DArray<ASTBase.Statement>> statements) {
             if (statements != null)
             {
-                Slice<ASTBase.Statement> __r263 = (statements.get()).opSlice().copy();
-                int __key262 = 0;
-                for (; (__key262 < __r263.getLength());__key262 += 1) {
-                    ASTBase.Statement st = __r263.get(__key262);
-                    int i = __key262;
+                Slice<ASTBase.Statement> __r289 = (statements.get()).opSlice().copy();
+                int __key288 = 0;
+                for (; (__key288 < __r289.getLength());__key288 += 1) {
+                    ASTBase.Statement st = __r289.get(__key288);
+                    int i = __key288;
                     if (i != 0)
                     {
                         (this.buf.get()).writenl();
@@ -134,11 +134,11 @@ public class dtool {
         public  void visitTiargs(Ptr<DArray<RootObject>> tiargs) {
             if (tiargs != null)
             {
-                Slice<RootObject> __r265 = (tiargs.get()).opSlice().copy();
-                int __key264 = 0;
-                for (; (__key264 < __r265.getLength());__key264 += 1) {
-                    RootObject m = __r265.get(__key264);
-                    int i = __key264;
+                Slice<RootObject> __r291 = (tiargs.get()).opSlice().copy();
+                int __key290 = 0;
+                for (; (__key290 < __r291.getLength());__key290 += 1) {
+                    RootObject m = __r291.get(__key290);
+                    int i = __key290;
                     if (i != 0)
                     {
                         (this.buf.get()).printf(new BytePtr(" "));
@@ -513,11 +513,11 @@ public class dtool {
             if (d.baseclasses != null)
             {
                 {
-                    Slice<Ptr<ASTBase.BaseClass>> __r267 = (d.baseclasses.get()).opSlice().copy();
-                    int __key266 = 0;
-                    for (; (__key266 < __r267.getLength());__key266 += 1) {
-                        Ptr<ASTBase.BaseClass> c = __r267.get(__key266);
-                        int i = __key266;
+                    Slice<Ptr<ASTBase.BaseClass>> __r293 = (d.baseclasses.get()).opSlice().copy();
+                    int __key292 = 0;
+                    for (; (__key292 < __r293.getLength());__key292 += 1) {
+                        Ptr<ASTBase.BaseClass> c = __r293.get(__key292);
+                        int i = __key292;
                         if (i != 0)
                         {
                             (this.buf.get()).printf(new BytePtr(" "));
@@ -679,10 +679,10 @@ public class dtool {
             if (st.parameters != null)
             {
                 {
-                    Slice<ASTBase.Parameter> __r268 = (st.parameters.get()).opSlice().copy();
-                    int __key269 = 0;
-                    for (; (__key269 < __r268.getLength());__key269 += 1) {
-                        ASTBase.Parameter prm = __r268.get(__key269);
+                    Slice<ASTBase.Parameter> __r294 = (st.parameters.get()).opSlice().copy();
+                    int __key295 = 0;
+                    for (; (__key295 < __r294.getLength());__key295 += 1) {
+                        ASTBase.Parameter prm = __r294.get(__key295);
                         prm.accept(this);
                     }
                 }
@@ -864,10 +864,10 @@ public class dtool {
             }
             if (tc.catches != null)
             {
-                Slice<ASTBase.Catch> __r270 = (tc.catches.get()).opSlice().copy();
-                int __key271 = 0;
-                for (; (__key271 < __r270.getLength());__key271 += 1) {
-                    ASTBase.Catch c = __r270.get(__key271);
+                Slice<ASTBase.Catch> __r296 = (tc.catches.get()).opSlice().copy();
+                int __key297 = 0;
+                for (; (__key297 < __r296.getLength());__key297 += 1) {
+                    ASTBase.Catch c = __r296.get(__key297);
                     this.open(new BytePtr("catch"));
                     if (c.type != null)
                     {
@@ -984,11 +984,11 @@ public class dtool {
             if (t.arguments != null)
             {
                 {
-                    Slice<ASTBase.Parameter> __r273 = (t.arguments.get()).opSlice().copy();
-                    int __key272 = 0;
-                    for (; (__key272 < __r273.getLength());__key272 += 1) {
-                        ASTBase.Parameter a = __r273.get(__key272);
-                        int i = __key272;
+                    Slice<ASTBase.Parameter> __r299 = (t.arguments.get()).opSlice().copy();
+                    int __key298 = 0;
+                    for (; (__key298 < __r299.getLength());__key298 += 1) {
+                        ASTBase.Parameter a = __r299.get(__key298);
+                        int i = __key298;
                         if (i != 0)
                         {
                             (this.buf.get()).printf(new BytePtr(" "));
@@ -1047,11 +1047,11 @@ public class dtool {
                 (this.buf.get()).printf(new BytePtr(" "));
             }
             {
-                Slice<ASTBase.Parameter> __r275 = (tf.parameterList.parameters.get()).opSlice().copy();
-                int __key274 = 0;
-                for (; (__key274 < __r275.getLength());__key274 += 1) {
-                    ASTBase.Parameter p = __r275.get(__key274);
-                    int i = __key274;
+                Slice<ASTBase.Parameter> __r301 = (tf.parameterList.parameters.get()).opSlice().copy();
+                int __key300 = 0;
+                for (; (__key300 < __r301.getLength());__key300 += 1) {
+                    ASTBase.Parameter p = __r301.get(__key300);
+                    int i = __key300;
                     if (i != 0)
                     {
                         (this.buf.get()).printf(new BytePtr(" "));
@@ -1181,10 +1181,10 @@ public class dtool {
             if (te.args != null)
             {
                 {
-                    Slice<RootObject> __r276 = (te.args.get()).opSlice().copy();
-                    int __key277 = 0;
-                    for (; (__key277 < __r276.getLength());__key277 += 1) {
-                        RootObject arg = __r276.get(__key277);
+                    Slice<RootObject> __r302 = (te.args.get()).opSlice().copy();
+                    int __key303 = 0;
+                    for (; (__key303 < __r302.getLength());__key303 += 1) {
+                        RootObject arg = __r302.get(__key303);
                         switch (arg.dyncast())
                         {
                             case DYNCAST.expression:
@@ -1233,11 +1233,11 @@ public class dtool {
             (this.buf.get()).printf(new BytePtr("( key[value] "));
             if (aa.keys != null)
             {
-                Slice<ASTBase.Expression> __r279 = (aa.keys.get()).opSlice().copy();
-                int __key278 = 0;
-                for (; (__key278 < __r279.getLength());__key278 += 1) {
-                    ASTBase.Expression key = __r279.get(__key278);
-                    int i = __key278;
+                Slice<ASTBase.Expression> __r305 = (aa.keys.get()).opSlice().copy();
+                int __key304 = 0;
+                for (; (__key304 < __r305.getLength());__key304 += 1) {
+                    ASTBase.Expression key = __r305.get(__key304);
+                    int i = __key304;
                     if (i != 0)
                     {
                         (this.buf.get()).printf(new BytePtr(" "));
@@ -1255,11 +1255,11 @@ public class dtool {
             (this.buf.get()).printf(new BytePtr("( [] "));
             if (ae.elements != null)
             {
-                Slice<ASTBase.Expression> __r281 = (ae.elements.get()).opSlice().copy();
-                int __key280 = 0;
-                for (; (__key280 < __r281.getLength());__key280 += 1) {
-                    ASTBase.Expression el = __r281.get(__key280);
-                    int i = __key280;
+                Slice<ASTBase.Expression> __r307 = (ae.elements.get()).opSlice().copy();
+                int __key306 = 0;
+                for (; (__key306 < __r307.getLength());__key306 += 1) {
+                    ASTBase.Expression el = __r307.get(__key306);
+                    int i = __key306;
                     if (i != 0)
                     {
                         (this.buf.get()).printf(new BytePtr(" "));
@@ -1477,10 +1477,10 @@ public class dtool {
             }
             if (arr.arguments != null)
             {
-                Slice<ASTBase.Expression> __r282 = (arr.arguments.get()).opSlice().copy();
-                int __key283 = 0;
-                for (; (__key283 < __r282.getLength());__key283 += 1) {
-                    ASTBase.Expression arg = __r282.get(__key283);
+                Slice<ASTBase.Expression> __r308 = (arr.arguments.get()).opSlice().copy();
+                int __key309 = 0;
+                for (; (__key309 < __r308.getLength());__key309 += 1) {
+                    ASTBase.Expression arg = __r308.get(__key309);
                     arg.accept(this);
                 }
             }
@@ -1747,11 +1747,11 @@ public class dtool {
         public  void visit(ASTBase.StructInitializer si) {
             (this.buf.get()).printf(new BytePtr("( struct-init "));
             {
-                Slice<Identifier> __r285 = si.field.opSlice().copy();
-                int __key284 = 0;
-                for (; (__key284 < __r285.getLength());__key284 += 1) {
-                    Identifier id = __r285.get(__key284);
-                    int i = __key284;
+                Slice<Identifier> __r311 = si.field.opSlice().copy();
+                int __key310 = 0;
+                for (; (__key310 < __r311.getLength());__key310 += 1) {
+                    Identifier id = __r311.get(__key310);
+                    int i = __key310;
                     if (i != 0)
                     {
                         (this.buf.get()).printf(new BytePtr(" "));
@@ -1776,11 +1776,11 @@ public class dtool {
         public  void visit(ASTBase.ArrayInitializer ai) {
             (this.buf.get()).printf(new BytePtr("( array-init "));
             {
-                Slice<ASTBase.Initializer> __r287 = ai.value.opSlice().copy();
-                int __key286 = 0;
-                for (; (__key286 < __r287.getLength());__key286 += 1) {
-                    ASTBase.Initializer v = __r287.get(__key286);
-                    int i = __key286;
+                Slice<ASTBase.Initializer> __r313 = ai.value.opSlice().copy();
+                int __key312 = 0;
+                for (; (__key312 < __r313.getLength());__key312 += 1) {
+                    ASTBase.Initializer v = __r313.get(__key312);
+                    int i = __key312;
                     if (i != 0)
                     {
                         (this.buf.get()).printf(new BytePtr(" "));
@@ -1827,10 +1827,10 @@ public class dtool {
         ASTBase.Type._init();
         Id.initialize();
         {
-            Slice<ByteSlice> __r483 = args_ref.value.slice(1,args_ref.value.getLength()).copy();
-            int __key484 = 0;
-            for (; (__key484 < __r483.getLength());__key484 += 1) {
-                ByteSlice arg = __r483.get(__key484).copy();
+            Slice<ByteSlice> __r509 = args_ref.value.slice(1,args_ref.value.getLength()).copy();
+            int __key510 = 0;
+            for (; (__key510 < __r509.getLength());__key510 += 1) {
+                ByteSlice arg = __r509.get(__key510).copy();
                 if (__equals(tool.value, new ByteSlice("lex")))
                 {
                     processFile_D1F3732A9A6A6D5A(arg, outdir.value, new BytePtr("tk"));
@@ -1880,10 +1880,10 @@ public class dtool {
                 lispPrint.buf = pcopy((refPtr(new OutBuffer(null, 0, 0, 0, false, false))));
                 (lispPrint.buf.get()).doindent = true;
                 {
-                    Slice<ASTBase.Dsymbol> __r487 = (decls.get()).opSlice().copy();
-                    int __key488 = 0;
-                    for (; (__key488 < __r487.getLength());__key488 += 1) {
-                        ASTBase.Dsymbol d = __r487.get(__key488);
+                    Slice<ASTBase.Dsymbol> __r513 = (decls.get()).opSlice().copy();
+                    int __key514 = 0;
+                    for (; (__key514 < __r513.getLength());__key514 += 1) {
+                        ASTBase.Dsymbol d = __r513.get(__key514);
                         d.accept(lispPrint);
                     }
                 }

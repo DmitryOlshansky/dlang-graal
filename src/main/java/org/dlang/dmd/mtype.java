@@ -3526,10 +3526,10 @@ public class mtype {
             }
             Ptr<DArray<Expression>> elements = refPtr(new DArray<Expression>(d));
             {
-                Slice<Expression> __r1521 = (elements.get()).opSlice().copy();
-                int __key1522 = 0;
-                for (; (__key1522 < __r1521.getLength());__key1522 += 1) {
-                    Expression e = __r1521.get(__key1522);
+                Slice<Expression> __r1531 = (elements.get()).opSlice().copy();
+                int __key1532 = 0;
+                for (; (__key1532 < __r1531.getLength());__key1532 += 1) {
+                    Expression e = __r1531.get(__key1532);
                     e = null;
                 }
             }
@@ -4229,10 +4229,10 @@ public class mtype {
             int dim = tf.parameterList.length();
         /*Lloop:*/
             {
-                int __key1523 = 0;
-                int __limit1524 = dim;
-                for (; (__key1523 < __limit1524);__key1523 += 1) {
-                    int i = __key1523;
+                int __key1533 = 0;
+                int __limit1534 = dim;
+                for (; (__key1533 < __limit1534);__key1533 += 1) {
+                    int i = __key1533;
                     Parameter fparam = tf.parameterList.get(i);
                     Type t = fparam.type;
                     if (t == null)
@@ -4312,10 +4312,10 @@ public class mtype {
             {
                 int dim = this.parameterList.length();
                 {
-                    int __key1525 = 0;
-                    int __limit1526 = dim;
-                    for (; (__key1525 < __limit1526);__key1525 += 1) {
-                        int i = __key1525;
+                    int __key1535 = 0;
+                    int __limit1536 = dim;
+                    for (; (__key1535 < __limit1536);__key1535 += 1) {
+                        int i = __key1535;
                         Parameter fparam = this.parameterList.get(i);
                         if ((pequals(fparam, p)))
                         {
@@ -4367,10 +4367,10 @@ public class mtype {
                         }
                     }
                     {
-                        Slice<VarDeclaration> __r1527 = ad.fields.opSlice().copy();
-                        int __key1528 = 0;
-                        for (; (__key1528 < __r1527.getLength());__key1528 += 1) {
-                            VarDeclaration v = __r1527.get(__key1528);
+                        Slice<VarDeclaration> __r1537 = ad.fields.opSlice().copy();
+                        int __key1538 = 0;
+                        for (; (__key1538 < __r1537.getLength());__key1538 += 1) {
+                            VarDeclaration v = __r1537.get(__key1538);
                             if (v.hasPointers())
                             {
                                 return stc;
@@ -4681,11 +4681,11 @@ public class mtype {
                                                     __dispatch15 = 0;
                                                     TypeArray ta = (TypeArray)tb;
                                                     {
-                                                        Slice<Expression> __r1529 = args.slice(u,nargs).copy();
-                                                        int __key1530 = 0;
+                                                        Slice<Expression> __r1539 = args.slice(u,nargs).copy();
+                                                        int __key1540 = 0;
                                                     L_outer3:
-                                                        for (; (__key1530 < __r1529.getLength());__key1530 += 1) {
-                                                            Expression arg = __r1529.get(__key1530);
+                                                        for (; (__key1540 < __r1539.getLength());__key1540 += 1) {
+                                                            Expression arg = __r1539.get(__key1540);
                                                             assert(arg != null);
                                                             Type tret = p.isLazyArray();
                                                             if (tret != null)
@@ -4907,11 +4907,11 @@ public class mtype {
                                                     __dispatch16 = 0;
                                                     TypeArray ta = (TypeArray)tb;
                                                     {
-                                                        Slice<Expression> __r1529 = args.slice(u,nargs).copy();
-                                                        int __key1530 = 0;
+                                                        Slice<Expression> __r1539 = args.slice(u,nargs).copy();
+                                                        int __key1540 = 0;
                                                     L_outer4:
-                                                        for (; (__key1530 < __r1529.getLength());__key1530 += 1) {
-                                                            Expression arg = __r1529.get(__key1530);
+                                                        for (; (__key1540 < __r1539.getLength());__key1540 += 1) {
+                                                            Expression arg = __r1539.get(__key1540);
                                                             assert(arg != null);
                                                             Type tret = p.isLazyArray();
                                                             if (tret != null)
@@ -5006,11 +5006,11 @@ public class mtype {
                                                     __dispatch17 = 0;
                                                     TypeArray ta = (TypeArray)tb;
                                                     {
-                                                        Slice<Expression> __r1529 = args.slice(u,nargs).copy();
-                                                        int __key1530 = 0;
+                                                        Slice<Expression> __r1539 = args.slice(u,nargs).copy();
+                                                        int __key1540 = 0;
                                                     L_outer5:
-                                                        for (; (__key1530 < __r1529.getLength());__key1530 += 1) {
-                                                            Expression arg = __r1529.get(__key1530);
+                                                        for (; (__key1540 < __r1539.getLength());__key1540 += 1) {
+                                                            Expression arg = __r1539.get(__key1540);
                                                             assert(arg != null);
                                                             Type tret = p.isLazyArray();
                                                             if (tret != null)
@@ -5743,10 +5743,10 @@ public class mtype {
             Ptr<DArray<Expression>> structelems = refPtr(new DArray<Expression>(this.sym.nonHiddenFields()));
             int offset = 0;
             {
-                int __key1531 = 0;
-                int __limit1532 = (structelems.get()).length;
-                for (; (__key1531 < __limit1532);__key1531 += 1) {
-                    int j = __key1531;
+                int __key1541 = 0;
+                int __limit1542 = (structelems.get()).length;
+                for (; (__key1541 < __limit1542);__key1541 += 1) {
+                    int j = __key1541;
                     VarDeclaration vd = this.sym.fields.get(j);
                     Expression e = null;
                     if (vd.inuse != 0)
@@ -5862,10 +5862,10 @@ public class mtype {
                 error(this.sym.loc, new BytePtr("no size because of forward references"));
             }
             {
-                Slice<VarDeclaration> __r1533 = s.fields.opSlice().copy();
-                int __key1534 = 0;
-                for (; (__key1534 < __r1533.getLength());__key1534 += 1) {
-                    VarDeclaration v = __r1533.get(__key1534);
+                Slice<VarDeclaration> __r1543 = s.fields.opSlice().copy();
+                int __key1544 = 0;
+                for (; (__key1544 < __r1543.getLength());__key1544 += 1) {
+                    VarDeclaration v = __r1543.get(__key1544);
                     if (((v.storage_class & 2097152L) != 0) || v.hasPointers())
                     {
                         return true;
@@ -5879,10 +5879,10 @@ public class mtype {
             StructDeclaration s = this.sym;
             this.sym.size(Loc.initial);
             {
-                Slice<VarDeclaration> __r1535 = s.fields.opSlice().copy();
-                int __key1536 = 0;
-                for (; (__key1536 < __r1535.getLength());__key1536 += 1) {
-                    VarDeclaration v = __r1535.get(__key1536);
+                Slice<VarDeclaration> __r1545 = s.fields.opSlice().copy();
+                int __key1546 = 0;
+                for (; (__key1546 < __r1545.getLength());__key1546 += 1) {
+                    VarDeclaration v = __r1545.get(__key1546);
                     if ((v._init != null) && (v._init.isVoidInitializer() != null) && v.type.hasPointers())
                     {
                         return true;
@@ -6787,10 +6787,10 @@ public class mtype {
             Ref<Integer> n = ref(pn != null ? pn.get() : 0);
             int result = 0;
             {
-                int __key1537 = 0;
-                int __limit1538 = (parameters.get()).length;
-                for (; (__key1537 < __limit1538);__key1537 += 1) {
-                    int i = __key1537;
+                int __key1547 = 0;
+                int __limit1548 = (parameters.get()).length;
+                for (; (__key1547 < __limit1548);__key1547 += 1) {
+                    int i = __key1547;
                     Parameter p = (parameters.get()).get(i);
                     Type t = p.type.toBasetype();
                     {
@@ -6943,10 +6943,10 @@ public class mtype {
     public static void modifiersApply(TypeFunction tf, Function1<ByteSlice,Void> dg) {
         ByteSlice modsArr = slice(new byte[]{(byte)1, (byte)4, (byte)8, (byte)2});
         {
-            ByteSlice __r1539 = modsArr.copy();
-            int __key1540 = 0;
-            for (; (__key1540 < __r1539.getLength());__key1540 += 1) {
-                byte modsarr = __r1539.get(__key1540);
+            ByteSlice __r1549 = modsArr.copy();
+            int __key1550 = 0;
+            for (; (__key1550 < __r1549.getLength());__key1550 += 1) {
+                byte modsarr = __r1549.get(__key1550);
                 if (((tf.mod & 0xFF) & (modsarr & 0xFF)) != 0)
                 {
                     dg.invoke(MODtoString(modsarr));

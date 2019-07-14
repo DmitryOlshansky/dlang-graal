@@ -2017,7 +2017,7 @@ public class doc {
                     {
                         UnitTestDeclaration utd = s.ddocUnittest;
                         for (; utd != null;utd = utd.ddocUnittest){
-                            if ((utd.protection.kind == Prot.Kind.private_) || (utd.comment == null) || (utd.fbody == null))
+                            if ((utd.protection.kind == Prot.Kind.private_) || (utd.comment == null) || (utd.fbody.value == null))
                             {
                                 continue;
                             }

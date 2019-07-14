@@ -5263,10 +5263,10 @@ public class parse {
                                     Ptr<DArray<ASTBase.Statement>> as = refPtr(new DArray<ASTBase.Statement>());
                                     (as.get()).reserve((a.get()).length);
                                     {
-                                        int __key485 = 0;
-                                        int __limit486 = (a.get()).length;
-                                        for (; (__key485 < __limit486);__key485 += 1) {
-                                            int i = __key485;
+                                        int __key511 = 0;
+                                        int __limit512 = (a.get()).length;
+                                        for (; (__key511 < __limit512);__key511 += 1) {
+                                            int i = __key511;
                                             ASTBase.Dsymbol d = (a.get()).get(i);
                                             s = new ASTBase.ExpStatement(loc, d);
                                             (as.get()).push(s);
@@ -10852,7 +10852,7 @@ public class parse {
                 }
             }
             UnitTestDeclaration f = new UnitTestDeclaration(loc, this.token.value.loc, stc, docline);
-            f.fbody = sbody;
+            f.fbody.value = sbody;
             return f;
         }
 
@@ -12754,7 +12754,7 @@ public class parse {
                 this.check(TOK.goesTo);
                 Loc returnloc = this.token.value.loc.copy();
                 Expression ae = this.parseAssignExp();
-                fd.fbody = new ReturnStatement(returnloc, ae);
+                fd.fbody.value = new ReturnStatement(returnloc, ae);
                 fd.endloc.opAssign(this.token.value.loc.copy());
             }
             else
@@ -12787,7 +12787,7 @@ public class parse {
                             {
                                 this.error(new BytePtr("missing `do { ... }` after `in` or `out`"));
                             }
-                            f.fbody = this.parseStatement(1, null, null);
+                            f.fbody.value = this.parseStatement(1, null, null);
                             f.endloc.opAssign(this.endloc.copy());
                             break;
                         case 120:
@@ -12799,7 +12799,7 @@ public class parse {
                         case 187:
                             __dispatch78 = 0;
                             this.nextToken();
-                            f.fbody = this.parseStatement(4, null, null);
+                            f.fbody.value = this.parseStatement(4, null, null);
                             f.endloc.opAssign(this.endloc.copy());
                             break;
                         case 175:
@@ -12926,9 +12926,9 @@ public class parse {
                     }
                 } while(__dispatch78 != 0);
             }
-            if (literal && (f.fbody == null))
+            if (literal && (f.fbody.value == null))
             {
-                f.fbody = new CompoundStatement(Loc.initial, slice(new Statement[]{null}));
+                f.fbody.value = new CompoundStatement(Loc.initial, slice(new Statement[]{null}));
             }
             this.linkage = linksave;
             return f;
