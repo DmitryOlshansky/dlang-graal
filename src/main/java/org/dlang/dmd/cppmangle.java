@@ -961,7 +961,7 @@ public class cppmangle {
                 int firstTemplateArg = 0;
                 boolean appendReturnType = true;
                 boolean isConvertFunc = false;
-                ByteSlice symName = new ByteSlice().copy();
+                ByteSlice symName = new RawByteSlice().copy();
                 int whichOp = isCppOperator(ti.name);
                 {
                     int __dispatch0 = 0;

@@ -360,7 +360,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     void printSArray(Type type, TextBuffer sink) {
         auto st = cast(TypeSArray)type;
-        sink.fmt("new %s(new %s[%s])", typeOf(type), typeOf(type.nextOf), st.dim.toJava(opts));
+        sink.fmt("new Raw%s(new %s[%s])", typeOf(type), typeOf(type.nextOf), st.dim.toJava(opts));
     }
    
     extern(D) private void printVar(VarDeclaration var, const(char)[] ident, TextBuffer sink) {
@@ -403,7 +403,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     printSArray(var.type, sink);
                 }
                 else if(var.type.ty == Tarray && isNull) {
-                    sink.fmt("new %s()", typeOf(var.type));
+                    sink.fmt("new Raw%s()", typeOf(var.type));
                 }
                 else {
                     sink.put(assign.e2.toJava(opts));

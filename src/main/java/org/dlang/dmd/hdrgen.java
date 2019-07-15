@@ -1066,7 +1066,7 @@ public class hdrgen {
         }
 
         public  void visit(CPPMangleDeclaration d) {
-            ByteSlice s = new ByteSlice().copy();
+            ByteSlice s = new RawByteSlice().copy();
             switch (d.cppmangle)
             {
                 case CPPMANGLE.asClass:

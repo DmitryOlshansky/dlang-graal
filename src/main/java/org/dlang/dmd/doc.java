@@ -670,7 +670,7 @@ public class doc {
 
     public static class Escape
     {
-        public Slice<ByteSlice> strings = new Slice<ByteSlice>(new ByteSlice[255]);
+        public Slice<ByteSlice> strings = new RawSlice<ByteSlice>(new ByteSlice[255]);
         public  ByteSlice escapeChar(byte c) {
             return this.strings.get((c & 0xFF));
         }
@@ -2171,7 +2171,7 @@ public class doc {
         {
             return s;
         }
-        Ref<ByteSlice> result = ref(new ByteSlice().copy());
+        Ref<ByteSlice> result = ref(new RawByteSlice().copy());
         reserve(result, s.getLength() - count + r.getLength() * count);
         int start = 0;
         {
@@ -2193,7 +2193,7 @@ public class doc {
     }
 
     public static ByteSlice toLowercase(ByteSlice s) {
-        Ref<ByteSlice> lower = ref(new ByteSlice().copy());
+        Ref<ByteSlice> lower = ref(new RawByteSlice().copy());
         {
             int __key1075 = 0;
             int __limit1076 = s.getLength();
@@ -2635,7 +2635,7 @@ public class doc {
                         }
                         else
                         {
-                            ByteSlice fullyQualifiedImport = new ByteSlice().copy();
+                            ByteSlice fullyQualifiedImport = new RawByteSlice().copy();
                             if ((imp.packages != null) && ((imp.packages.get()).length != 0))
                             {
                                 {
@@ -3408,7 +3408,7 @@ public class doc {
 
         public  void replaceLink(Ptr<OutBuffer> buf, Ref<Integer> i, int iLinkEnd, MarkdownDelimiter delimiter) {
             int iAfterLink = i.value - delimiter.count;
-            ByteSlice macroName = new ByteSlice().copy();
+            ByteSlice macroName = new RawByteSlice().copy();
             if (this.symbol != null)
             {
                 macroName = new ByteSlice("$(SYMBOL_LINK ").copy();
@@ -3636,7 +3636,7 @@ public class doc {
             boolean leadingBlank = false;
             int inCode = 0;
             boolean newParagraph = true;
-            Ref<Slice<MarkdownDelimiter>> delimiters = ref(new Slice<MarkdownDelimiter>().copy());
+            Ref<Slice<MarkdownDelimiter>> delimiters = ref(new RawSlice<MarkdownDelimiter>().copy());
         L_outer14:
             for (; (i_ref.value < (buf.get()).offset);i_ref.value += 1){
                 byte c = (buf.get()).data.get(i_ref.value);
@@ -3763,7 +3763,7 @@ public class doc {
         }
 
         public static Slice<ByteSlice> split(ByteSlice s, byte delimiter) {
-            Slice<ByteSlice> result = new Slice<ByteSlice>().copy();
+            Slice<ByteSlice> result = new RawSlice<ByteSlice>().copy();
             int iStart = 0;
             {
                 int __key1096 = 0;
@@ -3783,7 +3783,7 @@ public class doc {
 
         public  ByteSlice createHref(Dsymbol symbol) {
             Dsymbol root = symbol;
-            ByteSlice lref = new ByteSlice().copy();
+            ByteSlice lref = new RawByteSlice().copy();
             for (; (symbol != null) && (symbol.ident != null) && (symbol.isModule() == null);){
                 if (lref.getLength() != 0)
                 {
@@ -3792,7 +3792,7 @@ public class doc {
                 lref = (concat(symbol.ident.asString(), lref)).copy();
                 symbol = symbol.parent.value;
             }
-            ByteSlice path = new ByteSlice().copy();
+            ByteSlice path = new RawByteSlice().copy();
             if ((symbol != null) && (symbol.ident != null) && (!pequals(symbol.isModule(), (this._scope.get())._module)))
             {
                 do {
@@ -4097,10 +4097,10 @@ public class doc {
         Ref<Integer> quoteLevel = ref(0);
         boolean lineQuoted = false;
         Ref<Integer> quoteMacroLevel = ref(0);
-        Ref<Slice<MarkdownList>> nestedLists = ref(new Slice<MarkdownList>().copy());
-        Ref<Slice<MarkdownDelimiter>> inlineDelimiters = ref(new Slice<MarkdownDelimiter>().copy());
+        Ref<Slice<MarkdownList>> nestedLists = ref(new RawSlice<MarkdownList>().copy());
+        Ref<Slice<MarkdownDelimiter>> inlineDelimiters = ref(new RawSlice<MarkdownDelimiter>().copy());
         Ref<MarkdownLinkReferences> linkReferences = ref(new MarkdownLinkReferences());
-        Ref<IntSlice> columnAlignments = ref(new IntSlice().copy());
+        Ref<IntSlice> columnAlignments = ref(new RawIntSlice().copy());
         boolean tableRowDetected = false;
         int inCode = 0;
         int inBacktick = 0;
@@ -4110,7 +4110,7 @@ public class doc {
         int iCodeStart = 0;
         int codeFenceLength = 0;
         int codeIndent = 0;
-        ByteSlice codeLanguage = new ByteSlice().copy();
+        ByteSlice codeLanguage = new RawByteSlice().copy();
         Ref<Integer> iLineStart = ref(offset);
         linkReferences.value._scope = pcopy(sc);
         {
@@ -5138,7 +5138,7 @@ public class doc {
                         Ref<Token> tok = ref(new Token().copy());
                         lex.scan(ptr(tok));
                         highlightCode3(sc, ptr(res), lastp, tok.value.ptr);
-                        ByteSlice highlight = new ByteSlice().copy();
+                        ByteSlice highlight = new RawByteSlice().copy();
                         switch ((tok.value.value & 0xFF))
                         {
                             case 120:

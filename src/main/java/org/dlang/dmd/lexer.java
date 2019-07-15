@@ -17,9 +17,9 @@ import static org.dlang.dmd.utf.*;
 
 public class lexer {
     static boolean scaninitdone = false;
-    static ByteSlice scandate = new ByteSlice(new byte[12]);
-    static ByteSlice scantime = new ByteSlice(new byte[9]);
-    static ByteSlice scantimestamp = new ByteSlice(new byte[25]);
+    static ByteSlice scandate = new RawByteSlice(new byte[12]);
+    static ByteSlice scantime = new RawByteSlice(new byte[9]);
+    static ByteSlice scantimestamp = new RawByteSlice(new byte[25]);
 
     private static class FLAGS 
     {

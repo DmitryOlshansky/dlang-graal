@@ -74,8 +74,8 @@ public class dmangle {
 
     public static class Mangler extends Visitor
     {
-        public AssocArrayTypeInteger types = new AssocArrayTypeInteger();
-        public AssocArrayIdentifierInteger idents = new AssocArrayIdentifierInteger();
+        public AA<Type,int> types = new AA<Type,int>();
+        public AA<Identifier,int> idents = new AA<Identifier,int>();
         public Ptr<OutBuffer> buf = null;
         public  Mangler(Ptr<OutBuffer> buf) {
             this.buf = pcopy(buf);
@@ -859,7 +859,7 @@ public class dmangle {
                 (this.buf.get()).writestring(new ByteSlice("INF"));
                 return ;
             }
-            ByteSlice buffer = new ByteSlice(new byte[36]);
+            ByteSlice buffer = new RawByteSlice(new byte[36]);
             int n = CTFloat.sprint(buffer.ptr(), (byte)65, value);
             assert((n < 36));
             {
@@ -898,7 +898,7 @@ public class dmangle {
             byte m = (byte)255;
             OutBuffer tmp = new OutBuffer();
             try {
-                ByteSlice q = new ByteSlice().copy();
+                ByteSlice q = new RawByteSlice().copy();
                 switch ((e.sz & 0xFF))
                 {
                     case 1:

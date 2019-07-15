@@ -84,7 +84,7 @@ public class dmacro {
                         }
                         byte c = p.get(u + 1);
                         int n = ((c & 0xFF) == 43) ? -1 : (c & 0xFF) - 48;
-                        Ref<ByteSlice> marg = ref(new ByteSlice().copy());
+                        Ref<ByteSlice> marg = ref(new RawByteSlice().copy());
                         if ((n == 0))
                         {
                             marg.value = arg.copy();
@@ -133,7 +133,7 @@ public class dmacro {
                     {
                         BytePtr name = pcopy(p.plus(u).plus(2));
                         int namelen = 0;
-                        Ref<ByteSlice> marg = ref(new ByteSlice().copy());
+                        Ref<ByteSlice> marg = ref(new RawByteSlice().copy());
                         int v = 0;
                         {
                             v = u + 2;

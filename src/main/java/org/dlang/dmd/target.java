@@ -41,6 +41,8 @@ public class target {
         public boolean cppExceptions = false;
         public boolean twoDtorInVtable = false;
         // from template FPTypeProperties!(Double)
+
+        // from template FPTypeProperties!(Double)
         public static class FPTypePropertiesDouble
         {
             public double max = 0.0;
@@ -108,8 +110,6 @@ public class target {
                 return this;
             }
         }
-
-        // from template FPTypeProperties!(Double)
 
         // from template FPTypeProperties!(Float)
         public static class FPTypePropertiesFloat

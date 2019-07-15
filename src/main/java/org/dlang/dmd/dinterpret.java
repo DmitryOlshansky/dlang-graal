@@ -6860,8 +6860,8 @@ public class dinterpret {
         Ref<DArray<Expression>> args = ref(args.value = new DArray<Expression>(numParams));
         try {
             Expression eresult = null;
-            ByteSlice utf8buf = new ByteSlice(new byte[4]);
-            CharSlice utf16buf = new CharSlice(new char[2]);
+            ByteSlice utf8buf = new RawByteSlice(new byte[4]);
+            CharSlice utf16buf = new RawCharSlice(new char[2]);
             int start = rvs ? len : 0;
             int end = rvs ? 0 : len;
             {

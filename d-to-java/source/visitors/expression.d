@@ -76,6 +76,7 @@ const(char)[] symbol(const(char)[] s) {
     if (s == "native") return "native_";
     else if(s == "toString") return "asString";
     else if (s == "Array") return "DArray";
+    else if(s == "AssocArray") return "AA";
     else if (s == "_") return "__";
     else return s;
 }
@@ -1951,7 +1952,7 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
         // Don't use ti.toAlias() to avoid forward reference error
         // while printing messages.
         TemplateInstance ti = t.sym.parent ? t.sym.parent.isTemplateInstance() : null;
-        if (ti && ti.aliasdecl == t.sym && t.sym.ident.symbol == "DArray") {
+        if (ti && ti.aliasdecl == t.sym && (t.sym.ident.symbol == "DArray" || t.sym.ident.symbol == "AA")) {
             buf.put(ti.name.symbol);
             buf.put("<");
             foreach(i, arg; (*ti.tiargs)[]) {

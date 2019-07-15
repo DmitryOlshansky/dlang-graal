@@ -1095,7 +1095,7 @@ public class id {
         }
     }
     public static ByteSlice generate(Slice<Msgtable> msgtable, Function1<Msgtable,ByteSlice> dg) {
-        ByteSlice code = new ByteSlice().copy();
+        ByteSlice code = new RawByteSlice().copy();
         {
             Slice<Msgtable> __r110 = msgtable.copy();
             int __key109 = 0;

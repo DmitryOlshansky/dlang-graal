@@ -79,7 +79,7 @@ public class dsymbolsem {
                 stc.value |= sd.postblits.get(i).storage_class & 137438953472L;
             }
         }
-        Slice<VarDeclaration> fieldsToDestroy = new Slice<VarDeclaration>().copy();
+        Slice<VarDeclaration> fieldsToDestroy = new RawSlice<VarDeclaration>().copy();
         Ptr<DArray<Statement>> postblitCalls = refPtr(new DArray<Statement>());
         {
             int i = 0;
@@ -106,7 +106,7 @@ public class dsymbolsem {
                 assert(sdv.isUnionDeclaration() == null);
                 if ((fieldsToDestroy.getLength() > 0) && !((TypeFunction)sdv.postblit.type).isnothrow)
                 {
-                    Slice<Expression> dtorCalls = new Slice<Expression>().copy();
+                    Slice<Expression> dtorCalls = new RawSlice<Expression>().copy();
                     {
                         Slice<VarDeclaration> __r1152 = fieldsToDestroy.copy();
                         int __key1153 = 0;

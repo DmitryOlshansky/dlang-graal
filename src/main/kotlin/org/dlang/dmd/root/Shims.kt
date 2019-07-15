@@ -291,7 +291,10 @@ fun exit(code: Int): Nothing = exitProcess(code)
 
 // stub out speller
 @Suppress("UNUSED_PARAMETER")
-fun<T> speller(fn: (ByteSlice, Ref<Int>) -> T) = null
+object speller {
+    //fun <T> invoke(fn: (ByteSlice, Ref<Int>) -> T) = null
+    fun <T> invoke(fn: (ByteSlice) -> T) = null
+}
 
 // ======== STDIO ===========
 

@@ -607,7 +607,7 @@ public class intrange {
 
         // from template opBinary!(_mul)
         public  IntRange opBinary_mul(IntRange rhs) {
-            Slice<SignExtendedNumber> bdy = new Slice<SignExtendedNumber>(new SignExtendedNumber[4]);
+            Slice<SignExtendedNumber> bdy = new RawSlice<SignExtendedNumber>(new SignExtendedNumber[4]);
             bdy.set(0, this.imin.opBinary_mul(rhs.imin));
             bdy.set(1, this.imin.opBinary_mul(rhs.imax));
             bdy.set(2, this.imax.opBinary_mul(rhs.imin));
@@ -636,7 +636,7 @@ public class intrange {
             }
             else
             {
-                Slice<SignExtendedNumber> bdy = new Slice<SignExtendedNumber>(new SignExtendedNumber[4]);
+                Slice<SignExtendedNumber> bdy = new RawSlice<SignExtendedNumber>(new SignExtendedNumber[4]);
                 bdy.set(0, this.imin.opBinary_div(rhs.imin));
                 bdy.set(1, this.imin.opBinary_div(rhs.imax));
                 bdy.set(2, this.imax.opBinary_div(rhs.imin));

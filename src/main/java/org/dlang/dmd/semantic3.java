@@ -1117,7 +1117,7 @@ public class semantic3 {
             funcdecl.flags &= -65;
             {
                 Slice<VarDeclaration> array = null;
-                Slice<VarDeclaration> tmp = new Slice<VarDeclaration>(new VarDeclaration[10]);
+                Slice<VarDeclaration> tmp = new RawSlice<VarDeclaration>(new VarDeclaration[10]);
                 int dim = ((funcdecl.vthis != null) ? 1 : 0) + (funcdecl.parameters != null ? (funcdecl.parameters.get()).length : 0);
                 if ((dim <= 10))
                 {

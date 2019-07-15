@@ -513,7 +513,7 @@ public class dmodule {
         public int namelen = 0;
         public  Module(Loc loc, ByteSlice filename, Identifier ident, int doDocComment, int doHdrGen) {
             super(loc, ident);
-            ByteSlice srcfilename = new ByteSlice().copy();
+            ByteSlice srcfilename = new RawByteSlice().copy();
             this.arg = filename.copy();
             srcfilename = FileName.defaultExt(filename, toByteSlice(global.mars_ext)).copy();
             if (global.run_noext && global.params.run && (FileName.ext(filename).getLength() == 0) && (FileName.exists(srcfilename) == 0) && (FileName.exists(filename) == 1))
@@ -602,14 +602,14 @@ public class dmodule {
         }
 
         public  FileName setOutfilename(ByteSlice name, ByteSlice dir, ByteSlice arg, ByteSlice ext) {
-            ByteSlice docfilename = new ByteSlice().copy();
+            ByteSlice docfilename = new RawByteSlice().copy();
             if (name.getLength() != 0)
             {
                 docfilename = name.copy();
             }
             else
             {
-                ByteSlice argdoc = new ByteSlice().copy();
+                ByteSlice argdoc = new RawByteSlice().copy();
                 OutBuffer buf = new OutBuffer();
                 if (__equals(arg, new ByteSlice("__stdin.d")))
                 {

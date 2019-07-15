@@ -41,5 +41,5 @@ class AA<K,V> {
 
     Returns: the value associated with `key` if present, otherwise, null.
      */
-    fun get(key: K): Ptr<V?>?  = table[key] as Ptr<V?>?
+    fun get(key: K): V?  = table[key]?.get() as V?
 }

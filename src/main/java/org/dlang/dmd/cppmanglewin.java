@@ -51,8 +51,8 @@ public class cppmanglewin {
     {
         public int VC_SAVED_TYPE_CNT = 10;
         public int VC_SAVED_IDENT_CNT = 10;
-        public Slice<BytePtr> saved_idents = new Slice<BytePtr>(new BytePtr[10]);
-        public Slice<Type> saved_types = new Slice<Type>(new Type[10]);
+        public Slice<BytePtr> saved_idents = new RawSlice<BytePtr>(new BytePtr[10]);
+        public Slice<Type> saved_types = new RawSlice<Type>(new Type[10]);
 
         public static class Flags 
         {
@@ -383,7 +383,7 @@ public class cppmanglewin {
 
         public  void visit(TypeEnum type) {
             Identifier id = type.sym.ident;
-            ByteSlice c = new ByteSlice().copy();
+            ByteSlice c = new RawByteSlice().copy();
             if ((pequals(id, Id.__c_long_double)))
             {
                 c = new ByteSlice("O").copy();
@@ -617,7 +617,7 @@ public class cppmanglewin {
         }
 
         public static ByteSlice mangleSpecialName(Dsymbol sym) {
-            ByteSlice mangle = new ByteSlice().copy();
+            ByteSlice mangle = new RawByteSlice().copy();
             if (sym.isCtorDeclaration() != null)
             {
                 mangle = new ByteSlice("?0").copy();

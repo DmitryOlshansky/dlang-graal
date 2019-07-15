@@ -363,7 +363,7 @@ public class mtype {
         public static ClassDeclaration typeinfoshared = null;
         public static ClassDeclaration typeinfowild = null;
         public static TemplateDeclaration rtinfo = null;
-        public static Slice<Type> basic = new Slice<Type>(new Type[45]);
+        public static Slice<Type> basic = new RawSlice<Type>(new Type[45]);
         public static StringTable stringtable = new StringTable();
         public static ByteSlice sizeTy = slice(new byte[]{(byte)68, (byte)72, (byte)88, (byte)68, (byte)68, (byte)109, (byte)100, (byte)76, (byte)76, (byte)68, (byte)68, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)64, (byte)96, (byte)100, (byte)68, (byte)76, (byte)92, (byte)64, (byte)68, (byte)72, (byte)72, (byte)85});
         public  Type(byte ty) {
@@ -6895,7 +6895,7 @@ public class mtype {
         }
 
         public static Slice<Slice<Boolean>> covariantInit() {
-            Slice<Slice<Boolean>> covariant = new Slice<Slice<Boolean>>(new Slice<Boolean>[8]);
+            Slice<Slice<Boolean>> covariant = new RawSlice<Slice<Boolean>>(new Slice<Boolean>[8]);
             {
                 int __key695 = 0;
                 int __limit696 = 8;

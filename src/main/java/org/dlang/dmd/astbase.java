@@ -3792,7 +3792,7 @@ public class astbase {
             public static Type tchar = null;
             public static Type twchar = null;
             public static Type tdchar = null;
-            public static Slice<Type> basic = new Slice<Type>(new Type[44]);
+            public static Slice<Type> basic = new RawSlice<Type>(new Type[44]);
             public static Type tshiftcnt = null;
             public static Type tvoidptr = null;
             public static Type tstring = null;
@@ -6722,11 +6722,7 @@ public class astbase {
         public static class VarExp extends SymbolExp
         {
             public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
-                if (var.isVarDeclaration() != null)
-                {
-                    hasOverloads = false;
-                }
-                super(loc, TOK.variable, 29, var, hasOverloads);
+                super(loc, TOK.variable, 29, var, var.isVarDeclaration() == null && hasOverloads);
                 this.type = var.type;
             }
 

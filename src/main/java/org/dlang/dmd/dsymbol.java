@@ -2039,7 +2039,7 @@ public class dsymbol {
     }
     public static class DsymbolTable extends RootObject
     {
-        public AssocArrayIdentifierDsymbol tab = new AssocArrayIdentifierDsymbol();
+        public AA<Identifier,Dsymbol> tab = new AA<Identifier,Dsymbol>();
         public  Dsymbol lookup(Identifier ident) {
             return this.tab.get(ident);
         }

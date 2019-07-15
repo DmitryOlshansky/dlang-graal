@@ -1463,7 +1463,7 @@ public class traits {
                 link = fd.value.linkage;
                 varargs = fd.value.getParameterList().varargs;
             }
-            ByteSlice style = new ByteSlice().copy();
+            ByteSlice style = new RawByteSlice().copy();
             switch (varargs)
             {
                 case VarArg.none:
