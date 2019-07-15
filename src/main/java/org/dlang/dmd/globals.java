@@ -252,6 +252,7 @@ public class globals {
         public ByteSlice resfile = new ByteSlice();
         public ByteSlice exefile = new ByteSlice();
         public ByteSlice mapfile = new ByteSlice();
+        // Erasure: isPOSIX<>
         public  boolean isPOSIX() {
             boolean __result = false;
             try {
@@ -714,12 +715,14 @@ public class globals {
         public Object console = null;
         public Ptr<DArray<Identifier>> versionids = null;
         public Ptr<DArray<Identifier>> debugids = null;
+        // Erasure: startGagging<>
         public  int startGagging() {
             this.gag += 1;
             this.gaggedWarnings = 0;
             return this.gaggedErrors;
         }
 
+        // Erasure: endGagging<int>
         public  boolean endGagging(int oldGagged) {
             boolean anyErrs = this.gaggedErrors != oldGagged;
             this.gag -= 1;
@@ -728,6 +731,7 @@ public class globals {
             return anyErrs;
         }
 
+        // Erasure: increaseErrorCount<>
         public  void increaseErrorCount() {
             if (this.gag != 0)
             {
@@ -736,6 +740,7 @@ public class globals {
             this.errors += 1;
         }
 
+        // Erasure: _init<>
         public  void _init() {
             this.obj_ext = new ByteSlice("o").copy();
             this.lib_ext = new ByteSlice("a").copy();
@@ -746,10 +751,12 @@ public class globals {
             this.params.color = Console.detectTerminal();
         }
 
+        // Erasure: deinitialize<>
         public  void deinitialize() {
             this.opAssign(new Global(new ByteSlice(), new ByteSlice("d"), new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice("html"), new ByteSlice("ddoc"), new ByteSlice("di"), new ByteSlice("json"), new ByteSlice("map"), false, new ByteSlice("Copyright (C) 1999-2019 by The D Language Foundation, All Rights Reserved"), new ByteSlice("written by Walter Bright"), null, null, new ByteSlice(), new ByteSlice(), new Param(true, true, false, false, false, false, false, false, false, false, false, false, false, false, false, (byte)0, false, false, false, false, false, false, false, false, false, false, false, false, false, false, false, DiagnosticReporting.inform, false, false, false, false, false, false, false, DiagnosticReporting.off, PIC.fixed, false, false, (byte)0, false, false, true, true, true, false, false, false, false, false, false, false, false, false, false, false, false, CppStdRevision.cpp98, false, false, false, false, false, false, false, false, false, false, false, false, false, false, CPU.baseline, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKENABLE._default, CHECKACTION.D, 20, new ByteSlice(), new DArray<BytePtr>(), null, null, new ByteSlice(), new ByteSlice(), new ByteSlice(), false, null, null, new DArray<BytePtr>(), false, new ByteSlice(), new ByteSlice(), true, false, new ByteSlice(), JsonFieldFlags.none, null, null, 0, 0, null, 0, null, new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice(), null, false, false, false, false, false, false, false, new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new DArray<BytePtr>(), new ByteSlice(), new ByteSlice(), new ByteSlice(), new ByteSlice()), 0, 0, 0, 0, 0, null, null, null));
         }
 
+        // Erasure: versionNumber<>
         public  int versionNumber() {
             if ((globals.versionNumbercached == 0))
             {
@@ -785,6 +792,7 @@ public class globals {
             return globals.versionNumbercached;
         }
 
+        // Erasure: finalDefaultlibname<>
         public  ByteSlice finalDefaultlibname() {
             return this.params.betterC ? new ByteSlice() : this.params.symdebug != 0 ? this.params.debuglibname : this.params.defaultlibname;
         }
@@ -887,12 +895,14 @@ public class globals {
         public int linnum = 0;
         public int charnum = 0;
         public static Loc initial = new Loc();
+        // Erasure: __ctor<Ptr, int, int>
         public  Loc(BytePtr filename, int linnum, int charnum) {
             this.linnum = linnum;
             this.charnum = charnum;
             this.filename = pcopy(filename);
         }
 
+        // Erasure: toChars<boolean>
         public  BytePtr toChars(boolean showColumns) {
             OutBuffer buf = new OutBuffer();
             try {
@@ -922,14 +932,17 @@ public class globals {
             return toChars(global.params.showColumns);
         }
 
+        // Erasure: equals<Loc>
         public  boolean equals(Loc loc) {
             return !global.params.showColumns || (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && FileName.equals(this.filename, loc.filename);
         }
 
+        // Erasure: opEquals<Loc>
         public  boolean opEquals(Loc loc) {
             return (this.charnum == loc.charnum) && (this.linnum == loc.linnum) && (this.filename == loc.filename) || (this.filename != null) && (loc.filename != null) && (strcmp(this.filename, loc.filename) == 0);
         }
 
+        // Erasure: toHash<>
         public  int toHash() {
             int hash = hashOf(this.linnum);
             hash = hashOf(this.charnum, hash);
@@ -937,6 +950,7 @@ public class globals {
             return hash;
         }
 
+        // Erasure: isValid<>
         public  boolean isValid() {
             return this.filename != null;
         }

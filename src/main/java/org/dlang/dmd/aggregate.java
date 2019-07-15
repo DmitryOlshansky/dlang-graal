@@ -30,6 +30,7 @@ import static org.dlang.dmd.visitor.*;
 public class aggregate {
     private static class SearchCtor
     {
+        // Erasure: fp<Dsymbol, Ptr>
         public static int fp(Dsymbol s, Object ctxt) {
             CtorDeclaration f = s.isCtorDeclaration();
             if ((f != null) && (f.semanticRun == PASS.init))
@@ -105,11 +106,13 @@ public class aggregate {
         public DtorDeclaration tidtor = null;
         public FuncDeclaration fieldDtor = null;
         public Expression getRTInfo = null;
+        // Erasure: __ctor<Loc, Identifier>
         public  AggregateDeclaration(Loc loc, Identifier id) {
             super(loc, id);
             this.protection = new Prot(Prot.Kind.public_);
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             Ptr<Scope> sc2 = (sc.get()).push(this);
             (sc2.get()).stc &= 60129542144L;
@@ -123,6 +126,7 @@ public class aggregate {
             return sc2;
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             if ((this.semanticRun < PASS.semanticdone))
             {
@@ -130,6 +134,7 @@ public class aggregate {
             }
         }
 
+        // Erasure: determineFields<>
         public  boolean determineFields() {
             if (this._scope != null)
             {
@@ -216,10 +221,12 @@ public class aggregate {
             return true;
         }
 
+        // Erasure: nonHiddenFields<>
         public  int nonHiddenFields() {
             return this.fields.length - (this.isNested() ? 1 : 0) - ((this.vthis2 != null) ? 1 : 0);
         }
 
+        // Erasure: determineSize<Loc>
         public  boolean determineSize(Loc loc) {
             if (((this.type.ty & 0xFF) == ENUMTY.Terror))
             {
@@ -281,14 +288,17 @@ public class aggregate {
             return false;
         }
 
+        // Erasure: finalizeSize<>
         public abstract void finalizeSize();
 
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             boolean ok = this.determineSize(loc);
             return ok ? (long)this.structsize.value : -1L;
         }
 
+        // Erasure: checkOverlappedFields<>
         public  boolean checkOverlappedFields() {
             assert((this.sizeok == Sizeok.done));
             int nfields = this.fields.length;
@@ -370,6 +380,7 @@ public class aggregate {
             return errors;
         }
 
+        // Erasure: fill<Loc, Ptr, boolean>
         public  boolean fill(Loc loc, Ptr<DArray<Expression>> elements, boolean ctorinit) {
             assert((this.sizeok == Sizeok.done));
             assert(elements != null);
@@ -501,6 +512,7 @@ public class aggregate {
             return !errors;
         }
 
+        // Erasure: alignmember<int, int, Ptr>
         public static void alignmember(int alignment, int size, Ptr<Integer> poffset) {
             switch (alignment)
             {
@@ -517,6 +529,7 @@ public class aggregate {
             }
         }
 
+        // Erasure: placeField<Ptr, int, int, int, Ptr, Ptr, boolean>
         public static int placeField(Ptr<Integer> nextoffset, int memsize, int memalignsize, int alignment, Ptr<Integer> paggsize, Ptr<Integer> paggalignsize, boolean isunion) {
             Ref<Integer> ofs = ref(nextoffset.get());
             int actualAlignment = (alignment == -1) ? memalignsize : alignment;
@@ -545,18 +558,22 @@ public class aggregate {
             return memoffset;
         }
 
+        // Erasure: getType<>
         public  Type getType() {
             return this.type;
         }
 
+        // Erasure: isDeprecated<>
         public  boolean isDeprecated() {
             return this.isdeprecated;
         }
 
+        // Erasure: isNested<>
         public  boolean isNested() {
             return this.enclosing != null;
         }
 
+        // Erasure: makeNested<>
         public  void makeNested() {
             if (this.enclosing != null)
             {
@@ -636,6 +653,7 @@ public class aggregate {
             }
         }
 
+        // Erasure: makeNested2<>
         public  void makeNested2() {
             if (this.vthis2 != null)
             {
@@ -682,10 +700,12 @@ public class aggregate {
             }
         }
 
+        // Erasure: isExport<>
         public  boolean isExport() {
             return this.protection.kind == Prot.Kind.export_;
         }
 
+        // Erasure: searchCtor<>
         public  Dsymbol searchCtor() {
             Dsymbol s = this.search(Loc.initial, Id.ctor, 8);
             if (s != null)
@@ -714,20 +734,24 @@ public class aggregate {
             return s;
         }
 
+        // Erasure: prot<>
         public  Prot prot() {
             return this.protection;
         }
 
+        // Erasure: handleType<>
         public  Type handleType() {
             return this.type;
         }
 
         public Ptr<Symbol> stag = null;
         public Ptr<Symbol> sinit = null;
+        // Erasure: isAggregateDeclaration<>
         public  AggregateDeclaration isAggregateDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }

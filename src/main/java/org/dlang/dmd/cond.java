@@ -42,29 +42,36 @@ public class cond {
     {
         public Loc loc = new Loc();
         public int inc = 0;
+        // Erasure: dyncast<>
         public  int dyncast() {
             return DYNCAST.condition;
         }
 
+        // Erasure: __ctor<Loc>
         public  Condition(Loc loc) {
             super();
             this.loc.opAssign(loc.copy());
         }
 
+        // Erasure: syntaxCopy<>
         public abstract Condition syntaxCopy();
 
 
+        // Erasure: include<>
         public abstract int include(Ptr<Scope> sc);
 
 
+        // Erasure: isDebugCondition<>
         public  DebugCondition isDebugCondition() {
             return null;
         }
 
+        // Erasure: isVersionCondition<>
         public  VersionCondition isVersionCondition() {
             return null;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -81,6 +88,7 @@ public class cond {
         public ForeachStatement aggrfe = null;
         public ForeachRangeStatement rangefe = null;
         public boolean needExpansion = false;
+        // Erasure: __ctor<Loc, ForeachStatement, ForeachRangeStatement>
         public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
             super();
             assert(aggrfe != null ^ rangefe != null);
@@ -89,10 +97,12 @@ public class cond {
             this.rangefe = rangefe;
         }
 
+        // Erasure: syntaxCopy<>
         public  StaticForeach syntaxCopy() {
             return new StaticForeach(this.loc, this.aggrfe != null ? (ForeachStatement)this.aggrfe.syntaxCopy() : null, this.rangefe != null ? (ForeachRangeStatement)this.rangefe.syntaxCopy() : null);
         }
 
+        // Erasure: lowerArrayAggregate<Ptr>
         public  void lowerArrayAggregate(Ptr<Scope> sc) {
             Expression aggr = this.aggrfe.aggr.value;
             Expression el = new ArrayLengthExp(aggr.loc, aggr);
@@ -125,6 +135,7 @@ public class cond {
             }
         }
 
+        // Erasure: wrapAndCall<Loc, Statement>
         public  Expression wrapAndCall(Loc loc, Statement s) {
             TypeFunction tf = new TypeFunction(new ParameterList(null, VarArg.none), null, LINK.default_, 0L);
             FuncLiteralDeclaration fd = new FuncLiteralDeclaration(loc, loc, tf, TOK.reserved, null, null);
@@ -134,6 +145,7 @@ public class cond {
             return ce;
         }
 
+        // Erasure: createForeach<Loc, Ptr, Statement>
         public  Statement createForeach(Loc loc, Ptr<DArray<Parameter>> parameters, Statement s) {
             if (this.aggrfe != null)
             {
@@ -146,6 +158,7 @@ public class cond {
             }
         }
 
+        // Erasure: createTupleType<Loc, Ptr, Ptr>
         public  TypeStruct createTupleType(Loc loc, Ptr<DArray<Expression>> e, Ptr<Scope> sc) {
             Identifier sid = Identifier.generateId(new BytePtr("Tuple"));
             StructDeclaration sdecl = new StructDeclaration(loc, sid, false);
@@ -159,10 +172,12 @@ public class cond {
             return r;
         }
 
+        // Erasure: createTuple<Loc, TypeStruct, Ptr>
         public  Expression createTuple(Loc loc, TypeStruct type, Ptr<DArray<Expression>> e) {
             return new CallExp(loc, new TypeExp(loc, type), e);
         }
 
+        // Erasure: lowerNonArrayAggregate<Ptr>
         public  void lowerNonArrayAggregate(Ptr<Scope> sc) {
             int nvars = this.aggrfe != null ? (this.aggrfe.parameters.get()).length : 1;
             Loc aloc = this.aggrfe != null ? this.aggrfe.aggr.value.loc : this.rangefe.lwr.loc.copy();
@@ -267,6 +282,7 @@ public class cond {
             this.lowerArrayAggregate(sc);
         }
 
+        // Erasure: prepare<Ptr>
         public  void prepare(Ptr<Scope> sc) {
             assert(sc != null);
             if (this.aggrfe != null)
@@ -298,6 +314,7 @@ public class cond {
             }
         }
 
+        // Erasure: ready<>
         public  boolean ready() {
             return (this.aggrfe != null) && (this.aggrfe.aggr.value != null) && (this.aggrfe.aggr.value.type.value != null) && ((this.aggrfe.aggr.value.type.value.toBasetype().ty & 0xFF) == ENUMTY.Ttuple);
         }
@@ -319,6 +336,7 @@ public class cond {
         public int level = 0;
         public Identifier ident = null;
         public dmodule.Module mod = null;
+        // Erasure: __ctor<Module, int, Identifier>
         public  DVCondition(dmodule.Module mod, int level, Identifier ident) {
             super(Loc.initial);
             this.mod = mod;
@@ -326,10 +344,12 @@ public class cond {
             this.ident = ident;
         }
 
+        // Erasure: syntaxCopy<>
         public  Condition syntaxCopy() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -341,19 +361,23 @@ public class cond {
     }
     public static class DebugCondition extends DVCondition
     {
+        // Erasure: addGlobalIdent<Ptr>
         public static void addGlobalIdent(BytePtr ident) {
             addGlobalIdent(ident.slice(0,strlen(ident)));
         }
 
+        // Erasure: addGlobalIdent<Array>
         public static void addGlobalIdent(ByteSlice ident) {
             addGlobalIdent(toByteSlice(ident));
         }
 
         // removed duplicate function, [["void addGlobalIdentByteSlice", "void addGlobalIdentBytePtr"]] signature: void addGlobalIdentByteSlice
+        // Erasure: __ctor<Module, int, Identifier>
         public  DebugCondition(dmodule.Module mod, int level, Identifier ident) {
             super(mod, level, ident);
         }
 
+        // Erasure: include<Ptr>
         public  int include(Ptr<Scope> sc) {
             if ((this.inc == Include.notComputed))
             {
@@ -391,14 +415,17 @@ public class cond {
             return ((this.inc == Include.yes) ? 1 : 0);
         }
 
+        // Erasure: isDebugCondition<>
         public  DebugCondition isDebugCondition() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return this.ident != null ? this.ident.toChars() : new BytePtr("debug");
         }
@@ -418,6 +445,7 @@ public class cond {
     }
     public static class VersionCondition extends DVCondition
     {
+        // Erasure: isReserved<Array>
         public static boolean isReserved(ByteSlice ident) {
             switch (__switch(ident))
             {
@@ -522,6 +550,7 @@ public class cond {
             }
         }
 
+        // Erasure: checkReserved<Loc, Array>
         public static void checkReserved(Loc loc, ByteSlice ident) {
             if (isReserved(ident))
             {
@@ -529,28 +558,34 @@ public class cond {
             }
         }
 
+        // Erasure: addGlobalIdent<Ptr>
         public static void addGlobalIdent(BytePtr ident) {
             addGlobalIdent(ident.slice(0,strlen(ident)));
         }
 
+        // Erasure: addGlobalIdent<Array>
         public static void addGlobalIdent(ByteSlice ident) {
             addGlobalIdent(toByteSlice(ident));
         }
 
         // removed duplicate function, [["void checkReservedLoc, ByteSlice", "void addGlobalIdentByteSlice", "void addGlobalIdentBytePtr", "boolean isReservedByteSlice"]] signature: void addGlobalIdentByteSlice
+        // Erasure: addPredefinedGlobalIdent<Ptr>
         public static void addPredefinedGlobalIdent(BytePtr ident) {
             addPredefinedGlobalIdent(ident.slice(0,strlen(ident)));
         }
 
+        // Erasure: addPredefinedGlobalIdent<Array>
         public static void addPredefinedGlobalIdent(ByteSlice ident) {
             addPredefinedGlobalIdent(toByteSlice(ident));
         }
 
         // removed duplicate function, [["void checkReservedLoc, ByteSlice", "void addGlobalIdentByteSlice", "void addGlobalIdentBytePtr", "boolean isReservedByteSlice", "void addPredefinedGlobalIdentByteSlice", "void addPredefinedGlobalIdentBytePtr"]] signature: void addPredefinedGlobalIdentByteSlice
+        // Erasure: __ctor<Module, int, Identifier>
         public  VersionCondition(dmodule.Module mod, int level, Identifier ident) {
             super(mod, level, ident);
         }
 
+        // Erasure: include<Ptr>
         public  int include(Ptr<Scope> sc) {
             if ((this.inc == Include.notComputed))
             {
@@ -588,14 +623,17 @@ public class cond {
             return ((this.inc == Include.yes) ? 1 : 0);
         }
 
+        // Erasure: isVersionCondition<>
         public  VersionCondition isVersionCondition() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return this.ident != null ? this.ident.toChars() : new BytePtr("version");
         }
@@ -616,15 +654,18 @@ public class cond {
     public static class StaticIfCondition extends Condition
     {
         public Expression exp = null;
+        // Erasure: __ctor<Loc, Expression>
         public  StaticIfCondition(Loc loc, Expression exp) {
             super(loc);
             this.exp = exp;
         }
 
+        // Erasure: syntaxCopy<>
         public  Condition syntaxCopy() {
             return new StaticIfCondition(this.loc, this.exp.syntaxCopy());
         }
 
+        // Erasure: include<Ptr>
         public  int include(Ptr<Scope> sc) {
             Function0<Integer> errorReturn = new Function0<Integer>() {
                 public Integer invoke() {
@@ -667,10 +708,12 @@ public class cond {
             return ((this.inc == Include.yes) ? 1 : 0);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return this.exp != null ? this.exp.toChars() : new BytePtr("static if");
         }
@@ -686,6 +729,7 @@ public class cond {
             return that;
         }
     }
+    // Erasure: findCondition<Ptr, Identifier>
     public static boolean findCondition(Ptr<DArray<Identifier>> ids, Identifier ident) {
         if (ids != null)
         {
@@ -704,6 +748,7 @@ public class cond {
         return false;
     }
 
+    // Erasure: printDepsConditional<Ptr, DVCondition, Array>
     public static void printDepsConditional(Ptr<Scope> sc, DVCondition condition, ByteSlice depType) {
         if ((global.params.moduleDeps == null) || (global.params.moduleDepsFile.getLength() != 0))
         {

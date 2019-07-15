@@ -39,34 +39,42 @@ public class lexer {
     static int CMzerosecond = 8;
     static int CMdigitsecond = 16;
     static int CMsinglechar = 32;
+    // Erasure: isoctal<byte>
     public static boolean isoctal(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 1) != 0;
     }
 
+    // Erasure: ishex<byte>
     public static boolean ishex(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 2) != 0;
     }
 
+    // Erasure: isidchar<byte>
     public static boolean isidchar(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 4) != 0;
     }
 
+    // Erasure: isZeroSecond<byte>
     public static boolean isZeroSecond(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 8) != 0;
     }
 
+    // Erasure: isDigitSecond<byte>
     public static boolean isDigitSecond(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 16) != 0;
     }
 
+    // Erasure: issinglechar<byte>
     public static boolean issinglechar(byte c) {
         return ((cmtable.get((c & 0xFF)) & 0xFF) & 32) != 0;
     }
 
+    // Erasure: c_isxdigit<int>
     public static boolean c_isxdigit(int c) {
         return (c >= 48) && (c <= 57) || (c >= 97) && (c <= 102) || (c >= 65) && (c <= 70);
     }
 
+    // Erasure: c_isalnum<int>
     public static boolean c_isalnum(int c) {
         return (c >= 48) && (c <= 57) || (c >= 97) && (c <= 122) || (c >= 65) && (c <= 90);
     }
@@ -88,6 +96,7 @@ public class lexer {
         public int lastDocLine = 0;
         public DiagnosticReporter diagnosticReporter = null;
         public Ptr<Token> tokenFreelist = null;
+        // Erasure: __ctor<Ptr, Ptr, int, int, boolean, boolean, DiagnosticReporter>
         public  Lexer(BytePtr filename, BytePtr base, int begoffset, int endoffset, boolean doDocComment, boolean commentToken, DiagnosticReporter diagnosticReporter) {
             {
                 {
@@ -126,10 +135,12 @@ public class lexer {
             }
         }
 
+        // Erasure: errors<>
         public  boolean errors() {
             return this.diagnosticReporter.errorCount() > 0;
         }
 
+        // Erasure: allocateToken<>
         public  Ptr<Token> allocateToken() {
             if (this.tokenFreelist != null)
             {
@@ -141,11 +152,13 @@ public class lexer {
             return refPtr(new Token());
         }
 
+        // Erasure: releaseToken<Ptr>
         public  void releaseToken(Ptr<Token> token) {
             (token.get()).next.value = pcopy(this.tokenFreelist);
             this.tokenFreelist = pcopy(token);
         }
 
+        // Erasure: nextToken<>
         public  byte nextToken() {
             this.prevloc.opAssign(this.token.value.loc.copy());
             if (this.token.value.next.value != null)
@@ -161,15 +174,18 @@ public class lexer {
             return this.token.value.value;
         }
 
+        // Erasure: peekNext<>
         public  byte peekNext() {
             return (this.peek(ptr(this.token)).get()).value;
         }
 
+        // Erasure: peekNext2<>
         public  byte peekNext2() {
             Ptr<Token> t = this.peek(ptr(this.token));
             return (this.peek(t).get()).value;
         }
 
+        // Erasure: scan<Ptr>
         public  void scan(Ptr<Token> t) {
             int lastLine = this.scanloc.value.linnum;
             Loc startLoc = new Loc();
@@ -986,6 +1002,7 @@ public class lexer {
             }
         }
 
+        // Erasure: peek<Ptr>
         public  Ptr<Token> peek(Ptr<Token> ct) {
             Ptr<Token> t = null;
             if ((ct.get()).next.value != null)
@@ -1001,6 +1018,7 @@ public class lexer {
             return t;
         }
 
+        // Erasure: peekPastParen<Ptr>
         public  Ptr<Token> peekPastParen(Ptr<Token> tk) {
             int parens = 1;
             int curlynest = 0;
@@ -1043,10 +1061,12 @@ public class lexer {
             }
         }
 
+        // Erasure: escapeSequence<>
         public  int escapeSequence() {
             return escapeSequence(this.token.value.loc, this.diagnosticReporter, p);
         }
 
+        // Erasure: escapeSequence<Loc, DiagnosticReporter, Ptr>
         public static int escapeSequence(Loc loc, DiagnosticReporter handler, Ref<BytePtr> sequence) {
             {
                 {
@@ -1213,6 +1233,7 @@ public class lexer {
             }
         }
 
+        // Erasure: wysiwygStringConstant<Ptr>
         public  void wysiwygStringConstant(Ptr<Token> result) {
             (result.get()).value = TOK.string_;
             Loc start = this.loc().copy();
@@ -1266,6 +1287,7 @@ public class lexer {
             }
         }
 
+        // Erasure: hexStringConstant<Ptr>
         public  byte hexStringConstant(Ptr<Token> t) {
             Loc start = this.loc().copy();
             int n = 0;
@@ -1359,6 +1381,7 @@ public class lexer {
             }
         }
 
+        // Erasure: delimitedStringConstant<Ptr>
         public  void delimitedStringConstant(Ptr<Token> result) {
             (result.get()).value = TOK.string_;
             Loc start = this.loc().copy();
@@ -1536,6 +1559,7 @@ public class lexer {
             this.stringPostfix(result);
         }
 
+        // Erasure: tokenStringConstant<Ptr>
         public  void tokenStringConstant(Ptr<Token> result) {
             (result.get()).value = TOK.string_;
             int nest = 1;
@@ -1573,6 +1597,7 @@ public class lexer {
             }
         }
 
+        // Erasure: escapeStringConstant<Ptr>
         public  void escapeStringConstant(Ptr<Token> t) {
             (t.get()).value = TOK.string_;
             Loc start = this.loc().copy();
@@ -1637,6 +1662,7 @@ public class lexer {
             }
         }
 
+        // Erasure: charConstant<Ptr>
         public  byte charConstant(Ptr<Token> t) {
             byte tk = TOK.charLiteral;
             this.p.value.postInc();
@@ -1713,6 +1739,7 @@ public class lexer {
             return tk;
         }
 
+        // Erasure: stringPostfix<Ptr>
         public  void stringPostfix(Ptr<Token> t) {
             switch ((this.p.value.get() & 0xFF))
             {
@@ -1728,6 +1755,7 @@ public class lexer {
             }
         }
 
+        // Erasure: number<Ptr>
         public  byte number(Ptr<Token> t) {
             int base = 10;
             BytePtr start = pcopy(this.p.value);
@@ -2064,6 +2092,7 @@ public class lexer {
             return result;
         }
 
+        // Erasure: inreal<Ptr>
         public  byte inreal(Ptr<Token> t) {
             boolean isWellformedString = true;
             stringbuffer.reset();
@@ -2210,51 +2239,61 @@ public class lexer {
             return result;
         }
 
+        // Erasure: loc<>
         public  Loc loc() {
             this.scanloc.value.charnum = ((this.p.value.plus(1).minus(this.line)));
             return this.scanloc.value;
         }
 
+        // Erasure: error<Ptr>
         public  void error(BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.diagnosticReporter.error(this.token.value.loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: error<Loc, Ptr>
         public  void error(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.diagnosticReporter.error(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: errorSupplemental<Loc, Ptr>
         public  void errorSupplemental(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.diagnosticReporter.errorSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: warning<Loc, Ptr>
         public  void warning(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.diagnosticReporter.warning(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: warningSupplemental<Loc, Ptr>
         public  void warningSupplemental(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.diagnosticReporter.warningSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: deprecation<Ptr>
         public  void deprecation(BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.diagnosticReporter.deprecation(this.token.value.loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: deprecation<Loc, Ptr>
         public  void deprecation(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.diagnosticReporter.deprecation(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: deprecationSupplemental<Loc, Ptr>
         public  void deprecationSupplemental(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.diagnosticReporter.deprecationSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: poundLine<>
         public  void poundLine() {
             int linnum = this.scanloc.value.linnum;
             BytePtr filespec = null;
@@ -2391,6 +2430,7 @@ public class lexer {
             this.error(loc, new BytePtr("#line integer [\"filespec\"]\\n expected"));
         }
 
+        // Erasure: decodeUTF<>
         public  int decodeUTF() {
             BytePtr s = pcopy(this.p.value);
             assert(((s.get() & 0xFF) & 128) != 0);
@@ -2411,6 +2451,7 @@ public class lexer {
             return u.value;
         }
 
+        // Erasure: getDocComment<Ptr, int, boolean>
         public  void getDocComment(Ptr<Token> t, int lineComment, boolean newParagraph) {
             byte ct = (t.get()).ptr.get(2);
             BytePtr q = pcopy((t.get()).ptr.plus(3));
@@ -2544,6 +2585,7 @@ public class lexer {
             }
         }
 
+        // Erasure: combineComments<Ptr, Ptr, boolean>
         public static BytePtr combineComments(BytePtr c1, BytePtr c2, boolean newParagraph) {
             BytePtr c = pcopy(c2);
             int newParagraphSize = newParagraph ? 1 : 0;
@@ -2578,6 +2620,7 @@ public class lexer {
             return c;
         }
 
+        // Erasure: endOfLine<>
         public  void endOfLine() {
             this.scanloc.value.linnum++;
             this.line = pcopy(this.p.value);

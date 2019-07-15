@@ -21,6 +21,7 @@ import static org.dlang.dmd.visitor.*;
 
 public class typinf {
 
+    // Erasure: genTypeInfo<Loc, Type, Ptr>
     public static void genTypeInfo(Loc loc, Type torig, Ptr<Scope> sc) {
         if ((sc == null) || (((sc.get()).flags & 128) == 0))
         {
@@ -79,12 +80,14 @@ public class typinf {
         assert(torig.vtinfo != null);
     }
 
+    // Erasure: getTypeInfoType<Loc, Type, Ptr>
     public static Type getTypeInfoType(Loc loc, Type t, Ptr<Scope> sc) {
         assert(((t.ty & 0xFF) != ENUMTY.Terror));
         genTypeInfo(loc, t, sc);
         return t.vtinfo.type;
     }
 
+    // Erasure: getTypeInfoDeclaration<Type>
     public static TypeInfoDeclaration getTypeInfoDeclaration(Type t) {
         switch ((t.ty & 0xFF))
         {
@@ -122,6 +125,7 @@ public class typinf {
         }
     }
 
+    // Erasure: isSpeculativeType<Type>
     public static boolean isSpeculativeType(Type t) {
         Function1<TypeVector,Boolean> visitVector = new Function1<TypeVector,Boolean>() {
             public Boolean invoke(TypeVector t) {
@@ -225,6 +229,7 @@ public class typinf {
         }
     }
 
+    // Erasure: builtinTypeInfo<Type>
     public static boolean builtinTypeInfo(Type t) {
         if ((t.isTypeBasic() != null) || ((t.ty & 0xFF) == ENUMTY.Tclass) || ((t.ty & 0xFF) == ENUMTY.Tnull))
         {

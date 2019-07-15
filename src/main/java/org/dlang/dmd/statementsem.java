@@ -57,6 +57,7 @@ public class statementsem {
     static Slice<TypeDelegate> visitfldeTy = slice(initializer_1);
     static Slice<BytePtr> visitfntab = slice(initializer_2);
 
+    // Erasure: fixupLabelName<Ptr, Identifier>
     public static Identifier fixupLabelName(Ptr<Scope> sc, Identifier ident) {
         int flags = (sc.get()).flags & 96;
         ByteSlice id = ident.asString().copy();
@@ -70,6 +71,7 @@ public class statementsem {
         return ident;
     }
 
+    // Erasure: checkLabeledLoop<Ptr, Statement>
     public static LabelStatement checkLabeledLoop(Ptr<Scope> sc, Statement statement) {
         if (((sc.get()).slabel != null) && (pequals((sc.get()).slabel.statement.value, statement)))
         {
@@ -78,6 +80,7 @@ public class statementsem {
         return null;
     }
 
+    // Erasure: checkAssignmentAsCondition<Expression>
     public static Expression checkAssignmentAsCondition(Expression e) {
         Expression ec = lastComma(e);
         if (((ec.op & 0xFF) == 90))
@@ -88,6 +91,7 @@ public class statementsem {
         return e;
     }
 
+    // Erasure: statementSemantic<Statement, Ptr>
     public static Statement statementSemantic(Statement s, Ptr<Scope> sc) {
         StatementSemanticVisitor v = new StatementSemanticVisitor(sc);
         s.accept(v);
@@ -98,26 +102,32 @@ public class statementsem {
     {
         public Statement result = null;
         public Ptr<Scope> sc = null;
+        // Erasure: __ctor<Ptr>
         public  StatementSemanticVisitor(Ptr<Scope> sc) {
             this.sc = pcopy(sc);
         }
 
+        // Erasure: setError<>
         public  void setError() {
             this.result = new ErrorStatement();
         }
 
+        // Erasure: visit<Statement>
         public  void visit(Statement s) {
             this.result = s;
         }
 
+        // Erasure: visit<ErrorStatement>
         public  void visit(ErrorStatement s) {
             this.result = s;
         }
 
+        // Erasure: visit<PeelStatement>
         public  void visit(PeelStatement s) {
             this.result = s.s.value;
         }
 
+        // Erasure: visit<ExpStatement>
         public  void visit(ExpStatement s) {
             if (s.exp != null)
             {
@@ -154,6 +164,7 @@ public class statementsem {
             this.result = s;
         }
 
+        // Erasure: visit<CompileStatement>
         public  void visit(CompileStatement cs) {
             Ptr<DArray<Statement>> a = cs.flatten(this.sc);
             if (a == null)
@@ -164,6 +175,7 @@ public class statementsem {
             this.result = statementSemantic(s, this.sc);
         }
 
+        // Erasure: visit<CompoundStatement>
         public  void visit(CompoundStatement cs) {
             {
                 int i = 0;
@@ -340,6 +352,7 @@ public class statementsem {
             this.result = cs;
         }
 
+        // Erasure: visit<UnrolledLoopStatement>
         public  void visit(UnrolledLoopStatement uls) {
             Ptr<Scope> scd = (this.sc.get()).push();
             (scd.get()).sbreak = uls;
@@ -365,6 +378,7 @@ public class statementsem {
             this.result = serror != null ? serror : uls;
         }
 
+        // Erasure: visit<ScopeStatement>
         public  void visit(ScopeStatement ss) {
             if (ss.statement.value != null)
             {
@@ -403,6 +417,7 @@ public class statementsem {
             this.result = ss;
         }
 
+        // Erasure: visit<ForwardingStatement>
         public  void visit(ForwardingStatement ss) {
             assert(ss.sym != null);
             {
@@ -420,12 +435,14 @@ public class statementsem {
             this.result = ss.statement;
         }
 
+        // Erasure: visit<WhileStatement>
         public  void visit(WhileStatement ws) {
             Statement s = new ForStatement(ws.loc, null, ws.condition, null, ws._body.value, ws.endloc);
             s = statementSemantic(s, this.sc);
             this.result = s;
         }
 
+        // Erasure: visit<DoStatement>
         public  void visit(DoStatement ds) {
             boolean inLoopSave = (this.sc.get()).inLoop;
             (this.sc.get()).inLoop = true;
@@ -461,6 +478,7 @@ public class statementsem {
             this.result = ds;
         }
 
+        // Erasure: visit<ForStatement>
         public  void visit(ForStatement fs) {
             if (fs._init.value != null)
             {
@@ -541,6 +559,7 @@ public class statementsem {
 
 
         // from template makeTupleForeach!(00)
+        // Erasure: makeTupleForeach00<ForeachStatement>
         public  void makeTupleForeach00(ForeachStatement fs) {
             Function0<Void> returnEarly00 = new Function0<Void>() {
                 public Void invoke() {
@@ -794,6 +813,7 @@ public class statementsem {
 
 
         // from template makeTupleForeach!(10)
+        // Erasure: makeTupleForeach10<ForeachStatement, boolean>
         public  void makeTupleForeach10(ForeachStatement fs, boolean _param_1) {
             Function0<Void> returnEarly10 = new Function0<Void>() {
                 public Void invoke() {
@@ -1083,6 +1103,7 @@ public class statementsem {
 
 
         // from template makeTupleForeach!(11)
+        // Erasure: makeTupleForeach11<ForeachStatement, Ptr, boolean>
         public  Ptr<DArray<Dsymbol>> makeTupleForeach11(ForeachStatement fs, Ptr<DArray<Dsymbol>> _param_1, boolean _param_2) {
             Function0<Object> returnEarly11 = new Function0<Object>() {
                 public Object invoke() {
@@ -1358,6 +1379,7 @@ public class statementsem {
         }
 
 
+        // Erasure: visit<ForeachStatement>
         public  void visit(ForeachStatement fs) {
             Function1<ForeachStatement,Boolean> checkForArgTypes = new Function1<ForeachStatement,Boolean>() {
                 public Boolean invoke(ForeachStatement fs) {
@@ -2202,6 +2224,7 @@ public class statementsem {
             this.result = s;
         }
 
+        // Erasure: foreachBodyToFunction<Ptr, ForeachStatement, TypeFunction>
         public static FuncExp foreachBodyToFunction(Ptr<Scope> sc, ForeachStatement fs, TypeFunction tfld) {
             Ptr<DArray<Parameter>> params = refPtr(new DArray<Parameter>());
             {
@@ -2264,6 +2287,7 @@ public class statementsem {
             return (FuncExp)flde;
         }
 
+        // Erasure: visit<ForeachRangeStatement>
         public  void visit(ForeachRangeStatement fs) {
             Loc loc = fs.loc.copy();
             fs.lwr = expressionSemantic(fs.lwr, this.sc);
@@ -2425,6 +2449,7 @@ public class statementsem {
             this.result = statementSemantic(s, this.sc);
         }
 
+        // Erasure: visit<IfStatement>
         public  void visit(IfStatement ifs) {
             ifs.condition = checkAssignmentAsCondition(ifs.condition);
             ScopeDsymbol sym = new ScopeDsymbol();
@@ -2495,6 +2520,7 @@ public class statementsem {
             this.result = ifs;
         }
 
+        // Erasure: visit<ConditionalStatement>
         public  void visit(ConditionalStatement cs) {
             if (cs.condition.include(this.sc) != 0)
             {
@@ -2522,6 +2548,7 @@ public class statementsem {
             }
         }
 
+        // Erasure: visit<PragmaStatement>
         public  void visit(PragmaStatement ps) {
             if ((pequals(ps.ident, Id.msg)))
             {
@@ -2664,10 +2691,12 @@ public class statementsem {
             this.result = ps._body;
         }
 
+        // Erasure: visit<StaticAssertStatement>
         public  void visit(StaticAssertStatement s) {
             semantic2(s.sa, this.sc);
         }
 
+        // Erasure: visit<SwitchStatement>
         public  void visit(SwitchStatement ss) {
             ss.tf = (this.sc.get()).tf;
             if (ss.cases != null)
@@ -2959,6 +2988,7 @@ public class statementsem {
             this.result = ss;
         }
 
+        // Erasure: visit<CaseStatement>
         public  void visit(CaseStatement cs) {
             SwitchStatement sw = (this.sc.get()).sw;
             boolean errors = false;
@@ -3084,6 +3114,7 @@ public class statementsem {
             this.result = cs;
         }
 
+        // Erasure: visit<CaseRangeStatement>
         public  void visit(CaseRangeStatement crs) {
             SwitchStatement sw = (this.sc.get()).sw;
             if ((sw == null))
@@ -3158,6 +3189,7 @@ public class statementsem {
             this.result = s;
         }
 
+        // Erasure: visit<DefaultStatement>
         public  void visit(DefaultStatement ds) {
             boolean errors = false;
             if ((this.sc.get()).sw != null)
@@ -3195,6 +3227,7 @@ public class statementsem {
             this.result = ds;
         }
 
+        // Erasure: visit<GotoDefaultStatement>
         public  void visit(GotoDefaultStatement gds) {
             gds.sw = (this.sc.get()).sw;
             if (gds.sw == null)
@@ -3212,6 +3245,7 @@ public class statementsem {
             this.result = gds;
         }
 
+        // Erasure: visit<GotoCaseStatement>
         public  void visit(GotoCaseStatement gcs) {
             if ((this.sc.get()).sw == null)
             {
@@ -3234,6 +3268,7 @@ public class statementsem {
             this.result = gcs;
         }
 
+        // Erasure: visit<ReturnStatement>
         public  void visit(ReturnStatement rs) {
             FuncDeclaration fd = (this.sc.get()).parent.value.isFuncDeclaration();
             if (fd.fes != null)
@@ -3570,6 +3605,7 @@ public class statementsem {
             this.result = rs;
         }
 
+        // Erasure: visit<BreakStatement>
         public  void visit(BreakStatement bs) {
             if (bs.ident != null)
             {
@@ -3640,6 +3676,7 @@ public class statementsem {
             this.result = bs;
         }
 
+        // Erasure: visit<ContinueStatement>
         public  void visit(ContinueStatement cs) {
             if (cs.ident != null)
             {
@@ -3719,6 +3756,7 @@ public class statementsem {
             this.result = cs;
         }
 
+        // Erasure: visit<SynchronizedStatement>
         public  void visit(SynchronizedStatement ss) {
             if (ss.exp != null)
             {
@@ -3809,6 +3847,7 @@ public class statementsem {
             }
         }
 
+        // Erasure: visit<WithStatement>
         public  void visit(WithStatement ws) {
             ScopeDsymbol sym = null;
             Initializer _init = null;
@@ -3905,6 +3944,7 @@ public class statementsem {
             this.result = ws;
         }
 
+        // Erasure: visit<TryCatchStatement>
         public  void visit(TryCatchStatement tcs) {
             if (!global.params.useExceptions)
             {
@@ -3997,6 +4037,7 @@ public class statementsem {
             this.result = tcs;
         }
 
+        // Erasure: visit<TryFinallyStatement>
         public  void visit(TryFinallyStatement tfs) {
             tfs._body.value = statementSemantic(tfs._body.value, this.sc);
             this.sc = pcopy((this.sc.get()).push());
@@ -4029,6 +4070,7 @@ public class statementsem {
             this.result = tfs;
         }
 
+        // Erasure: visit<ScopeGuardStatement>
         public  void visit(ScopeGuardStatement oss) {
             if (((oss.tok & 0xFF) != 204))
             {
@@ -4063,6 +4105,7 @@ public class statementsem {
             this.result = oss;
         }
 
+        // Erasure: visit<ThrowStatement>
         public  void visit(ThrowStatement ts) {
             if (!global.params.useExceptions)
             {
@@ -4102,6 +4145,7 @@ public class statementsem {
             this.result = ts;
         }
 
+        // Erasure: visit<DebugStatement>
         public  void visit(DebugStatement ds) {
             if (ds.statement.value != null)
             {
@@ -4113,6 +4157,7 @@ public class statementsem {
             this.result = ds.statement.value;
         }
 
+        // Erasure: visit<GotoStatement>
         public  void visit(GotoStatement gs) {
             FuncDeclaration fd = (this.sc.get()).func;
             gs.ident = fixupLabelName(this.sc, gs.ident);
@@ -4143,6 +4188,7 @@ public class statementsem {
             this.result = gs;
         }
 
+        // Erasure: visit<LabelStatement>
         public  void visit(LabelStatement ls) {
             FuncDeclaration fd = (this.sc.get()).parent.value.isFuncDeclaration();
             ls.ident = fixupLabelName(this.sc, ls.ident);
@@ -4172,10 +4218,12 @@ public class statementsem {
             this.result = ls;
         }
 
+        // Erasure: visit<AsmStatement>
         public  void visit(AsmStatement s) {
             this.result = asmSemantic(s, this.sc);
         }
 
+        // Erasure: visit<CompoundAsmStatement>
         public  void visit(CompoundAsmStatement cas) {
             this.sc = pcopy((this.sc.get()).push());
             (this.sc.get()).stc |= cas.stc;
@@ -4205,6 +4253,7 @@ public class statementsem {
             this.result = cas;
         }
 
+        // Erasure: visit<ImportStatement>
         public  void visit(ImportStatement imps) {
             {
                 int __key1667 = 0;
@@ -4259,6 +4308,7 @@ public class statementsem {
             return that;
         }
     }
+    // Erasure: catchSemantic<Catch, Ptr>
     public static void catchSemantic(Catch c, Ptr<Scope> sc) {
         if (((sc.get()).os != null) && (((sc.get()).os.tok & 0xFF) != 205))
         {
@@ -4348,6 +4398,7 @@ public class statementsem {
         (sc.get()).pop();
     }
 
+    // Erasure: semanticNoScope<Statement, Ptr>
     public static Statement semanticNoScope(Statement s, Ptr<Scope> sc) {
         if ((s.isCompoundStatement() == null) && (s.isScopeStatement() == null))
         {
@@ -4357,6 +4408,7 @@ public class statementsem {
         return s;
     }
 
+    // Erasure: semanticScope<Statement, Ptr, Statement, Statement>
     public static Statement semanticScope(Statement s, Ptr<Scope> sc, Statement sbreak, Statement scontinue) {
         ScopeDsymbol sym = new ScopeDsymbol();
         sym.parent.value = (sc.get()).scopesym;
@@ -4414,6 +4466,7 @@ public class statementsem {
     // from template TupleForeachRet!(11)
 
     // from template makeTupleForeach!(10)
+    // Erasure: makeTupleForeach10<Ptr, ForeachStatement, boolean>
     public static Statement makeTupleForeach10(Ptr<Scope> sc, ForeachStatement fs, boolean _param_2) {
         StatementSemanticVisitor v = new StatementSemanticVisitor(sc);
         v.makeTupleForeach10(fs, _param_2);
@@ -4422,6 +4475,7 @@ public class statementsem {
 
 
     // from template makeTupleForeach!(11)
+    // Erasure: makeTupleForeach11<Ptr, ForeachStatement, Ptr, boolean>
     public static Ptr<DArray<Dsymbol>> makeTupleForeach11(Ptr<Scope> sc, ForeachStatement fs, Ptr<DArray<Dsymbol>> _param_2, boolean _param_3) {
         StatementSemanticVisitor v = new StatementSemanticVisitor(sc);
         return v.makeTupleForeach11(fs, _param_2, _param_3);

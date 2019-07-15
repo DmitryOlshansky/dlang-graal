@@ -260,9 +260,11 @@ public class astbase {
 
         public static abstract class ASTNode extends RootObject
         {
+            // Erasure: accept<>
             public abstract void accept(ParseTimeVisitorASTBase v);
 
 
+            // Erasure: __ctor<>
             public  ASTNode() {
                 super();
             }
@@ -278,15 +280,18 @@ public class astbase {
             public UserAttributeDeclaration userAttribDecl = null;
             public Dsymbol parent = null;
             public BytePtr comment = null;
+            // Erasure: __ctor<>
             public  Dsymbol() {
                 super();
             }
 
+            // Erasure: __ctor<Identifier>
             public  Dsymbol(Identifier ident) {
                 super();
                 this.ident = ident;
             }
 
+            // Erasure: addComment<Ptr>
             public  void addComment(BytePtr comment) {
                 if (this.comment == null)
                 {
@@ -298,15 +303,18 @@ public class astbase {
                 }
             }
 
+            // Erasure: toChars<>
             public  BytePtr toChars() {
                 return this.ident != null ? this.ident.toChars() : new BytePtr("__anonymous");
             }
 
+            // Erasure: oneMember<Ptr, Identifier>
             public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
                 ps.set(0, this);
                 return true;
             }
 
+            // Erasure: oneMembers<DArray, Ptr, Identifier>
             public static boolean oneMembers(DArray<Dsymbol> members, Ptr<Dsymbol> ps, Identifier ident) {
                 Dsymbol s = null;
                 {
@@ -357,63 +365,78 @@ public class astbase {
                 return true;
             }
 
+            // Erasure: isOverloadable<>
             public  boolean isOverloadable() {
                 return false;
             }
 
+            // Erasure: kind<>
             public  BytePtr kind() {
                 return new BytePtr("symbol");
             }
 
+            // Erasure: error<Ptr>
             public  void error(BytePtr format, Object... ap) {
                 Ref<BytePtr> format_ref = ref(format);
                 verror(this.loc, format_ref.value, new RawSlice<>(ap), this.kind(), new BytePtr(""), new BytePtr("Error: "));
             }
 
+            // Erasure: isAttribDeclaration<>
             public  AttribDeclaration isAttribDeclaration() {
                 return null;
             }
 
+            // Erasure: isTemplateDeclaration<>
             public  TemplateDeclaration isTemplateDeclaration() {
                 return null;
             }
 
+            // Erasure: isFuncLiteralDeclaration<>
             public  FuncLiteralDeclaration isFuncLiteralDeclaration() {
                 return null;
             }
 
+            // Erasure: isFuncDeclaration<>
             public  FuncDeclaration isFuncDeclaration() {
                 return null;
             }
 
+            // Erasure: isVarDeclaration<>
             public  VarDeclaration isVarDeclaration() {
                 return null;
             }
 
+            // Erasure: isTemplateInstance<>
             public  TemplateInstance isTemplateInstance() {
                 return null;
             }
 
+            // Erasure: isDeclaration<>
             public  Declaration isDeclaration() {
                 return null;
             }
 
+            // Erasure: isClassDeclaration<>
             public  ClassDeclaration isClassDeclaration() {
                 return null;
             }
 
+            // Erasure: isAggregateDeclaration<>
             public  AggregateDeclaration isAggregateDeclaration() {
                 return null;
             }
 
+            // Erasure: syntaxCopy<Dsymbol>
             public  Dsymbol syntaxCopy(Dsymbol s) {
                 return null;
             }
 
+            // Erasure: dyncast<>
             public  int dyncast() {
                 return DYNCAST.dsymbol;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -433,12 +456,14 @@ public class astbase {
         public static class AliasThis extends Dsymbol
         {
             public Identifier ident = null;
+            // Erasure: __ctor<Loc, Identifier>
             public  AliasThis(Loc loc, Identifier ident) {
                 super(null);
                 this.loc.opAssign(loc.copy());
                 this.ident = ident;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -464,6 +489,7 @@ public class astbase {
             public Prot protection = new Prot();
             public int linkage = 0;
             public Type type = null;
+            // Erasure: __ctor<Identifier>
             public  Declaration(Identifier id) {
                 super(id);
                 this.storage_class = 0L;
@@ -471,10 +497,12 @@ public class astbase {
                 this.linkage = LINK.default_;
             }
 
+            // Erasure: isDeclaration<>
             public  Declaration isDeclaration() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -487,14 +515,17 @@ public class astbase {
         public static class ScopeDsymbol extends Dsymbol
         {
             public Ptr<DArray<Dsymbol>> members = null;
+            // Erasure: __ctor<>
             public  ScopeDsymbol() {
                 super();
             }
 
+            // Erasure: __ctor<Identifier>
             public  ScopeDsymbol(Identifier id) {
                 super(id);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -521,6 +552,7 @@ public class astbase {
             public Prot protection = new Prot();
             public DArray<Identifier> names = new DArray<Identifier>();
             public DArray<Identifier> aliases = new DArray<Identifier>();
+            // Erasure: __ctor<Loc, Ptr, Identifier, Identifier, int>
             public  Import(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Identifier aliasId, int isstatic) {
                 super(null);
                 this.loc.opAssign(loc.copy());
@@ -543,6 +575,7 @@ public class astbase {
                 }
             }
 
+            // Erasure: addAlias<Identifier, Identifier>
             public  void addAlias(Identifier name, Identifier _alias) {
                 if (this.isstatic != 0)
                 {
@@ -556,6 +589,7 @@ public class astbase {
                 this.aliases.push(_alias);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -584,15 +618,18 @@ public class astbase {
         public static abstract class AttribDeclaration extends Dsymbol
         {
             public Ptr<DArray<Dsymbol>> decl = null;
+            // Erasure: __ctor<Ptr>
             public  AttribDeclaration(Ptr<DArray<Dsymbol>> decl) {
                 super();
                 this.decl = pcopy(decl);
             }
 
+            // Erasure: isAttribDeclaration<>
             public  AttribDeclaration isAttribDeclaration() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -606,6 +643,7 @@ public class astbase {
         {
             public Expression exp = null;
             public Expression msg = null;
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  StaticAssert(Loc loc, Expression exp, Expression msg) {
                 super(Id.empty);
                 this.loc.opAssign(loc.copy());
@@ -632,17 +670,20 @@ public class astbase {
         public static class DebugSymbol extends Dsymbol
         {
             public int level = 0;
+            // Erasure: __ctor<Loc, Identifier>
             public  DebugSymbol(Loc loc, Identifier ident) {
                 super(ident);
                 this.loc.opAssign(loc.copy());
             }
 
+            // Erasure: __ctor<Loc, int>
             public  DebugSymbol(Loc loc, int level) {
                 super();
                 this.level = level;
                 this.loc.opAssign(loc.copy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -665,17 +706,20 @@ public class astbase {
         public static class VersionSymbol extends Dsymbol
         {
             public int level = 0;
+            // Erasure: __ctor<Loc, Identifier>
             public  VersionSymbol(Loc loc, Identifier ident) {
                 super(ident);
                 this.loc.opAssign(loc.copy());
             }
 
+            // Erasure: __ctor<Loc, int>
             public  VersionSymbol(Loc loc, int level) {
                 super();
                 this.level = level;
                 this.loc.opAssign(loc.copy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -703,6 +747,7 @@ public class astbase {
             public int ctfeAdrOnStack = 0;
             public int sequenceNumber = 0;
             public static int nextSequenceNumber = 0;
+            // Erasure: __ctor<Loc, Type, Identifier, Initializer, long>
             public  VarDeclaration(Loc loc, Type type, Identifier id, Initializer _init, long st) {
                 super(id);
                 this.type = type;
@@ -718,10 +763,12 @@ public class astbase {
                 this(loc, type, id, _init, 0L);
             }
 
+            // Erasure: isVarDeclaration<>
             public  VarDeclaration isVarDeclaration() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -783,6 +830,7 @@ public class astbase {
             public boolean inferRetType = false;
             public ForeachStatement fes = null;
             public FuncDeclaration overnext0 = null;
+            // Erasure: __ctor<Loc, Loc, Identifier, long, Type>
             public  FuncDeclaration(Loc loc, Loc endloc, Identifier id, long storage_class, Type type) {
                 super(id);
                 this.storage_class = storage_class;
@@ -796,18 +844,22 @@ public class astbase {
                 this.inferRetType = (type != null) && (type.nextOf() == null);
             }
 
+            // Erasure: isFuncLiteralDeclaration<>
             public  FuncLiteralDeclaration isFuncLiteralDeclaration() {
                 return null;
             }
 
+            // Erasure: isOverloadable<>
             public  boolean isOverloadable() {
                 return true;
             }
 
+            // Erasure: isFuncDeclaration<>
             public  FuncDeclaration isFuncDeclaration() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -842,22 +894,26 @@ public class astbase {
         public static class AliasDeclaration extends Declaration
         {
             public Dsymbol aliassym = null;
+            // Erasure: __ctor<Loc, Identifier, Dsymbol>
             public  AliasDeclaration(Loc loc, Identifier id, Dsymbol s) {
                 super(id);
                 this.loc.opAssign(loc.copy());
                 this.aliassym = s;
             }
 
+            // Erasure: __ctor<Loc, Identifier, Type>
             public  AliasDeclaration(Loc loc, Identifier id, Type type) {
                 super(id);
                 this.loc.opAssign(loc.copy());
                 this.type = type;
             }
 
+            // Erasure: isOverloadable<>
             public  boolean isOverloadable() {
                 return true;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -884,12 +940,14 @@ public class astbase {
         public static class TupleDeclaration extends Declaration
         {
             public Ptr<DArray<RootObject>> objects = null;
+            // Erasure: __ctor<Loc, Identifier, Ptr>
             public  TupleDeclaration(Loc loc, Identifier id, Ptr<DArray<RootObject>> objects) {
                 super(id);
                 this.loc.opAssign(loc.copy());
                 this.objects = pcopy(objects);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -916,6 +974,7 @@ public class astbase {
         public static class FuncLiteralDeclaration extends FuncDeclaration
         {
             public byte tok = 0;
+            // Erasure: __ctor<Loc, Loc, Type, byte, ForeachStatement, Identifier>
             public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes, Identifier id) {
                 super(loc, endloc, null, 0L, type);
                 this.ident = id != null ? id : Id.empty;
@@ -925,13 +984,15 @@ public class astbase {
 
             // defaulted all parameters starting with #6
             public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes) {
-                this(loc, endloc, type, tok, fes, null);
+                this(loc, endloc, type, tok, fes, (Identifier)null);
             }
 
+            // Erasure: isFuncLiteralDeclaration<>
             public  FuncLiteralDeclaration isFuncLiteralDeclaration() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -966,10 +1027,12 @@ public class astbase {
         }
         public static class PostBlitDeclaration extends FuncDeclaration
         {
+            // Erasure: __ctor<Loc, Loc, long, Identifier>
             public  PostBlitDeclaration(Loc loc, Loc endloc, long stc, Identifier id) {
                 super(loc, endloc, id, stc, null);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1003,6 +1066,7 @@ public class astbase {
         }
         public static class CtorDeclaration extends FuncDeclaration
         {
+            // Erasure: __ctor<Loc, Loc, long, Type, boolean>
             public  CtorDeclaration(Loc loc, Loc endloc, long stc, Type type, boolean isCopyCtor) {
                 super(loc, endloc, Id.ctor, stc, type);
             }
@@ -1012,6 +1076,7 @@ public class astbase {
                 this(loc, endloc, stc, type, false);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1045,14 +1110,17 @@ public class astbase {
         }
         public static class DtorDeclaration extends FuncDeclaration
         {
+            // Erasure: __ctor<Loc, Loc>
             public  DtorDeclaration(Loc loc, Loc endloc) {
                 super(loc, endloc, Id.dtor, 0L, null);
             }
 
+            // Erasure: __ctor<Loc, Loc, long, Identifier>
             public  DtorDeclaration(Loc loc, Loc endloc, long stc, Identifier id) {
                 super(loc, endloc, id, stc, null);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1086,11 +1154,13 @@ public class astbase {
         }
         public static class InvariantDeclaration extends FuncDeclaration
         {
+            // Erasure: __ctor<Loc, Loc, long, Identifier, Statement>
             public  InvariantDeclaration(Loc loc, Loc endloc, long stc, Identifier id, Statement fbody) {
                 super(loc, endloc, id != null ? id : Identifier.generateId(new BytePtr("__invariant")), stc, null);
                 this.fbody = fbody;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1125,11 +1195,13 @@ public class astbase {
         public static class UnitTestDeclaration extends FuncDeclaration
         {
             public BytePtr codedoc = null;
+            // Erasure: __ctor<Loc, Loc, long, Ptr>
             public  UnitTestDeclaration(Loc loc, Loc endloc, long stc, BytePtr codedoc) {
                 super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("__unittest"), loc), stc, null);
                 this.codedoc = pcopy(codedoc);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1166,12 +1238,14 @@ public class astbase {
         {
             public Ptr<DArray<Parameter>> parameters = null;
             public int varargs = 0;
+            // Erasure: __ctor<Loc, Loc, long, Ptr, int>
             public  NewDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams, int varargs) {
                 super(loc, endloc, Id.classNew, 1L | stc, null);
                 this.parameters = pcopy(fparams);
                 this.varargs = varargs;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1208,11 +1282,13 @@ public class astbase {
         public static class DeleteDeclaration extends FuncDeclaration
         {
             public Ptr<DArray<Parameter>> parameters = null;
+            // Erasure: __ctor<Loc, Loc, long, Ptr>
             public  DeleteDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams) {
                 super(loc, endloc, Id.classDelete, 1L | stc, null);
                 this.parameters = pcopy(fparams);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1247,14 +1323,17 @@ public class astbase {
         }
         public static class StaticCtorDeclaration extends FuncDeclaration
         {
+            // Erasure: __ctor<Loc, Loc, long>
             public  StaticCtorDeclaration(Loc loc, Loc endloc, long stc) {
                 super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("_staticCtor"), loc), 1L | stc, null);
             }
 
+            // Erasure: __ctor<Loc, Loc, Array, long>
             public  StaticCtorDeclaration(Loc loc, Loc endloc, ByteSlice name, long stc) {
                 super(loc, endloc, Identifier.generateIdWithLoc(name, loc), 1L | stc, null);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1289,15 +1368,18 @@ public class astbase {
         public static class StaticDtorDeclaration extends FuncDeclaration
         {
             // from template __ctor!()
+            // Erasure: __ctor<Loc, Loc, long>
             public  StaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
                 super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("__staticDtor"), loc), 1L | stc, null);
             }
 
 
+            // Erasure: __ctor<Loc, Loc, Array, long>
             public  StaticDtorDeclaration(Loc loc, Loc endloc, ByteSlice name, long stc) {
                 super(loc, endloc, Identifier.generateIdWithLoc(name, loc), 1L | stc, null);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1331,10 +1413,12 @@ public class astbase {
         }
         public static class SharedStaticCtorDeclaration extends StaticCtorDeclaration
         {
+            // Erasure: __ctor<Loc, Loc, long>
             public  SharedStaticCtorDeclaration(Loc loc, Loc endloc, long stc) {
                 super(loc, endloc, new ByteSlice("_sharedStaticCtor"), stc);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1368,10 +1452,12 @@ public class astbase {
         }
         public static class SharedStaticDtorDeclaration extends StaticDtorDeclaration
         {
+            // Erasure: __ctor<Loc, Loc, long>
             public  SharedStaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
                 super(loc, endloc, new ByteSlice("_sharedStaticDtor"), stc);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1407,12 +1493,14 @@ public class astbase {
         {
             public int isPkgMod = 0;
             public int tag = 0;
+            // Erasure: __ctor<Identifier>
             public  Package(Identifier ident) {
                 super(ident);
                 this.isPkgMod = PKG.unknown;
                 this.tag = astbase.__ctorpackageTag++;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1439,6 +1527,7 @@ public class astbase {
             public Type type = null;
             public Type memtype = null;
             public Prot protection = new Prot();
+            // Erasure: __ctor<Loc, Identifier, Type>
             public  EnumDeclaration(Loc loc, Identifier id, Type memtype) {
                 super(id);
                 this.loc.opAssign(loc.copy());
@@ -1447,6 +1536,7 @@ public class astbase {
                 this.protection.opAssign(new Prot(Prot.Kind.undefined, null));
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1474,6 +1564,7 @@ public class astbase {
             public Prot protection = new Prot();
             public int sizeok = 0;
             public Type type = null;
+            // Erasure: __ctor<Loc, Identifier>
             public  AggregateDeclaration(Loc loc, Identifier id) {
                 super(id);
                 this.loc.opAssign(loc.copy());
@@ -1481,10 +1572,12 @@ public class astbase {
                 this.sizeok = Sizeok.none;
             }
 
+            // Erasure: isAggregateDeclaration<>
             public  AggregateDeclaration isAggregateDeclaration() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1504,6 +1597,7 @@ public class astbase {
             public boolean isstatic = false;
             public Prot protection = new Prot();
             public Dsymbol onemember = null;
+            // Erasure: __ctor<Loc, Identifier, Ptr, Expression, Ptr, boolean, boolean>
             public  TemplateDeclaration(Loc loc, Identifier id, Ptr<DArray<TemplateParameter>> parameters, Expression constraint, Ptr<DArray<Dsymbol>> decldefs, boolean ismixin, boolean literal) {
                 super(id);
                 this.loc.opAssign(loc.copy());
@@ -1535,14 +1629,17 @@ public class astbase {
                 this(loc, id, parameters, constraint, decldefs, false, false);
             }
 
+            // Erasure: isOverloadable<>
             public  boolean isOverloadable() {
                 return true;
             }
 
+            // Erasure: isTemplateDeclaration<>
             public  TemplateDeclaration isTemplateDeclaration() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1578,6 +1675,7 @@ public class astbase {
             public boolean semantictiargsdone = false;
             public boolean havetempdecl = false;
             public TemplateInstance inst = null;
+            // Erasure: __ctor<Loc, Identifier, Ptr>
             public  TemplateInstance(Loc loc, Identifier ident, Ptr<DArray<RootObject>> tiargs) {
                 super(null);
                 this.loc.opAssign(loc.copy());
@@ -1585,6 +1683,7 @@ public class astbase {
                 this.tiargs = pcopy(tiargs);
             }
 
+            // Erasure: __ctor<Loc, TemplateDeclaration, Ptr>
             public  TemplateInstance(Loc loc, TemplateDeclaration td, Ptr<DArray<RootObject>> tiargs) {
                 super(null);
                 this.loc.opAssign(loc.copy());
@@ -1594,10 +1693,12 @@ public class astbase {
                 this.havetempdecl = true;
             }
 
+            // Erasure: isTemplateInstance<>
             public  TemplateInstance isTemplateInstance() {
                 return this;
             }
 
+            // Erasure: arraySyntaxCopy<Ptr>
             public  Ptr<DArray<RootObject>> arraySyntaxCopy(Ptr<DArray<RootObject>> objs) {
                 Ptr<DArray<RootObject>> a = null;
                 if (objs != null)
@@ -1614,6 +1715,7 @@ public class astbase {
                 return a;
             }
 
+            // Erasure: objectSyntaxCopy<RootObject>
             public  RootObject objectSyntaxCopy(RootObject o) {
                 if (o == null)
                 {
@@ -1636,6 +1738,7 @@ public class astbase {
                 return o;
             }
 
+            // Erasure: syntaxCopy<Dsymbol>
             public  Dsymbol syntaxCopy(Dsymbol s) {
                 TemplateInstance ti = s != null ? (TemplateInstance)s : new TemplateInstance(this.loc, this.name, null);
                 ti.tiargs = pcopy(this.arraySyntaxCopy(this.tiargs));
@@ -1651,6 +1754,7 @@ public class astbase {
                 return ti;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1679,6 +1783,7 @@ public class astbase {
         public static class Nspace extends ScopeDsymbol
         {
             public Expression identExp = null;
+            // Erasure: __ctor<Loc, Identifier, Expression, Ptr>
             public  Nspace(Loc loc, Identifier ident, Expression identExp, Ptr<DArray<Dsymbol>> members) {
                 super(ident);
                 this.loc.opAssign(loc.copy());
@@ -1686,6 +1791,7 @@ public class astbase {
                 this.identExp = identExp;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1709,12 +1815,14 @@ public class astbase {
         public static class CompileDeclaration extends AttribDeclaration
         {
             public Ptr<DArray<Expression>> exps = null;
+            // Erasure: __ctor<Loc, Ptr>
             public  CompileDeclaration(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(null);
                 this.loc.opAssign(loc.copy());
                 this.exps = pcopy(exps);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1738,11 +1846,13 @@ public class astbase {
         public static class UserAttributeDeclaration extends AttribDeclaration
         {
             public Ptr<DArray<Expression>> atts = null;
+            // Erasure: __ctor<Ptr, Ptr>
             public  UserAttributeDeclaration(Ptr<DArray<Expression>> atts, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.atts = pcopy(atts);
             }
 
+            // Erasure: concat<Ptr, Ptr>
             public static Ptr<DArray<Expression>> concat(Ptr<DArray<Expression>> udas1, Ptr<DArray<Expression>> udas2) {
                 Ptr<DArray<Expression>> udas = null;
                 if ((udas1 == null) || ((udas1.get()).length == 0))
@@ -1762,6 +1872,7 @@ public class astbase {
                 return udas;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1785,11 +1896,13 @@ public class astbase {
         public static class LinkDeclaration extends AttribDeclaration
         {
             public int linkage = 0;
+            // Erasure: __ctor<int, Ptr>
             public  LinkDeclaration(int p, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.linkage = p;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1813,12 +1926,14 @@ public class astbase {
         public static class AnonDeclaration extends AttribDeclaration
         {
             public boolean isunion = false;
+            // Erasure: __ctor<Loc, boolean, Ptr>
             public  AnonDeclaration(Loc loc, boolean isunion, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.loc.opAssign(loc.copy());
                 this.isunion = isunion;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1842,12 +1957,14 @@ public class astbase {
         public static class AlignDeclaration extends AttribDeclaration
         {
             public Expression ealign = null;
+            // Erasure: __ctor<Loc, Expression, Ptr>
             public  AlignDeclaration(Loc loc, Expression ealign, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.loc.opAssign(loc.copy());
                 this.ealign = ealign;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1871,11 +1988,13 @@ public class astbase {
         public static class CPPMangleDeclaration extends AttribDeclaration
         {
             public int cppmangle = 0;
+            // Erasure: __ctor<int, Ptr>
             public  CPPMangleDeclaration(int p, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.cppmangle = p;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1899,16 +2018,19 @@ public class astbase {
         public static class CPPNamespaceDeclaration extends AttribDeclaration
         {
             public Expression exp = null;
+            // Erasure: __ctor<Identifier, Ptr>
             public  CPPNamespaceDeclaration(Identifier ident, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.ident = ident;
             }
 
+            // Erasure: __ctor<Expression, Ptr>
             public  CPPNamespaceDeclaration(Expression exp, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.exp = exp;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1933,12 +2055,14 @@ public class astbase {
         {
             public Prot protection = new Prot();
             public Ptr<DArray<Identifier>> pkg_identifiers = null;
+            // Erasure: __ctor<Loc, Prot, Ptr>
             public  ProtDeclaration(Loc loc, Prot p, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.loc.opAssign(loc.copy());
                 this.protection.opAssign(p.copy());
             }
 
+            // Erasure: __ctor<Loc, Ptr, Ptr>
             public  ProtDeclaration(Loc loc, Ptr<DArray<Identifier>> pkg_identifiers, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.loc.opAssign(loc.copy());
@@ -1947,6 +2071,7 @@ public class astbase {
                 this.pkg_identifiers = pcopy(pkg_identifiers);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -1971,6 +2096,7 @@ public class astbase {
         public static class PragmaDeclaration extends AttribDeclaration
         {
             public Ptr<DArray<Expression>> args = null;
+            // Erasure: __ctor<Loc, Identifier, Ptr, Ptr>
             public  PragmaDeclaration(Loc loc, Identifier ident, Ptr<DArray<Expression>> args, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.loc.opAssign(loc.copy());
@@ -1978,6 +2104,7 @@ public class astbase {
                 this.args = pcopy(args);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2001,11 +2128,13 @@ public class astbase {
         public static class StorageClassDeclaration extends AttribDeclaration
         {
             public long stc = 0L;
+            // Erasure: __ctor<long, Ptr>
             public  StorageClassDeclaration(long stc, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.stc = stc;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2030,12 +2159,14 @@ public class astbase {
         {
             public Condition condition = null;
             public Ptr<DArray<Dsymbol>> elsedecl = null;
+            // Erasure: __ctor<Condition, Ptr, Ptr>
             public  ConditionalDeclaration(Condition condition, Ptr<DArray<Dsymbol>> decl, Ptr<DArray<Dsymbol>> elsedecl) {
                 super(decl);
                 this.condition = condition;
                 this.elsedecl = pcopy(elsedecl);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2060,11 +2191,13 @@ public class astbase {
         public static class DeprecatedDeclaration extends StorageClassDeclaration
         {
             public Expression msg = null;
+            // Erasure: __ctor<Expression, Ptr>
             public  DeprecatedDeclaration(Expression msg, Ptr<DArray<Dsymbol>> decl) {
                 super(1024L, decl);
                 this.msg = msg;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2088,10 +2221,12 @@ public class astbase {
         }
         public static class StaticIfDeclaration extends ConditionalDeclaration
         {
+            // Erasure: __ctor<Condition, Ptr, Ptr>
             public  StaticIfDeclaration(Condition condition, Ptr<DArray<Dsymbol>> decl, Ptr<DArray<Dsymbol>> elsedecl) {
                 super(condition, decl, elsedecl);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2116,11 +2251,13 @@ public class astbase {
         public static class StaticForeachDeclaration extends AttribDeclaration
         {
             public StaticForeach sfe = null;
+            // Erasure: __ctor<StaticForeach, Ptr>
             public  StaticForeachDeclaration(StaticForeach sfe, Ptr<DArray<Dsymbol>> decl) {
                 super(decl);
                 this.sfe = sfe;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2145,22 +2282,26 @@ public class astbase {
         {
             public Expression origValue = null;
             public Type origType = null;
+            // Erasure: value<>
             public  Expression value() {
                 return ((ExpInitializer)this._init).exp;
             }
 
+            // Erasure: __ctor<Loc, Identifier, Expression, Type>
             public  EnumMember(Loc loc, Identifier id, Expression value, Type origType) {
                 super(loc, null, id != null ? id : Id.empty, new ExpInitializer(loc, value), 0L);
                 this.origValue = value;
                 this.origType = origType;
             }
 
+            // Erasure: __ctor<Loc, Identifier, Expression, Type, long, UserAttributeDeclaration, DeprecatedDeclaration>
             public  EnumMember(Loc loc, Identifier id, Expression value, Type memtype, long stc, UserAttributeDeclaration uad, DeprecatedDeclaration dd) {
                 this(loc, id, value, memtype);
                 this.storage_class = stc;
                 this.userAttribDecl = uad;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2195,12 +2336,14 @@ public class astbase {
             public static AggregateDeclaration moduleinfo = null;
             public FileName srcfile = new FileName();
             public BytePtr arg = null;
+            // Erasure: __ctor<Ptr, Identifier, int, int>
             public  Module(BytePtr filename, Identifier ident, int doDocComment, int doHdrGen) {
                 super(ident);
                 this.arg = pcopy(filename);
                 this.srcfile = new FileName(FileName.defaultExt(toDString(filename), toByteSlice(global.mars_ext)));
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2228,6 +2371,7 @@ public class astbase {
         {
             public int zeroInit = 0;
             public int ispod = 0;
+            // Erasure: __ctor<Loc, Identifier, boolean>
             public  StructDeclaration(Loc loc, Identifier id, boolean inObject) {
                 super(loc, id);
                 this.zeroInit = 0;
@@ -2242,6 +2386,7 @@ public class astbase {
                 }
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2268,10 +2413,12 @@ public class astbase {
         }
         public static class UnionDeclaration extends StructDeclaration
         {
+            // Erasure: __ctor<Loc, Identifier>
             public  UnionDeclaration(Loc loc, Identifier id) {
                 super(loc, id, false);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2305,13 +2452,9 @@ public class astbase {
             public static ClassDeclaration cpp_type_info_ptr = null;
             public Ptr<DArray<Ptr<BaseClass>>> baseclasses = null;
             public int baseok = 0;
+            // Erasure: __ctor<Loc, Identifier, Ptr, Ptr, boolean>
             public  ClassDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses, Ptr<DArray<Dsymbol>> members, boolean inObject) {
-                if (id == null)
-                {
-                    id = Identifier.generateId(new BytePtr("__anonclass"));
-                }
-                assert(id != null);
-                super(loc, id);
+                super(loc, id == null ? Identifier.generateId(new BytePtr("__anonclass")) : id );
                 if (baseclasses != null)
                 {
                     this.baseclasses = pcopy(baseclasses);
@@ -2507,10 +2650,12 @@ public class astbase {
                 this.baseok = Baseok.none;
             }
 
+            // Erasure: isClassDeclaration<>
             public  ClassDeclaration isClassDeclaration() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2537,10 +2682,12 @@ public class astbase {
         }
         public static class InterfaceDeclaration extends ClassDeclaration
         {
+            // Erasure: __ctor<Loc, Identifier, Ptr>
             public  InterfaceDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses) {
                 super(loc, id, baseclasses, null, false);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2568,12 +2715,14 @@ public class astbase {
         public static class TemplateMixin extends TemplateInstance
         {
             public TypeQualified tqual = null;
+            // Erasure: __ctor<Loc, Identifier, TypeQualified, Ptr>
             public  TemplateMixin(Loc loc, Identifier ident, TypeQualified tqual, Ptr<DArray<RootObject>> tiargs) {
                 super(loc, tqual.idents.length != 0 ? (Identifier)tqual.idents.get(tqual.idents.length - 1) : ((TypeIdentifier)tqual).ident, tiargs != null ? tiargs : refPtr(new DArray<RootObject>()));
                 this.ident = ident;
                 this.tqual = tqual;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2630,6 +2779,7 @@ public class astbase {
             public Identifier ident = null;
             public Expression defaultArg = null;
             public UserAttributeDeclaration userAttribDecl = null;
+            // Erasure: __ctor<long, Type, Identifier, Expression, UserAttributeDeclaration>
             public  Parameter(long storageClass, Type type, Identifier ident, Expression defaultArg, UserAttributeDeclaration userAttribDecl) {
                 super();
                 this.storageClass = storageClass;
@@ -2639,6 +2789,7 @@ public class astbase {
                 this.userAttribDecl = userAttribDecl;
             }
 
+            // Erasure: dim<Ptr>
             public static int dim(Ptr<DArray<Parameter>> parameters) {
                 Ref<Integer> nargs = ref(0);
                 Function2<Integer,Parameter,Integer> dimDg = new Function2<Integer,Parameter,Integer>() {
@@ -2653,6 +2804,7 @@ public class astbase {
                 return nargs.value;
             }
 
+            // Erasure: getNth<Ptr, int, Ptr>
             public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth, Ptr<Integer> pn) {
                 Ref<Parameter> param = ref(null);
                 Function2<Integer,Parameter,Integer> getNthParamDg = new Function2<Integer,Parameter,Integer>() {
@@ -2673,9 +2825,10 @@ public class astbase {
 
             // defaulted all parameters starting with #3
             public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth) {
-                return getNth(parameters, nth, null);
+                return getNth(parameters, nth, (Ptr<Integer>)null);
             }
 
+            // Erasure: _foreach<Ptr, Function2, Ptr>
             public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg, Ptr<Integer> pn) {
                 assert(dg != null);
                 if (parameters == null)
@@ -2715,17 +2868,20 @@ public class astbase {
 
             // defaulted all parameters starting with #3
             public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg) {
-                return _foreach(parameters, dg, null);
+                return _foreach(parameters, dg, (Ptr<Integer>)null);
             }
 
+            // Erasure: syntaxCopy<>
             public  Parameter syntaxCopy() {
                 return new Parameter(this.storageClass, this.type != null ? this.type.syntaxCopy() : null, this.ident, this.defaultArg != null ? this.defaultArg.syntaxCopy() : null, this.userAttribDecl != null ? (UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(null) : null);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
 
+            // Erasure: arraySyntaxCopy<Ptr>
             public static Ptr<DArray<Parameter>> arraySyntaxCopy(Ptr<DArray<Parameter>> parameters) {
                 Ptr<DArray<Parameter>> params = null;
                 if (parameters != null)
@@ -2758,23 +2914,28 @@ public class astbase {
         public static abstract class Statement extends ASTNode
         {
             public Loc loc = new Loc();
+            // Erasure: __ctor<Loc>
             public  Statement(Loc loc) {
                 super();
                 this.loc.opAssign(loc.copy());
             }
 
+            // Erasure: isExpStatement<>
             public  ExpStatement isExpStatement() {
                 return null;
             }
 
+            // Erasure: isCompoundStatement<>
             public  CompoundStatement isCompoundStatement() {
                 return null;
             }
 
+            // Erasure: isReturnStatement<>
             public  ReturnStatement isReturnStatement() {
                 return null;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2787,11 +2948,13 @@ public class astbase {
         public static class ImportStatement extends Statement
         {
             public Ptr<DArray<Dsymbol>> imports = null;
+            // Erasure: __ctor<Loc, Ptr>
             public  ImportStatement(Loc loc, Ptr<DArray<Dsymbol>> imports) {
                 super(loc);
                 this.imports = pcopy(imports);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2810,12 +2973,14 @@ public class astbase {
         {
             public Statement statement = null;
             public Loc endloc = new Loc();
+            // Erasure: __ctor<Loc, Statement, Loc>
             public  ScopeStatement(Loc loc, Statement s, Loc endloc) {
                 super(loc);
                 this.statement = s;
                 this.endloc.opAssign(endloc.copy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2834,15 +2999,18 @@ public class astbase {
         public static class ReturnStatement extends Statement
         {
             public Expression exp = null;
+            // Erasure: __ctor<Loc, Expression>
             public  ReturnStatement(Loc loc, Expression exp) {
                 super(loc);
                 this.exp = exp;
             }
 
+            // Erasure: isReturnStatement<>
             public  ReturnStatement isReturnStatement() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2861,12 +3029,14 @@ public class astbase {
         {
             public Identifier ident = null;
             public Statement statement = null;
+            // Erasure: __ctor<Loc, Identifier, Statement>
             public  LabelStatement(Loc loc, Identifier ident, Statement statement) {
                 super(loc);
                 this.ident = ident;
                 this.statement = statement;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2885,11 +3055,13 @@ public class astbase {
         public static class StaticAssertStatement extends Statement
         {
             public StaticAssert sa = null;
+            // Erasure: __ctor<StaticAssert>
             public  StaticAssertStatement(StaticAssert sa) {
                 super(sa.loc);
                 this.sa = sa;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2907,11 +3079,13 @@ public class astbase {
         public static class CompileStatement extends Statement
         {
             public Ptr<DArray<Expression>> exps = null;
+            // Erasure: __ctor<Loc, Ptr>
             public  CompileStatement(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(loc);
                 this.exps = pcopy(exps);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2931,6 +3105,7 @@ public class astbase {
             public Expression condition = null;
             public Statement _body = null;
             public Loc endloc = new Loc();
+            // Erasure: __ctor<Loc, Expression, Statement, Loc>
             public  WhileStatement(Loc loc, Expression c, Statement b, Loc endloc) {
                 super(loc);
                 this.condition = c;
@@ -2938,6 +3113,7 @@ public class astbase {
                 this.endloc.opAssign(endloc.copy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2961,6 +3137,7 @@ public class astbase {
             public Expression increment = null;
             public Statement _body = null;
             public Loc endloc = new Loc();
+            // Erasure: __ctor<Loc, Statement, Expression, Expression, Statement, Loc>
             public  ForStatement(Loc loc, Statement _init, Expression condition, Expression increment, Statement _body, Loc endloc) {
                 super(loc);
                 this._init = _init;
@@ -2970,6 +3147,7 @@ public class astbase {
                 this.endloc.opAssign(endloc.copy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -2993,6 +3171,7 @@ public class astbase {
             public Statement _body = null;
             public Expression condition = null;
             public Loc endloc = new Loc();
+            // Erasure: __ctor<Loc, Statement, Expression, Loc>
             public  DoStatement(Loc loc, Statement b, Expression c, Loc endloc) {
                 super(loc);
                 this._body = b;
@@ -3000,6 +3179,7 @@ public class astbase {
                 this.endloc.opAssign(endloc.copy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3024,6 +3204,7 @@ public class astbase {
             public Expression upr = null;
             public Statement _body = null;
             public Loc endloc = new Loc();
+            // Erasure: __ctor<Loc, byte, Parameter, Expression, Expression, Statement, Loc>
             public  ForeachRangeStatement(Loc loc, byte op, Parameter prm, Expression lwr, Expression upr, Statement _body, Loc endloc) {
                 super(loc);
                 this.op = op;
@@ -3034,6 +3215,7 @@ public class astbase {
                 this.endloc.opAssign(endloc.copy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3060,6 +3242,7 @@ public class astbase {
             public Expression aggr = null;
             public Statement _body = null;
             public Loc endloc = new Loc();
+            // Erasure: __ctor<Loc, byte, Ptr, Expression, Statement, Loc>
             public  ForeachStatement(Loc loc, byte op, Ptr<DArray<Parameter>> parameters, Expression aggr, Statement _body, Loc endloc) {
                 super(loc);
                 this.op = op;
@@ -3069,6 +3252,7 @@ public class astbase {
                 this.endloc.opAssign(endloc.copy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3095,6 +3279,7 @@ public class astbase {
             public Statement elsebody = null;
             public VarDeclaration match = null;
             public Loc endloc = new Loc();
+            // Erasure: __ctor<Loc, Parameter, Expression, Statement, Statement, Loc>
             public  IfStatement(Loc loc, Parameter prm, Expression condition, Statement ifbody, Statement elsebody, Loc endloc) {
                 super(loc);
                 this.prm = prm;
@@ -3104,6 +3289,7 @@ public class astbase {
                 this.endloc.opAssign(endloc.copy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3127,12 +3313,14 @@ public class astbase {
         {
             public byte tok = 0;
             public Statement statement = null;
+            // Erasure: __ctor<Loc, byte, Statement>
             public  ScopeGuardStatement(Loc loc, byte tok, Statement statement) {
                 super(loc);
                 this.tok = tok;
                 this.statement = statement;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3153,6 +3341,7 @@ public class astbase {
             public Condition condition = null;
             public Statement ifbody = null;
             public Statement elsebody = null;
+            // Erasure: __ctor<Loc, Condition, Statement, Statement>
             public  ConditionalStatement(Loc loc, Condition condition, Statement ifbody, Statement elsebody) {
                 super(loc);
                 this.condition = condition;
@@ -3160,6 +3349,7 @@ public class astbase {
                 this.elsebody = elsebody;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3179,11 +3369,13 @@ public class astbase {
         public static class StaticForeachStatement extends Statement
         {
             public StaticForeach sfe = null;
+            // Erasure: __ctor<Loc, StaticForeach>
             public  StaticForeachStatement(Loc loc, StaticForeach sfe) {
                 super(loc);
                 this.sfe = sfe;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3203,6 +3395,7 @@ public class astbase {
             public Identifier ident = null;
             public Ptr<DArray<Expression>> args = null;
             public Statement _body = null;
+            // Erasure: __ctor<Loc, Identifier, Ptr, Statement>
             public  PragmaStatement(Loc loc, Identifier ident, Ptr<DArray<Expression>> args, Statement _body) {
                 super(loc);
                 this.ident = ident;
@@ -3210,6 +3403,7 @@ public class astbase {
                 this._body = _body;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3231,6 +3425,7 @@ public class astbase {
             public Expression condition = null;
             public Statement _body = null;
             public boolean isFinal = false;
+            // Erasure: __ctor<Loc, Expression, Statement, boolean>
             public  SwitchStatement(Loc loc, Expression c, Statement b, boolean isFinal) {
                 super(loc);
                 this.condition = c;
@@ -3238,6 +3433,7 @@ public class astbase {
                 this.isFinal = isFinal;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3259,6 +3455,7 @@ public class astbase {
             public Expression first = null;
             public Expression last = null;
             public Statement statement = null;
+            // Erasure: __ctor<Loc, Expression, Expression, Statement>
             public  CaseRangeStatement(Loc loc, Expression first, Expression last, Statement s) {
                 super(loc);
                 this.first = first;
@@ -3266,6 +3463,7 @@ public class astbase {
                 this.statement = s;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3286,12 +3484,14 @@ public class astbase {
         {
             public Expression exp = null;
             public Statement statement = null;
+            // Erasure: __ctor<Loc, Expression, Statement>
             public  CaseStatement(Loc loc, Expression exp, Statement s) {
                 super(loc);
                 this.exp = exp;
                 this.statement = s;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3310,11 +3510,13 @@ public class astbase {
         public static class DefaultStatement extends Statement
         {
             public Statement statement = null;
+            // Erasure: __ctor<Loc, Statement>
             public  DefaultStatement(Loc loc, Statement s) {
                 super(loc);
                 this.statement = s;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3332,11 +3534,13 @@ public class astbase {
         public static class BreakStatement extends Statement
         {
             public Identifier ident = null;
+            // Erasure: __ctor<Loc, Identifier>
             public  BreakStatement(Loc loc, Identifier ident) {
                 super(loc);
                 this.ident = ident;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3354,11 +3558,13 @@ public class astbase {
         public static class ContinueStatement extends Statement
         {
             public Identifier ident = null;
+            // Erasure: __ctor<Loc, Identifier>
             public  ContinueStatement(Loc loc, Identifier ident) {
                 super(loc);
                 this.ident = ident;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3375,10 +3581,12 @@ public class astbase {
         }
         public static class GotoDefaultStatement extends Statement
         {
+            // Erasure: __ctor<Loc>
             public  GotoDefaultStatement(Loc loc) {
                 super(loc);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3395,11 +3603,13 @@ public class astbase {
         public static class GotoCaseStatement extends Statement
         {
             public Expression exp = null;
+            // Erasure: __ctor<Loc, Expression>
             public  GotoCaseStatement(Loc loc, Expression exp) {
                 super(loc);
                 this.exp = exp;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3417,11 +3627,13 @@ public class astbase {
         public static class GotoStatement extends Statement
         {
             public Identifier ident = null;
+            // Erasure: __ctor<Loc, Identifier>
             public  GotoStatement(Loc loc, Identifier ident) {
                 super(loc);
                 this.ident = ident;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3440,12 +3652,14 @@ public class astbase {
         {
             public Expression exp = null;
             public Statement _body = null;
+            // Erasure: __ctor<Loc, Expression, Statement>
             public  SynchronizedStatement(Loc loc, Expression exp, Statement _body) {
                 super(loc);
                 this.exp = exp;
                 this._body = _body;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3466,6 +3680,7 @@ public class astbase {
             public Expression exp = null;
             public Statement _body = null;
             public Loc endloc = new Loc();
+            // Erasure: __ctor<Loc, Expression, Statement, Loc>
             public  WithStatement(Loc loc, Expression exp, Statement _body, Loc endloc) {
                 super(loc);
                 this.exp = exp;
@@ -3473,6 +3688,7 @@ public class astbase {
                 this.endloc.opAssign(endloc.copy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3493,12 +3709,14 @@ public class astbase {
         {
             public Statement _body = null;
             public Ptr<DArray<Catch>> catches = null;
+            // Erasure: __ctor<Loc, Statement, Ptr>
             public  TryCatchStatement(Loc loc, Statement _body, Ptr<DArray<Catch>> catches) {
                 super(loc);
                 this._body = _body;
                 this.catches = pcopy(catches);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3518,12 +3736,14 @@ public class astbase {
         {
             public Statement _body = null;
             public Statement finalbody = null;
+            // Erasure: __ctor<Loc, Statement, Statement>
             public  TryFinallyStatement(Loc loc, Statement _body, Statement finalbody) {
                 super(loc);
                 this._body = _body;
                 this.finalbody = finalbody;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3542,11 +3762,13 @@ public class astbase {
         public static class ThrowStatement extends Statement
         {
             public Expression exp = null;
+            // Erasure: __ctor<Loc, Expression>
             public  ThrowStatement(Loc loc, Expression exp) {
                 super(loc);
                 this.exp = exp;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3564,11 +3786,13 @@ public class astbase {
         public static class AsmStatement extends Statement
         {
             public Ptr<Token> tokens = null;
+            // Erasure: __ctor<Loc, Ptr>
             public  AsmStatement(Loc loc, Ptr<Token> tokens) {
                 super(loc);
                 this.tokens = pcopy(tokens);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3585,10 +3809,12 @@ public class astbase {
         }
         public static class InlineAsmStatement extends AsmStatement
         {
+            // Erasure: __ctor<Loc, Ptr>
             public  InlineAsmStatement(Loc loc, Ptr<Token> tokens) {
                 super(loc, tokens);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3605,10 +3831,12 @@ public class astbase {
         }
         public static class GccAsmStatement extends AsmStatement
         {
+            // Erasure: __ctor<Loc, Ptr>
             public  GccAsmStatement(Loc loc, Ptr<Token> tokens) {
                 super(loc, tokens);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3626,20 +3854,24 @@ public class astbase {
         public static class ExpStatement extends Statement
         {
             public Expression exp = null;
+            // Erasure: __ctor<Loc, Expression>
             public  ExpStatement(Loc loc, Expression exp) {
                 super(loc);
                 this.exp = exp;
             }
 
+            // Erasure: __ctor<Loc, Dsymbol>
             public  ExpStatement(Loc loc, Dsymbol declaration) {
                 super(loc);
                 this.exp = new DeclarationExp(loc, declaration);
             }
 
+            // Erasure: isExpStatement<>
             public  ExpStatement isExpStatement() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3657,11 +3889,13 @@ public class astbase {
         public static class CompoundStatement extends Statement
         {
             public Ptr<DArray<Statement>> statements = null;
+            // Erasure: __ctor<Loc, Ptr>
             public  CompoundStatement(Loc loc, Ptr<DArray<Statement>> statements) {
                 super(loc);
                 this.statements = pcopy(statements);
             }
 
+            // Erasure: __ctor<Loc, Array>
             public  CompoundStatement(Loc loc, Slice<Statement> sts) {
                 super(loc);
                 this.statements = pcopy((refPtr(new DArray<Statement>())));
@@ -3676,10 +3910,12 @@ public class astbase {
                 }
             }
 
+            // Erasure: isCompoundStatement<>
             public  CompoundStatement isCompoundStatement() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3696,10 +3932,12 @@ public class astbase {
         }
         public static class CompoundDeclarationStatement extends CompoundStatement
         {
+            // Erasure: __ctor<Loc, Ptr>
             public  CompoundDeclarationStatement(Loc loc, Ptr<DArray<Statement>> statements) {
                 super(loc, statements);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3717,11 +3955,13 @@ public class astbase {
         public static class CompoundAsmStatement extends CompoundStatement
         {
             public long stc = 0L;
+            // Erasure: __ctor<Loc, Ptr, long>
             public  CompoundAsmStatement(Loc loc, Ptr<DArray<Statement>> s, long stc) {
                 super(loc, s);
                 this.stc = stc;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -3743,6 +3983,7 @@ public class astbase {
             public Type type = null;
             public Identifier ident = null;
             public Statement handler = null;
+            // Erasure: __ctor<Loc, Type, Identifier, Statement>
             public  Catch(Loc loc, Type t, Identifier id, Statement handler) {
                 super();
                 this.loc.opAssign(loc.copy());
@@ -3834,15 +4075,18 @@ public class astbase {
             public Type pto = null;
             public Type rto = null;
             public Type arrayof = null;
+            // Erasure: __ctor<byte>
             public  Type(byte ty) {
                 super();
                 this.ty = ty;
             }
 
+            // Erasure: toChars<>
             public  BytePtr toChars() {
                 return new BytePtr("type");
             }
 
+            // Erasure: _init<>
             public static void _init() {
                 stringtable._init(14000);
                 {
@@ -3894,6 +4138,7 @@ public class astbase {
                 thash_t = tsize_t;
             }
 
+            // Erasure: pointerTo<>
             public  Type pointerTo() {
                 if (((this.ty & 0xFF) == ENUMTY.Terror))
                 {
@@ -3915,6 +4160,7 @@ public class astbase {
                 return this.pto;
             }
 
+            // Erasure: arrayOf<>
             public  Type arrayOf() {
                 if (((this.ty & 0xFF) == ENUMTY.Terror))
                 {
@@ -3928,10 +4174,12 @@ public class astbase {
                 return this.arrayof;
             }
 
+            // Erasure: isImmutable<>
             public  boolean isImmutable() {
                 return ((this.mod & 0xFF) & MODFlags.immutable_) != 0;
             }
 
+            // Erasure: nullAttributes<>
             public  Type nullAttributes() {
                 int sz = (sizeTy.get((this.ty & 0xFF)) & 0xFF);
                 Type t = null;
@@ -3959,6 +4207,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: makeConst<>
             public  Type makeConst() {
                 if (this.cto != null)
                 {
@@ -3969,6 +4218,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: makeWildConst<>
             public  Type makeWildConst() {
                 if (this.wcto != null)
                 {
@@ -3979,6 +4229,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: makeShared<>
             public  Type makeShared() {
                 if (this.sto != null)
                 {
@@ -3989,6 +4240,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: makeSharedConst<>
             public  Type makeSharedConst() {
                 if (this.scto != null)
                 {
@@ -3999,6 +4251,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: makeImmutable<>
             public  Type makeImmutable() {
                 if (this.ito != null)
                 {
@@ -4009,6 +4262,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: makeWild<>
             public  Type makeWild() {
                 if (this.wto != null)
                 {
@@ -4019,6 +4273,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: makeSharedWildConst<>
             public  Type makeSharedWildConst() {
                 if (this.swcto != null)
                 {
@@ -4029,6 +4284,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: makeSharedWild<>
             public  Type makeSharedWild() {
                 if (this.swto != null)
                 {
@@ -4039,6 +4295,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: merge<>
             public  Type merge() {
                 if (((this.ty & 0xFF) == ENUMTY.Terror))
                 {
@@ -4069,6 +4326,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: addSTC<long>
             public  Type addSTC(long stc) {
                 Type t = this;
                 if (t.isImmutable())
@@ -4159,14 +4417,17 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: toExpression<>
             public  Expression toExpression() {
                 return null;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 return null;
             }
 
+            // Erasure: sharedWildConstOf<>
             public  Type sharedWildConstOf() {
                 if (((this.mod & 0xFF) == 11))
                 {
@@ -4183,6 +4444,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: sharedConstOf<>
             public  Type sharedConstOf() {
                 if (((this.mod & 0xFF) == 3))
                 {
@@ -4199,6 +4461,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: wildConstOf<>
             public  Type wildConstOf() {
                 if (((this.mod & 0xFF) == MODFlags.wildconst))
                 {
@@ -4215,6 +4478,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: constOf<>
             public  Type constOf() {
                 if (((this.mod & 0xFF) == MODFlags.const_))
                 {
@@ -4231,6 +4495,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: sharedWildOf<>
             public  Type sharedWildOf() {
                 if (((this.mod & 0xFF) == 10))
                 {
@@ -4247,6 +4512,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: wildOf<>
             public  Type wildOf() {
                 if (((this.mod & 0xFF) == MODFlags.wild))
                 {
@@ -4263,6 +4529,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: sharedOf<>
             public  Type sharedOf() {
                 if (((this.mod & 0xFF) == MODFlags.shared_))
                 {
@@ -4279,6 +4546,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: immutableOf<>
             public  Type immutableOf() {
                 if (this.isImmutable())
                 {
@@ -4295,6 +4563,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: fixTo<Type>
             public  void fixTo(Type t) {
                 Type mto = null;
                 Type tn = this.nextOf();
@@ -4402,6 +4671,7 @@ public class astbase {
                 }
             }
 
+            // Erasure: addMod<byte>
             public  Type addMod(byte mod) {
                 Type t = this;
                 if (!t.isImmutable())
@@ -4525,34 +4795,42 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: nextOf<>
             public  Type nextOf() {
                 return null;
             }
 
+            // Erasure: isscalar<>
             public  boolean isscalar() {
                 return false;
             }
 
+            // Erasure: isConst<>
             public  boolean isConst() {
                 return ((this.mod & 0xFF) & MODFlags.const_) != 0;
             }
 
+            // Erasure: isWild<>
             public  boolean isWild() {
                 return ((this.mod & 0xFF) & MODFlags.wild) != 0;
             }
 
+            // Erasure: isShared<>
             public  boolean isShared() {
                 return ((this.mod & 0xFF) & MODFlags.shared_) != 0;
             }
 
+            // Erasure: toBasetype<>
             public  Type toBasetype() {
                 return this;
             }
 
+            // Erasure: toDsymbol<Ptr>
             public  Dsymbol toDsymbol(Ptr<Scope> sc) {
                 return null;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -4566,6 +4844,7 @@ public class astbase {
         {
             public BytePtr dstring = null;
             public int flags = 0;
+            // Erasure: __ctor<byte>
             public  TypeBasic(byte ty) {
                 super(ty);
                 BytePtr d = null;
@@ -4675,10 +4954,12 @@ public class astbase {
                 this.merge();
             }
 
+            // Erasure: isscalar<>
             public  boolean isscalar() {
                 return (this.flags & 3) != 0;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -4709,14 +4990,17 @@ public class astbase {
         }
         public static class TypeError extends Type
         {
+            // Erasure: __ctor<>
             public  TypeError() {
                 super((byte)34);
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -4743,14 +5027,17 @@ public class astbase {
         }
         public static class TypeNull extends Type
         {
+            // Erasure: __ctor<>
             public  TypeNull() {
                 super((byte)40);
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -4778,15 +5065,18 @@ public class astbase {
         public static class TypeVector extends Type
         {
             public Type basetype = null;
+            // Erasure: __ctor<Type>
             public  TypeVector(Type baseType) {
                 super((byte)41);
                 this.basetype = this.basetype;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 return new TypeVector(this.basetype.syntaxCopy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -4817,15 +5107,18 @@ public class astbase {
         public static class TypeEnum extends Type
         {
             public EnumDeclaration sym = null;
+            // Erasure: __ctor<EnumDeclaration>
             public  TypeEnum(EnumDeclaration sym) {
                 super((byte)9);
                 this.sym = sym;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -4856,12 +5149,14 @@ public class astbase {
         public static class TypeTuple extends Type
         {
             public Ptr<DArray<Parameter>> arguments = null;
+            // Erasure: __ctor<Ptr>
             public  TypeTuple(Ptr<DArray<Parameter>> arguments) {
                 super((byte)37);
                 this.arguments = pcopy(arguments);
             }
 
-            public  TypeTuple(Ptr<DArray<Expression>> exps) {
+            // Erasure: __ctor<Ptr>
+            public  TypeTuple(Ptr<DArray<Expression>> exps, ETag1 __tag) {
                 super((byte)37);
                 Ptr<DArray<Parameter>> arguments = refPtr(new DArray<Parameter>());
                 if (exps != null)
@@ -4883,6 +5178,7 @@ public class astbase {
                 this.arguments = pcopy(arguments);
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 Ptr<DArray<Parameter>> args = Parameter.arraySyntaxCopy(this.arguments);
                 Type t = new TypeTuple(args);
@@ -4890,6 +5186,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -4921,15 +5218,18 @@ public class astbase {
         {
             public ClassDeclaration sym = null;
             public int att = AliasThisRec.fwdref;
+            // Erasure: __ctor<ClassDeclaration>
             public  TypeClass(ClassDeclaration sym) {
                 super((byte)7);
                 this.sym = sym;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -4962,15 +5262,18 @@ public class astbase {
         {
             public StructDeclaration sym = null;
             public int att = AliasThisRec.fwdref;
+            // Erasure: __ctor<StructDeclaration>
             public  TypeStruct(StructDeclaration sym) {
                 super((byte)8);
                 this.sym = sym;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 return this;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5001,10 +5304,12 @@ public class astbase {
         }
         public static class TypeReference extends TypeNext
         {
+            // Erasure: __ctor<Type>
             public  TypeReference(Type t) {
                 super((byte)4, t);
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 Type t = this.next.value.syntaxCopy();
                 if ((pequals(t, this.next.value)))
@@ -5019,6 +5324,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5049,15 +5355,18 @@ public class astbase {
         public static abstract class TypeNext extends Type
         {
             public Ref<Type> next = ref(null);
+            // Erasure: __ctor<byte, Type>
             public  TypeNext(byte ty, Type next) {
                 super(ty);
                 this.next.value = next;
             }
 
+            // Erasure: nextOf<>
             public  Type nextOf() {
                 return this.next.value;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5071,18 +5380,21 @@ public class astbase {
         {
             public Expression lwr = null;
             public Expression upr = null;
+            // Erasure: __ctor<Type, Expression, Expression>
             public  TypeSlice(Type next, Expression lwr, Expression upr) {
                 super((byte)38, next);
                 this.lwr = lwr;
                 this.upr = upr;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 Type t = new TypeSlice(this.next.value.syntaxCopy(), this.lwr.syntaxCopy(), this.upr.syntaxCopy());
                 t.mod = this.mod;
                 return t;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5114,11 +5426,13 @@ public class astbase {
         }
         public static class TypeDelegate extends TypeNext
         {
+            // Erasure: __ctor<Type>
             public  TypeDelegate(Type t) {
                 super((byte)5, t);
                 this.ty = (byte)10;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 Type t = this.next.value.syntaxCopy();
                 if ((pequals(t, this.next.value)))
@@ -5133,6 +5447,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5162,10 +5477,12 @@ public class astbase {
         }
         public static class TypePointer extends TypeNext
         {
+            // Erasure: __ctor<Type>
             public  TypePointer(Type t) {
                 super((byte)3, t);
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 Type t = this.next.value.syntaxCopy();
                 if ((pequals(t, this.next.value)))
@@ -5180,6 +5497,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5221,6 +5539,7 @@ public class astbase {
             public int purity = PURE.impure;
             public byte iswild = 0;
             public Ptr<DArray<Expression>> fargs = null;
+            // Erasure: __ctor<ParameterList, Type, int, long>
             public  TypeFunction(ParameterList pl, Type treturn, int linkage, long stc) {
                 super((byte)5, treturn);
                 assert((VarArg.none <= pl.varargs) && (pl.varargs <= VarArg.typesafe));
@@ -5274,6 +5593,7 @@ public class astbase {
                 this(pl, treturn, linkage, 0L);
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 Type treturn = this.next.value != null ? this.next.value.syntaxCopy() : null;
                 Ptr<DArray<Parameter>> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
@@ -5292,6 +5612,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5333,10 +5654,12 @@ public class astbase {
         }
         public static class TypeArray extends TypeNext
         {
+            // Erasure: __ctor<byte, Type>
             public  TypeArray(byte ty, Type next) {
                 super(ty, next);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5366,10 +5689,12 @@ public class astbase {
         }
         public static class TypeDArray extends TypeArray
         {
+            // Erasure: __ctor<Type>
             public  TypeDArray(Type t) {
                 super((byte)0, t);
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 Type t = this.next.value.syntaxCopy();
                 if ((pequals(t, this.next.value)))
@@ -5384,6 +5709,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5415,11 +5741,13 @@ public class astbase {
         {
             public Type index = null;
             public Loc loc = new Loc();
+            // Erasure: __ctor<Type, Type>
             public  TypeAArray(Type t, Type index) {
                 super((byte)2, t);
                 this.index = index;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 Type t = this.next.value.syntaxCopy();
                 Type ti = this.index.syntaxCopy();
@@ -5435,6 +5763,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: toExpression<>
             public  Expression toExpression() {
                 Expression e = this.next.value.toExpression();
                 if (e != null)
@@ -5448,6 +5777,7 @@ public class astbase {
                 return null;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5480,11 +5810,13 @@ public class astbase {
         public static class TypeSArray extends TypeArray
         {
             public Expression dim = null;
+            // Erasure: __ctor<Type, Expression>
             public  TypeSArray(Type t, Expression dim) {
                 super((byte)1, t);
                 this.dim = dim;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 Type t = this.next.value.syntaxCopy();
                 Expression e = this.dim.syntaxCopy();
@@ -5493,6 +5825,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: toExpression<>
             public  Expression toExpression() {
                 Expression e = this.next.value.toExpression();
                 if (e != null)
@@ -5502,6 +5835,7 @@ public class astbase {
                 return e;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5534,23 +5868,28 @@ public class astbase {
         {
             public DArray<RootObject> idents = new DArray<RootObject>();
             public Loc loc = new Loc();
+            // Erasure: __ctor<byte, Loc>
             public  TypeQualified(byte ty, Loc loc) {
                 super(ty);
                 this.loc.opAssign(loc.copy());
             }
 
+            // Erasure: addIdent<Identifier>
             public  void addIdent(Identifier id) {
                 this.idents.push(id);
             }
 
+            // Erasure: addInst<TemplateInstance>
             public  void addInst(TemplateInstance ti) {
                 this.idents.push(ti);
             }
 
+            // Erasure: addIndex<RootObject>
             public  void addIndex(RootObject e) {
                 this.idents.push(e);
             }
 
+            // Erasure: syntaxCopyHelper<TypeQualified>
             public  void syntaxCopyHelper(TypeQualified t) {
                 this.idents.setDim(t.idents.length);
                 {
@@ -5580,6 +5919,7 @@ public class astbase {
                 }
             }
 
+            // Erasure: toExpressionHelper<Expression, int>
             public  Expression toExpressionHelper(Expression e, int i) {
                 for (; (i < this.idents.length);i++){
                     RootObject id = this.idents.get(i);
@@ -5611,6 +5951,7 @@ public class astbase {
                 return toExpressionHelper(e, 0);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5625,16 +5966,19 @@ public class astbase {
             public TraitsExp exp = null;
             public Loc loc = new Loc();
             public boolean inAliasDeclaration = false;
+            // Erasure: __ctor<Loc, TraitsExp>
             public  TypeTraits(Loc loc, TraitsExp exp) {
                 super((byte)6);
                 this.loc.opAssign(loc.copy());
                 this.exp = exp;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 TraitsExp te = (TraitsExp)this.exp.syntaxCopy();
                 TypeTraits tt = new TypeTraits(this.loc, te);
@@ -5670,11 +6014,13 @@ public class astbase {
         public static class TypeIdentifier extends TypeQualified
         {
             public Identifier ident = null;
+            // Erasure: __ctor<Loc, Identifier>
             public  TypeIdentifier(Loc loc, Identifier ident) {
                 super((byte)6, loc);
                 this.ident = ident;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 TypeIdentifier t = new TypeIdentifier(this.loc, this.ident);
                 t.syntaxCopyHelper(this);
@@ -5682,10 +6028,12 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: toExpression<>
             public  Expression toExpression() {
                 return this.toExpressionHelper(new IdentifierExp(this.loc, this.ident), 0);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5717,10 +6065,12 @@ public class astbase {
         }
         public static class TypeReturn extends TypeQualified
         {
+            // Erasure: __ctor<Loc>
             public  TypeReturn(Loc loc) {
                 super((byte)39, loc);
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 TypeReturn t = new TypeReturn(this.loc);
                 t.syntaxCopyHelper(this);
@@ -5728,6 +6078,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5759,11 +6110,13 @@ public class astbase {
         public static class TypeTypeof extends TypeQualified
         {
             public Expression exp = null;
+            // Erasure: __ctor<Loc, Expression>
             public  TypeTypeof(Loc loc, Expression exp) {
                 super((byte)36, loc);
                 this.exp = exp;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 TypeTypeof t = new TypeTypeof(this.loc, this.exp.syntaxCopy());
                 t.syntaxCopyHelper(this);
@@ -5771,6 +6124,7 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5803,11 +6157,13 @@ public class astbase {
         public static class TypeInstance extends TypeQualified
         {
             public TemplateInstance tempinst = null;
+            // Erasure: __ctor<Loc, TemplateInstance>
             public  TypeInstance(Loc loc, TemplateInstance tempinst) {
                 super((byte)35, loc);
                 this.tempinst = tempinst;
             }
 
+            // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 TypeInstance t = new TypeInstance(this.loc, (TemplateInstance)this.tempinst.syntaxCopy(null));
                 t.syntaxCopyHelper(this);
@@ -5815,10 +6171,12 @@ public class astbase {
                 return t;
             }
 
+            // Erasure: toExpression<>
             public  Expression toExpression() {
                 return this.toExpressionHelper(new ScopeExp(this.loc, this.tempinst), 0);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5855,6 +6213,7 @@ public class astbase {
             public byte parens = 0;
             public Type type = null;
             public Loc loc = new Loc();
+            // Erasure: __ctor<Loc, byte, int>
             public  Expression(Loc loc, byte op, int size) {
                 super();
                 this.loc.opAssign(loc.copy());
@@ -5862,10 +6221,12 @@ public class astbase {
                 this.size = (byte)size;
             }
 
+            // Erasure: syntaxCopy<>
             public  Expression syntaxCopy() {
                 return this.copy();
             }
 
+            // Erasure: error<Ptr>
             public  void error(BytePtr format, Object... ap) {
                 Ref<BytePtr> format_ref = ref(format);
                 if ((!pequals(this.type, Type.terror)))
@@ -5874,10 +6235,12 @@ public class astbase {
                 }
             }
 
+            // Erasure: dyncast<>
             public  int dyncast() {
                 return DYNCAST.expression;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5890,11 +6253,13 @@ public class astbase {
         public static class DeclarationExp extends Expression
         {
             public Dsymbol declaration = null;
+            // Erasure: __ctor<Loc, Dsymbol>
             public  DeclarationExp(Loc loc, Dsymbol declaration) {
                 super(loc, TOK.declaration, 28);
                 this.declaration = declaration;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -5916,6 +6281,7 @@ public class astbase {
         public static class IntegerExp extends Expression
         {
             public long value = 0L;
+            // Erasure: __ctor<Loc, long, Type>
             public  IntegerExp(Loc loc, long value, Type type) {
                 super(loc, TOK.int64, 32);
                 assert(type != null);
@@ -5931,11 +6297,13 @@ public class astbase {
                 this.setInteger(value);
             }
 
+            // Erasure: setInteger<long>
             public  void setInteger(long value) {
                 this.value = value;
                 this.normalize();
             }
 
+            // Erasure: normalize<>
             public  void normalize() {
                 {
                     int __dispatch5 = 0;
@@ -5997,6 +6365,7 @@ public class astbase {
                 }
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6021,6 +6390,7 @@ public class astbase {
             public Ptr<DArray<Expression>> newargs = null;
             public ClassDeclaration cd = null;
             public Ptr<DArray<Expression>> arguments = null;
+            // Erasure: __ctor<Loc, Expression, Ptr, ClassDeclaration, Ptr>
             public  NewAnonClassExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, ClassDeclaration cd, Ptr<DArray<Expression>> arguments) {
                 super(loc, TOK.newAnonymousClass, 40);
                 this.thisexp = thisexp;
@@ -6029,6 +6399,7 @@ public class astbase {
                 this.arguments = pcopy(arguments);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6058,6 +6429,7 @@ public class astbase {
             public Ptr<DArray<TemplateParameter>> parameters = null;
             public byte tok = 0;
             public byte tok2 = 0;
+            // Erasure: __ctor<Loc, Type, Identifier, byte, Type, byte, Ptr>
             public  IsExp(Loc loc, Type targ, Identifier id, byte tok, Type tspec, byte tok2, Ptr<DArray<TemplateParameter>> parameters) {
                 super(loc, TOK.is_, 42);
                 this.targ = targ;
@@ -6068,6 +6440,7 @@ public class astbase {
                 this.parameters = pcopy(parameters);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6094,12 +6467,14 @@ public class astbase {
         public static class RealExp extends Expression
         {
             public double value = 0.0;
+            // Erasure: __ctor<Loc, double, Type>
             public  RealExp(Loc loc, double value, Type type) {
                 super(loc, TOK.float64, 40);
                 this.value = value;
                 this.type = type;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6120,6 +6495,7 @@ public class astbase {
         }
         public static class NullExp extends Expression
         {
+            // Erasure: __ctor<Loc, Type>
             public  NullExp(Loc loc, Type type) {
                 super(loc, TOK.null_, 24);
                 this.type = type;
@@ -6127,9 +6503,10 @@ public class astbase {
 
             // defaulted all parameters starting with #2
             public  NullExp(Loc loc) {
-                this(loc, null);
+                this(loc, (Type)null);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6150,11 +6527,13 @@ public class astbase {
         public static class TypeidExp extends Expression
         {
             public RootObject obj = null;
+            // Erasure: __ctor<Loc, RootObject>
             public  TypeidExp(Loc loc, RootObject o) {
                 super(loc, TOK.typeid_, 28);
                 this.obj = o;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6177,12 +6556,14 @@ public class astbase {
         {
             public Identifier ident = null;
             public Ptr<DArray<RootObject>> args = null;
+            // Erasure: __ctor<Loc, Identifier, Ptr>
             public  TraitsExp(Loc loc, Identifier ident, Ptr<DArray<RootObject>> args) {
                 super(loc, TOK.traits, 32);
                 this.ident = ident;
                 this.args = pcopy(args);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6210,6 +6591,7 @@ public class astbase {
             public int len = 0;
             public byte sz = (byte)1;
             public byte postfix = (byte)0;
+            // Erasure: __ctor<Loc, Ptr>
             public  StringExp(Loc loc, BytePtr string) {
                 super(loc, TOK.string_, 34);
                 this.string = pcopy(string);
@@ -6217,6 +6599,7 @@ public class astbase {
                 this.sz = (byte)1;
             }
 
+            // Erasure: __ctor<Loc, Ptr, int>
             public  StringExp(Loc loc, Object string, int len) {
                 super(loc, TOK.string_, 34);
                 this.string = pcopy((((BytePtr)string)));
@@ -6224,6 +6607,7 @@ public class astbase {
                 this.sz = (byte)1;
             }
 
+            // Erasure: __ctor<Loc, Ptr, int, byte>
             public  StringExp(Loc loc, Object string, int len, byte postfix) {
                 super(loc, TOK.string_, 34);
                 this.string = pcopy((((BytePtr)string)));
@@ -6232,6 +6616,7 @@ public class astbase {
                 this.sz = (byte)1;
             }
 
+            // Erasure: writeTo<Ptr, boolean, int>
             public  void writeTo(Object dest, boolean zero, int tyto) {
                 int encSize = 0;
                 switch (tyto)
@@ -6270,6 +6655,7 @@ public class astbase {
                 writeTo(dest, zero, 0);
             }
 
+            // Erasure: toStringz<>
             public  ByteSlice toStringz() {
                 int nbytes = this.len * (this.sz & 0xFF);
                 BytePtr s = pcopy(((BytePtr)Mem.xmalloc(nbytes + (this.sz & 0xFF))));
@@ -6277,6 +6663,7 @@ public class astbase {
                 return s.slice(0,nbytes);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6306,6 +6693,7 @@ public class astbase {
             public Ptr<DArray<Expression>> newargs = null;
             public Type newtype = null;
             public Ptr<DArray<Expression>> arguments = null;
+            // Erasure: __ctor<Loc, Expression, Ptr, Type, Ptr>
             public  NewExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, Type newtype, Ptr<DArray<Expression>> arguments) {
                 super(loc, TOK.new_, 40);
                 this.thisexp = thisexp;
@@ -6314,6 +6702,7 @@ public class astbase {
                 this.arguments = pcopy(arguments);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6339,6 +6728,7 @@ public class astbase {
         {
             public Ptr<DArray<Expression>> keys = null;
             public Ptr<DArray<Expression>> values = null;
+            // Erasure: __ctor<Loc, Ptr, Ptr>
             public  AssocArrayLiteralExp(Loc loc, Ptr<DArray<Expression>> keys, Ptr<DArray<Expression>> values) {
                 super(loc, TOK.assocArrayLiteral, 32);
                 assert(((keys.get()).length == (values.get()).length));
@@ -6346,6 +6736,7 @@ public class astbase {
                 this.values = pcopy(values);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6369,23 +6760,27 @@ public class astbase {
         {
             public Expression basis = null;
             public Ptr<DArray<Expression>> elements = null;
+            // Erasure: __ctor<Loc, Ptr>
             public  ArrayLiteralExp(Loc loc, Ptr<DArray<Expression>> elements) {
                 super(loc, TOK.arrayLiteral, 32);
                 this.elements = pcopy(elements);
             }
 
+            // Erasure: __ctor<Loc, Expression>
             public  ArrayLiteralExp(Loc loc, Expression e) {
                 super(loc, TOK.arrayLiteral, 32);
                 this.elements = pcopy((refPtr(new DArray<Expression>())));
                 (this.elements.get()).push(e);
             }
 
+            // Erasure: __ctor<Loc, Expression, Ptr>
             public  ArrayLiteralExp(Loc loc, Expression basis, Ptr<DArray<Expression>> elements) {
                 super(loc, TOK.arrayLiteral, 32);
                 this.basis = basis;
                 this.elements = pcopy(elements);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6410,6 +6805,7 @@ public class astbase {
             public FuncLiteralDeclaration fd = null;
             public TemplateDeclaration td = null;
             public byte tok = 0;
+            // Erasure: __ctor<Loc, Dsymbol>
             public  FuncExp(Loc loc, Dsymbol s) {
                 super(loc, TOK.function_, 33);
                 this.td = s.isTemplateDeclaration();
@@ -6424,6 +6820,7 @@ public class astbase {
                 assert(this.fd.fbody != null);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6448,12 +6845,14 @@ public class astbase {
         {
             public Expression lwr = null;
             public Expression upr = null;
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  IntervalExp(Loc loc, Expression lwr, Expression upr) {
                 super(loc, TOK.interval, 32);
                 this.lwr = lwr;
                 this.upr = upr;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6475,11 +6874,13 @@ public class astbase {
         }
         public static class TypeExp extends Expression
         {
+            // Erasure: __ctor<Loc, Type>
             public  TypeExp(Loc loc, Type type) {
                 super(loc, TOK.type, 24);
                 this.type = type;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6500,12 +6901,14 @@ public class astbase {
         public static class ScopeExp extends Expression
         {
             public ScopeDsymbol sds = null;
+            // Erasure: __ctor<Loc, ScopeDsymbol>
             public  ScopeExp(Loc loc, ScopeDsymbol sds) {
                 super(loc, TOK.scope_, 28);
                 this.sds = sds;
                 assert(sds.isTemplateDeclaration() == null);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6527,11 +6930,13 @@ public class astbase {
         public static class IdentifierExp extends Expression
         {
             public Identifier ident = null;
+            // Erasure: __ctor<Loc, Identifier>
             public  IdentifierExp(Loc loc, Identifier ident) {
                 super(loc, TOK.identifier, 28);
                 this.ident = ident;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6553,11 +6958,13 @@ public class astbase {
         public static class UnaExp extends Expression
         {
             public Expression e1 = null;
+            // Erasure: __ctor<Loc, byte, int, Expression>
             public  UnaExp(Loc loc, byte op, int size, Expression e1) {
                 super(loc, op, size);
                 this.e1 = e1;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6579,11 +6986,13 @@ public class astbase {
         public static class DefaultInitExp extends Expression
         {
             public byte subop = 0;
+            // Erasure: __ctor<Loc, byte, int>
             public  DefaultInitExp(Loc loc, byte subop, int size) {
                 super(loc, TOK.default_, size);
                 this.subop = subop;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6606,12 +7015,14 @@ public class astbase {
         {
             public Expression e1 = null;
             public Expression e2 = null;
+            // Erasure: __ctor<Loc, byte, int, Expression, Expression>
             public  BinExp(Loc loc, byte op, int size, Expression e1, Expression e2) {
                 super(loc, op, size);
                 this.e1 = e1;
                 this.e2 = e2;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6625,6 +7036,7 @@ public class astbase {
         {
             public Dsymbol s = null;
             public boolean hasOverloads = false;
+            // Erasure: __ctor<Loc, Dsymbol, boolean>
             public  DsymbolExp(Loc loc, Dsymbol s, boolean hasOverloads) {
                 super(loc, TOK.dSymbol, 29);
                 this.s = s;
@@ -6636,6 +7048,7 @@ public class astbase {
                 this(loc, s, true);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6659,6 +7072,7 @@ public class astbase {
         {
             public TemplateDeclaration td = null;
             public FuncDeclaration fd = null;
+            // Erasure: __ctor<Loc, TemplateDeclaration, FuncDeclaration>
             public  TemplateExp(Loc loc, TemplateDeclaration td, FuncDeclaration fd) {
                 super(loc, TOK.template_, 32);
                 this.td = td;
@@ -6667,9 +7081,10 @@ public class astbase {
 
             // defaulted all parameters starting with #3
             public  TemplateExp(Loc loc, TemplateDeclaration td) {
-                this(loc, td, null);
+                this(loc, td, (FuncDeclaration)null);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6693,6 +7108,7 @@ public class astbase {
         {
             public Declaration var = null;
             public boolean hasOverloads = false;
+            // Erasure: __ctor<Loc, byte, int, Declaration, boolean>
             public  SymbolExp(Loc loc, byte op, int size, Declaration var, boolean hasOverloads) {
                 super(loc, op, size);
                 assert(var != null);
@@ -6700,6 +7116,7 @@ public class astbase {
                 this.hasOverloads = hasOverloads;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6721,6 +7138,7 @@ public class astbase {
         }
         public static class VarExp extends SymbolExp
         {
+            // Erasure: __ctor<Loc, Declaration, boolean>
             public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
                 super(loc, TOK.variable, 29, var, var.isVarDeclaration() == null && hasOverloads);
                 this.type = var.type;
@@ -6731,6 +7149,7 @@ public class astbase {
                 this(loc, var, true);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6754,17 +7173,20 @@ public class astbase {
         {
             public Expression e0 = null;
             public Ptr<DArray<Expression>> exps = null;
+            // Erasure: __ctor<Loc, Expression, Ptr>
             public  TupleExp(Loc loc, Expression e0, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.tuple, 32);
                 this.e0 = e0;
                 this.exps = pcopy(exps);
             }
 
+            // Erasure: __ctor<Loc, Ptr>
             public  TupleExp(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.tuple, 32);
                 this.exps = pcopy(exps);
             }
 
+            // Erasure: __ctor<Loc, TupleDeclaration>
             public  TupleExp(Loc loc, TupleDeclaration tup) {
                 super(loc, TOK.tuple, 32);
                 this.exps = pcopy((refPtr(new DArray<Expression>())));
@@ -6801,6 +7223,7 @@ public class astbase {
                 }
             }
 
+            // Erasure: isDsymbol<RootObject>
             public  Dsymbol isDsymbol(RootObject o) {
                 if ((o == null) || (o.dyncast() != 0) || (DYNCAST.dsymbol != 0))
                 {
@@ -6809,6 +7232,7 @@ public class astbase {
                 return (Dsymbol)o;
             }
 
+            // Erasure: getDsymbol<RootObject>
             public  Dsymbol getDsymbol(RootObject oarg) {
                 Dsymbol sa = null;
                 Expression ea = isExpression(oarg);
@@ -6853,6 +7277,7 @@ public class astbase {
                 return sa;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6874,10 +7299,12 @@ public class astbase {
         }
         public static class DollarExp extends IdentifierExp
         {
+            // Erasure: __ctor<Loc>
             public  DollarExp(Loc loc) {
                 super(loc, Id.dollar);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6898,10 +7325,12 @@ public class astbase {
         }
         public static class ThisExp extends Expression
         {
+            // Erasure: __ctor<Loc>
             public  ThisExp(Loc loc) {
                 super(loc, TOK.this_, 24);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6921,11 +7350,13 @@ public class astbase {
         }
         public static class SuperExp extends ThisExp
         {
+            // Erasure: __ctor<Loc>
             public  SuperExp(Loc loc) {
                 super(loc);
                 this.op = TOK.super_;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6945,10 +7376,12 @@ public class astbase {
         }
         public static class AddrExp extends UnaExp
         {
+            // Erasure: __ctor<Loc, Expression>
             public  AddrExp(Loc loc, Expression e) {
                 super(loc, TOK.address, 28, e);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6969,10 +7402,12 @@ public class astbase {
         }
         public static class PreExp extends UnaExp
         {
+            // Erasure: __ctor<byte, Loc, Expression>
             public  PreExp(byte op, Loc loc, Expression e) {
                 super(loc, op, 28, e);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -6993,15 +7428,18 @@ public class astbase {
         }
         public static class PtrExp extends UnaExp
         {
+            // Erasure: __ctor<Loc, Expression>
             public  PtrExp(Loc loc, Expression e) {
                 super(loc, TOK.star, 28, e);
             }
 
+            // Erasure: __ctor<Loc, Expression, Type>
             public  PtrExp(Loc loc, Expression e, Type t) {
                 super(loc, TOK.star, 28, e);
                 this.type = t;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7022,10 +7460,12 @@ public class astbase {
         }
         public static class NegExp extends UnaExp
         {
+            // Erasure: __ctor<Loc, Expression>
             public  NegExp(Loc loc, Expression e) {
                 super(loc, TOK.negate, 28, e);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7046,10 +7486,12 @@ public class astbase {
         }
         public static class UAddExp extends UnaExp
         {
+            // Erasure: __ctor<Loc, Expression>
             public  UAddExp(Loc loc, Expression e) {
                 super(loc, TOK.uadd, 28, e);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7070,10 +7512,12 @@ public class astbase {
         }
         public static class NotExp extends UnaExp
         {
+            // Erasure: __ctor<Loc, Expression>
             public  NotExp(Loc loc, Expression e) {
                 super(loc, TOK.not, 28, e);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7094,10 +7538,12 @@ public class astbase {
         }
         public static class ComExp extends UnaExp
         {
+            // Erasure: __ctor<Loc, Expression>
             public  ComExp(Loc loc, Expression e) {
                 super(loc, TOK.tilde, 28, e);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7119,11 +7565,13 @@ public class astbase {
         public static class DeleteExp extends UnaExp
         {
             public boolean isRAII = false;
+            // Erasure: __ctor<Loc, Expression, boolean>
             public  DeleteExp(Loc loc, Expression e, boolean isRAII) {
                 super(loc, TOK.delete_, 29, e);
                 this.isRAII = isRAII;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7147,16 +7595,19 @@ public class astbase {
         {
             public Type to = null;
             public byte mod = (byte)255;
+            // Erasure: __ctor<Loc, Expression, Type>
             public  CastExp(Loc loc, Expression e, Type t) {
                 super(loc, TOK.cast_, 33, e);
                 this.to = t;
             }
 
+            // Erasure: __ctor<Loc, Expression, byte>
             public  CastExp(Loc loc, Expression e, byte mod) {
                 super(loc, TOK.cast_, 33, e);
                 this.mod = mod;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7180,15 +7631,18 @@ public class astbase {
         public static class CallExp extends UnaExp
         {
             public Ptr<DArray<Expression>> arguments = null;
+            // Erasure: __ctor<Loc, Expression, Ptr>
             public  CallExp(Loc loc, Expression e, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.call, 32, e);
                 this.arguments = pcopy(exps);
             }
 
+            // Erasure: __ctor<Loc, Expression>
             public  CallExp(Loc loc, Expression e) {
                 super(loc, TOK.call, 32, e);
             }
 
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  CallExp(Loc loc, Expression e, Expression earg1) {
                 super(loc, TOK.call, 32, e);
                 Ptr<DArray<Expression>> arguments = refPtr(new DArray<Expression>());
@@ -7200,6 +7654,7 @@ public class astbase {
                 this.arguments = pcopy(arguments);
             }
 
+            // Erasure: __ctor<Loc, Expression, Expression, Expression>
             public  CallExp(Loc loc, Expression e, Expression earg1, Expression earg2) {
                 super(loc, TOK.call, 32, e);
                 Ptr<DArray<Expression>> arguments = refPtr(new DArray<Expression>());
@@ -7209,6 +7664,7 @@ public class astbase {
                 this.arguments = pcopy(arguments);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7231,11 +7687,13 @@ public class astbase {
         public static class DotIdExp extends UnaExp
         {
             public Identifier ident = null;
+            // Erasure: __ctor<Loc, Expression, Identifier>
             public  DotIdExp(Loc loc, Expression e, Identifier ident) {
                 super(loc, TOK.dotIdentifier, 32, e);
                 this.ident = ident;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7258,6 +7716,7 @@ public class astbase {
         public static class AssertExp extends UnaExp
         {
             public Expression msg = null;
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  AssertExp(Loc loc, Expression e, Expression msg) {
                 super(loc, TOK.assert_, 32, e);
                 this.msg = msg;
@@ -7265,9 +7724,10 @@ public class astbase {
 
             // defaulted all parameters starting with #3
             public  AssertExp(Loc loc, Expression e) {
-                this(loc, e, null);
+                this(loc, e, (Expression)null);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7290,11 +7750,13 @@ public class astbase {
         public static class CompileExp extends Expression
         {
             public Ptr<DArray<Expression>> exps = null;
+            // Erasure: __ctor<Loc, Ptr>
             public  CompileExp(Loc loc, Ptr<DArray<Expression>> exps) {
                 super(loc, TOK.mixin_, 28);
                 this.exps = pcopy(exps);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7315,10 +7777,12 @@ public class astbase {
         }
         public static class ImportExp extends UnaExp
         {
+            // Erasure: __ctor<Loc, Expression>
             public  ImportExp(Loc loc, Expression e) {
                 super(loc, TOK.import_, 28, e);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7340,16 +7804,19 @@ public class astbase {
         public static class DotTemplateInstanceExp extends UnaExp
         {
             public TemplateInstance ti = null;
+            // Erasure: __ctor<Loc, Expression, Identifier, Ptr>
             public  DotTemplateInstanceExp(Loc loc, Expression e, Identifier name, Ptr<DArray<RootObject>> tiargs) {
                 super(loc, TOK.dotTemplateInstance, 32, e);
                 this.ti = new TemplateInstance(loc, name, tiargs);
             }
 
+            // Erasure: __ctor<Loc, Expression, TemplateInstance>
             public  DotTemplateInstanceExp(Loc loc, Expression e, TemplateInstance ti) {
                 super(loc, TOK.dotTemplateInstance, 32, e);
                 this.ti = ti;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7372,6 +7839,7 @@ public class astbase {
         public static class ArrayExp extends UnaExp
         {
             public Ptr<DArray<Expression>> arguments = null;
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  ArrayExp(Loc loc, Expression e1, Expression index) {
                 super(loc, TOK.array, 32, e1);
                 this.arguments = pcopy((refPtr(new DArray<Expression>())));
@@ -7383,14 +7851,16 @@ public class astbase {
 
             // defaulted all parameters starting with #3
             public  ArrayExp(Loc loc, Expression e1) {
-                this(loc, e1, null);
+                this(loc, e1, (Expression)null);
             }
 
+            // Erasure: __ctor<Loc, Expression, Ptr>
             public  ArrayExp(Loc loc, Expression e1, Ptr<DArray<Expression>> args) {
                 super(loc, TOK.array, 32, e1);
                 this.arguments = pcopy(args);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7412,10 +7882,12 @@ public class astbase {
         }
         public static class FuncInitExp extends DefaultInitExp
         {
+            // Erasure: __ctor<Loc>
             public  FuncInitExp(Loc loc) {
                 super(loc, TOK.functionString, 25);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7436,10 +7908,12 @@ public class astbase {
         }
         public static class PrettyFuncInitExp extends DefaultInitExp
         {
+            // Erasure: __ctor<Loc>
             public  PrettyFuncInitExp(Loc loc) {
                 super(loc, TOK.prettyFunction, 25);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7460,10 +7934,12 @@ public class astbase {
         }
         public static class FileInitExp extends DefaultInitExp
         {
+            // Erasure: __ctor<Loc, byte>
             public  FileInitExp(Loc loc, byte tok) {
                 super(loc, tok, 25);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7484,10 +7960,12 @@ public class astbase {
         }
         public static class LineInitExp extends DefaultInitExp
         {
+            // Erasure: __ctor<Loc>
             public  LineInitExp(Loc loc) {
                 super(loc, TOK.line, 25);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7508,10 +7986,12 @@ public class astbase {
         }
         public static class ModuleInitExp extends DefaultInitExp
         {
+            // Erasure: __ctor<Loc>
             public  ModuleInitExp(Loc loc) {
                 super(loc, TOK.moduleString, 25);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7534,6 +8014,7 @@ public class astbase {
         {
             public boolean isGenerated = false;
             public boolean allowCommaExp = false;
+            // Erasure: __ctor<Loc, Expression, Expression, boolean>
             public  CommaExp(Loc loc, Expression e1, Expression e2, boolean generated) {
                 super(loc, TOK.comma, 34, e1, e2);
                 this.allowCommaExp = (this.isGenerated = generated);
@@ -7544,6 +8025,7 @@ public class astbase {
                 this(loc, e1, e2, true);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7567,10 +8049,12 @@ public class astbase {
         }
         public static class PostExp extends BinExp
         {
+            // Erasure: __ctor<byte, Loc, Expression>
             public  PostExp(byte op, Loc loc, Expression e) {
                 super(loc, op, 32, e, new IntegerExp(loc, 1L, Type.tint32));
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7592,10 +8076,12 @@ public class astbase {
         }
         public static class PowExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  PowExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.pow, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7617,10 +8103,12 @@ public class astbase {
         }
         public static class MulExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  MulExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.mul, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7642,10 +8130,12 @@ public class astbase {
         }
         public static class DivExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  DivExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.div, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7667,10 +8157,12 @@ public class astbase {
         }
         public static class ModExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  ModExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.mod, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7692,10 +8184,12 @@ public class astbase {
         }
         public static class AddExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  AddExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.add, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7717,10 +8211,12 @@ public class astbase {
         }
         public static class MinExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  MinExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.min, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7742,10 +8238,12 @@ public class astbase {
         }
         public static class CatExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  CatExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.concatenate, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7767,10 +8265,12 @@ public class astbase {
         }
         public static class ShlExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  ShlExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.leftShift, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7792,10 +8292,12 @@ public class astbase {
         }
         public static class ShrExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  ShrExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.rightShift, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7817,10 +8319,12 @@ public class astbase {
         }
         public static class UshrExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  UshrExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.unsignedRightShift, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7842,11 +8346,13 @@ public class astbase {
         }
         public static class EqualExp extends BinExp
         {
+            // Erasure: __ctor<byte, Loc, Expression, Expression>
             public  EqualExp(byte op, Loc loc, Expression e1, Expression e2) {
                 super(loc, op, 32, e1, e2);
                 assert(((op & 0xFF) == 58) || ((op & 0xFF) == 59));
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7868,10 +8374,12 @@ public class astbase {
         }
         public static class InExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  InExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.in_, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7893,10 +8401,12 @@ public class astbase {
         }
         public static class IdentityExp extends BinExp
         {
+            // Erasure: __ctor<byte, Loc, Expression, Expression>
             public  IdentityExp(byte op, Loc loc, Expression e1, Expression e2) {
                 super(loc, op, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7918,10 +8428,12 @@ public class astbase {
         }
         public static class CmpExp extends BinExp
         {
+            // Erasure: __ctor<byte, Loc, Expression, Expression>
             public  CmpExp(byte op, Loc loc, Expression e1, Expression e2) {
                 super(loc, op, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7943,10 +8455,12 @@ public class astbase {
         }
         public static class AndExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  AndExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.and, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7968,10 +8482,12 @@ public class astbase {
         }
         public static class XorExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  XorExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.xor, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -7993,10 +8509,12 @@ public class astbase {
         }
         public static class OrExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  OrExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.or, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8018,10 +8536,12 @@ public class astbase {
         }
         public static class LogicalExp extends BinExp
         {
+            // Erasure: __ctor<Loc, byte, Expression, Expression>
             public  LogicalExp(Loc loc, byte op, Expression e1, Expression e2) {
                 super(loc, op, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8044,11 +8564,13 @@ public class astbase {
         public static class CondExp extends BinExp
         {
             public Expression econd = null;
+            // Erasure: __ctor<Loc, Expression, Expression, Expression>
             public  CondExp(Loc loc, Expression econd, Expression e1, Expression e2) {
                 super(loc, TOK.question, 36, e1, e2);
                 this.econd = econd;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8071,10 +8593,12 @@ public class astbase {
         }
         public static class AssignExp extends BinExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  AssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.assign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8096,10 +8620,12 @@ public class astbase {
         }
         public static class BinAssignExp extends BinExp
         {
+            // Erasure: __ctor<Loc, byte, int, Expression, Expression>
             public  BinAssignExp(Loc loc, byte op, int size, Expression e1, Expression e2) {
                 super(loc, op, size, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8121,10 +8647,12 @@ public class astbase {
         }
         public static class AddAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  AddAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.addAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8146,10 +8674,12 @@ public class astbase {
         }
         public static class MinAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  MinAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.minAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8171,10 +8701,12 @@ public class astbase {
         }
         public static class MulAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  MulAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.mulAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8196,10 +8728,12 @@ public class astbase {
         }
         public static class DivAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  DivAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.divAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8221,10 +8755,12 @@ public class astbase {
         }
         public static class ModAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  ModAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.modAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8246,10 +8782,12 @@ public class astbase {
         }
         public static class PowAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  PowAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.powAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8271,10 +8809,12 @@ public class astbase {
         }
         public static class AndAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  AndAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.andAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8296,10 +8836,12 @@ public class astbase {
         }
         public static class OrAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  OrAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.orAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8321,10 +8863,12 @@ public class astbase {
         }
         public static class XorAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  XorAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.xorAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8346,10 +8890,12 @@ public class astbase {
         }
         public static class ShlAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  ShlAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.leftShiftAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8371,10 +8917,12 @@ public class astbase {
         }
         public static class ShrAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  ShrAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.rightShiftAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8396,10 +8944,12 @@ public class astbase {
         }
         public static class UshrAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  UshrAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.unsignedRightShiftAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8421,10 +8971,12 @@ public class astbase {
         }
         public static class CatAssignExp extends BinAssignExp
         {
+            // Erasure: __ctor<Loc, Expression, Expression>
             public  CatAssignExp(Loc loc, Expression e1, Expression e2) {
                 super(loc, TOK.concatenateAssign, 32, e1, e2);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8448,16 +9000,19 @@ public class astbase {
         {
             public Loc loc = new Loc();
             public Identifier ident = null;
+            // Erasure: __ctor<Loc, Identifier>
             public  TemplateParameter(Loc loc, Identifier ident) {
                 super();
                 this.loc.opAssign(loc.copy());
                 this.ident = ident;
             }
 
+            // Erasure: syntaxCopy<>
             public  TemplateParameter syntaxCopy() {
                 return null;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8477,6 +9032,7 @@ public class astbase {
             public Type specType = null;
             public RootObject specAlias = null;
             public RootObject defaultAlias = null;
+            // Erasure: __ctor<Loc, Identifier, Type, RootObject, RootObject>
             public  TemplateAliasParameter(Loc loc, Identifier ident, Type specType, RootObject specAlias, RootObject defaultAlias) {
                 super(loc, ident);
                 this.ident = ident;
@@ -8485,6 +9041,7 @@ public class astbase {
                 this.defaultAlias = defaultAlias;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8506,6 +9063,7 @@ public class astbase {
         {
             public Type specType = null;
             public Type defaultType = null;
+            // Erasure: __ctor<Loc, Identifier, Type, Type>
             public  TemplateTypeParameter(Loc loc, Identifier ident, Type specType, Type defaultType) {
                 super(loc, ident);
                 this.ident = ident;
@@ -8513,6 +9071,7 @@ public class astbase {
                 this.defaultType = defaultType;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8531,11 +9090,13 @@ public class astbase {
         }
         public static class TemplateTupleParameter extends TemplateParameter
         {
+            // Erasure: __ctor<Loc, Identifier>
             public  TemplateTupleParameter(Loc loc, Identifier ident) {
                 super(loc, ident);
                 this.ident = ident;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8555,6 +9116,7 @@ public class astbase {
             public Type valType = null;
             public Expression specValue = null;
             public Expression defaultValue = null;
+            // Erasure: __ctor<Loc, Identifier, Type, Expression, Expression>
             public  TemplateValueParameter(Loc loc, Identifier ident, Type valType, Expression specValue, Expression defaultValue) {
                 super(loc, ident);
                 this.ident = ident;
@@ -8563,6 +9125,7 @@ public class astbase {
                 this.defaultValue = defaultValue;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8582,10 +9145,12 @@ public class astbase {
         }
         public static class TemplateThisParameter extends TemplateTypeParameter
         {
+            // Erasure: __ctor<Loc, Identifier, Type, Type>
             public  TemplateThisParameter(Loc loc, Identifier ident, Type specType, Type defaultType) {
                 super(loc, ident, specType, defaultType);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8605,11 +9170,13 @@ public class astbase {
         public static abstract class Condition extends ASTNode
         {
             public Loc loc = new Loc();
+            // Erasure: __ctor<Loc>
             public  Condition(Loc loc) {
                 super();
                 this.loc.opAssign(loc.copy());
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8624,12 +9191,17 @@ public class astbase {
             public Loc loc = new Loc();
             public ForeachStatement aggrfe = null;
             public ForeachRangeStatement rangefe = null;
+            // Erasure: __ctor<Loc, ForeachStatement, ForeachRangeStatement>
             public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
+                {
+                    {
+                        assert(aggrfe != null ^ rangefe != null);
+                    }
+                }
                 super();
                 this.loc.opAssign(loc.copy());
                 this.aggrfe = aggrfe;
                 this.rangefe = rangefe;
-                assert(aggrfe != null ^ rangefe != null);
             }
 
 
@@ -8646,11 +9218,13 @@ public class astbase {
         public static class StaticIfCondition extends Condition
         {
             public Expression exp = null;
+            // Erasure: __ctor<Loc, Expression>
             public  StaticIfCondition(Loc loc, Expression exp) {
                 super(loc);
                 this.exp = exp;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8670,12 +9244,14 @@ public class astbase {
             public int level = 0;
             public Identifier ident = null;
             public Module mod = null;
+            // Erasure: __ctor<Module, int, Identifier>
             public  DVCondition(Module mod, int level, Identifier ident) {
                 super(Loc.initial);
                 this.mod = mod;
                 this.ident = ident;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8694,10 +9270,12 @@ public class astbase {
         }
         public static class DebugCondition extends DVCondition
         {
+            // Erasure: __ctor<Module, int, Identifier>
             public  DebugCondition(Module mod, int level, Identifier ident) {
                 super(mod, level, ident);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8716,10 +9294,12 @@ public class astbase {
         }
         public static class VersionCondition extends DVCondition
         {
+            // Erasure: __ctor<Module, int, Identifier>
             public  VersionCondition(Module mod, int level, Identifier ident) {
                 super(mod, level, ident);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8750,25 +9330,29 @@ public class astbase {
         {
             public Loc loc = new Loc();
             public byte kind = 0;
+            // Erasure: __ctor<Loc, byte>
             public  Initializer(Loc loc, byte kind) {
                 super();
                 this.loc.opAssign(loc.copy());
                 this.kind = kind;
             }
 
+            // Erasure: toExpression<Type>
             public  Expression toExpression(Type t) {
                 return null;
             }
 
             // defaulted all parameters starting with #1
             public  Expression toExpression() {
-                return toExpression(null);
+                return toExpression((Type)null);
             }
 
+            // Erasure: isExpInitializer<>
             public  ExpInitializer isExpInitializer() {
                 return ((this.kind & 0xFF) == 4) ? ((ExpInitializer)this) : null;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8786,11 +9370,13 @@ public class astbase {
         public static class ExpInitializer extends Initializer
         {
             public Expression exp = null;
+            // Erasure: __ctor<Loc, Expression>
             public  ExpInitializer(Loc loc, Expression exp) {
                 super(loc, InitKind.exp);
                 this.exp = exp;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8810,15 +9396,18 @@ public class astbase {
         {
             public DArray<Identifier> field = new DArray<Identifier>();
             public DArray<Initializer> value = new DArray<Initializer>();
+            // Erasure: __ctor<Loc>
             public  StructInitializer(Loc loc) {
                 super(loc, InitKind.struct_);
             }
 
+            // Erasure: addInit<Identifier, Initializer>
             public  void addInit(Identifier field, Initializer value) {
                 this.field.push(field);
                 this.value.push(value);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8841,10 +9430,12 @@ public class astbase {
             public DArray<Initializer> value = new DArray<Initializer>();
             public int dim = 0;
             public Type type = null;
+            // Erasure: __ctor<Loc>
             public  ArrayInitializer(Loc loc) {
                 super(loc, InitKind.array);
             }
 
+            // Erasure: addInit<Expression, Initializer>
             public  void addInit(Expression index, Initializer value) {
                 this.index.push(index);
                 this.value.push(value);
@@ -8852,6 +9443,7 @@ public class astbase {
                 this.type = null;
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8872,10 +9464,12 @@ public class astbase {
         }
         public static class VoidInitializer extends Initializer
         {
+            // Erasure: __ctor<Loc>
             public  VoidInitializer(Loc loc) {
                 super(loc, InitKind.void_);
             }
 
+            // Erasure: accept<ParseTimeVisitor>
             public  void accept(ParseTimeVisitorASTBase v) {
                 v.visit(this);
             }
@@ -8893,14 +9487,17 @@ public class astbase {
         public static class Tuple extends RootObject
         {
             public DArray<RootObject> objects = new DArray<RootObject>();
+            // Erasure: dyncast<>
             public  int dyncast() {
                 return DYNCAST.tuple;
             }
 
+            // Erasure: toChars<>
             public  BytePtr toChars() {
                 return this.objects.toChars();
             }
 
+            // Erasure: __ctor<>
             public  Tuple() {
                 super();
             }
@@ -8938,6 +9535,7 @@ public class astbase {
             public Ptr<DArray<Identifier>> packages = null;
             public boolean isdeprecated = false;
             public Expression msg = null;
+            // Erasure: __ctor<Loc, Ptr, Identifier, Expression, boolean>
             public  ModuleDeclaration(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Expression msg, boolean isdeprecated) {
                 this.loc.opAssign(loc.copy());
                 this.packages = pcopy(packages);
@@ -8946,6 +9544,7 @@ public class astbase {
                 this.isdeprecated = isdeprecated;
             }
 
+            // Erasure: toChars<>
             public  BytePtr toChars() {
                 OutBuffer buf = new OutBuffer();
                 try {
@@ -9035,6 +9634,7 @@ public class astbase {
                 return this;
             }
         }
+        // Erasure: isTuple<RootObject>
         public static Tuple isTuple(RootObject o) {
             if ((o == null) || (o.dyncast() != DYNCAST.tuple))
             {
@@ -9043,6 +9643,7 @@ public class astbase {
             return (Tuple)o;
         }
 
+        // Erasure: isType<RootObject>
         public static Type isType(RootObject o) {
             if ((o == null) || (o.dyncast() != DYNCAST.type))
             {
@@ -9051,6 +9652,7 @@ public class astbase {
             return (Type)o;
         }
 
+        // Erasure: isExpression<RootObject>
         public static Expression isExpression(RootObject o) {
             if ((o == null) || (o.dyncast() != DYNCAST.expression))
             {
@@ -9059,6 +9661,7 @@ public class astbase {
             return (Expression)o;
         }
 
+        // Erasure: isTemplateParameter<RootObject>
         public static TemplateParameter isTemplateParameter(RootObject o) {
             if ((o == null) || (o.dyncast() != DYNCAST.templateparameter))
             {
@@ -9067,6 +9670,7 @@ public class astbase {
             return (TemplateParameter)o;
         }
 
+        // Erasure: protectionToChars<int>
         public static BytePtr protectionToChars(int kind) {
             switch (kind)
             {
@@ -9089,6 +9693,7 @@ public class astbase {
             }
         }
 
+        // Erasure: stcToBuffer<Ptr, long>
         public static boolean stcToBuffer(Ptr<OutBuffer> buf, long stc) {
             Ref<Long> stc_ref = ref(stc);
             boolean result = false;
@@ -9115,10 +9720,12 @@ public class astbase {
             return result;
         }
 
+        // Erasure: typeToExpression<Type>
         public static Expression typeToExpression(Type t) {
             return t.toExpression();
         }
 
+        // Erasure: stcToChars<long>
         public static BytePtr stcToChars(Ref<Long> stc) {
             {
                 int i = 0;
@@ -9147,6 +9754,7 @@ public class astbase {
             return null;
         }
 
+        // Erasure: linkageToChars<int>
         public static BytePtr linkageToChars(int linkage) {
             switch (linkage)
             {
@@ -9173,6 +9781,7 @@ public class astbase {
         public static class Target
         {
             public static int ptrsize = 0;
+            // Erasure: va_listType<>
             public static Type va_listType() {
                 if (global.params.isWindows)
                 {

@@ -61,6 +61,7 @@ import static org.dlang.dmd.visitor.*;
 public class semantic2 {
 
     static boolean LOG = false;
+    // Erasure: semantic2<Dsymbol, Ptr>
     public static void semantic2(Dsymbol dsym, Ptr<Scope> sc) {
         Semantic2Visitor v = new Semantic2Visitor(sc);
         dsym.accept(v);
@@ -69,13 +70,16 @@ public class semantic2 {
     public static class Semantic2Visitor extends Visitor
     {
         public Ptr<Scope> sc = null;
+        // Erasure: __ctor<Ptr>
         public  Semantic2Visitor(Ptr<Scope> sc) {
             this.sc = pcopy(sc);
         }
 
+        // Erasure: visit<Dsymbol>
         public  void visit(Dsymbol _param_0) {
         }
 
+        // Erasure: visit<StaticAssert>
         public  void visit(StaticAssert sa) {
             ScopeDsymbol sds = new ScopeDsymbol();
             this.sc = pcopy((this.sc.get()).push(sds));
@@ -125,6 +129,7 @@ public class semantic2 {
             }
         }
 
+        // Erasure: visit<TemplateInstance>
         public  void visit(TemplateInstance tempinst) {
             if ((tempinst.semanticRun >= PASS.semantic2))
             {
@@ -183,6 +188,7 @@ public class semantic2 {
             }
         }
 
+        // Erasure: visit<TemplateMixin>
         public  void visit(TemplateMixin tmix) {
             if ((tmix.semanticRun >= PASS.semantic2))
             {
@@ -206,6 +212,7 @@ public class semantic2 {
             }
         }
 
+        // Erasure: visit<VarDeclaration>
         public  void visit(VarDeclaration vd) {
             if ((vd.semanticRun < PASS.semanticdone) && (vd.inuse != 0))
             {
@@ -304,6 +311,7 @@ public class semantic2 {
             vd.semanticRun = PASS.semantic2done;
         }
 
+        // Erasure: visit<Module>
         public  void visit(dmodule.Module mod) {
             if ((mod.semanticRun != PASS.semanticdone))
             {
@@ -327,6 +335,7 @@ public class semantic2 {
             mod.semanticRun = PASS.semantic2done;
         }
 
+        // Erasure: visit<FuncDeclaration>
         public  void visit(FuncDeclaration fd) {
             if ((fd.semanticRun >= PASS.semantic2done))
             {
@@ -416,6 +425,7 @@ public class semantic2 {
             }
         }
 
+        // Erasure: visit<Import>
         public  void visit(Import i) {
             if (i.mod != null)
             {
@@ -430,6 +440,7 @@ public class semantic2 {
             }
         }
 
+        // Erasure: visit<Nspace>
         public  void visit(Nspace ns) {
             if ((ns.semanticRun >= PASS.semantic2))
             {
@@ -453,6 +464,7 @@ public class semantic2 {
             }
         }
 
+        // Erasure: visit<AttribDeclaration>
         public  void visit(AttribDeclaration ad) {
             Ptr<DArray<Dsymbol>> d = ad.include(this.sc);
             if (d != null)
@@ -472,16 +484,19 @@ public class semantic2 {
             }
         }
 
+        // Erasure: visit<DeprecatedDeclaration>
         public  void visit(DeprecatedDeclaration dd) {
             getMessage(dd);
             this.visit((AttribDeclaration)dd);
         }
 
+        // Erasure: visit<AlignDeclaration>
         public  void visit(AlignDeclaration ad) {
             getAlignment(ad, this.sc);
             this.visit((AttribDeclaration)ad);
         }
 
+        // Erasure: visit<UserAttributeDeclaration>
         public  void visit(UserAttributeDeclaration uad) {
             if ((uad.decl != null) && (uad.atts != null) && ((uad.atts.get()).length != 0) && (uad._scope != null))
             {
@@ -518,6 +533,7 @@ public class semantic2 {
             this.visit((AttribDeclaration)uad);
         }
 
+        // Erasure: visit<AggregateDeclaration>
         public  void visit(AggregateDeclaration ad) {
             if (ad.members == null)
             {

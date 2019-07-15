@@ -34,154 +34,192 @@ public class opover {
     private static class OpIdVisitor extends Visitor
     {
         private Identifier id = null;
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<UAddExp>
         public  void visit(UAddExp e) {
             this.id = Id.uadd;
         }
 
+        // Erasure: visit<NegExp>
         public  void visit(NegExp e) {
             this.id = Id.neg;
         }
 
+        // Erasure: visit<ComExp>
         public  void visit(ComExp e) {
             this.id = Id.com;
         }
 
+        // Erasure: visit<CastExp>
         public  void visit(CastExp e) {
             this.id = Id._cast;
         }
 
+        // Erasure: visit<InExp>
         public  void visit(InExp e) {
             this.id = Id.opIn;
         }
 
+        // Erasure: visit<PostExp>
         public  void visit(PostExp e) {
             this.id = ((e.op & 0xFF) == 93) ? Id.postinc : Id.postdec;
         }
 
+        // Erasure: visit<AddExp>
         public  void visit(AddExp e) {
             this.id = Id.add;
         }
 
+        // Erasure: visit<MinExp>
         public  void visit(MinExp e) {
             this.id = Id.sub;
         }
 
+        // Erasure: visit<MulExp>
         public  void visit(MulExp e) {
             this.id = Id.mul;
         }
 
+        // Erasure: visit<DivExp>
         public  void visit(DivExp e) {
             this.id = Id.div;
         }
 
+        // Erasure: visit<ModExp>
         public  void visit(ModExp e) {
             this.id = Id.mod;
         }
 
+        // Erasure: visit<PowExp>
         public  void visit(PowExp e) {
             this.id = Id.pow;
         }
 
+        // Erasure: visit<ShlExp>
         public  void visit(ShlExp e) {
             this.id = Id.shl;
         }
 
+        // Erasure: visit<ShrExp>
         public  void visit(ShrExp e) {
             this.id = Id.shr;
         }
 
+        // Erasure: visit<UshrExp>
         public  void visit(UshrExp e) {
             this.id = Id.ushr;
         }
 
+        // Erasure: visit<AndExp>
         public  void visit(AndExp e) {
             this.id = Id.iand;
         }
 
+        // Erasure: visit<OrExp>
         public  void visit(OrExp e) {
             this.id = Id.ior;
         }
 
+        // Erasure: visit<XorExp>
         public  void visit(XorExp e) {
             this.id = Id.ixor;
         }
 
+        // Erasure: visit<CatExp>
         public  void visit(CatExp e) {
             this.id = Id.cat;
         }
 
+        // Erasure: visit<AssignExp>
         public  void visit(AssignExp e) {
             this.id = Id.assign;
         }
 
+        // Erasure: visit<AddAssignExp>
         public  void visit(AddAssignExp e) {
             this.id = Id.addass;
         }
 
+        // Erasure: visit<MinAssignExp>
         public  void visit(MinAssignExp e) {
             this.id = Id.subass;
         }
 
+        // Erasure: visit<MulAssignExp>
         public  void visit(MulAssignExp e) {
             this.id = Id.mulass;
         }
 
+        // Erasure: visit<DivAssignExp>
         public  void visit(DivAssignExp e) {
             this.id = Id.divass;
         }
 
+        // Erasure: visit<ModAssignExp>
         public  void visit(ModAssignExp e) {
             this.id = Id.modass;
         }
 
+        // Erasure: visit<AndAssignExp>
         public  void visit(AndAssignExp e) {
             this.id = Id.andass;
         }
 
+        // Erasure: visit<OrAssignExp>
         public  void visit(OrAssignExp e) {
             this.id = Id.orass;
         }
 
+        // Erasure: visit<XorAssignExp>
         public  void visit(XorAssignExp e) {
             this.id = Id.xorass;
         }
 
+        // Erasure: visit<ShlAssignExp>
         public  void visit(ShlAssignExp e) {
             this.id = Id.shlass;
         }
 
+        // Erasure: visit<ShrAssignExp>
         public  void visit(ShrAssignExp e) {
             this.id = Id.shrass;
         }
 
+        // Erasure: visit<UshrAssignExp>
         public  void visit(UshrAssignExp e) {
             this.id = Id.ushrass;
         }
 
+        // Erasure: visit<CatAssignExp>
         public  void visit(CatAssignExp e) {
             this.id = Id.catass;
         }
 
+        // Erasure: visit<PowAssignExp>
         public  void visit(PowAssignExp e) {
             this.id = Id.powass;
         }
 
+        // Erasure: visit<EqualExp>
         public  void visit(EqualExp e) {
             this.id = Id.eq;
         }
 
+        // Erasure: visit<CmpExp>
         public  void visit(CmpExp e) {
             this.id = Id.cmp;
         }
 
+        // Erasure: visit<ArrayExp>
         public  void visit(ArrayExp e) {
             this.id = Id.index;
         }
 
+        // Erasure: visit<PtrExp>
         public  void visit(PtrExp e) {
             this.id = Id.opStar;
         }
@@ -192,62 +230,77 @@ public class opover {
     private static class OpIdRVisitor extends Visitor
     {
         private Identifier id = null;
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             this.id = null;
         }
 
+        // Erasure: visit<InExp>
         public  void visit(InExp e) {
             this.id = Id.opIn_r;
         }
 
+        // Erasure: visit<AddExp>
         public  void visit(AddExp e) {
             this.id = Id.add_r;
         }
 
+        // Erasure: visit<MinExp>
         public  void visit(MinExp e) {
             this.id = Id.sub_r;
         }
 
+        // Erasure: visit<MulExp>
         public  void visit(MulExp e) {
             this.id = Id.mul_r;
         }
 
+        // Erasure: visit<DivExp>
         public  void visit(DivExp e) {
             this.id = Id.div_r;
         }
 
+        // Erasure: visit<ModExp>
         public  void visit(ModExp e) {
             this.id = Id.mod_r;
         }
 
+        // Erasure: visit<PowExp>
         public  void visit(PowExp e) {
             this.id = Id.pow_r;
         }
 
+        // Erasure: visit<ShlExp>
         public  void visit(ShlExp e) {
             this.id = Id.shl_r;
         }
 
+        // Erasure: visit<ShrExp>
         public  void visit(ShrExp e) {
             this.id = Id.shr_r;
         }
 
+        // Erasure: visit<UshrExp>
         public  void visit(UshrExp e) {
             this.id = Id.ushr_r;
         }
 
+        // Erasure: visit<AndExp>
         public  void visit(AndExp e) {
             this.id = Id.iand_r;
         }
 
+        // Erasure: visit<OrExp>
         public  void visit(OrExp e) {
             this.id = Id.ior_r;
         }
 
+        // Erasure: visit<XorExp>
         public  void visit(XorExp e) {
             this.id = Id.ixor_r;
         }
 
+        // Erasure: visit<CatExp>
         public  void visit(CatExp e) {
             this.id = Id.cat_r;
         }
@@ -260,15 +313,18 @@ public class opover {
         private Ptr<Scope> sc = null;
         private BytePtr pop = null;
         private Expression result = null;
+        // Erasure: __ctor<Ptr, Ptr>
         public  OpOverload(Ptr<Scope> sc, BytePtr pop) {
             this.sc = pcopy(sc);
             this.pop = pcopy(pop);
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<UnaExp>
         public  void visit(UnaExp e) {
             if (((e.e1.value.op & 0xFF) == 17))
             {
@@ -413,6 +469,7 @@ public class opover {
             }
         }
 
+        // Erasure: visit<ArrayExp>
         public  void visit(ArrayExp ae) {
             ae.e1.value = expressionSemantic(ae.e1.value, this.sc);
             ae.e1.value = resolveProperties(this.sc, ae.e1.value);
@@ -531,6 +588,7 @@ public class opover {
             ae.lengthVar.value = null;
         }
 
+        // Erasure: visit<CastExp>
         public  void visit(CastExp e) {
             AggregateDeclaration ad = isAggregate(e.e1.value.type.value);
             if (ad != null)
@@ -562,6 +620,7 @@ public class opover {
             }
         }
 
+        // Erasure: visit<BinExp>
         public  void visit(BinExp e) {
             Identifier id = opId(e);
             Identifier id_r = opId_r(e);
@@ -812,6 +871,7 @@ public class opover {
             }
         }
 
+        // Erasure: visit<EqualExp>
         public  void visit(EqualExp e) {
             Type t1 = e.e1.value.type.value.toBasetype();
             Type t2 = e.e2.value.type.value.toBasetype();
@@ -1014,10 +1074,12 @@ public class opover {
             }
         }
 
+        // Erasure: visit<CmpExp>
         public  void visit(CmpExp e) {
             this.result = compare_overload(e, this.sc, Id.cmp, this.pop);
         }
 
+        // Erasure: visit<BinAssignExp>
         public  void visit(BinAssignExp e) {
             if (((e.e1.value.op & 0xFF) == 17))
             {
@@ -1219,6 +1281,7 @@ public class opover {
         public OpOverload() {}
     }
 
+    // Erasure: isCommutative<byte>
     public static boolean isCommutative(byte op) {
         switch ((op & 0xFF))
         {
@@ -1240,6 +1303,7 @@ public class opover {
         return false;
     }
 
+    // Erasure: opId<Expression>
     public static Identifier opId(Expression e) {
         // skipping duplicate class OpIdVisitor
         OpIdVisitor v = new OpIdVisitor();
@@ -1247,6 +1311,7 @@ public class opover {
         return v.id;
     }
 
+    // Erasure: opId_r<Expression>
     public static Identifier opId_r(Expression e) {
         // skipping duplicate class OpIdRVisitor
         OpIdRVisitor v = new OpIdRVisitor();
@@ -1254,6 +1319,7 @@ public class opover {
         return v.id;
     }
 
+    // Erasure: opToArg<Ptr, byte>
     public static Ptr<DArray<RootObject>> opToArg(Ptr<Scope> sc, byte op) {
         switch ((op & 0xFF))
         {
@@ -1306,6 +1372,7 @@ public class opover {
         return tiargs;
     }
 
+    // Erasure: checkAliasThisForLhs<AggregateDeclaration, Ptr, BinExp>
     public static Expression checkAliasThisForLhs(AggregateDeclaration ad, Ptr<Scope> sc, BinExp e) {
         if ((ad == null) || (ad.aliasthis == null))
         {
@@ -1334,6 +1401,7 @@ public class opover {
         return result;
     }
 
+    // Erasure: checkAliasThisForRhs<AggregateDeclaration, Ptr, BinExp>
     public static Expression checkAliasThisForRhs(AggregateDeclaration ad, Ptr<Scope> sc, BinExp e) {
         if ((ad == null) || (ad.aliasthis == null))
         {
@@ -1362,6 +1430,7 @@ public class opover {
         return result;
     }
 
+    // Erasure: op_overload<Expression, Ptr, Ptr>
     public static Expression op_overload(Expression e, Ptr<Scope> sc, BytePtr pop) {
         // skipping duplicate class OpOverload
         if (pop != null)
@@ -1375,9 +1444,10 @@ public class opover {
 
     // defaulted all parameters starting with #3
     public static Expression op_overload(Expression e, Ptr<Scope> sc) {
-        return op_overload(e, sc, null);
+        return op_overload(e, sc, (BytePtr)null);
     }
 
+    // Erasure: compare_overload<BinExp, Ptr, Identifier, Ptr>
     public static Expression compare_overload(BinExp e, Ptr<Scope> sc, Identifier id, BytePtr pop) {
         AggregateDeclaration ad1 = isAggregate(e.e1.value.type.value);
         AggregateDeclaration ad2 = isAggregate(e.e2.value.type.value);
@@ -1470,6 +1540,7 @@ public class opover {
         return result != null ? result : checkAliasThisForRhs(isAggregate(e.e2.value.type.value), sc, e);
     }
 
+    // Erasure: build_overload<Loc, Ptr, Expression, Expression, Dsymbol>
     public static Expression build_overload(Loc loc, Ptr<Scope> sc, Expression ethis, Expression earg, Dsymbol d) {
         assert(d != null);
         Expression e = null;
@@ -1487,6 +1558,7 @@ public class opover {
         return e;
     }
 
+    // Erasure: search_function<ScopeDsymbol, Identifier>
     public static Dsymbol search_function(ScopeDsymbol ad, Identifier funcid) {
         Dsymbol s = ad.search(Loc.initial, funcid, 8);
         if (s != null)
@@ -1506,6 +1578,7 @@ public class opover {
         return null;
     }
 
+    // Erasure: inferForeachAggregate<Ptr, boolean, Expression, Dsymbol>
     public static boolean inferForeachAggregate(Ptr<Scope> sc, boolean isForeach, Ref<Expression> feaggr, Ref<Dsymbol> sapply) {
         sapply.value = null;
         boolean sliced = false;
@@ -1584,6 +1657,7 @@ public class opover {
         throw new AssertionError("Unreachable code!");
     }
 
+    // Erasure: inferApplyArgTypes<ForeachStatement, Ptr, Dsymbol>
     public static boolean inferApplyArgTypes(ForeachStatement fes, Ptr<Scope> sc, Ref<Dsymbol> sapply) {
         if ((fes.parameters == null) || ((fes.parameters.get()).length == 0))
         {
@@ -1721,6 +1795,7 @@ public class opover {
         return true;
     }
 
+    // Erasure: findBestOpApplyMatch<Expression, FuncDeclaration, Ptr>
     public static FuncDeclaration findBestOpApplyMatch(Expression ethis, FuncDeclaration fstart, Ptr<DArray<Parameter>> parameters) {
         byte mod = ethis.type.value.mod;
         int match = MATCH.nomatch;
@@ -1778,6 +1853,7 @@ public class opover {
         return fd_best;
     }
 
+    // Erasure: matchParamsToOpApply<TypeFunction, Ptr, boolean>
     public static boolean matchParamsToOpApply(TypeFunction tf, Ptr<DArray<Parameter>> parameters, boolean infer) {
         boolean nomatch = false;
         if ((tf.parameterList.length() != 1))
@@ -1820,6 +1896,7 @@ public class opover {
         return true;
     }
 
+    // Erasure: reverseRelation<byte>
     public static byte reverseRelation(byte op) {
         switch ((op & 0xFF))
         {

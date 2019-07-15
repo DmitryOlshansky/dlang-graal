@@ -42,16 +42,19 @@ public class traits {
     static Slice<ByteSlice> _sharedStaticCtor_L88_C1names = slice(initializer_0);
     private static class PointerBitmapVisitor extends Visitor
     {
+        // Erasure: __ctor<Ptr, long>
         public  PointerBitmapVisitor(Ptr<DArray<long>> _data, long _sz_size_t) {
             this.data = pcopy(_data);
             this.sz_size_t = _sz_size_t;
         }
 
+        // Erasure: setpointer<long>
         public  void setpointer(long off) {
             long ptroff = off / this.sz_size_t;
             (this.data.get()).get((int)(ptroff / (8L * this.sz_size_t))) |= (long)(1L << (int)(ptroff % (8L * this.sz_size_t)));
         }
 
+        // Erasure: visit<Type>
         public  void visit(Type t) {
             Type tb = t.toBasetype();
             if ((!pequals(tb, t)))
@@ -60,14 +63,17 @@ public class traits {
             }
         }
 
+        // Erasure: visit<TypeError>
         public  void visit(TypeError t) {
             this.visit((Type)t);
         }
 
+        // Erasure: visit<TypeNext>
         public  void visit(TypeNext t) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<TypeBasic>
         public  void visit(TypeBasic t) {
             if (((t.ty & 0xFF) == ENUMTY.Tvoid))
             {
@@ -75,13 +81,16 @@ public class traits {
             }
         }
 
+        // Erasure: visit<TypeVector>
         public  void visit(TypeVector t) {
         }
 
+        // Erasure: visit<TypeArray>
         public  void visit(TypeArray t) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<TypeSArray>
         public  void visit(TypeSArray t) {
             long arrayoff = this.offset;
             long nextsize = t.next.value.size();
@@ -100,14 +109,17 @@ public class traits {
             this.offset = arrayoff;
         }
 
+        // Erasure: visit<TypeDArray>
         public  void visit(TypeDArray t) {
             this.setpointer(this.offset + this.sz_size_t);
         }
 
+        // Erasure: visit<TypeAArray>
         public  void visit(TypeAArray t) {
             this.setpointer(this.offset);
         }
 
+        // Erasure: visit<TypePointer>
         public  void visit(TypePointer t) {
             if (((t.nextOf().ty & 0xFF) != ENUMTY.Tfunction))
             {
@@ -115,56 +127,70 @@ public class traits {
             }
         }
 
+        // Erasure: visit<TypeReference>
         public  void visit(TypeReference t) {
             this.setpointer(this.offset);
         }
 
+        // Erasure: visit<TypeClass>
         public  void visit(TypeClass t) {
             this.setpointer(this.offset);
         }
 
+        // Erasure: visit<TypeFunction>
         public  void visit(TypeFunction t) {
         }
 
+        // Erasure: visit<TypeDelegate>
         public  void visit(TypeDelegate t) {
             this.setpointer(this.offset);
         }
 
+        // Erasure: visit<TypeQualified>
         public  void visit(TypeQualified t) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<TypeIdentifier>
         public  void visit(TypeIdentifier t) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<TypeInstance>
         public  void visit(TypeInstance t) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<TypeTypeof>
         public  void visit(TypeTypeof t) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<TypeReturn>
         public  void visit(TypeReturn t) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<TypeEnum>
         public  void visit(TypeEnum t) {
             this.visit((Type)t);
         }
 
+        // Erasure: visit<TypeTuple>
         public  void visit(TypeTuple t) {
             this.visit((Type)t);
         }
 
+        // Erasure: visit<TypeSlice>
         public  void visit(TypeSlice t) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<TypeNull>
         public  void visit(TypeNull t) {
         }
 
+        // Erasure: visit<TypeStruct>
         public  void visit(TypeStruct t) {
             long structoff = this.offset;
             {
@@ -186,6 +212,7 @@ public class traits {
             this.offset = structoff;
         }
 
+        // Erasure: visitClass<TypeClass>
         public  void visitClass(TypeClass t) {
             long classoff = this.offset;
             if (t.sym.baseClass != null)
@@ -213,6 +240,7 @@ public class traits {
     }
 
     static boolean LOGSEMANTIC = false;
+    // Erasure: getDsymbolWithoutExpCtx<RootObject>
     public static Dsymbol getDsymbolWithoutExpCtx(RootObject oarg) {
         {
             Expression e = isExpression(oarg);
@@ -244,6 +272,7 @@ public class traits {
             }
         }
     }
+    // Erasure: getTypePointerBitmap<Loc, Type, Ptr>
     public static long getTypePointerBitmap(Loc loc, Type t, Ptr<DArray<long>> data) {
         long sz = 0L;
         if (((t.ty & 0xFF) == ENUMTY.Tclass) && (((TypeClass)t).sym.isInterfaceDeclaration() == null))
@@ -282,6 +311,7 @@ public class traits {
         return pbv.error ? -1L : sz;
     }
 
+    // Erasure: pointerBitmap<TraitsExp>
     public static Expression pointerBitmap(TraitsExp e) {
         if ((e.args == null) || ((e.args.get()).length != 1))
         {
@@ -318,6 +348,7 @@ public class traits {
         }
     }
 
+    // Erasure: semanticTraits<TraitsExp, Ptr>
     public static Expression semanticTraits(TraitsExp e, Ptr<Scope> sc) {
         if ((!pequals(e.ident, Id.compiles)) && (!pequals(e.ident, Id.isSame)) && (!pequals(e.ident, Id.identifier)) && (!pequals(e.ident, Id.getProtection)) && (!pequals(e.ident, Id.getAttributes)))
         {

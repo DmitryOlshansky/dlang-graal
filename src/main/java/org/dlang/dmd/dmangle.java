@@ -29,6 +29,7 @@ public class dmangle {
     private static final ByteSlice initializer_0 = {(byte)65, (byte)71, (byte)72, (byte)80, (byte)82, (byte)70, (byte)73, (byte)67, (byte)83, (byte)69, (byte)68, (byte)110, (byte)118, (byte)103, (byte)104, (byte)115, (byte)116, (byte)105, (byte)107, (byte)108, (byte)109, (byte)102, (byte)100, (byte)101, (byte)111, (byte)112, (byte)106, (byte)113, (byte)114, (byte)99, (byte)98, (byte)97, (byte)117, (byte)119, (byte)64, (byte)64, (byte)64, (byte)66, (byte)64, (byte)64, (byte)110, (byte)64, (byte)122, (byte)122, (byte)64};
 
     static ByteSlice mangleChar = slice(initializer_0);
+    // Erasure: tyToDecoBuffer<Ptr, int>
     public static void tyToDecoBuffer(Ptr<OutBuffer> buf, int ty) {
         byte c = mangleChar.get(ty);
         (buf.get()).writeByte((c & 0xFF));
@@ -38,6 +39,7 @@ public class dmangle {
         }
     }
 
+    // Erasure: MODtoDecoBuffer<Ptr, byte>
     public static void MODtoDecoBuffer(Ptr<OutBuffer> buf, byte mod) {
         switch ((mod & 0xFF))
         {
@@ -77,10 +79,12 @@ public class dmangle {
         public AA<Type,int> types = new AA<Type,int>();
         public AA<Identifier,int> idents = new AA<Identifier,int>();
         public Ptr<OutBuffer> buf = null;
+        // Erasure: __ctor<Ptr>
         public  Mangler(Ptr<OutBuffer> buf) {
             this.buf = pcopy(buf);
         }
 
+        // Erasure: writeBackRef<int>
         public  void writeBackRef(int pos) {
             (this.buf.get()).writeByte(81);
             int base = 26;
@@ -97,6 +101,7 @@ public class dmangle {
             (this.buf.get()).writeByte((97 + ((byte)pos & 0xFF)));
         }
 
+        // Erasure: backrefType<Type>
         public  boolean backrefType(Type t) {
             if (t.isTypeBasic() == null)
             {
@@ -111,6 +116,7 @@ public class dmangle {
             return false;
         }
 
+        // Erasure: backrefIdentifier<Identifier>
         public  boolean backrefIdentifier(Identifier id) {
             Ptr<Integer> p = pcopy(this.idents.getLvalue(id));
             if (p.get() != 0)
@@ -122,10 +128,12 @@ public class dmangle {
             return false;
         }
 
+        // Erasure: mangleSymbol<Dsymbol>
         public  void mangleSymbol(Dsymbol s) {
             s.accept(this);
         }
 
+        // Erasure: mangleType<Type>
         public  void mangleType(Type t) {
             if (!this.backrefType(t))
             {
@@ -133,6 +141,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: mangleIdentifier<Identifier, Dsymbol>
         public  void mangleIdentifier(Identifier id, Dsymbol s) {
             if (!this.backrefIdentifier(id))
             {
@@ -140,6 +149,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: visitWithMask<Type, byte>
         public  void visitWithMask(Type t, byte modMask) {
             if (((modMask & 0xFF) != (t.mod & 0xFF)))
             {
@@ -148,20 +158,24 @@ public class dmangle {
             this.mangleType(t);
         }
 
+        // Erasure: visit<Type>
         public  void visit(Type t) {
             tyToDecoBuffer(this.buf, (t.ty & 0xFF));
         }
 
+        // Erasure: visit<TypeNext>
         public  void visit(TypeNext t) {
             this.visit((Type)t);
             this.visitWithMask(t.next.value, t.mod);
         }
 
+        // Erasure: visit<TypeVector>
         public  void visit(TypeVector t) {
             (this.buf.get()).writestring(new ByteSlice("Nh"));
             this.visitWithMask(t.basetype, t.mod);
         }
 
+        // Erasure: visit<TypeSArray>
         public  void visit(TypeSArray t) {
             this.visit((Type)t);
             if (t.dim != null)
@@ -174,6 +188,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: visit<TypeDArray>
         public  void visit(TypeDArray t) {
             this.visit((Type)t);
             if (t.next.value != null)
@@ -182,16 +197,19 @@ public class dmangle {
             }
         }
 
+        // Erasure: visit<TypeAArray>
         public  void visit(TypeAArray t) {
             this.visit((Type)t);
             this.visitWithMask(t.index, (byte)0);
             this.visitWithMask(t.next.value, t.mod);
         }
 
+        // Erasure: visit<TypeFunction>
         public  void visit(TypeFunction t) {
             this.mangleFuncType(t, t, t.mod, t.next.value);
         }
 
+        // Erasure: mangleFuncType<TypeFunction, TypeFunction, byte, Type>
         public  void mangleFuncType(TypeFunction t, TypeFunction ta, byte modMask, Type tret) {
             if ((t.inuse != 0) && (tret != null))
             {
@@ -278,6 +296,7 @@ public class dmangle {
             t.inuse--;
         }
 
+        // Erasure: visit<TypeIdentifier>
         public  void visit(TypeIdentifier t) {
             this.visit((Type)t);
             ByteSlice name = t.ident.asString().copy();
@@ -285,31 +304,37 @@ public class dmangle {
             (this.buf.get()).writestring(name);
         }
 
+        // Erasure: visit<TypeEnum>
         public  void visit(TypeEnum t) {
             this.visit((Type)t);
             this.mangleSymbol(t.sym);
         }
 
+        // Erasure: visit<TypeStruct>
         public  void visit(TypeStruct t) {
             this.visit((Type)t);
             this.mangleSymbol(t.sym);
         }
 
+        // Erasure: visit<TypeClass>
         public  void visit(TypeClass t) {
             this.visit((Type)t);
             this.mangleSymbol(t.sym);
         }
 
+        // Erasure: visit<TypeTuple>
         public  void visit(TypeTuple t) {
             this.visit((Type)t);
             this.paramsToDecoBuffer(t.arguments);
             (this.buf.get()).writeByte(90);
         }
 
+        // Erasure: visit<TypeNull>
         public  void visit(TypeNull t) {
             this.visit((Type)t);
         }
 
+        // Erasure: mangleDecl<Declaration>
         public  void mangleDecl(Declaration sthis) {
             this.mangleParent(sthis);
             assert(sthis.ident != null);
@@ -331,6 +356,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: mangleParent<Dsymbol>
         public  void mangleParent(Dsymbol s) {
             Dsymbol p = null;
             {
@@ -370,6 +396,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: mangleFunc<FuncDeclaration, boolean>
         public  void mangleFunc(FuncDeclaration fd, boolean inParent) {
             if (fd.needThis() || fd.isNested())
             {
@@ -391,6 +418,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: toBuffer<Array, Dsymbol>
         public  void toBuffer(ByteSlice id, Dsymbol s) {
             int len = id.getLength();
             if (((this.buf.get()).offset + len >= 8388608))
@@ -404,6 +432,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: externallyMangledIdentifier<Declaration>
         public static ByteSlice externallyMangledIdentifier(Declaration d) {
             if ((d.parent.value == null) || (d.parent.value.isModule() != null) || (d.linkage == LINK.cpp))
             {
@@ -430,6 +459,7 @@ public class dmangle {
             return new ByteSlice();
         }
 
+        // Erasure: visit<Declaration>
         public  void visit(Declaration d) {
             {
                 ByteSlice id = externallyMangledIdentifier(d).copy();
@@ -443,6 +473,7 @@ public class dmangle {
             this.mangleDecl(d);
         }
 
+        // Erasure: visit<FuncDeclaration>
         public  void visit(FuncDeclaration fd) {
             if (fd.isUnique())
             {
@@ -454,6 +485,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: visit<FuncAliasDeclaration>
         public  void visit(FuncAliasDeclaration fd) {
             FuncDeclaration f = fd.toAliasFunc();
             FuncAliasDeclaration fa = f.isFuncAliasDeclaration();
@@ -470,6 +502,7 @@ public class dmangle {
             this.visit((Dsymbol)fd);
         }
 
+        // Erasure: visit<OverDeclaration>
         public  void visit(OverDeclaration od) {
             if (od.overnext != null)
             {
@@ -501,6 +534,7 @@ public class dmangle {
             this.visit((Dsymbol)od);
         }
 
+        // Erasure: mangleExact<FuncDeclaration>
         public  void mangleExact(FuncDeclaration fd) {
             assert(fd.isFuncAliasDeclaration() == null);
             if (fd.mangleOverride.getLength() != 0)
@@ -521,6 +555,7 @@ public class dmangle {
             this.visit((Declaration)fd);
         }
 
+        // Erasure: visit<VarDeclaration>
         public  void visit(VarDeclaration vd) {
             if (vd.mangleOverride.getLength() != 0)
             {
@@ -530,6 +565,7 @@ public class dmangle {
             this.visit((Declaration)vd);
         }
 
+        // Erasure: visit<AggregateDeclaration>
         public  void visit(AggregateDeclaration ad) {
             ClassDeclaration cd = ad.isClassDeclaration();
             Dsymbol parentsave = ad.parent.value;
@@ -544,6 +580,7 @@ public class dmangle {
             ad.parent.value = parentsave;
         }
 
+        // Erasure: visit<TemplateInstance>
         public  void visit(TemplateInstance ti) {
             if (ti.tempdecl == null)
             {
@@ -563,6 +600,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: mangleTemplateInstance<TemplateInstance>
         public  void mangleTemplateInstance(TemplateInstance ti) {
             TemplateDeclaration tempdecl = ti.tempdecl.isTemplateDeclaration();
             assert(tempdecl != null);
@@ -808,6 +846,7 @@ public class dmangle {
             (this.buf.get()).writeByte(90);
         }
 
+        // Erasure: visit<Dsymbol>
         public  void visit(Dsymbol s) {
             this.mangleParent(s);
             if (s.ident != null)
@@ -820,10 +859,12 @@ public class dmangle {
             }
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             e.error(new BytePtr("expression `%s` is not a valid template value argument"), e.toChars());
         }
 
+        // Erasure: visit<IntegerExp>
         public  void visit(IntegerExp e) {
             long v = e.toInteger();
             if (((long)v < 0L))
@@ -838,11 +879,13 @@ public class dmangle {
             }
         }
 
+        // Erasure: visit<RealExp>
         public  void visit(RealExp e) {
             (this.buf.get()).writeByte(101);
             this.realToMangleBuffer(e.value);
         }
 
+        // Erasure: realToMangleBuffer<double>
         public  void realToMangleBuffer(double value) {
             if (CTFloat.isNaN(value))
             {
@@ -883,6 +926,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: visit<ComplexExp>
         public  void visit(ComplexExp e) {
             (this.buf.get()).writeByte(99);
             this.realToMangleBuffer(e.toReal());
@@ -890,10 +934,12 @@ public class dmangle {
             this.realToMangleBuffer(e.toImaginary());
         }
 
+        // Erasure: visit<NullExp>
         public  void visit(NullExp e) {
             (this.buf.get()).writeByte(110);
         }
 
+        // Erasure: visit<StringExp>
         public  void visit(StringExp e) {
             byte m = (byte)255;
             OutBuffer tmp = new OutBuffer();
@@ -968,6 +1014,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             int dim = e.elements != null ? (e.elements.get()).length : 0;
             (this.buf.get()).writeByte(65);
@@ -982,6 +1029,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
             int dim = (e.keys.get()).length;
             (this.buf.get()).writeByte(65);
@@ -997,6 +1045,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             int dim = e.elements != null ? (e.elements.get()).length : 0;
             (this.buf.get()).writeByte(83);
@@ -1019,6 +1068,7 @@ public class dmangle {
             }
         }
 
+        // Erasure: paramsToDecoBuffer<Ptr>
         public  void paramsToDecoBuffer(Ptr<DArray<Parameter>> parameters) {
             Function2<Integer,Parameter,Integer> paramsToDecoBufferDg = new Function2<Integer,Parameter,Integer>() {
                 public Integer invoke(Integer n, Parameter p) {
@@ -1031,6 +1081,7 @@ public class dmangle {
             Parameter._foreach(parameters, paramsToDecoBufferDg, null);
         }
 
+        // Erasure: visit<Parameter>
         public  void visit(Parameter p) {
             if (((p.storageClass & 524288L) != 0) && ((p.storageClass & 562949953421312L) == 0))
             {
@@ -1071,10 +1122,12 @@ public class dmangle {
             return that;
         }
     }
+    // Erasure: isValidMangling<int>
     public static boolean isValidMangling(int c) {
         return (c >= 65) && (c <= 90) || (c >= 97) && (c <= 122) || (c >= 48) && (c <= 57) || (c != 0) && (strchr(new BytePtr("$%().:?@[]_"), c) != null);
     }
 
+    // Erasure: mangleExact<FuncDeclaration>
     public static BytePtr mangleExact(FuncDeclaration fd) {
         if (fd.mangleString == null)
         {
@@ -1090,6 +1143,7 @@ public class dmangle {
         return fd.mangleString;
     }
 
+    // Erasure: mangleToBuffer<Type, Ptr>
     public static void mangleToBuffer(Type t, Ptr<OutBuffer> buf) {
         if (t.deco != null)
         {
@@ -1102,21 +1156,25 @@ public class dmangle {
         }
     }
 
+    // Erasure: mangleToBuffer<Expression, Ptr>
     public static void mangleToBuffer(Expression e, Ptr<OutBuffer> buf) {
         Mangler v = new Mangler(buf);
         e.accept(v);
     }
 
+    // Erasure: mangleToBuffer<Dsymbol, Ptr>
     public static void mangleToBuffer(Dsymbol s, Ptr<OutBuffer> buf) {
         Mangler v = new Mangler(buf);
         s.accept(v);
     }
 
+    // Erasure: mangleToBuffer<TemplateInstance, Ptr>
     public static void mangleToBuffer(TemplateInstance ti, Ptr<OutBuffer> buf) {
         Mangler v = new Mangler(buf);
         v.mangleTemplateInstance(ti);
     }
 
+    // Erasure: mangleToFuncSignature<OutBuffer, FuncDeclaration>
     public static void mangleToFuncSignature(OutBuffer buf, FuncDeclaration fd) {
         Ref<OutBuffer> buf_ref = ref(buf);
         TypeFunction tf = fd.type.isTypeFunction();

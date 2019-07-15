@@ -26,24 +26,29 @@ public class aliasthis {
     public static class AliasThis extends Dsymbol
     {
         public Identifier ident = null;
+        // Erasure: __ctor<Loc, Identifier>
         public  AliasThis(Loc loc, Identifier ident) {
             super(loc, null);
             this.ident = ident;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new AliasThis(this.loc, this.ident);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("alias this");
         }
 
+        // Erasure: isAliasThis<>
         public  AliasThis isAliasThis() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -71,6 +76,7 @@ public class aliasthis {
             return that;
         }
     }
+    // Erasure: resolveAliasThis<Ptr, Expression, boolean>
     public static Expression resolveAliasThis(Ptr<Scope> sc, Expression e, boolean gag) {
         {
             AggregateDeclaration ad = isAggregate(e.type.value);

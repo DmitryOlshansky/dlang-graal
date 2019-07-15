@@ -39,11 +39,13 @@ public class dcast {
         private Type t = null;
         private Ptr<Scope> sc = null;
         private Expression result = null;
+        // Erasure: __ctor<Ptr, Type>
         public  ImplicitCastTo(Ptr<Scope> sc, Type t) {
             this.sc = pcopy(sc);
             this.t = t;
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             int match = e.implicitConvTo(this.t);
             if (match != 0)
@@ -115,6 +117,7 @@ public class dcast {
             this.result = new ErrorExp();
         }
 
+        // Erasure: visit<StringExp>
         public  void visit(StringExp e) {
             this.visit((Expression)e);
             if (((this.result.op & 0xFF) == 121))
@@ -123,10 +126,12 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<ErrorExp>
         public  void visit(ErrorExp e) {
             this.result = e;
         }
 
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp e) {
             Ref<FuncExp> fe = ref(null);
             if ((e.matchType(this.t, this.sc, ptr(fe), 0) > MATCH.nomatch))
@@ -137,6 +142,7 @@ public class dcast {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             this.visit((Expression)e);
             Type tb = this.result.type.value.toBasetype();
@@ -146,6 +152,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             this.visit((Expression)e);
             if (((this.result.op & 0xFF) != 31))
@@ -175,6 +182,7 @@ public class dcast {
     }
     private static class ClassCheck
     {
+        // Erasure: convertible<Loc, ClassDeclaration, byte>
         public static boolean convertible(Loc loc, ClassDeclaration cd, byte mod) {
             {
                 int i = 0;
@@ -225,11 +233,13 @@ public class dcast {
     {
         private Type t = null;
         private int result = 0;
+        // Erasure: __ctor<Type>
         public  ImplicitConvTo(Type t) {
             this.t = t;
             this.result = MATCH.nomatch;
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             if ((pequals(this.t, Type.terror)))
             {
@@ -269,6 +279,7 @@ public class dcast {
             }
         }
 
+        // Erasure: implicitMod<Expression, Type, byte>
         public static int implicitMod(Expression e, Type t, byte mod) {
             Type tprime = null;
             if (((t.ty & 0xFF) == ENUMTY.Tpointer))
@@ -290,6 +301,7 @@ public class dcast {
             return e.implicitConvTo(tprime);
         }
 
+        // Erasure: implicitConvToAddMin<BinExp, Type>
         public static int implicitConvToAddMin(BinExp e, Type t) {
             Type tb = t.toBasetype();
             Type typeb = e.type.value.toBasetype();
@@ -312,6 +324,7 @@ public class dcast {
             return MATCH.nomatch;
         }
 
+        // Erasure: visit<AddExp>
         public  void visit(AddExp e) {
             this.visit((Expression)e);
             if ((this.result == MATCH.nomatch))
@@ -320,6 +333,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<MinExp>
         public  void visit(MinExp e) {
             this.visit((Expression)e);
             if ((this.result == MATCH.nomatch))
@@ -328,6 +342,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<IntegerExp>
         public  void visit(IntegerExp e) {
             int m = e.type.value.implicitConvTo(this.t);
             if ((m >= MATCH.constant))
@@ -523,9 +538,11 @@ public class dcast {
             this.result = MATCH.convert;
         }
 
+        // Erasure: visit<ErrorExp>
         public  void visit(ErrorExp e) {
         }
 
+        // Erasure: visit<NullExp>
         public  void visit(NullExp e) {
             if (e.type.value.equals(this.t))
             {
@@ -540,6 +557,7 @@ public class dcast {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -568,6 +586,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<StringExp>
         public  void visit(StringExp e) {
             if ((e.committed == 0) && ((this.t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.t.nextOf().ty & 0xFF) == ENUMTY.Tvoid))
             {
@@ -715,6 +734,7 @@ public class dcast {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             Type tb = this.t.toBasetype();
             Type typeb = e.type.value.toBasetype();
@@ -819,6 +839,7 @@ public class dcast {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
             Type tb = this.t.toBasetype();
             Type typeb = e.type.value.toBasetype();
@@ -855,6 +876,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<CallExp>
         public  void visit(CallExp e) {
             boolean LOG = false;
             this.visit((Expression)e);
@@ -953,6 +975,7 @@ public class dcast {
             this.result = MATCH.constant;
         }
 
+        // Erasure: visit<AddrExp>
         public  void visit(AddrExp e) {
             this.result = e.type.value.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
@@ -992,6 +1015,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<SymOffExp>
         public  void visit(SymOffExp e) {
             this.result = e.type.value.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
@@ -1019,6 +1043,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<DelegateExp>
         public  void visit(DelegateExp e) {
             this.result = e.type.value.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
@@ -1036,6 +1061,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp e) {
             int m = e.matchType(this.t, null, null, 1);
             if ((m > MATCH.nomatch))
@@ -1046,6 +1072,7 @@ public class dcast {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<AndExp>
         public  void visit(AndExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -1057,6 +1084,7 @@ public class dcast {
             this.result = (m1 < m2) ? m1 : m2;
         }
 
+        // Erasure: visit<OrExp>
         public  void visit(OrExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -1068,6 +1096,7 @@ public class dcast {
             this.result = (m1 < m2) ? m1 : m2;
         }
 
+        // Erasure: visit<XorExp>
         public  void visit(XorExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -1079,16 +1108,19 @@ public class dcast {
             this.result = (m1 < m2) ? m1 : m2;
         }
 
+        // Erasure: visit<CondExp>
         public  void visit(CondExp e) {
             int m1 = e.e1.value.implicitConvTo(this.t);
             int m2 = e.e2.value.implicitConvTo(this.t);
             this.result = (m1 < m2) ? m1 : m2;
         }
 
+        // Erasure: visit<CommaExp>
         public  void visit(CommaExp e) {
             e.e2.value.accept(this);
         }
 
+        // Erasure: visit<CastExp>
         public  void visit(CastExp e) {
             this.result = e.type.value.implicitConvTo(this.t);
             if ((this.result != MATCH.nomatch))
@@ -1105,6 +1137,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<NewExp>
         public  void visit(NewExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -1258,6 +1291,7 @@ public class dcast {
             this.result = MATCH.constant;
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
@@ -1316,11 +1350,13 @@ public class dcast {
         private Type t = null;
         private Ptr<Scope> sc = null;
         private Expression result = null;
+        // Erasure: __ctor<Ptr, Type>
         public  CastTo(Ptr<Scope> sc, Type t) {
             this.sc = pcopy(sc);
             this.t = t;
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             if (e.type.value.equals(this.t))
             {
@@ -1557,10 +1593,12 @@ public class dcast {
             this.result.type.value = this.t;
         }
 
+        // Erasure: visit<ErrorExp>
         public  void visit(ErrorExp e) {
             this.result = e;
         }
 
+        // Erasure: visit<RealExp>
         public  void visit(RealExp e) {
             if (!e.type.value.equals(this.t))
             {
@@ -1578,6 +1616,7 @@ public class dcast {
             this.result = e;
         }
 
+        // Erasure: visit<ComplexExp>
         public  void visit(ComplexExp e) {
             if (!e.type.value.equals(this.t))
             {
@@ -1595,6 +1634,7 @@ public class dcast {
             this.result = e;
         }
 
+        // Erasure: visit<NullExp>
         public  void visit(NullExp e) {
             this.visit((Expression)e);
             if (((this.result.op & 0xFF) == 13))
@@ -1605,6 +1645,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             this.visit((Expression)e);
             if (((this.result.op & 0xFF) == 49))
@@ -1613,6 +1654,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<StringExp>
         public  void visit(StringExp e) {
             int copied = 0;
             if ((e.committed == 0) && ((this.t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.t.nextOf().ty & 0xFF) == ENUMTY.Tvoid))
@@ -1901,6 +1943,7 @@ public class dcast {
             this.result.type.value = this.t;
         }
 
+        // Erasure: visit<AddrExp>
         public  void visit(AddrExp e) {
             this.result = e;
             Type tb = this.t.toBasetype();
@@ -1974,6 +2017,7 @@ public class dcast {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<TupleExp>
         public  void visit(TupleExp e) {
             if (e.type.value.equals(this.t))
             {
@@ -1994,6 +2038,7 @@ public class dcast {
             this.result = te;
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             ArrayLiteralExp ae = e;
             Type tb = this.t.toBasetype();
@@ -2109,6 +2154,7 @@ public class dcast {
             this.visit((Expression)ae);
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
             if ((pequals(e.type.value, this.t)))
             {
@@ -2141,6 +2187,7 @@ public class dcast {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<SymOffExp>
         public  void visit(SymOffExp e) {
             if ((pequals(e.type.value, this.t)) && !e.hasOverloads)
             {
@@ -2210,6 +2257,7 @@ public class dcast {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<DelegateExp>
         public  void visit(DelegateExp e) {
             Type tb = this.t.toBasetype();
             Type typeb = e.type.value.toBasetype();
@@ -2265,6 +2313,7 @@ public class dcast {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp e) {
             Ref<FuncExp> fe = ref(null);
             if ((e.matchType(this.t, this.sc, ptr(fe), 1) > MATCH.nomatch))
@@ -2275,6 +2324,7 @@ public class dcast {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<CondExp>
         public  void visit(CondExp e) {
             if (!e.type.value.equals(this.t))
             {
@@ -2285,6 +2335,7 @@ public class dcast {
             this.result = e;
         }
 
+        // Erasure: visit<CommaExp>
         public  void visit(CommaExp e) {
             Expression e2c = e.e2.value.castTo(this.sc, this.t);
             if ((!pequals(e2c, e.e2.value)))
@@ -2299,6 +2350,7 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             Type tb = this.t.toBasetype();
             Type typeb = e.type.value.toBasetype();
@@ -2370,15 +2422,18 @@ public class dcast {
         private Type t = null;
         private int flag = 0;
         private Expression result = null;
+        // Erasure: __ctor<Type, int>
         public  InferType(Type t, int flag) {
             this.t = t;
             this.flag = flag;
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             this.result = e;
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp ale) {
             Type tb = this.t.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
@@ -2403,6 +2458,7 @@ public class dcast {
             this.result = ale;
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp aale) {
             Type tb = this.t.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Taarray))
@@ -2436,6 +2492,7 @@ public class dcast {
             this.result = aale;
         }
 
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp fe) {
             if (((this.t.ty & 0xFF) == ENUMTY.Tdelegate) || ((this.t.ty & 0xFF) == ENUMTY.Tpointer) && ((this.t.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
@@ -2444,6 +2501,7 @@ public class dcast {
             this.result = fe;
         }
 
+        // Erasure: visit<CondExp>
         public  void visit(CondExp ce) {
             Type tb = this.t.toBasetype();
             ce.e1.value = inferType(ce.e1.value, tb, this.flag);
@@ -2457,42 +2515,50 @@ public class dcast {
     private static class IntRangeVisitor extends Visitor
     {
         private IntRange range = new IntRange();
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             this.range.opAssign(IntRange.fromType(e.type.value).copy());
         }
 
+        // Erasure: visit<IntegerExp>
         public  void visit(IntegerExp e) {
             this.range.opAssign(new IntRange(new SignExtendedNumber(e.getInteger(), false))._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<CastExp>
         public  void visit(CastExp e) {
             this.range.opAssign(getIntRange(e.e1.value)._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<AddExp>
         public  void visit(AddExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
             this.range.opAssign(ir1.opBinary_plus(ir2)._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<MinExp>
         public  void visit(MinExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
             this.range.opAssign(ir1.opBinary_minus(ir2)._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<DivExp>
         public  void visit(DivExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
             this.range.opAssign(ir1.opBinary_div(ir2)._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<MulExp>
         public  void visit(MulExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
             this.range.opAssign(ir1.opBinary_mul(ir2)._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<ModExp>
         public  void visit(ModExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
@@ -2504,6 +2570,7 @@ public class dcast {
             this.range.opAssign(ir1.opBinary_mod(ir2)._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<AndExp>
         public  void visit(AndExp e) {
             IntRange result = new IntRange();
             Ref<Boolean> hasResult = ref(false);
@@ -2512,6 +2579,7 @@ public class dcast {
             this.range.opAssign(result._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<OrExp>
         public  void visit(OrExp e) {
             IntRange result = new IntRange();
             Ref<Boolean> hasResult = ref(false);
@@ -2520,6 +2588,7 @@ public class dcast {
             this.range.opAssign(result._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<XorExp>
         public  void visit(XorExp e) {
             IntRange result = new IntRange();
             Ref<Boolean> hasResult = ref(false);
@@ -2528,34 +2597,40 @@ public class dcast {
             this.range.opAssign(result._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<ShlExp>
         public  void visit(ShlExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
             this.range.opAssign(ir1.opBinary_ll(ir2)._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<ShrExp>
         public  void visit(ShrExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
             this.range.opAssign(ir1.opBinary_rr(ir2)._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<UshrExp>
         public  void visit(UshrExp e) {
             IntRange ir1 = getIntRange(e.e1.value).castUnsigned(e.e1.value.type.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
             this.range.opAssign(ir1.opBinary_rrr(ir2)._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<AssignExp>
         public  void visit(AssignExp e) {
             this.range.opAssign(getIntRange(e.e2.value)._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<CondExp>
         public  void visit(CondExp e) {
             IntRange ir1 = getIntRange(e.e1.value).copy();
             IntRange ir2 = getIntRange(e.e2.value).copy();
             this.range.opAssign(ir1.unionWith(ir2)._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<VarExp>
         public  void visit(VarExp e) {
             Expression ie = null;
             VarDeclaration vd = e.var.isVarDeclaration();
@@ -2573,15 +2648,18 @@ public class dcast {
             }
         }
 
+        // Erasure: visit<CommaExp>
         public  void visit(CommaExp e) {
             e.e2.value.accept(this);
         }
 
+        // Erasure: visit<ComExp>
         public  void visit(ComExp e) {
             IntRange ir = getIntRange(e.e1.value).copy();
             this.range.opAssign(new IntRange(new SignExtendedNumber(~ir.imax.value, !ir.imax.negative), new SignExtendedNumber(~ir.imin.value, !ir.imin.negative))._cast(e.type.value).copy());
         }
 
+        // Erasure: visit<NegExp>
         public  void visit(NegExp e) {
             IntRange ir = getIntRange(e.e1.value).copy();
             this.range.opAssign(ir.opUnary_minus()._cast(e.type.value).copy());
@@ -2592,6 +2670,7 @@ public class dcast {
     }
 
     static boolean LOG = false;
+    // Erasure: implicitCastTo<Expression, Ptr, Type>
     public static Expression implicitCastTo(Expression e, Ptr<Scope> sc, Type t) {
         // skipping duplicate class ImplicitCastTo
         ImplicitCastTo v = new ImplicitCastTo(sc, t);
@@ -2599,6 +2678,7 @@ public class dcast {
         return v.result;
     }
 
+    // Erasure: implicitConvTo<Expression, Type>
     public static int implicitConvTo(Expression e, Type t) {
         // skipping duplicate class ImplicitConvTo
         ImplicitConvTo v = new ImplicitConvTo(t);
@@ -2606,6 +2686,7 @@ public class dcast {
         return v.result;
     }
 
+    // Erasure: toStaticArrayType<SliceExp>
     public static Type toStaticArrayType(SliceExp e) {
         if ((e.lwr.value != null) && (e.upr.value != null))
         {
@@ -2628,6 +2709,7 @@ public class dcast {
         return null;
     }
 
+    // Erasure: tryAliasThisCast<Expression, Ptr, Type, Type, Type>
     public static Expression tryAliasThisCast(Expression e, Ptr<Scope> sc, Type tob, Type t1b, Type t) {
         Expression result = null;
         AggregateDeclaration t1ad = isAggregate(t1b);
@@ -2646,6 +2728,7 @@ public class dcast {
         return global.endGagging(errors) ? null : result;
     }
 
+    // Erasure: castTo<Expression, Ptr, Type>
     public static Expression castTo(Expression e, Ptr<Scope> sc, Type t) {
         // skipping duplicate class CastTo
         CastTo v = new CastTo(sc, t);
@@ -2653,6 +2736,7 @@ public class dcast {
         return v.result;
     }
 
+    // Erasure: inferType<Expression, Type, int>
     public static Expression inferType(Expression e, Type t, int flag) {
         // skipping duplicate class InferType
         if (t == null)
@@ -2669,6 +2753,7 @@ public class dcast {
         return inferType(e, t, 0);
     }
 
+    // Erasure: scaleFactor<BinExp, Ptr>
     public static Expression scaleFactor(BinExp be, Ptr<Scope> sc) {
         Type t1b = be.e1.value.type.value.toBasetype();
         Type t2b = be.e2.value.type.value.toBasetype();
@@ -2725,6 +2810,7 @@ public class dcast {
         return be;
     }
 
+    // Erasure: isVoidArrayLiteral<Expression, Type>
     public static boolean isVoidArrayLiteral(Expression e, Type other) {
         for (; ((e.op & 0xFF) == 47) && ((e.type.value.ty & 0xFF) == ENUMTY.Tarray) && ((((ArrayLiteralExp)e).elements.get()).length == 1);){
             ArrayLiteralExp ale = (ArrayLiteralExp)e;
@@ -2746,6 +2832,7 @@ public class dcast {
         return ((e.op & 0xFF) == 47) && ((t.ty & 0xFF) == ENUMTY.Tarray) && ((t.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((((ArrayLiteralExp)e).elements.get()).length == 0);
     }
 
+    // Erasure: typeMerge<Ptr, byte, Ptr, Ptr, Ptr>
     public static boolean typeMerge(Ptr<Scope> sc, byte op, Ptr<Type> pt, Ptr<Expression> pe1, Ptr<Expression> pe2) {
         int m = MATCH.nomatch;
         Ref<Expression> e1 = ref(pe1.get());
@@ -3447,6 +3534,7 @@ public class dcast {
         } catch(Dispatch0 __d){}
     }
 
+    // Erasure: typeCombine<BinExp, Ptr>
     public static Expression typeCombine(BinExp be, Ptr<Scope> sc) {
         Function0<Expression> errorReturn = new Function0<Expression>() {
             public Expression invoke() {
@@ -3492,6 +3580,7 @@ public class dcast {
         return null;
     }
 
+    // Erasure: integralPromotions<Expression, Ptr>
     public static Expression integralPromotions(Expression e, Ptr<Scope> sc) {
         switch ((e.type.value.toBasetype().ty & 0xFF))
         {
@@ -3516,6 +3605,7 @@ public class dcast {
         return e;
     }
 
+    // Erasure: charPromotions<Expression, Ptr>
     public static Expression charPromotions(Expression e, Ptr<Scope> sc) {
         switch ((e.type.value.toBasetype().ty & 0xFF))
         {
@@ -3530,6 +3620,7 @@ public class dcast {
         return e;
     }
 
+    // Erasure: fix16997<Ptr, UnaExp>
     public static void fix16997(Ptr<Scope> sc, UnaExp ue) {
         if (global.params.fix16997)
         {
@@ -3554,6 +3645,7 @@ public class dcast {
         }
     }
 
+    // Erasure: arrayTypeCompatible<Loc, Type, Type>
     public static boolean arrayTypeCompatible(Loc loc, Type t1, Type t2) {
         t1 = t1.toBasetype().merge2();
         t2 = t2.toBasetype().merge2();
@@ -3568,6 +3660,7 @@ public class dcast {
         return false;
     }
 
+    // Erasure: arrayTypeCompatibleWithoutCasting<Type, Type>
     public static boolean arrayTypeCompatibleWithoutCasting(Type t1, Type t2) {
         t1 = t1.toBasetype();
         t2 = t2.toBasetype();
@@ -3581,6 +3674,7 @@ public class dcast {
         return false;
     }
 
+    // Erasure: getIntRange<Expression>
     public static IntRange getIntRange(Expression e) {
         // skipping duplicate class IntRangeVisitor
         IntRangeVisitor v = new IntRangeVisitor();

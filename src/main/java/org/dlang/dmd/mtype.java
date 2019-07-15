@@ -43,6 +43,7 @@ public class mtype {
     static int LOGDOTEXP = 0;
     static int LOGDEFAULTINIT = 0;
     static long SIZE_INVALID = -1L;
+    // Erasure: MODimplicitConv<byte, byte>
     public static boolean MODimplicitConv(byte modfrom, byte modto) {
         if (((modfrom & 0xFF) == (modto & 0xFF)))
         {
@@ -78,6 +79,7 @@ public class mtype {
         }
     }
 
+    // Erasure: MODmethodConv<byte, byte>
     public static int MODmethodConv(byte modfrom, byte modto) {
         if (((modfrom & 0xFF) == (modto & 0xFF)))
         {
@@ -124,6 +126,7 @@ public class mtype {
         }
     }
 
+    // Erasure: MODmerge<byte, byte>
     public static byte MODmerge(byte mod1, byte mod2) {
         if (((mod1 & 0xFF) == (mod2 & 0xFF)))
         {
@@ -148,14 +151,17 @@ public class mtype {
         return result;
     }
 
+    // Erasure: MODtoBuffer<Ptr, byte>
     public static void MODtoBuffer(Ptr<OutBuffer> buf, byte mod) {
         (buf.get()).writestring(MODtoString(mod));
     }
 
+    // Erasure: MODtoChars<byte>
     public static BytePtr MODtoChars(byte mod) {
         return toBytePtr(MODtoString(mod));
     }
 
+    // Erasure: MODtoString<byte>
     public static ByteSlice MODtoString(byte mod) {
         switch ((mod & 0xFF))
         {
@@ -182,6 +188,7 @@ public class mtype {
         }
     }
 
+    // Erasure: ModToStc<int>
     public static long ModToStc(int mod) {
         long stc = 0L;
         if ((mod & 4) != 0)
@@ -366,20 +373,24 @@ public class mtype {
         public static Slice<Type> basic = new RawSlice<Type>(new Type[45]);
         public static StringTable stringtable = new StringTable();
         public static ByteSlice sizeTy = slice(new byte[]{(byte)68, (byte)72, (byte)88, (byte)68, (byte)68, (byte)109, (byte)100, (byte)76, (byte)76, (byte)68, (byte)68, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)72, (byte)64, (byte)96, (byte)100, (byte)68, (byte)76, (byte)92, (byte)64, (byte)68, (byte)72, (byte)72, (byte)85});
+        // Erasure: __ctor<byte>
         public  Type(byte ty) {
             super();
             this.ty = ty;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             fprintf(stderr, new BytePtr("this = %s, ty = %d\n"), this.toChars(), (this.ty & 0xFF));
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             Type t = (Type)o;
             if ((pequals(this, o)) || (t != null) && (this.deco == t.deco) && (this.deco != null))
@@ -389,14 +400,17 @@ public class mtype {
             return false;
         }
 
+        // Erasure: equivalent<Type>
         public  boolean equivalent(Type t) {
             return this.immutableOf().equals(t.immutableOf());
         }
 
+        // Erasure: dyncast<>
         public  int dyncast() {
             return DYNCAST.type;
         }
 
+        // Erasure: covariant<Type, Ptr, boolean>
         public  int covariant(Type t, Ptr<Long> pstc, boolean fix17349) {
             if (pstc != null)
             {
@@ -641,9 +655,10 @@ public class mtype {
 
         // defaulted all parameters starting with #2
         public  int covariant(Type t) {
-            return covariant(t, null, true);
+            return covariant(t, (Ptr<Long>)null, true);
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -657,6 +672,7 @@ public class mtype {
             }
         }
 
+        // Erasure: toPrettyChars<boolean>
         public  BytePtr toPrettyChars(boolean QualifyTypes) {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -675,6 +691,7 @@ public class mtype {
             return toPrettyChars(false);
         }
 
+        // Erasure: _init<>
         public static void _init() {
             stringtable._init(14000);
             {
@@ -726,23 +743,28 @@ public class mtype {
             thash_t = tsize_t;
         }
 
+        // Erasure: deinitialize<>
         public static void deinitialize() {
             stringtable.opAssign(new StringTable(null, 0, null, 0, 0, 0, 0));
         }
 
+        // Erasure: size<>
         public  long size() {
             return this.size(Loc.initial);
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             error(loc, new BytePtr("no size for type `%s`"), this.toChars());
             return -1L;
         }
 
+        // Erasure: alignsize<>
         public  int alignsize() {
             return (int)this.size(Loc.initial);
         }
 
+        // Erasure: trySemantic<Loc, Ptr>
         public  Type trySemantic(Loc loc, Ptr<Scope> sc) {
             Type tcopy = this.syntaxCopy();
             int errors = global.startGagging();
@@ -761,6 +783,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: merge2<>
         public  Type merge2() {
             Type t = this;
             assert(t != null);
@@ -781,6 +804,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: modToBuffer<Ptr>
         public  void modToBuffer(Ptr<OutBuffer> buf) {
             if (this.mod != 0)
             {
@@ -789,6 +813,7 @@ public class mtype {
             }
         }
 
+        // Erasure: modToChars<>
         public  BytePtr modToChars() {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -800,54 +825,67 @@ public class mtype {
             }
         }
 
+        // Erasure: isintegral<>
         public  boolean isintegral() {
             return false;
         }
 
+        // Erasure: isfloating<>
         public  boolean isfloating() {
             return false;
         }
 
+        // Erasure: isreal<>
         public  boolean isreal() {
             return false;
         }
 
+        // Erasure: isimaginary<>
         public  boolean isimaginary() {
             return false;
         }
 
+        // Erasure: iscomplex<>
         public  boolean iscomplex() {
             return false;
         }
 
+        // Erasure: isscalar<>
         public  boolean isscalar() {
             return false;
         }
 
+        // Erasure: isunsigned<>
         public  boolean isunsigned() {
             return false;
         }
 
+        // Erasure: ischar<>
         public  boolean ischar() {
             return false;
         }
 
+        // Erasure: isscope<>
         public  boolean isscope() {
             return false;
         }
 
+        // Erasure: isString<>
         public  boolean isString() {
             return false;
         }
 
+        // Erasure: isAssignable<>
         public  boolean isAssignable() {
             return true;
         }
 
+        // Erasure: isBoolean<>
         public  boolean isBoolean() {
             return this.isscalar();
         }
 
+        // Erasure: checkDeprecated<Loc, Ptr>
         public  void checkDeprecated(Loc loc, Ptr<Scope> sc) {
             {
                 Dsymbol s = this.toDsymbol(sc);
@@ -858,42 +896,52 @@ public class mtype {
             }
         }
 
+        // Erasure: isConst<>
         public  boolean isConst() {
             return ((this.mod & 0xFF) & MODFlags.const_) != 0;
         }
 
+        // Erasure: isImmutable<>
         public  boolean isImmutable() {
             return ((this.mod & 0xFF) & MODFlags.immutable_) != 0;
         }
 
+        // Erasure: isMutable<>
         public  boolean isMutable() {
             return ((this.mod & 0xFF) & 13) == 0;
         }
 
+        // Erasure: isShared<>
         public  boolean isShared() {
             return ((this.mod & 0xFF) & MODFlags.shared_) != 0;
         }
 
+        // Erasure: isSharedConst<>
         public  boolean isSharedConst() {
             return ((this.mod & 0xFF) & 3) == 3;
         }
 
+        // Erasure: isWild<>
         public  boolean isWild() {
             return ((this.mod & 0xFF) & MODFlags.wild) != 0;
         }
 
+        // Erasure: isWildConst<>
         public  boolean isWildConst() {
             return ((this.mod & 0xFF) & MODFlags.wildconst) == MODFlags.wildconst;
         }
 
+        // Erasure: isSharedWild<>
         public  boolean isSharedWild() {
             return ((this.mod & 0xFF) & 10) == 10;
         }
 
+        // Erasure: isNaked<>
         public  boolean isNaked() {
             return (this.mod & 0xFF) == 0;
         }
 
+        // Erasure: nullAttributes<>
         public  Type nullAttributes() {
             int sz = (sizeTy.get((this.ty & 0xFF)) & 0xFF);
             Type t = null;
@@ -923,6 +971,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: constOf<>
         public  Type constOf() {
             if (((this.mod & 0xFF) == MODFlags.const_))
             {
@@ -939,6 +988,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: immutableOf<>
         public  Type immutableOf() {
             if (this.isImmutable())
             {
@@ -955,6 +1005,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: mutableOf<>
         public  Type mutableOf() {
             Type t = this;
             if (this.isImmutable())
@@ -1014,6 +1065,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: sharedOf<>
         public  Type sharedOf() {
             if (((this.mod & 0xFF) == MODFlags.shared_))
             {
@@ -1030,6 +1082,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: sharedConstOf<>
         public  Type sharedConstOf() {
             if (((this.mod & 0xFF) == 3))
             {
@@ -1046,6 +1099,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: unSharedOf<>
         public  Type unSharedOf() {
             Type t = this;
             if (this.isShared())
@@ -1090,6 +1144,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: wildOf<>
         public  Type wildOf() {
             if (((this.mod & 0xFF) == MODFlags.wild))
             {
@@ -1106,6 +1161,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: wildConstOf<>
         public  Type wildConstOf() {
             if (((this.mod & 0xFF) == MODFlags.wildconst))
             {
@@ -1122,6 +1178,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: sharedWildOf<>
         public  Type sharedWildOf() {
             if (((this.mod & 0xFF) == 10))
             {
@@ -1138,6 +1195,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: sharedWildConstOf<>
         public  Type sharedWildConstOf() {
             if (((this.mod & 0xFF) == 11))
             {
@@ -1154,6 +1212,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: fixTo<Type>
         public  void fixTo(Type t) {
             Type mto = null;
             Type tn = this.nextOf();
@@ -1263,6 +1322,7 @@ public class mtype {
             t.check();
         }
 
+        // Erasure: check<>
         public  void check() {
             switch ((this.mod & 0xFF))
             {
@@ -1550,6 +1610,7 @@ public class mtype {
             }
         }
 
+        // Erasure: addSTC<long>
         public  Type addSTC(long stc) {
             Type t = this;
             if (t.isImmutable())
@@ -1640,6 +1701,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: castMod<byte>
         public  Type castMod(byte mod) {
             Type t = null;
             switch ((mod & 0xFF))
@@ -1677,6 +1739,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: addMod<byte>
         public  Type addMod(byte mod) {
             Type t = this;
             if (!t.isImmutable())
@@ -1800,6 +1863,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: addStorageClass<long>
         public  Type addStorageClass(long stc) {
             byte mod = (byte)0;
             if ((stc & 1048576L) != 0)
@@ -1824,6 +1888,7 @@ public class mtype {
             return this.addMod(mod);
         }
 
+        // Erasure: pointerTo<>
         public  Type pointerTo() {
             if (((this.ty & 0xFF) == ENUMTY.Terror))
             {
@@ -1845,6 +1910,7 @@ public class mtype {
             return this.pto;
         }
 
+        // Erasure: referenceTo<>
         public  Type referenceTo() {
             if (((this.ty & 0xFF) == ENUMTY.Terror))
             {
@@ -1858,6 +1924,7 @@ public class mtype {
             return this.rto;
         }
 
+        // Erasure: arrayOf<>
         public  Type arrayOf() {
             if (((this.ty & 0xFF) == ENUMTY.Terror))
             {
@@ -1871,6 +1938,7 @@ public class mtype {
             return this.arrayof;
         }
 
+        // Erasure: sarrayOf<long>
         public  Type sarrayOf(long dim) {
             assert(this.deco != null);
             Type t = new TypeSArray(this, new IntegerExp(Loc.initial, dim, tsize_t));
@@ -1879,6 +1947,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: aliasthisOf<>
         public  Type aliasthisOf() {
             AggregateDeclaration ad = isAggregate(this);
             if ((ad == null) || (ad.aliasthis == null))
@@ -1961,6 +2030,7 @@ public class mtype {
             return null;
         }
 
+        // Erasure: checkAliasThisRec<>
         public  boolean checkAliasThisRec() {
             Type tb = this.toBasetype();
             Ptr<Integer> pflag = null;
@@ -1986,6 +2056,7 @@ public class mtype {
             return flag == AliasThisRec.yes;
         }
 
+        // Erasure: makeConst<>
         public  Type makeConst() {
             if (this.cto != null)
             {
@@ -1996,6 +2067,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeImmutable<>
         public  Type makeImmutable() {
             if (this.ito != null)
             {
@@ -2006,6 +2078,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeShared<>
         public  Type makeShared() {
             if (this.sto != null)
             {
@@ -2016,6 +2089,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeSharedConst<>
         public  Type makeSharedConst() {
             if (this.scto != null)
             {
@@ -2026,6 +2100,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeWild<>
         public  Type makeWild() {
             if (this.wto != null)
             {
@@ -2036,6 +2111,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeWildConst<>
         public  Type makeWildConst() {
             if (this.wcto != null)
             {
@@ -2046,6 +2122,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeSharedWild<>
         public  Type makeSharedWild() {
             if (this.swto != null)
             {
@@ -2056,6 +2133,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeSharedWildConst<>
         public  Type makeSharedWildConst() {
             if (this.swcto != null)
             {
@@ -2066,24 +2144,29 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeMutable<>
         public  Type makeMutable() {
             Type t = this.nullAttributes();
             t.mod = (byte)((this.mod & 0xFF) & MODFlags.shared_);
             return t;
         }
 
+        // Erasure: toDsymbol<Ptr>
         public  Dsymbol toDsymbol(Ptr<Scope> sc) {
             return null;
         }
 
+        // Erasure: toBasetype<>
         public  Type toBasetype() {
             return this;
         }
 
+        // Erasure: isBaseOf<Type, Ptr>
         public  boolean isBaseOf(Type t, Ptr<Integer> poffset) {
             return false;
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             if (this.equals(to))
             {
@@ -2092,6 +2175,7 @@ public class mtype {
             return MATCH.nomatch;
         }
 
+        // Erasure: constConv<Type>
         public  int constConv(Type to) {
             if (this.equals(to))
             {
@@ -2104,6 +2188,7 @@ public class mtype {
             return MATCH.nomatch;
         }
 
+        // Erasure: deduceWild<Type, boolean>
         public  byte deduceWild(Type t, boolean isRef) {
             if (t.isWild())
             {
@@ -2142,6 +2227,7 @@ public class mtype {
             return (byte)0;
         }
 
+        // Erasure: substWildTo<int>
         public  Type substWildTo(int mod) {
             Type t = null;
             try {
@@ -2245,6 +2331,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: unqualify<int>
         public  Type unqualify(int m) {
             Type t = this.mutableOf().unSharedOf();
             Type tn = ((this.ty & 0xFF) == ENUMTY.Tenum) ? null : this.nextOf();
@@ -2281,6 +2368,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: toHeadMutable<>
         public  Type toHeadMutable() {
             if (this.mod == 0)
             {
@@ -2289,22 +2377,27 @@ public class mtype {
             return this.mutableOf();
         }
 
+        // Erasure: isClassHandle<>
         public  ClassDeclaration isClassHandle() {
             return null;
         }
 
+        // Erasure: alignment<>
         public  int alignment() {
             return -1;
         }
 
+        // Erasure: defaultInitLiteral<Loc>
         public  Expression defaultInitLiteral(Loc loc) {
             return defaultInit(this, loc);
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             return false;
         }
 
+        // Erasure: getTypeInfoIdent<>
         public  Identifier getTypeInfoIdent() {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -2328,22 +2421,27 @@ public class mtype {
             }
         }
 
+        // Erasure: hasWild<>
         public  int hasWild() {
             return (this.mod & 0xFF) & MODFlags.wild;
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             return false;
         }
 
+        // Erasure: hasVoidInitPointers<>
         public  boolean hasVoidInitPointers() {
             return false;
         }
 
+        // Erasure: nextOf<>
         public  Type nextOf() {
             return null;
         }
 
+        // Erasure: baseElemOf<>
         public  Type baseElemOf() {
             Type t = this.toBasetype();
             TypeSArray tsa = null;
@@ -2353,6 +2451,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: numberOfElems<Loc>
         public  int numberOfElems(Loc loc) {
             long n = 1L;
             Type tb = this;
@@ -2369,6 +2468,7 @@ public class mtype {
             return (int)n;
         }
 
+        // Erasure: sizemask<>
         public  long sizemask() {
             long m = 0L;
             switch ((this.toBasetype().ty & 0xFF))
@@ -2401,14 +2501,17 @@ public class mtype {
             return m;
         }
 
+        // Erasure: needsDestruction<>
         public  boolean needsDestruction() {
             return false;
         }
 
+        // Erasure: needsNested<>
         public  boolean needsNested() {
             return false;
         }
 
+        // Erasure: checkComplexTransition<Loc, Ptr>
         public  boolean checkComplexTransition(Loc loc, Ptr<Scope> sc) {
             if ((sc.get()).isDeprecated())
             {
@@ -2456,90 +2559,112 @@ public class mtype {
             return false;
         }
 
+        // Erasure: isTypeBasic<>
         public  TypeBasic isTypeBasic() {
             return null;
         }
 
+        // Erasure: isTypeError<>
         public  TypeError isTypeError() {
             return ((this.ty & 0xFF) == ENUMTY.Terror) ? (TypeError)this : null;
         }
 
+        // Erasure: isTypeVector<>
         public  TypeVector isTypeVector() {
             return ((this.ty & 0xFF) == ENUMTY.Tvector) ? (TypeVector)this : null;
         }
 
+        // Erasure: isTypeSArray<>
         public  TypeSArray isTypeSArray() {
             return ((this.ty & 0xFF) == ENUMTY.Tsarray) ? (TypeSArray)this : null;
         }
 
+        // Erasure: isTypeDArray<>
         public  TypeDArray isTypeDArray() {
             return ((this.ty & 0xFF) == ENUMTY.Tarray) ? (TypeDArray)this : null;
         }
 
+        // Erasure: isTypeAArray<>
         public  TypeAArray isTypeAArray() {
             return ((this.ty & 0xFF) == ENUMTY.Taarray) ? (TypeAArray)this : null;
         }
 
+        // Erasure: isTypePointer<>
         public  TypePointer isTypePointer() {
             return ((this.ty & 0xFF) == ENUMTY.Tpointer) ? (TypePointer)this : null;
         }
 
+        // Erasure: isTypeReference<>
         public  TypeReference isTypeReference() {
             return ((this.ty & 0xFF) == ENUMTY.Treference) ? (TypeReference)this : null;
         }
 
+        // Erasure: isTypeFunction<>
         public  TypeFunction isTypeFunction() {
             return ((this.ty & 0xFF) == ENUMTY.Tfunction) ? (TypeFunction)this : null;
         }
 
+        // Erasure: isTypeDelegate<>
         public  TypeDelegate isTypeDelegate() {
             return ((this.ty & 0xFF) == ENUMTY.Tdelegate) ? (TypeDelegate)this : null;
         }
 
+        // Erasure: isTypeIdentifier<>
         public  TypeIdentifier isTypeIdentifier() {
             return ((this.ty & 0xFF) == ENUMTY.Tident) ? (TypeIdentifier)this : null;
         }
 
+        // Erasure: isTypeInstance<>
         public  TypeInstance isTypeInstance() {
             return ((this.ty & 0xFF) == ENUMTY.Tinstance) ? (TypeInstance)this : null;
         }
 
+        // Erasure: isTypeTypeof<>
         public  TypeTypeof isTypeTypeof() {
             return ((this.ty & 0xFF) == ENUMTY.Ttypeof) ? (TypeTypeof)this : null;
         }
 
+        // Erasure: isTypeReturn<>
         public  TypeReturn isTypeReturn() {
             return ((this.ty & 0xFF) == ENUMTY.Treturn) ? (TypeReturn)this : null;
         }
 
+        // Erasure: isTypeStruct<>
         public  TypeStruct isTypeStruct() {
             return ((this.ty & 0xFF) == ENUMTY.Tstruct) ? (TypeStruct)this : null;
         }
 
+        // Erasure: isTypeEnum<>
         public  TypeEnum isTypeEnum() {
             return ((this.ty & 0xFF) == ENUMTY.Tenum) ? (TypeEnum)this : null;
         }
 
+        // Erasure: isTypeClass<>
         public  TypeClass isTypeClass() {
             return ((this.ty & 0xFF) == ENUMTY.Tclass) ? (TypeClass)this : null;
         }
 
+        // Erasure: isTypeTuple<>
         public  TypeTuple isTypeTuple() {
             return ((this.ty & 0xFF) == ENUMTY.Ttuple) ? (TypeTuple)this : null;
         }
 
+        // Erasure: isTypeSlice<>
         public  TypeSlice isTypeSlice() {
             return ((this.ty & 0xFF) == ENUMTY.Tslice) ? (TypeSlice)this : null;
         }
 
+        // Erasure: isTypeNull<>
         public  TypeNull isTypeNull() {
             return ((this.ty & 0xFF) == ENUMTY.Tnull) ? (TypeNull)this : null;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: toTypeFunction<>
         public  TypeFunction toTypeFunction() {
             if (((this.ty & 0xFF) != ENUMTY.Tfunction))
             {
@@ -2555,22 +2680,27 @@ public class mtype {
     }
     public static class TypeError extends Type
     {
+        // Erasure: __ctor<>
         public  TypeError() {
             super((byte)34);
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             return this;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return -1L;
         }
 
+        // Erasure: defaultInitLiteral<Loc>
         public  Expression defaultInitLiteral(Loc loc) {
             return new ErrorExp();
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2600,11 +2730,13 @@ public class mtype {
     public static abstract class TypeNext extends Type
     {
         public Ref<Type> next = ref(null);
+        // Erasure: __ctor<byte, Type>
         public  TypeNext(byte ty, Type next) {
             super(ty);
             this.next.value = next;
         }
 
+        // Erasure: checkDeprecated<Loc, Ptr>
         public  void checkDeprecated(Loc loc, Ptr<Scope> sc) {
             this.checkDeprecated(loc, sc);
             if (this.next.value != null)
@@ -2613,6 +2745,7 @@ public class mtype {
             }
         }
 
+        // Erasure: hasWild<>
         public  int hasWild() {
             if (((this.ty & 0xFF) == ENUMTY.Tfunction))
             {
@@ -2625,10 +2758,12 @@ public class mtype {
             return (((((this.mod & 0xFF) & MODFlags.wild) != 0) || (this.next.value != null) && (this.next.value.hasWild() != 0)) ? 1 : 0);
         }
 
+        // Erasure: nextOf<>
         public  Type nextOf() {
             return this.next.value;
         }
 
+        // Erasure: makeConst<>
         public  Type makeConst() {
             if (this.cto != null)
             {
@@ -2664,6 +2799,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeImmutable<>
         public  Type makeImmutable() {
             if (this.ito != null)
             {
@@ -2678,6 +2814,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeShared<>
         public  Type makeShared() {
             if (this.sto != null)
             {
@@ -2713,6 +2850,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeSharedConst<>
         public  Type makeSharedConst() {
             if (this.scto != null)
             {
@@ -2734,6 +2872,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeWild<>
         public  Type makeWild() {
             if (this.wto != null)
             {
@@ -2769,6 +2908,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeWildConst<>
         public  Type makeWildConst() {
             if (this.wcto != null)
             {
@@ -2790,6 +2930,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeSharedWild<>
         public  Type makeSharedWild() {
             if (this.swto != null)
             {
@@ -2811,6 +2952,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeSharedWildConst<>
         public  Type makeSharedWildConst() {
             if (this.swcto != null)
             {
@@ -2825,6 +2967,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: makeMutable<>
         public  Type makeMutable() {
             TypeNext t = (TypeNext)this.makeMutable();
             if (((this.ty & 0xFF) == ENUMTY.Tsarray))
@@ -2834,6 +2977,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: constConv<Type>
         public  int constConv(Type to) {
             if (this.equals(to))
             {
@@ -2864,6 +3008,7 @@ public class mtype {
             return m;
         }
 
+        // Erasure: deduceWild<Type, boolean>
         public  byte deduceWild(Type t, boolean isRef) {
             if (((this.ty & 0xFF) == ENUMTY.Tfunction))
             {
@@ -2890,10 +3035,12 @@ public class mtype {
             return wm;
         }
 
+        // Erasure: transitive<>
         public  void transitive() {
             this.next.value = this.next.value.addMod(this.mod);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2907,6 +3054,7 @@ public class mtype {
     {
         public BytePtr dstring = null;
         public int flags = 0;
+        // Erasure: __ctor<byte>
         public  TypeBasic(byte ty) {
             super(ty);
             BytePtr d = null;
@@ -3016,14 +3164,17 @@ public class mtype {
             merge(this);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return this.dstring;
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             return this;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             int size = 0;
             switch ((this.ty & 0xFF))
@@ -3084,42 +3235,52 @@ public class mtype {
             return (long)size;
         }
 
+        // Erasure: alignsize<>
         public  int alignsize() {
             return target.alignsize(this);
         }
 
+        // Erasure: isintegral<>
         public  boolean isintegral() {
             return (this.flags & 1) != 0;
         }
 
+        // Erasure: isfloating<>
         public  boolean isfloating() {
             return (this.flags & 2) != 0;
         }
 
+        // Erasure: isreal<>
         public  boolean isreal() {
             return (this.flags & 8) != 0;
         }
 
+        // Erasure: isimaginary<>
         public  boolean isimaginary() {
             return (this.flags & 16) != 0;
         }
 
+        // Erasure: iscomplex<>
         public  boolean iscomplex() {
             return (this.flags & 32) != 0;
         }
 
+        // Erasure: isscalar<>
         public  boolean isscalar() {
             return (this.flags & 3) != 0;
         }
 
+        // Erasure: isunsigned<>
         public  boolean isunsigned() {
             return (this.flags & 4) != 0;
         }
 
+        // Erasure: ischar<>
         public  boolean ischar() {
             return (this.flags & 64) != 0;
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             if ((pequals(this, to)))
             {
@@ -3220,6 +3381,7 @@ public class mtype {
             return MATCH.convert;
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             switch ((this.ty & 0xFF))
             {
@@ -3241,10 +3403,12 @@ public class mtype {
             }
         }
 
+        // Erasure: isTypeBasic<>
         public  TypeBasic isTypeBasic() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3278,51 +3442,63 @@ public class mtype {
     public static class TypeVector extends Type
     {
         public Type basetype = null;
+        // Erasure: __ctor<Type>
         public  TypeVector(Type basetype) {
             super((byte)41);
             this.basetype = basetype;
         }
 
+        // Erasure: create<Type>
         public static TypeVector create(Type basetype) {
             return new TypeVector(basetype);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("vector");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             return new TypeVector(this.basetype.syntaxCopy());
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return this.basetype.size();
         }
 
+        // Erasure: alignsize<>
         public  int alignsize() {
             return (int)this.basetype.size();
         }
 
+        // Erasure: isintegral<>
         public  boolean isintegral() {
             return this.basetype.nextOf().isintegral();
         }
 
+        // Erasure: isfloating<>
         public  boolean isfloating() {
             return this.basetype.nextOf().isfloating();
         }
 
+        // Erasure: isscalar<>
         public  boolean isscalar() {
             return this.basetype.nextOf().isscalar();
         }
 
+        // Erasure: isunsigned<>
         public  boolean isunsigned() {
             return this.basetype.nextOf().isunsigned();
         }
 
+        // Erasure: isBoolean<>
         public  boolean isBoolean() {
             return false;
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             if ((pequals(this, to)))
             {
@@ -3335,6 +3511,7 @@ public class mtype {
             return MATCH.nomatch;
         }
 
+        // Erasure: defaultInitLiteral<Loc>
         public  Expression defaultInitLiteral(Loc loc) {
             assert(((this.basetype.ty & 0xFF) == ENUMTY.Tsarray));
             Expression e = this.basetype.defaultInitLiteral(loc);
@@ -3344,6 +3521,7 @@ public class mtype {
             return ve;
         }
 
+        // Erasure: elementType<>
         public  TypeBasic elementType() {
             assert(((this.basetype.ty & 0xFF) == ENUMTY.Tsarray));
             TypeSArray t = (TypeSArray)this.basetype;
@@ -3352,10 +3530,12 @@ public class mtype {
             return tb;
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             return this.basetype.isZeroInit(loc);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3387,10 +3567,12 @@ public class mtype {
     }
     public static abstract class TypeArray extends TypeNext
     {
+        // Erasure: __ctor<byte, Type>
         public  TypeArray(byte ty, Type next) {
             super(ty, next);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3403,15 +3585,18 @@ public class mtype {
     public static class TypeSArray extends TypeArray
     {
         public Expression dim = null;
+        // Erasure: __ctor<Type, Expression>
         public  TypeSArray(Type t, Expression dim) {
             super((byte)1, t);
             this.dim = dim;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("sarray");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             Type t = this.next.value.syntaxCopy();
             Expression e = this.dim.syntaxCopy();
@@ -3420,6 +3605,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             int n = this.numberOfElems(loc);
             long elemsize = this.baseElemOf().size(loc);
@@ -3436,23 +3622,28 @@ public class mtype {
             return sz;
         }
 
+        // Erasure: alignsize<>
         public  int alignsize() {
             return this.next.value.alignsize();
         }
 
+        // Erasure: isString<>
         public  boolean isString() {
             byte nty = this.next.value.toBasetype().ty;
             return ((nty & 0xFF) == ENUMTY.Tchar) || ((nty & 0xFF) == ENUMTY.Twchar) || ((nty & 0xFF) == ENUMTY.Tdchar);
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             return this.next.value.isZeroInit(loc);
         }
 
+        // Erasure: alignment<>
         public  int alignment() {
             return this.next.value.alignment();
         }
 
+        // Erasure: constConv<Type>
         public  int constConv(Type to) {
             {
                 TypeSArray tsa = to.isTypeSArray();
@@ -3467,6 +3658,7 @@ public class mtype {
             return this.constConv(to);
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             {
                 TypeDArray ta = to.isTypeDArray();
@@ -3513,6 +3705,7 @@ public class mtype {
             return MATCH.nomatch;
         }
 
+        // Erasure: defaultInitLiteral<Loc>
         public  Expression defaultInitLiteral(Loc loc) {
             int d = (int)this.dim.toInteger();
             Expression elementinit = null;
@@ -3537,6 +3730,7 @@ public class mtype {
             return ae;
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             if (((this.next.value.ty & 0xFF) == ENUMTY.Tvoid))
             {
@@ -3548,14 +3742,17 @@ public class mtype {
             }
         }
 
+        // Erasure: needsDestruction<>
         public  boolean needsDestruction() {
             return this.next.value.needsDestruction();
         }
 
+        // Erasure: needsNested<>
         public  boolean needsNested() {
             return this.next.value.needsNested();
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3588,14 +3785,17 @@ public class mtype {
     }
     public static class TypeDArray extends TypeArray
     {
+        // Erasure: __ctor<Type>
         public  TypeDArray(Type t) {
             super((byte)0, t);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("darray");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             Type t = this.next.value.syntaxCopy();
             if ((pequals(t, this.next.value)))
@@ -3610,27 +3810,33 @@ public class mtype {
             return t;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return (long)(target.ptrsize * 2);
         }
 
+        // Erasure: alignsize<>
         public  int alignsize() {
             return target.ptrsize;
         }
 
+        // Erasure: isString<>
         public  boolean isString() {
             byte nty = this.next.value.toBasetype().ty;
             return ((nty & 0xFF) == ENUMTY.Tchar) || ((nty & 0xFF) == ENUMTY.Twchar) || ((nty & 0xFF) == ENUMTY.Tdchar);
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
 
+        // Erasure: isBoolean<>
         public  boolean isBoolean() {
             return true;
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             if (this.equals(to))
             {
@@ -3662,10 +3868,12 @@ public class mtype {
             return this.implicitConvTo(to);
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             return true;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3700,19 +3908,23 @@ public class mtype {
         public Type index = null;
         public Loc loc = new Loc();
         public Ptr<Scope> sc = null;
+        // Erasure: __ctor<Type, Type>
         public  TypeAArray(Type t, Type index) {
             super((byte)2, t);
             this.index = index;
         }
 
+        // Erasure: create<Type, Type>
         public static TypeAArray create(Type t, Type index) {
             return new TypeAArray(t, index);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("aarray");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             Type t = this.next.value.syntaxCopy();
             Type ti = this.index.syntaxCopy();
@@ -3728,22 +3940,27 @@ public class mtype {
             return t;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return (long)target.ptrsize;
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
 
+        // Erasure: isBoolean<>
         public  boolean isBoolean() {
             return true;
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             return true;
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             if (this.equals(to))
             {
@@ -3772,6 +3989,7 @@ public class mtype {
             return this.implicitConvTo(to);
         }
 
+        // Erasure: constConv<Type>
         public  int constConv(Type to) {
             {
                 TypeAArray taa = to.isTypeAArray();
@@ -3785,6 +4003,7 @@ public class mtype {
             return this.constConv(to);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3819,18 +4038,22 @@ public class mtype {
     }
     public static class TypePointer extends TypeNext
     {
+        // Erasure: __ctor<Type>
         public  TypePointer(Type t) {
             super((byte)3, t);
         }
 
+        // Erasure: create<Type>
         public static TypePointer create(Type t) {
             return new TypePointer(t);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("pointer");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             Type t = this.next.value.syntaxCopy();
             if ((pequals(t, this.next.value)))
@@ -3845,10 +4068,12 @@ public class mtype {
             return t;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return (long)target.ptrsize;
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             if (this.equals(to))
             {
@@ -3916,6 +4141,7 @@ public class mtype {
             return MATCH.nomatch;
         }
 
+        // Erasure: constConv<Type>
         public  int constConv(Type to) {
             if (((this.next.value.ty & 0xFF) == ENUMTY.Tfunction))
             {
@@ -3931,18 +4157,22 @@ public class mtype {
             return this.constConv(to);
         }
 
+        // Erasure: isscalar<>
         public  boolean isscalar() {
             return true;
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             return true;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3974,14 +4204,17 @@ public class mtype {
     }
     public static class TypeReference extends TypeNext
     {
+        // Erasure: __ctor<Type>
         public  TypeReference(Type t) {
             super((byte)4, t);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("reference");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             Type t = this.next.value.syntaxCopy();
             if ((pequals(t, this.next.value)))
@@ -3996,14 +4229,17 @@ public class mtype {
             return t;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return (long)target.ptrsize;
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4084,6 +4320,7 @@ public class mtype {
         public Ptr<DArray<Expression>> fargs = null;
         public int inuse = 0;
         public boolean incomplete = false;
+        // Erasure: __ctor<ParameterList, Type, int, long>
         public  TypeFunction(ParameterList pl, Type treturn, int linkage, long stc) {
             super((byte)5, treturn);
             assert((VarArg.none <= pl.varargs) && (pl.varargs <= VarArg.typesafe));
@@ -4145,6 +4382,7 @@ public class mtype {
             this(pl, treturn, linkage, 0L);
         }
 
+        // Erasure: create<Ptr, Type, int, int, long>
         public static TypeFunction create(Ptr<DArray<Parameter>> parameters, Type treturn, int varargs, int linkage, long stc) {
             return new TypeFunction(new ParameterList(parameters, varargs), treturn, linkage, stc);
         }
@@ -4154,10 +4392,12 @@ public class mtype {
             return create(parameters, treturn, varargs, linkage, 0L);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("function");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             Type treturn = this.next.value != null ? this.next.value.syntaxCopy() : null;
             Ptr<DArray<Parameter>> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
@@ -4178,6 +4418,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: purityLevel<>
         public  void purityLevel() {
             TypeFunction tf = this;
             if ((tf.purity != PURE.fwdref))
@@ -4270,6 +4511,7 @@ public class mtype {
             tf.purity = this.purity;
         }
 
+        // Erasure: hasLazyParameters<>
         public  boolean hasLazyParameters() {
             int dim = this.parameterList.length();
             {
@@ -4285,6 +4527,7 @@ public class mtype {
             return false;
         }
 
+        // Erasure: parameterEscapes<Type, Parameter>
         public  boolean parameterEscapes(Type tthis, Parameter p) {
             if ((this.parameterStorageClass(tthis, p) & 532480L) != 0)
             {
@@ -4293,6 +4536,7 @@ public class mtype {
             return true;
         }
 
+        // Erasure: parameterStorageClass<Type, Parameter>
         public  long parameterStorageClass(Type tthis, Parameter p) {
             long stc = p.storageClass;
             if (!global.params.vsafe)
@@ -4383,6 +4627,7 @@ public class mtype {
             return stc;
         }
 
+        // Erasure: addStorageClass<long>
         public  Type addStorageClass(long stc) {
             TypeFunction t = this.addStorageClass(stc).toTypeFunction();
             if (((stc & 67108864L) != 0) && (t.purity == 0) || ((stc & 33554432L) != 0) && !t.isnothrow || ((stc & 4398046511104L) != 0) && !t.isnogc || ((stc & 524288L) != 0) && !t.isscope || ((stc & 8589934592L) != 0) && (t.trust < TRUST.trusted))
@@ -4431,6 +4676,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: substWildTo<int>
         public  Type substWildTo(int _param_0) {
             if ((this.iswild == 0) && (((this.mod & 0xFF) & MODFlags.wild) == 0))
             {
@@ -4481,6 +4727,7 @@ public class mtype {
             return merge(t);
         }
 
+        // Erasure: getParamError<Expression, Parameter>
         public  BytePtr getParamError(Expression arg, Parameter par) {
             if ((global.gag != 0) && !global.params.showGaggedErrors)
             {
@@ -4503,6 +4750,7 @@ public class mtype {
         }
 
         // from template getMatchError!(IntegerBytePtr)
+        // Erasure: getMatchErrorIntegerBytePtr<Ptr, int, Ptr>
         public  BytePtr getMatchErrorIntegerBytePtr(BytePtr format, int _param_1, BytePtr _param_2) {
             if ((global.gag != 0) && !global.params.showGaggedErrors)
             {
@@ -4519,6 +4767,7 @@ public class mtype {
 
 
         // from template getMatchError!(IntegerInteger)
+        // Erasure: getMatchErrorIntegerInteger<Ptr, int, int>
         public  BytePtr getMatchErrorIntegerInteger(BytePtr format, int _param_1, int _param_2) {
             if ((global.gag != 0) && !global.params.showGaggedErrors)
             {
@@ -4534,6 +4783,7 @@ public class mtype {
         }
 
 
+        // Erasure: callMatch<Type, Array, int, Ptr, Ptr>
         public  int callMatch(Type tthis, Slice<Expression> args, int flag, Ptr<BytePtr> pMessage, Ptr<Scope> sc) {
             int match = MATCH.exact;
             byte wildmatch = (byte)0;
@@ -5092,19 +5342,20 @@ public class mtype {
 
         // defaulted all parameters starting with #5
         public  int callMatch(Type tthis, Slice<Expression> args, int flag, Ptr<BytePtr> pMessage) {
-            return callMatch(tthis, args, flag, pMessage, null);
+            return callMatch(tthis, args, flag, pMessage, (Ptr<Scope>)null);
         }
 
         // defaulted all parameters starting with #4
         public  int callMatch(Type tthis, Slice<Expression> args, int flag) {
-            return callMatch(tthis, args, flag, null, null);
+            return callMatch(tthis, args, flag, (Ptr<BytePtr>)null, (Ptr<Scope>)null);
         }
 
         // defaulted all parameters starting with #3
         public  int callMatch(Type tthis, Slice<Expression> args) {
-            return callMatch(tthis, args, 0, null, null);
+            return callMatch(tthis, args, 0, (Ptr<BytePtr>)null, (Ptr<Scope>)null);
         }
 
+        // Erasure: checkRetType<Loc>
         public  boolean checkRetType(Loc loc) {
             Type tb = this.next.value.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tfunction))
@@ -5138,6 +5389,7 @@ public class mtype {
             return false;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5185,19 +5437,23 @@ public class mtype {
     }
     public static class TypeDelegate extends TypeNext
     {
+        // Erasure: __ctor<Type>
         public  TypeDelegate(Type t) {
             super((byte)5, t);
             this.ty = (byte)10;
         }
 
+        // Erasure: create<Type>
         public static TypeDelegate create(Type t) {
             return new TypeDelegate(t);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("delegate");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             Type t = this.next.value.syntaxCopy();
             if ((pequals(t, this.next.value)))
@@ -5212,6 +5468,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: addStorageClass<long>
         public  Type addStorageClass(long stc) {
             TypeDelegate t = (TypeDelegate)this.addStorageClass(stc);
             if (!global.params.vsafe)
@@ -5230,14 +5487,17 @@ public class mtype {
             return t;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return (long)(target.ptrsize * 2);
         }
 
+        // Erasure: alignsize<>
         public  int alignsize() {
             return target.ptrsize;
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             if ((pequals(this, to)))
             {
@@ -5260,18 +5520,22 @@ public class mtype {
             return MATCH.nomatch;
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
 
+        // Erasure: isBoolean<>
         public  boolean isBoolean() {
             return true;
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             return true;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5307,12 +5571,14 @@ public class mtype {
         public TraitsExp exp = null;
         public Dsymbol sym = null;
         public boolean inAliasDeclaration = false;
+        // Erasure: __ctor<Loc, TraitsExp>
         public  TypeTraits(Loc loc, TraitsExp exp) {
             super((byte)44);
             this.loc.opAssign(loc.copy());
             this.exp = exp;
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             TraitsExp te = (TraitsExp)this.exp.syntaxCopy();
             TypeTraits tt = new TypeTraits(this.loc, te);
@@ -5320,10 +5586,12 @@ public class mtype {
             return tt;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return -1L;
         }
@@ -5360,11 +5628,13 @@ public class mtype {
     {
         public Loc loc = new Loc();
         public DArray<RootObject> idents = new DArray<RootObject>();
+        // Erasure: __ctor<byte, Loc>
         public  TypeQualified(byte ty, Loc loc) {
             super(ty);
             this.loc.opAssign(loc.copy());
         }
 
+        // Erasure: syntaxCopyHelper<TypeQualified>
         public  void syntaxCopyHelper(TypeQualified t) {
             this.idents.setDim(t.idents.length);
             {
@@ -5394,23 +5664,28 @@ public class mtype {
             }
         }
 
+        // Erasure: addIdent<Identifier>
         public  void addIdent(Identifier ident) {
             this.idents.push(ident);
         }
 
+        // Erasure: addInst<TemplateInstance>
         public  void addInst(TemplateInstance inst) {
             this.idents.push(inst);
         }
 
+        // Erasure: addIndex<RootObject>
         public  void addIndex(RootObject e) {
             this.idents.push(e);
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             error(this.loc, new BytePtr("size of type `%s` is not known"), this.toChars());
             return -1L;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5424,15 +5699,18 @@ public class mtype {
     {
         public Identifier ident = null;
         public Dsymbol originalSymbol = null;
+        // Erasure: __ctor<Loc, Identifier>
         public  TypeIdentifier(Loc loc, Identifier ident) {
             super((byte)6, loc);
             this.ident = ident;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("identifier");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             TypeIdentifier t = new TypeIdentifier(this.loc, this.ident);
             t.syntaxCopyHelper(this);
@@ -5440,6 +5718,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: toDsymbol<Ptr>
         public  Dsymbol toDsymbol(Ptr<Scope> sc) {
             if (sc == null)
             {
@@ -5460,6 +5739,7 @@ public class mtype {
             return s.value;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5495,15 +5775,18 @@ public class mtype {
     public static class TypeInstance extends TypeQualified
     {
         public TemplateInstance tempinst = null;
+        // Erasure: __ctor<Loc, TemplateInstance>
         public  TypeInstance(Loc loc, TemplateInstance tempinst) {
             super((byte)35, loc);
             this.tempinst = tempinst;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("instance");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             TypeInstance t = new TypeInstance(this.loc, (TemplateInstance)this.tempinst.syntaxCopy(null));
             t.syntaxCopyHelper(this);
@@ -5511,6 +5794,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: toDsymbol<Ptr>
         public  Dsymbol toDsymbol(Ptr<Scope> sc) {
             Ref<Type> t = ref(null);
             Ref<Expression> e = ref(null);
@@ -5523,6 +5807,7 @@ public class mtype {
             return s.value;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5558,15 +5843,18 @@ public class mtype {
     {
         public Expression exp = null;
         public int inuse = 0;
+        // Erasure: __ctor<Loc, Expression>
         public  TypeTypeof(Loc loc, Expression exp) {
             super((byte)36, loc);
             this.exp = exp;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("typeof");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             TypeTypeof t = new TypeTypeof(this.loc, this.exp.syntaxCopy());
             t.syntaxCopyHelper(this);
@@ -5574,6 +5862,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: toDsymbol<Ptr>
         public  Dsymbol toDsymbol(Ptr<Scope> sc) {
             Ref<Expression> e = ref(null);
             Ref<Type> t = ref(null);
@@ -5582,6 +5871,7 @@ public class mtype {
             return s.value;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             if (this.exp.type.value != null)
             {
@@ -5593,6 +5883,7 @@ public class mtype {
             }
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5627,14 +5918,17 @@ public class mtype {
     }
     public static class TypeReturn extends TypeQualified
     {
+        // Erasure: __ctor<Loc>
         public  TypeReturn(Loc loc) {
             super((byte)39, loc);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("return");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             TypeReturn t = new TypeReturn(this.loc);
             t.syntaxCopyHelper(this);
@@ -5642,6 +5936,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: toDsymbol<Ptr>
         public  Dsymbol toDsymbol(Ptr<Scope> sc) {
             Ref<Expression> e = ref(null);
             Ref<Type> t = ref(null);
@@ -5650,6 +5945,7 @@ public class mtype {
             return s.value;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5696,36 +5992,44 @@ public class mtype {
         public StructDeclaration sym = null;
         public Ref<Integer> att = ref(AliasThisRec.fwdref);
         public int cppmangle = CPPMANGLE.def;
+        // Erasure: __ctor<StructDeclaration>
         public  TypeStruct(StructDeclaration sym) {
             super((byte)8);
             this.sym = sym;
         }
 
+        // Erasure: create<StructDeclaration>
         public static TypeStruct create(StructDeclaration sym) {
             return new TypeStruct(sym);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("struct");
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return this.sym.size(loc);
         }
 
+        // Erasure: alignsize<>
         public  int alignsize() {
             this.sym.size(Loc.initial);
             return this.sym.alignsize.value;
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             return this;
         }
 
+        // Erasure: toDsymbol<Ptr>
         public  Dsymbol toDsymbol(Ptr<Scope> sc) {
             return this.sym;
         }
 
+        // Erasure: alignment<>
         public  int alignment() {
             if ((this.sym.alignment == 0))
             {
@@ -5734,6 +6038,7 @@ public class mtype {
             return this.sym.alignment;
         }
 
+        // Erasure: defaultInitLiteral<Loc>
         public  Expression defaultInitLiteral(Loc loc) {
             this.sym.size(loc);
             if ((this.sym.sizeok != Sizeok.done))
@@ -5793,10 +6098,12 @@ public class mtype {
             return structinit;
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             return this.sym.zeroInit;
         }
 
+        // Erasure: isAssignable<>
         public  boolean isAssignable() {
             boolean assignable = true;
             int offset = -1;
@@ -5829,14 +6136,17 @@ public class mtype {
             return assignable;
         }
 
+        // Erasure: isBoolean<>
         public  boolean isBoolean() {
             return false;
         }
 
+        // Erasure: needsDestruction<>
         public  boolean needsDestruction() {
             return this.sym.dtor != null;
         }
 
+        // Erasure: needsNested<>
         public  boolean needsNested() {
             if (this.sym.isNested())
             {
@@ -5855,6 +6165,7 @@ public class mtype {
             return false;
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             StructDeclaration s = this.sym;
             if ((this.sym.members != null) && !this.sym.determineFields() && (!pequals(this.sym.type, Type.terror)))
@@ -5875,6 +6186,7 @@ public class mtype {
             return false;
         }
 
+        // Erasure: hasVoidInitPointers<>
         public  boolean hasVoidInitPointers() {
             StructDeclaration s = this.sym;
             this.sym.size(Loc.initial);
@@ -5896,6 +6208,7 @@ public class mtype {
             return false;
         }
 
+        // Erasure: implicitConvToWithoutAliasThis<Type>
         public  int implicitConvToWithoutAliasThis(Type to) {
             int m = MATCH.nomatch;
             if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeStruct)to).sym)))
@@ -5951,6 +6264,7 @@ public class mtype {
             return m;
         }
 
+        // Erasure: implicitConvToThroughAliasThis<Type>
         public  int implicitConvToThroughAliasThis(Type to) {
             int m = MATCH.nomatch;
             if (!(((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeStruct)to).sym))) && (this.sym.aliasthis != null) && ((this.att.value & AliasThisRec.tracing) == 0))
@@ -5972,11 +6286,13 @@ public class mtype {
             return m;
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             int m = this.implicitConvToWithoutAliasThis(to);
             return m != 0 ? m : this.implicitConvToThroughAliasThis(to);
         }
 
+        // Erasure: constConv<Type>
         public  int constConv(Type to) {
             if (this.equals(to))
             {
@@ -5989,6 +6305,7 @@ public class mtype {
             return MATCH.nomatch;
         }
 
+        // Erasure: deduceWild<Type, boolean>
         public  byte deduceWild(Type t, boolean isRef) {
             if (((this.ty & 0xFF) == (t.ty & 0xFF)) && (pequals(this.sym, ((TypeStruct)t).sym)))
             {
@@ -6010,10 +6327,12 @@ public class mtype {
             return wm;
         }
 
+        // Erasure: toHeadMutable<>
         public  Type toHeadMutable() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6048,23 +6367,28 @@ public class mtype {
     public static class TypeEnum extends Type
     {
         public EnumDeclaration sym = null;
+        // Erasure: __ctor<EnumDeclaration>
         public  TypeEnum(EnumDeclaration sym) {
             super((byte)9);
             this.sym = sym;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("enum");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             return this;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return this.sym.getMemtype(loc).size(loc);
         }
 
+        // Erasure: memType<Loc>
         public  Type memType(Loc loc) {
             return this.sym.getMemtype(loc);
         }
@@ -6074,6 +6398,7 @@ public class mtype {
             return memType(Loc.initial);
         }
 
+        // Erasure: alignsize<>
         public  int alignsize() {
             Type t = this.memType(Loc.initial);
             if (((t.ty & 0xFF) == ENUMTY.Terror))
@@ -6083,62 +6408,77 @@ public class mtype {
             return t.alignsize();
         }
 
+        // Erasure: toDsymbol<Ptr>
         public  Dsymbol toDsymbol(Ptr<Scope> sc) {
             return this.sym;
         }
 
+        // Erasure: isintegral<>
         public  boolean isintegral() {
             return this.memType(Loc.initial).isintegral();
         }
 
+        // Erasure: isfloating<>
         public  boolean isfloating() {
             return this.memType(Loc.initial).isfloating();
         }
 
+        // Erasure: isreal<>
         public  boolean isreal() {
             return this.memType(Loc.initial).isreal();
         }
 
+        // Erasure: isimaginary<>
         public  boolean isimaginary() {
             return this.memType(Loc.initial).isimaginary();
         }
 
+        // Erasure: iscomplex<>
         public  boolean iscomplex() {
             return this.memType(Loc.initial).iscomplex();
         }
 
+        // Erasure: isscalar<>
         public  boolean isscalar() {
             return this.memType(Loc.initial).isscalar();
         }
 
+        // Erasure: isunsigned<>
         public  boolean isunsigned() {
             return this.memType(Loc.initial).isunsigned();
         }
 
+        // Erasure: ischar<>
         public  boolean ischar() {
             return this.memType(Loc.initial).ischar();
         }
 
+        // Erasure: isBoolean<>
         public  boolean isBoolean() {
             return this.memType(Loc.initial).isBoolean();
         }
 
+        // Erasure: isString<>
         public  boolean isString() {
             return this.memType(Loc.initial).isString();
         }
 
+        // Erasure: isAssignable<>
         public  boolean isAssignable() {
             return this.memType(Loc.initial).isAssignable();
         }
 
+        // Erasure: needsDestruction<>
         public  boolean needsDestruction() {
             return this.memType(Loc.initial).needsDestruction();
         }
 
+        // Erasure: needsNested<>
         public  boolean needsNested() {
             return this.memType(Loc.initial).needsNested();
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             int m = MATCH.nomatch;
             if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeEnum)to).sym)))
@@ -6156,6 +6496,7 @@ public class mtype {
             return m;
         }
 
+        // Erasure: constConv<Type>
         public  int constConv(Type to) {
             if (this.equals(to))
             {
@@ -6168,6 +6509,7 @@ public class mtype {
             return MATCH.nomatch;
         }
 
+        // Erasure: toBasetype<>
         public  Type toBasetype() {
             if ((this.sym.members == null) && (this.sym.memtype == null))
             {
@@ -6177,22 +6519,27 @@ public class mtype {
             return tb.castMod(this.mod);
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             return this.sym.getDefaultValue(loc).isBool(false);
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             return this.memType(Loc.initial).hasPointers();
         }
 
+        // Erasure: hasVoidInitPointers<>
         public  boolean hasVoidInitPointers() {
             return this.memType(Loc.initial).hasVoidInitPointers();
         }
 
+        // Erasure: nextOf<>
         public  Type nextOf() {
             return this.memType(Loc.initial).nextOf();
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6227,31 +6574,38 @@ public class mtype {
         public ClassDeclaration sym = null;
         public Ref<Integer> att = ref(AliasThisRec.fwdref);
         public int cppmangle = CPPMANGLE.def;
+        // Erasure: __ctor<ClassDeclaration>
         public  TypeClass(ClassDeclaration sym) {
             super((byte)7);
             this.sym = sym;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("class");
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return (long)target.ptrsize;
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             return this;
         }
 
+        // Erasure: toDsymbol<Ptr>
         public  Dsymbol toDsymbol(Ptr<Scope> sc) {
             return this.sym;
         }
 
+        // Erasure: isClassHandle<>
         public  ClassDeclaration isClassHandle() {
             return this.sym;
         }
 
+        // Erasure: isBaseOf<Type, Ptr>
         public  boolean isBaseOf(Type t, Ptr<Integer> poffset) {
             if ((t != null) && ((t.ty & 0xFF) == ENUMTY.Tclass))
             {
@@ -6264,6 +6618,7 @@ public class mtype {
             return false;
         }
 
+        // Erasure: implicitConvToWithoutAliasThis<Type>
         public  int implicitConvToWithoutAliasThis(Type to) {
             int m = this.constConv(to);
             if ((m > MATCH.nomatch))
@@ -6289,6 +6644,7 @@ public class mtype {
             return MATCH.nomatch;
         }
 
+        // Erasure: implicitConvToThroughAliasThis<Type>
         public  int implicitConvToThroughAliasThis(Type to) {
             int m = MATCH.nomatch;
             if ((this.sym.aliasthis != null) && ((this.att.value & AliasThisRec.tracing) == 0))
@@ -6306,11 +6662,13 @@ public class mtype {
             return m;
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             int m = this.implicitConvToWithoutAliasThis(to);
             return m != 0 ? m : this.implicitConvToThroughAliasThis(to);
         }
 
+        // Erasure: constConv<Type>
         public  int constConv(Type to) {
             if (this.equals(to))
             {
@@ -6331,6 +6689,7 @@ public class mtype {
             return MATCH.nomatch;
         }
 
+        // Erasure: deduceWild<Type, boolean>
         public  byte deduceWild(Type t, boolean isRef) {
             ClassDeclaration cd = t.isClassHandle();
             if ((cd != null) && (pequals(this.sym, cd)) || cd.isBaseOf(this.sym, null))
@@ -6353,26 +6712,32 @@ public class mtype {
             return wm;
         }
 
+        // Erasure: toHeadMutable<>
         public  Type toHeadMutable() {
             return this;
         }
 
+        // Erasure: isZeroInit<Loc>
         public  boolean isZeroInit(Loc loc) {
             return true;
         }
 
+        // Erasure: isscope<>
         public  boolean isscope() {
             return this.sym.stack;
         }
 
+        // Erasure: isBoolean<>
         public  boolean isBoolean() {
             return true;
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             return true;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6407,12 +6772,14 @@ public class mtype {
     public static class TypeTuple extends Type
     {
         public Ptr<DArray<Parameter>> arguments = null;
+        // Erasure: __ctor<Ptr>
         public  TypeTuple(Ptr<DArray<Parameter>> arguments) {
             super((byte)37);
             this.arguments = pcopy(arguments);
         }
 
-        public  TypeTuple(Ptr<DArray<Expression>> exps) {
+        // Erasure: __ctor<Ptr>
+        public  TypeTuple(Ptr<DArray<Expression>> exps, ETag1 __tag) {
             super((byte)37);
             Ptr<DArray<Parameter>> arguments = refPtr(new DArray<Parameter>());
             if (exps != null)
@@ -6434,21 +6801,25 @@ public class mtype {
             this.arguments = pcopy(arguments);
         }
 
+        // Erasure: create<Ptr>
         public static TypeTuple create(Ptr<DArray<Parameter>> arguments) {
             return new TypeTuple(arguments);
         }
 
+        // Erasure: __ctor<>
         public  TypeTuple() {
             super((byte)37);
             this.arguments = pcopy((refPtr(new DArray<Parameter>())));
         }
 
+        // Erasure: __ctor<Type>
         public  TypeTuple(Type t1) {
             super((byte)37);
             this.arguments = pcopy((refPtr(new DArray<Parameter>())));
             (this.arguments.get()).push(new Parameter(0L, t1, null, null, null));
         }
 
+        // Erasure: __ctor<Type, Type>
         public  TypeTuple(Type t1, Type t2) {
             super((byte)37);
             this.arguments = pcopy((refPtr(new DArray<Parameter>())));
@@ -6456,10 +6827,12 @@ public class mtype {
             (this.arguments.get()).push(new Parameter(0L, t2, null, null, null));
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("tuple");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             Ptr<DArray<Parameter>> args = Parameter.arraySyntaxCopy(this.arguments);
             Type t = new TypeTuple(args);
@@ -6467,6 +6840,7 @@ public class mtype {
             return t;
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             Type t = (Type)o;
             if ((pequals(this, t)))
@@ -6497,6 +6871,7 @@ public class mtype {
             return false;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6528,22 +6903,26 @@ public class mtype {
     {
         public Expression lwr = null;
         public Expression upr = null;
+        // Erasure: __ctor<Type, Expression, Expression>
         public  TypeSlice(Type next, Expression lwr, Expression upr) {
             super((byte)38, next);
             this.lwr = lwr;
             this.upr = upr;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("slice");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             Type t = new TypeSlice(this.next.value.syntaxCopy(), this.lwr.syntaxCopy(), this.upr.syntaxCopy());
             t.mod = this.mod;
             return t;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6577,18 +6956,22 @@ public class mtype {
     }
     public static class TypeNull extends Type
     {
+        // Erasure: __ctor<>
         public  TypeNull() {
             super((byte)40);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("null");
         }
 
+        // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             return this;
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             int m = this.implicitConvTo(to);
             if ((m != MATCH.nomatch))
@@ -6605,18 +6988,22 @@ public class mtype {
             return MATCH.nomatch;
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             return true;
         }
 
+        // Erasure: isBoolean<>
         public  boolean isBoolean() {
             return true;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             return Type.tvoidptr.size(loc);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6647,10 +7034,12 @@ public class mtype {
     {
         public Ptr<DArray<Parameter>> parameters = null;
         public int varargs = VarArg.none;
+        // Erasure: length<>
         public  int length() {
             return Parameter.dim(this.parameters);
         }
 
+        // Erasure: opIndex<int>
         public  Parameter get(int i) {
             return Parameter.getNth(this.parameters, i, null);
         }
@@ -6681,6 +7070,7 @@ public class mtype {
         public Identifier ident = null;
         public Expression defaultArg = null;
         public UserAttributeDeclaration userAttribDecl = null;
+        // Erasure: __ctor<long, Type, Identifier, Expression, UserAttributeDeclaration>
         public  Parameter(long storageClass, Type type, Identifier ident, Expression defaultArg, UserAttributeDeclaration userAttribDecl) {
             super();
             this.type = type;
@@ -6690,14 +7080,17 @@ public class mtype {
             this.userAttribDecl = userAttribDecl;
         }
 
+        // Erasure: create<long, Type, Identifier, Expression, UserAttributeDeclaration>
         public static Parameter create(long storageClass, Type type, Identifier ident, Expression defaultArg, UserAttributeDeclaration userAttribDecl) {
             return new Parameter(storageClass, type, ident, defaultArg, userAttribDecl);
         }
 
+        // Erasure: syntaxCopy<>
         public  Parameter syntaxCopy() {
             return new Parameter(this.storageClass, this.type != null ? this.type.syntaxCopy() : null, this.ident, this.defaultArg != null ? this.defaultArg.syntaxCopy() : null, this.userAttribDecl != null ? (UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(null) : null);
         }
 
+        // Erasure: isLazyArray<>
         public  Type isLazyArray() {
             Type tb = this.type.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tsarray) || ((tb.ty & 0xFF) == ENUMTY.Tarray))
@@ -6718,14 +7111,17 @@ public class mtype {
             return null;
         }
 
+        // Erasure: dyncast<>
         public  int dyncast() {
             return DYNCAST.parameter;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: arraySyntaxCopy<Ptr>
         public static Ptr<DArray<Parameter>> arraySyntaxCopy(Ptr<DArray<Parameter>> parameters) {
             Ptr<DArray<Parameter>> params = null;
             if (parameters != null)
@@ -6741,6 +7137,7 @@ public class mtype {
             return params;
         }
 
+        // Erasure: dim<Ptr>
         public static int dim(Ptr<DArray<Parameter>> parameters) {
             Ref<Integer> nargs = ref(0);
             Function2<Integer,Parameter,Integer> dimDg = new Function2<Integer,Parameter,Integer>() {
@@ -6755,6 +7152,7 @@ public class mtype {
             return nargs.value;
         }
 
+        // Erasure: getNth<Ptr, int, Ptr>
         public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth, Ptr<Integer> pn) {
             Ref<Parameter> param = ref(null);
             Function2<Integer,Parameter,Integer> getNthParamDg = new Function2<Integer,Parameter,Integer>() {
@@ -6775,9 +7173,10 @@ public class mtype {
 
         // defaulted all parameters starting with #3
         public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth) {
-            return getNth(parameters, nth, null);
+            return getNth(parameters, nth, (Ptr<Integer>)null);
         }
 
+        // Erasure: _foreach<Ptr, Function2, Ptr>
         public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg, Ptr<Integer> pn) {
             assert(dg != null);
             if (parameters == null)
@@ -6819,13 +7218,15 @@ public class mtype {
 
         // defaulted all parameters starting with #3
         public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg) {
-            return _foreach(parameters, dg, null);
+            return _foreach(parameters, dg, (Ptr<Integer>)null);
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return this.ident != null ? this.ident.toChars() : new BytePtr("__anonymous_param");
         }
 
+        // Erasure: isCovariant<boolean, Parameter>
         public  boolean isCovariant(boolean returnByRef, Parameter p) {
             long stc = 2111488L;
             if (((this.storageClass & 2111488L) != (p.storageClass & 2111488L)))
@@ -6835,6 +7236,7 @@ public class mtype {
             return isCovariantScope(returnByRef, this.storageClass, p.storageClass);
         }
 
+        // Erasure: isCovariantScope<boolean, long, long>
         public static boolean isCovariantScope(boolean returnByRef, long from, long to) {
             if ((from == to))
             {
@@ -6894,6 +7296,7 @@ public class mtype {
             public static final int Ref_ReturnScope = 7;
         }
 
+        // Erasure: covariantInit<>
         public static Slice<Slice<Boolean>> covariantInit() {
             Slice<Slice<Boolean>> covariant = new RawSlice<Slice<Boolean>>(new Slice<Boolean>[8]);
             {
@@ -6929,6 +7332,7 @@ public class mtype {
             return that;
         }
     }
+    // Erasure: toAutoQualChars<Type, Type>
     public static Slice<BytePtr> toAutoQualChars(Type t1, Type t2) {
         BytePtr s1 = pcopy(t1.toChars());
         BytePtr s2 = pcopy(t2.toChars());
@@ -6940,6 +7344,7 @@ public class mtype {
         return slice(new BytePtr[]{s1, s2});
     }
 
+    // Erasure: modifiersApply<TypeFunction, Function1>
     public static void modifiersApply(TypeFunction tf, Function1<ByteSlice,Void> dg) {
         ByteSlice modsArr = slice(new byte[]{(byte)1, (byte)4, (byte)8, (byte)2});
         {
@@ -6955,6 +7360,7 @@ public class mtype {
         }
     }
 
+    // Erasure: attributesApply<TypeFunction, Function1, int>
     public static void attributesApply(TypeFunction tf, Function1<ByteSlice,Void> dg, int trustFormat) {
         if (tf.purity != 0)
         {
@@ -7004,6 +7410,7 @@ public class mtype {
         attributesApply(tf, dg, TRUSTformat.TRUSTformatDefault);
     }
 
+    // Erasure: isAggregate<Type>
     public static AggregateDeclaration isAggregate(Type t) {
         t = t.toBasetype();
         if (((t.ty & 0xFF) == ENUMTY.Tclass))
@@ -7017,11 +7424,13 @@ public class mtype {
         return null;
     }
 
+    // Erasure: isIndexableNonAggregate<Type>
     public static boolean isIndexableNonAggregate(Type t) {
         t = t.toBasetype();
         return ((t.ty & 0xFF) == ENUMTY.Tpointer) || ((t.ty & 0xFF) == ENUMTY.Tsarray) || ((t.ty & 0xFF) == ENUMTY.Tarray) || ((t.ty & 0xFF) == ENUMTY.Taarray) || ((t.ty & 0xFF) == ENUMTY.Ttuple) || ((t.ty & 0xFF) == ENUMTY.Tvector);
     }
 
+    // Erasure: isCopyable<Type>
     public static boolean isCopyable(Type t) {
         {
             TypeStruct ts = t.isTypeStruct();

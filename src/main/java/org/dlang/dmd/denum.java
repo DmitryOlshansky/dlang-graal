@@ -37,6 +37,7 @@ public class denum {
         public boolean isdeprecated = false;
         public boolean added = false;
         public int inuse = 0;
+        // Erasure: __ctor<Loc, Identifier, Type>
         public  EnumDeclaration(Loc loc, Identifier ident, Type memtype) {
             super(loc, ident);
             this.type = new TypeEnum(this);
@@ -44,12 +45,14 @@ public class denum {
             this.protection = new Prot(Prot.Kind.undefined);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             EnumDeclaration ed = new EnumDeclaration(this.loc, this.ident, this.memtype != null ? this.memtype.syntaxCopy() : null);
             return this.syntaxCopy(ed);
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             ScopeDsymbol scopesym = this.isAnonymous() ? sds : this;
             if (!this.isAnonymous())
@@ -74,6 +77,7 @@ public class denum {
             this.added = true;
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             if ((this.semanticRun > PASS.init))
             {
@@ -82,6 +86,7 @@ public class denum {
             this.setScope(sc);
         }
 
+        // Erasure: oneMember<Ptr, Identifier>
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             if (this.isAnonymous())
             {
@@ -90,14 +95,17 @@ public class denum {
             return this.oneMember(ps, ident);
         }
 
+        // Erasure: getType<>
         public  Type getType() {
             return this.type;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("enum");
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if (this._scope != null)
             {
@@ -117,14 +125,17 @@ public class denum {
             return search(loc, ident, 8);
         }
 
+        // Erasure: isDeprecated<>
         public  boolean isDeprecated() {
             return this.isdeprecated;
         }
 
+        // Erasure: prot<>
         public  Prot prot() {
             return this.protection;
         }
 
+        // Erasure: getMaxMinValue<Loc, Identifier>
         public  Expression getMaxMinValue(Loc loc, Identifier id) {
             Function2<Expression,Ref<Loc>,Expression> pvalToResult = new Function2<Expression,Ref<Loc>,Expression>() {
                 public Expression invoke(Expression e, Loc loc) {
@@ -221,10 +232,12 @@ public class denum {
             return this.errors ? errorReturn.invoke() : pvalToResult.invoke(pval.get(), loc);
         }
 
+        // Erasure: isSpecial<>
         public  boolean isSpecial() {
             return isSpecialEnumIdent(this.ident) && (this.memtype != null);
         }
 
+        // Erasure: getDefaultValue<Loc>
         public  Expression getDefaultValue(Loc loc) {
             Function0<Expression> handleErrors = new Function0<Expression>() {
                 public Expression invoke() {
@@ -271,6 +284,7 @@ public class denum {
             return handleErrors.invoke();
         }
 
+        // Erasure: getMemtype<Loc>
         public  Type getMemtype(Loc loc) {
             if (this._scope != null)
             {
@@ -303,11 +317,13 @@ public class denum {
             return this.memtype;
         }
 
+        // Erasure: isEnumDeclaration<>
         public  EnumDeclaration isEnumDeclaration() {
             return this;
         }
 
         public Ptr<Symbol> sinit = null;
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -353,6 +369,7 @@ public class denum {
     }
     public static class EnumMember extends VarDeclaration
     {
+        // Erasure: value<>
         public  Expression value() {
             return ((ExpInitializer)this._init).exp;
         }
@@ -360,12 +377,14 @@ public class denum {
         public Expression origValue = null;
         public Type origType = null;
         public EnumDeclaration ed = null;
+        // Erasure: __ctor<Loc, Identifier, Expression, Type>
         public  EnumMember(Loc loc, Identifier id, Expression value, Type origType) {
             super(loc, null, id != null ? id : Id.empty, new ExpInitializer(loc, value), 0L);
             this.origValue = value;
             this.origType = origType;
         }
 
+        // Erasure: __ctor<Loc, Identifier, Expression, Type, long, UserAttributeDeclaration, DeprecatedDeclaration>
         public  EnumMember(Loc loc, Identifier id, Expression value, Type memtype, long stc, UserAttributeDeclaration uad, DeprecatedDeclaration dd) {
             this(loc, id, value, memtype);
             this.storage_class = stc;
@@ -373,15 +392,18 @@ public class denum {
             this.depdecl = dd;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new EnumMember(this.loc, this.ident, this.value() != null ? this.value().syntaxCopy() : null, this.origType != null ? this.origType.syntaxCopy() : null, this.storage_class, this.userAttribDecl != null ? (UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(s) : null, this.depdecl != null ? (DeprecatedDeclaration)this.depdecl.syntaxCopy(s) : null);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("enum member");
         }
 
+        // Erasure: getVarExp<Loc, Ptr>
         public  Expression getVarExp(Loc loc, Ptr<Scope> sc) {
             dsymbolSemantic(this, sc);
             if (this.errors)
@@ -402,10 +424,12 @@ public class denum {
             return expressionSemantic(e, sc);
         }
 
+        // Erasure: isEnumMember<>
         public  EnumMember isEnumMember() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -465,6 +489,7 @@ public class denum {
             return that;
         }
     }
+    // Erasure: isSpecialEnumIdent<Identifier>
     public static boolean isSpecialEnumIdent(Identifier ident) {
         return (pequals(ident, Id.__c_long)) || (pequals(ident, Id.__c_ulong)) || (pequals(ident, Id.__c_longlong)) || (pequals(ident, Id.__c_ulonglong)) || (pequals(ident, Id.__c_long_double)) || (pequals(ident, Id.__c_wchar_t));
     }

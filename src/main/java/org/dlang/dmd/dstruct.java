@@ -34,6 +34,7 @@ import static org.dlang.dmd.visitor.*;
 public class dstruct {
     static TypeFunction search_toStringtftostring = null;
 
+    // Erasure: search_toString<StructDeclaration>
     public static FuncDeclaration search_toString(StructDeclaration sd) {
         Dsymbol s = search_function(sd, Id.tostring);
         FuncDeclaration fd = s != null ? s.isFuncDeclaration() : null;
@@ -49,6 +50,7 @@ public class dstruct {
         return fd;
     }
 
+    // Erasure: semanticTypeInfo<Ptr, Type>
     public static void semanticTypeInfo(Ptr<Scope> sc, Type t) {
         if (sc != null)
         {
@@ -213,6 +215,7 @@ public class dstruct {
         public Type arg1type = null;
         public Type arg2type = null;
         public boolean requestTypeInfo = false;
+        // Erasure: __ctor<Loc, Identifier, boolean>
         public  StructDeclaration(Loc loc, Identifier id, boolean inObject) {
             super(loc, id);
             this.zeroInit = false;
@@ -227,15 +230,18 @@ public class dstruct {
             }
         }
 
+        // Erasure: create<Loc, Identifier, boolean>
         public static StructDeclaration create(Loc loc, Identifier id, boolean inObject) {
             return new StructDeclaration(loc, id, inObject);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             StructDeclaration sd = s != null ? (StructDeclaration)s : new StructDeclaration(this.loc, this.ident, false);
             return this.syntaxCopy(sd);
         }
 
+        // Erasure: semanticTypeInfoMembers<>
         public  void semanticTypeInfoMembers() {
             if ((this.xeq != null) && (this.xeq._scope != null) && (this.xeq.semanticRun < PASS.semantic3done))
             {
@@ -274,6 +280,7 @@ public class dstruct {
             }
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if ((this._scope != null) && (this.symtab == null))
             {
@@ -292,10 +299,12 @@ public class dstruct {
             return search(loc, ident, 8);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("struct");
         }
 
+        // Erasure: finalizeSize<>
         public  void finalizeSize() {
             assert((this.sizeok != Sizeok.done));
             if ((this.sizeok == Sizeok.inProcess))
@@ -385,6 +394,7 @@ public class dstruct {
             }
         }
 
+        // Erasure: fit<Loc, Ptr, Ptr, Type>
         public  boolean fit(Loc loc, Ptr<Scope> sc, Ptr<DArray<Expression>> elements, Type stype) {
             if (elements == null)
             {
@@ -473,6 +483,7 @@ public class dstruct {
             return true;
         }
 
+        // Erasure: isPOD<>
         public  boolean isPOD() {
             if ((this.ispod != StructPOD.fwd))
             {
@@ -508,10 +519,12 @@ public class dstruct {
             return this.ispod == StructPOD.yes;
         }
 
+        // Erasure: isStructDeclaration<>
         public  StructDeclaration isStructDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -589,6 +602,7 @@ public class dstruct {
             return that;
         }
     }
+    // Erasure: _isZeroInit<Expression>
     public static boolean _isZeroInit(Expression exp) {
         switch ((exp.op & 0xFF))
         {
@@ -666,24 +680,29 @@ public class dstruct {
 
     public static class UnionDeclaration extends StructDeclaration
     {
+        // Erasure: __ctor<Loc, Identifier>
         public  UnionDeclaration(Loc loc, Identifier id) {
             super(loc, id, false);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             UnionDeclaration ud = new UnionDeclaration(this.loc, this.ident);
             return this.syntaxCopy(ud);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("union");
         }
 
+        // Erasure: isUnionDeclaration<>
         public  UnionDeclaration isUnionDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }

@@ -41,6 +41,7 @@ import static org.dlang.dmd.visitor.*;
 
 public class dsymbol {
 
+    // Erasure: foreachDsymbol<Ptr, Function1>
     public static int foreachDsymbol(Ptr<DArray<Dsymbol>> symbols, Function1<Dsymbol,Integer> dg) {
         assert(dg != null);
         if (symbols != null)
@@ -60,7 +61,8 @@ public class dsymbol {
         return 0;
     }
 
-    public static void foreachDsymbol(Ptr<DArray<Dsymbol>> symbols, Function1<Dsymbol,Void> dg) {
+    // Erasure: foreachDsymbol<Ptr, Function1>
+    public static void foreachDsymbol(Ptr<DArray<Dsymbol>> symbols, Function1<Dsymbol,Void> dg, ETag1 __tag) {
         assert(dg != null);
         if (symbols != null)
         {
@@ -77,6 +79,7 @@ public class dsymbol {
     public static class Ungag
     {
         public int oldgag = 0;
+        // Erasure: __ctor<int>
         public  Ungag(int old) {
             this.oldgag = old;
         }
@@ -109,14 +112,17 @@ public class dsymbol {
 
         public int kind = 0;
         public dmodule.Package pkg = null;
+        // Erasure: __ctor<int>
         public  Prot(int kind) {
             this.kind = kind;
         }
 
+        // Erasure: isMoreRestrictiveThan<Prot>
         public  boolean isMoreRestrictiveThan(Prot other) {
             return this.kind < other.kind;
         }
 
+        // Erasure: opEquals<Prot>
         public  boolean opEquals(Prot other) {
             if ((this.kind == other.kind))
             {
@@ -129,6 +135,7 @@ public class dsymbol {
             return false;
         }
 
+        // Erasure: isSubsetOf<Prot>
         public  boolean isSubsetOf(Prot parent) {
             if ((this.kind != parent.kind))
             {
@@ -206,35 +213,42 @@ public class dsymbol {
         public DeprecatedDeclaration depdecl = null;
         public UserAttributeDeclaration userAttribDecl = null;
         public UnitTestDeclaration ddocUnittest = null;
+        // Erasure: __ctor<>
         public  Dsymbol() {
             super();
             this.loc = new Loc(null, 0, 0);
         }
 
+        // Erasure: __ctor<Identifier>
         public  Dsymbol(Identifier ident) {
             super();
             this.loc = new Loc(null, 0, 0);
             this.ident = ident;
         }
 
+        // Erasure: __ctor<Loc, Identifier>
         public  Dsymbol(Loc loc, Identifier ident) {
             super();
             this.loc.opAssign(loc.copy());
             this.ident = ident;
         }
 
+        // Erasure: create<Identifier>
         public static Dsymbol create(Identifier ident) {
             return new Dsymbol(ident);
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return this.ident != null ? this.ident.toChars() : new BytePtr("__anonymous");
         }
 
+        // Erasure: toPrettyCharsHelper<>
         public  BytePtr toPrettyCharsHelper() {
             return this.toChars();
         }
 
+        // Erasure: getLoc<>
         public  Loc getLoc() {
             if (!this.loc.isValid())
             {
@@ -249,10 +263,12 @@ public class dsymbol {
             return this.loc;
         }
 
+        // Erasure: locToChars<>
         public  BytePtr locToChars() {
             return this.getLoc().toChars(global.params.showColumns);
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -270,10 +286,12 @@ public class dsymbol {
             return false;
         }
 
+        // Erasure: isAnonymous<>
         public  boolean isAnonymous() {
             return this.ident == null;
         }
 
+        // Erasure: error<Loc, Ptr>
         public  void error(Loc loc, BytePtr format, Object... ap) {
             Ref<BytePtr> format_ref = ref(format);
             BytePtr cstr = pcopy(this.toPrettyChars(false));
@@ -281,6 +299,7 @@ public class dsymbol {
             verror(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty), new BytePtr("Error: "));
         }
 
+        // Erasure: error<Ptr>
         public  void error(BytePtr format, Object... ap) {
             Ref<BytePtr> format_ref = ref(format);
             BytePtr cstr = pcopy(this.toPrettyChars(false));
@@ -289,6 +308,7 @@ public class dsymbol {
             verror(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty), new BytePtr("Error: "));
         }
 
+        // Erasure: deprecation<Loc, Ptr>
         public  void deprecation(Loc loc, BytePtr format, Object... ap) {
             Ref<BytePtr> format_ref = ref(format);
             BytePtr cstr = pcopy(this.toPrettyChars(false));
@@ -296,6 +316,7 @@ public class dsymbol {
             vdeprecation(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty));
         }
 
+        // Erasure: deprecation<Ptr>
         public  void deprecation(BytePtr format, Object... ap) {
             Ref<BytePtr> format_ref = ref(format);
             BytePtr cstr = pcopy(this.toPrettyChars(false));
@@ -304,6 +325,7 @@ public class dsymbol {
             vdeprecation(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty));
         }
 
+        // Erasure: checkDeprecated<Loc, Ptr>
         public  boolean checkDeprecated(Loc loc, Ptr<Scope> sc) {
             if (((global.params.useDeprecated & 0xFF) != 2) && this.isDeprecated())
             {
@@ -335,6 +357,7 @@ public class dsymbol {
             return false;
         }
 
+        // Erasure: getModule<>
         public  dmodule.Module getModule() {
             {
                 TemplateInstance ti = this.isInstantiated();
@@ -355,6 +378,7 @@ public class dsymbol {
             return null;
         }
 
+        // Erasure: getAccessModule<>
         public  dmodule.Module getAccessModule() {
             {
                 TemplateInstance ti = this.isInstantiated();
@@ -383,6 +407,7 @@ public class dsymbol {
             return null;
         }
 
+        // Erasure: pastMixin<>
         public  Dsymbol pastMixin() {
             if ((this.isTemplateMixin() == null) && (this.isForwardingAttribDeclaration() == null))
             {
@@ -395,10 +420,12 @@ public class dsymbol {
             return this.parent.value.pastMixin();
         }
 
+        // Erasure: toParent<>
         public  Dsymbol toParent() {
             return this.parent.value != null ? this.parent.value.pastMixin() : null;
         }
 
+        // Erasure: toParent2<>
         public  Dsymbol toParent2() {
             if ((this.parent.value == null) || (this.parent.value.isTemplateInstance() == null) && (this.parent.value.isForwardingAttribDeclaration() == null))
             {
@@ -407,14 +434,17 @@ public class dsymbol {
             return this.parent.value.toParent2();
         }
 
+        // Erasure: toParentDecl<>
         public  Dsymbol toParentDecl() {
             return this.toParentDeclImpl(false);
         }
 
+        // Erasure: toParentLocal<>
         public  Dsymbol toParentLocal() {
             return this.toParentDeclImpl(true);
         }
 
+        // Erasure: toParentDeclImpl<boolean>
         public  Dsymbol toParentDeclImpl(boolean localOnly) {
             Dsymbol p = this.toParent();
             if ((p == null) || (p.isTemplateInstance() == null))
@@ -429,6 +459,7 @@ public class dsymbol {
             return this.parent.value.toParentDeclImpl(localOnly);
         }
 
+        // Erasure: isInstantiated<>
         public  TemplateInstance isInstantiated() {
             if (this.parent.value == null)
             {
@@ -442,6 +473,7 @@ public class dsymbol {
             return this.parent.value.isInstantiated();
         }
 
+        // Erasure: isSpeculative<>
         public  TemplateInstance isSpeculative() {
             if (this.parent.value == null)
             {
@@ -459,6 +491,7 @@ public class dsymbol {
             return this.parent.value.isSpeculative();
         }
 
+        // Erasure: ungagSpeculative<>
         public  Ungag ungagSpeculative() {
             int oldgag = global.gag;
             if ((global.gag != 0) && (this.isSpeculative() == null) && (this.toParent2().isFuncDeclaration() == null))
@@ -468,10 +501,12 @@ public class dsymbol {
             return new Ungag(oldgag);
         }
 
+        // Erasure: dyncast<>
         public  int dyncast() {
             return DYNCAST.dsymbol;
         }
 
+        // Erasure: arraySyntaxCopy<Ptr>
         public static Ptr<DArray<Dsymbol>> arraySyntaxCopy(Ptr<DArray<Dsymbol>> a) {
             Ptr<DArray<Dsymbol>> b = null;
             if (a != null)
@@ -487,10 +522,12 @@ public class dsymbol {
             return b;
         }
 
+        // Erasure: getIdent<>
         public  Identifier getIdent() {
             return this.ident;
         }
 
+        // Erasure: toPrettyChars<boolean>
         public  BytePtr toPrettyChars(boolean QualifyTypes) {
             if ((this.prettystring != null) && !QualifyTypes)
             {
@@ -562,22 +599,27 @@ public class dsymbol {
             return toPrettyChars(false);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("symbol");
         }
 
+        // Erasure: toAlias<>
         public  Dsymbol toAlias() {
             return this;
         }
 
+        // Erasure: toAlias2<>
         public  Dsymbol toAlias2() {
             return this.toAlias();
         }
 
+        // Erasure: apply<Ptr, Ptr>
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
             return (fp).invoke(this, param);
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             this.parent.value = sds;
             if (!this.isAnonymous())
@@ -602,6 +644,7 @@ public class dsymbol {
             }
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             if (!(sc.get()).nofree)
             {
@@ -618,9 +661,11 @@ public class dsymbol {
             }
         }
 
+        // Erasure: importAll<Ptr>
         public  void importAll(Ptr<Scope> sc) {
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             return null;
         }
@@ -630,6 +675,7 @@ public class dsymbol {
             return search(loc, ident, 0);
         }
 
+        // Erasure: search_correct<Identifier>
         public  Dsymbol search_correct(Identifier ident) {
             Function2<ByteSlice,Ref<Integer>,Dsymbol> symbol_search_fp = new Function2<ByteSlice,Ref<Integer>,Dsymbol>() {
                 public Dsymbol invoke(ByteSlice seed, Ref<Integer> cost) {
@@ -664,6 +710,7 @@ public class dsymbol {
             return speller.invoke(ident.asString());
         }
 
+        // Erasure: searchX<Loc, Ptr, RootObject, int>
         public  Dsymbol searchX(Loc loc, Ptr<Scope> sc, RootObject id, int flags) {
             Dsymbol s = this.toAlias();
             Dsymbol sm = null;
@@ -722,90 +769,110 @@ public class dsymbol {
             return sm;
         }
 
+        // Erasure: overloadInsert<Dsymbol>
         public  boolean overloadInsert(Dsymbol s) {
             return false;
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             this.error(new BytePtr("Dsymbol `%s` has no size"), this.toChars());
             return -1L;
         }
 
+        // Erasure: isforwardRef<>
         public  boolean isforwardRef() {
             return false;
         }
 
+        // Erasure: isThis<>
         public  AggregateDeclaration isThis() {
             return null;
         }
 
+        // Erasure: isExport<>
         public  boolean isExport() {
             return false;
         }
 
+        // Erasure: isImportedSymbol<>
         public  boolean isImportedSymbol() {
             return false;
         }
 
+        // Erasure: isDeprecated<>
         public  boolean isDeprecated() {
             return false;
         }
 
+        // Erasure: isOverloadable<>
         public  boolean isOverloadable() {
             return false;
         }
 
+        // Erasure: isLabel<>
         public  LabelDsymbol isLabel() {
             return null;
         }
 
+        // Erasure: isMember<>
         public  AggregateDeclaration isMember() {
             Dsymbol p = this.toParent();
             return p != null ? p.isAggregateDeclaration() : null;
         }
 
+        // Erasure: isMember2<>
         public  AggregateDeclaration isMember2() {
             Dsymbol p = this.toParent2();
             return p != null ? p.isAggregateDeclaration() : null;
         }
 
+        // Erasure: isMemberDecl<>
         public  AggregateDeclaration isMemberDecl() {
             Dsymbol p = this.toParentDecl();
             return p != null ? p.isAggregateDeclaration() : null;
         }
 
+        // Erasure: isMemberLocal<>
         public  AggregateDeclaration isMemberLocal() {
             Dsymbol p = this.toParentLocal();
             return p != null ? p.isAggregateDeclaration() : null;
         }
 
+        // Erasure: isClassMember<>
         public  ClassDeclaration isClassMember() {
             AggregateDeclaration ad = this.isMember();
             return ad != null ? ad.isClassDeclaration() : null;
         }
 
+        // Erasure: getType<>
         public  Type getType() {
             return null;
         }
 
+        // Erasure: needThis<>
         public  boolean needThis() {
             return false;
         }
 
+        // Erasure: prot<>
         public  Prot prot() {
             return new Prot(Prot.Kind.public_);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             printf(new BytePtr("%s %s\n"), this.kind(), this.toChars());
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: oneMember<Ptr, Identifier>
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             ps.set(0, this);
             return true;
         }
 
+        // Erasure: oneMembers<Ptr, Ptr, Identifier>
         public static boolean oneMembers(Ptr<DArray<Dsymbol>> members, Ptr<Dsymbol> ps, Identifier ident) {
             Dsymbol s = null;
             if (members != null)
@@ -861,26 +928,33 @@ public class dsymbol {
             return true;
         }
 
+        // Erasure: setFieldOffset<AggregateDeclaration, Ptr, boolean>
         public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             return false;
         }
 
+        // Erasure: hasStaticCtorOrDtor<>
         public  boolean hasStaticCtorOrDtor() {
             return false;
         }
 
+        // Erasure: addLocalClass<Ptr>
         public  void addLocalClass(Ptr<DArray<ClassDeclaration>> _param_0) {
         }
 
+        // Erasure: addObjcSymbols<Ptr, Ptr>
         public  void addObjcSymbols(Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
         }
 
+        // Erasure: checkCtorConstInit<>
         public  void checkCtorConstInit() {
         }
 
+        // Erasure: addComment<Ptr>
         public  void addComment(BytePtr comment) {
             if (this.comment == null)
             {
@@ -892,6 +966,7 @@ public class dsymbol {
             }
         }
 
+        // Erasure: inNonRoot<>
         public  boolean inNonRoot() {
             Dsymbol s = this.parent.value;
             for (; s != null;s = s.toParent()){
@@ -917,202 +992,252 @@ public class dsymbol {
             return false;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: isPackage<>
         public  dmodule.Package isPackage() {
             return null;
         }
 
+        // Erasure: isModule<>
         public  dmodule.Module isModule() {
             return null;
         }
 
+        // Erasure: isEnumMember<>
         public  EnumMember isEnumMember() {
             return null;
         }
 
+        // Erasure: isTemplateDeclaration<>
         public  TemplateDeclaration isTemplateDeclaration() {
             return null;
         }
 
+        // Erasure: isTemplateInstance<>
         public  TemplateInstance isTemplateInstance() {
             return null;
         }
 
+        // Erasure: isTemplateMixin<>
         public  TemplateMixin isTemplateMixin() {
             return null;
         }
 
+        // Erasure: isForwardingAttribDeclaration<>
         public  ForwardingAttribDeclaration isForwardingAttribDeclaration() {
             return null;
         }
 
+        // Erasure: isNspace<>
         public  Nspace isNspace() {
             return null;
         }
 
+        // Erasure: isDeclaration<>
         public  Declaration isDeclaration() {
             return null;
         }
 
+        // Erasure: isStorageClassDeclaration<>
         public  StorageClassDeclaration isStorageClassDeclaration() {
             return null;
         }
 
+        // Erasure: isExpressionDsymbol<>
         public  ExpressionDsymbol isExpressionDsymbol() {
             return null;
         }
 
+        // Erasure: isThisDeclaration<>
         public  ThisDeclaration isThisDeclaration() {
             return null;
         }
 
+        // Erasure: isTypeInfoDeclaration<>
         public  TypeInfoDeclaration isTypeInfoDeclaration() {
             return null;
         }
 
+        // Erasure: isTupleDeclaration<>
         public  TupleDeclaration isTupleDeclaration() {
             return null;
         }
 
+        // Erasure: isAliasDeclaration<>
         public  AliasDeclaration isAliasDeclaration() {
             return null;
         }
 
+        // Erasure: isAggregateDeclaration<>
         public  AggregateDeclaration isAggregateDeclaration() {
             return null;
         }
 
+        // Erasure: isFuncDeclaration<>
         public  FuncDeclaration isFuncDeclaration() {
             return null;
         }
 
+        // Erasure: isFuncAliasDeclaration<>
         public  FuncAliasDeclaration isFuncAliasDeclaration() {
             return null;
         }
 
+        // Erasure: isOverDeclaration<>
         public  OverDeclaration isOverDeclaration() {
             return null;
         }
 
+        // Erasure: isFuncLiteralDeclaration<>
         public  FuncLiteralDeclaration isFuncLiteralDeclaration() {
             return null;
         }
 
+        // Erasure: isCtorDeclaration<>
         public  CtorDeclaration isCtorDeclaration() {
             return null;
         }
 
+        // Erasure: isPostBlitDeclaration<>
         public  PostBlitDeclaration isPostBlitDeclaration() {
             return null;
         }
 
+        // Erasure: isDtorDeclaration<>
         public  DtorDeclaration isDtorDeclaration() {
             return null;
         }
 
+        // Erasure: isStaticCtorDeclaration<>
         public  StaticCtorDeclaration isStaticCtorDeclaration() {
             return null;
         }
 
+        // Erasure: isStaticDtorDeclaration<>
         public  StaticDtorDeclaration isStaticDtorDeclaration() {
             return null;
         }
 
+        // Erasure: isSharedStaticCtorDeclaration<>
         public  SharedStaticCtorDeclaration isSharedStaticCtorDeclaration() {
             return null;
         }
 
+        // Erasure: isSharedStaticDtorDeclaration<>
         public  SharedStaticDtorDeclaration isSharedStaticDtorDeclaration() {
             return null;
         }
 
+        // Erasure: isInvariantDeclaration<>
         public  InvariantDeclaration isInvariantDeclaration() {
             return null;
         }
 
+        // Erasure: isUnitTestDeclaration<>
         public  UnitTestDeclaration isUnitTestDeclaration() {
             return null;
         }
 
+        // Erasure: isNewDeclaration<>
         public  NewDeclaration isNewDeclaration() {
             return null;
         }
 
+        // Erasure: isVarDeclaration<>
         public  VarDeclaration isVarDeclaration() {
             return null;
         }
 
+        // Erasure: isClassDeclaration<>
         public  ClassDeclaration isClassDeclaration() {
             return null;
         }
 
+        // Erasure: isStructDeclaration<>
         public  StructDeclaration isStructDeclaration() {
             return null;
         }
 
+        // Erasure: isUnionDeclaration<>
         public  UnionDeclaration isUnionDeclaration() {
             return null;
         }
 
+        // Erasure: isInterfaceDeclaration<>
         public  InterfaceDeclaration isInterfaceDeclaration() {
             return null;
         }
 
+        // Erasure: isScopeDsymbol<>
         public  ScopeDsymbol isScopeDsymbol() {
             return null;
         }
 
+        // Erasure: isForwardingScopeDsymbol<>
         public  ForwardingScopeDsymbol isForwardingScopeDsymbol() {
             return null;
         }
 
+        // Erasure: isWithScopeSymbol<>
         public  WithScopeSymbol isWithScopeSymbol() {
             return null;
         }
 
+        // Erasure: isArrayScopeSymbol<>
         public  ArrayScopeSymbol isArrayScopeSymbol() {
             return null;
         }
 
+        // Erasure: isImport<>
         public  Import isImport() {
             return null;
         }
 
+        // Erasure: isEnumDeclaration<>
         public  EnumDeclaration isEnumDeclaration() {
             return null;
         }
 
+        // Erasure: isDeleteDeclaration<>
         public  DeleteDeclaration isDeleteDeclaration() {
             return null;
         }
 
+        // Erasure: isSymbolDeclaration<>
         public  SymbolDeclaration isSymbolDeclaration() {
             return null;
         }
 
+        // Erasure: isAttribDeclaration<>
         public  AttribDeclaration isAttribDeclaration() {
             return null;
         }
 
+        // Erasure: isAnonDeclaration<>
         public  AnonDeclaration isAnonDeclaration() {
             return null;
         }
 
+        // Erasure: isCPPNamespaceDeclaration<>
         public  CPPNamespaceDeclaration isCPPNamespaceDeclaration() {
             return null;
         }
 
+        // Erasure: isProtDeclaration<>
         public  ProtDeclaration isProtDeclaration() {
             return null;
         }
 
+        // Erasure: isOverloadSet<>
         public  OverloadSet isOverloadSet() {
             return null;
         }
 
+        // Erasure: isCompileDeclaration<>
         public  CompileDeclaration isCompileDeclaration() {
             return null;
         }
@@ -1146,18 +1271,22 @@ public class dsymbol {
         public Ptr<Integer> prots = null;
         public Ref<BitArray> accessiblePackages = ref(new BitArray());
         public Ref<BitArray> privateAccessiblePackages = ref(new BitArray());
+        // Erasure: __ctor<>
         public  ScopeDsymbol() {
             super();
         }
 
+        // Erasure: __ctor<Identifier>
         public  ScopeDsymbol(Identifier ident) {
             super(ident);
         }
 
+        // Erasure: __ctor<Loc, Identifier>
         public  ScopeDsymbol(Loc loc, Identifier ident) {
             super(loc, ident);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             ScopeDsymbol sds = s != null ? (ScopeDsymbol)s : new ScopeDsymbol(this.ident);
             sds.members = pcopy(Dsymbol.arraySyntaxCopy(this.members));
@@ -1165,6 +1294,7 @@ public class dsymbol {
             return sds;
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if ((this.symtab != null) && ((flags & 16) == 0))
             {
@@ -1280,6 +1410,7 @@ public class dsymbol {
             return search(loc, ident, 8);
         }
 
+        // Erasure: mergeOverloadSet<Identifier, OverloadSet, Dsymbol>
         public  OverloadSet mergeOverloadSet(Identifier ident, OverloadSet os, Dsymbol s) {
             if (os == null)
             {
@@ -1333,6 +1464,7 @@ public class dsymbol {
             return os;
         }
 
+        // Erasure: importScope<Dsymbol, Prot>
         public  void importScope(Dsymbol s, Prot protection) {
             if ((!pequals(s, this)))
             {
@@ -1363,6 +1495,7 @@ public class dsymbol {
             }
         }
 
+        // Erasure: addAccessiblePackage<Package, Prot>
         public  void addAccessiblePackage(dmodule.Package p, Prot protection) {
             if ((p == null))
             {
@@ -1376,6 +1509,7 @@ public class dsymbol {
             (pary.get()).opIndexAssign(true, p.tag);
         }
 
+        // Erasure: isPackageAccessible<Package, Prot, int>
         public  boolean isPackageAccessible(dmodule.Package p, Prot protection, int flags) {
             if ((p.tag < this.accessiblePackages.value.length()) && this.accessiblePackages.value.get(p.tag) || (protection.kind == Prot.Kind.private_) && (p.tag < this.privateAccessiblePackages.value.length()) && this.privateAccessiblePackages.value.get(p.tag))
             {
@@ -1401,10 +1535,12 @@ public class dsymbol {
             return isPackageAccessible(p, protection, 0);
         }
 
+        // Erasure: isforwardRef<>
         public  boolean isforwardRef() {
             return this.members == null;
         }
 
+        // Erasure: multiplyDefined<Loc, Dsymbol, Dsymbol>
         public static void multiplyDefined(Loc loc, Dsymbol s1, Dsymbol s2) {
             if (loc.isValid())
             {
@@ -1416,10 +1552,12 @@ public class dsymbol {
             }
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("ScopeDsymbol");
         }
 
+        // Erasure: findGetMembers<>
         public  FuncDeclaration findGetMembers() {
             Dsymbol s = search_function(this, Id.getmembers);
             FuncDeclaration fdx = s != null ? s.isFuncDeclaration() : null;
@@ -1430,14 +1568,17 @@ public class dsymbol {
             return fdx;
         }
 
+        // Erasure: symtabInsert<Dsymbol>
         public  Dsymbol symtabInsert(Dsymbol s) {
             return this.symtab.insert(s);
         }
 
+        // Erasure: symtabLookup<Dsymbol, Identifier>
         public  Dsymbol symtabLookup(Dsymbol s, Identifier id) {
             return this.symtab.lookup(id);
         }
 
+        // Erasure: hasStaticCtorOrDtor<>
         public  boolean hasStaticCtorOrDtor() {
             if (this.members != null)
             {
@@ -1455,6 +1596,7 @@ public class dsymbol {
             return false;
         }
 
+        // Erasure: _foreach<Ptr, Ptr, Function2, Ptr>
         public static int _foreach(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> members, Function2<Integer,Dsymbol,Integer> dg, Ptr<Integer> pn) {
             assert(dg != null);
             if (members == null)
@@ -1508,13 +1650,15 @@ public class dsymbol {
 
         // defaulted all parameters starting with #4
         public static int _foreach(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> members, Function2<Integer,Dsymbol,Integer> dg) {
-            return _foreach(sc, members, dg, null);
+            return _foreach(sc, members, dg, (Ptr<Integer>)null);
         }
 
+        // Erasure: isScopeDsymbol<>
         public  ScopeDsymbol isScopeDsymbol() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1549,11 +1693,13 @@ public class dsymbol {
     public static class WithScopeSymbol extends ScopeDsymbol
     {
         public WithStatement withstate = null;
+        // Erasure: __ctor<WithStatement>
         public  WithScopeSymbol(WithStatement withstate) {
             super();
             this.withstate = withstate;
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if ((flags & 16) != 0)
             {
@@ -1596,10 +1742,12 @@ public class dsymbol {
             return search(loc, ident, 8);
         }
 
+        // Erasure: isWithScopeSymbol<>
         public  WithScopeSymbol isWithScopeSymbol() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1640,6 +1788,7 @@ public class dsymbol {
         public TypeTuple type = null;
         public TupleDeclaration td = null;
         public Ptr<Scope> sc = null;
+        // Erasure: __ctor<Ptr, Expression>
         public  ArrayScopeSymbol(Ptr<Scope> sc, Expression exp) {
             super(exp.loc, null);
             assert(((exp.op & 0xFF) == 62) || ((exp.op & 0xFF) == 31) || ((exp.op & 0xFF) == 17));
@@ -1647,18 +1796,21 @@ public class dsymbol {
             this.sc = pcopy(sc);
         }
 
+        // Erasure: __ctor<Ptr, TypeTuple>
         public  ArrayScopeSymbol(Ptr<Scope> sc, TypeTuple type) {
             super();
             this.type = type;
             this.sc = pcopy(sc);
         }
 
+        // Erasure: __ctor<Ptr, TupleDeclaration>
         public  ArrayScopeSymbol(Ptr<Scope> sc, TupleDeclaration td) {
             super();
             this.td = td;
             this.sc = pcopy(sc);
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if ((!pequals(ident, Id.dollar)))
             {
@@ -1810,10 +1962,12 @@ public class dsymbol {
             return search(loc, ident, 0);
         }
 
+        // Erasure: isArrayScopeSymbol<>
         public  ArrayScopeSymbol isArrayScopeSymbol() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1854,6 +2008,7 @@ public class dsymbol {
     public static class OverloadSet extends Dsymbol
     {
         public DArray<Dsymbol> a = new DArray<Dsymbol>();
+        // Erasure: __ctor<Identifier, OverloadSet>
         public  OverloadSet(Identifier ident, OverloadSet os) {
             super(ident);
             if (os != null)
@@ -1864,21 +2019,25 @@ public class dsymbol {
 
         // defaulted all parameters starting with #2
         public  OverloadSet(Identifier ident) {
-            this(ident, null);
+            this(ident, (OverloadSet)null);
         }
 
+        // Erasure: push<Dsymbol>
         public  void push(Dsymbol s) {
             this.a.push(s);
         }
 
+        // Erasure: isOverloadSet<>
         public  OverloadSet isOverloadSet() {
             return this;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("overloadset");
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1909,11 +2068,13 @@ public class dsymbol {
     public static class ForwardingScopeDsymbol extends ScopeDsymbol
     {
         public ScopeDsymbol forward = null;
+        // Erasure: __ctor<ScopeDsymbol>
         public  ForwardingScopeDsymbol(ScopeDsymbol forward) {
             super((Identifier)null);
             this.forward = forward;
         }
 
+        // Erasure: symtabInsert<Dsymbol>
         public  Dsymbol symtabInsert(Dsymbol s) {
             assert(this.forward != null);
             {
@@ -1937,6 +2098,7 @@ public class dsymbol {
             return this.forward.symtabInsert(s);
         }
 
+        // Erasure: symtabLookup<Dsymbol, Identifier>
         public  Dsymbol symtabLookup(Dsymbol s, Identifier id) {
             assert(this.forward != null);
             {
@@ -1960,14 +2122,17 @@ public class dsymbol {
             return this.forward.symtabLookup(s, id);
         }
 
+        // Erasure: importScope<Dsymbol, Prot>
         public  void importScope(Dsymbol s, Prot protection) {
             this.forward.importScope(s, protection);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("local scope");
         }
 
+        // Erasure: isForwardingScopeDsymbol<>
         public  ForwardingScopeDsymbol isForwardingScopeDsymbol() {
             return this;
         }
@@ -2005,11 +2170,13 @@ public class dsymbol {
     public static class ExpressionDsymbol extends Dsymbol
     {
         public Expression exp = null;
+        // Erasure: __ctor<Expression>
         public  ExpressionDsymbol(Expression exp) {
             super();
             this.exp = exp;
         }
 
+        // Erasure: isExpressionDsymbol<>
         public  ExpressionDsymbol isExpressionDsymbol() {
             return this;
         }
@@ -2040,14 +2207,17 @@ public class dsymbol {
     public static class DsymbolTable extends RootObject
     {
         public AA<Identifier,Dsymbol> tab = new AA<Identifier,Dsymbol>();
+        // Erasure: lookup<Identifier>
         public  Dsymbol lookup(Identifier ident) {
             return this.tab.get(ident);
         }
 
+        // Erasure: insert<Dsymbol>
         public  Dsymbol insert(Dsymbol s) {
             return this.insert(s.ident, s);
         }
 
+        // Erasure: update<Dsymbol>
         public  Dsymbol update(Dsymbol s) {
             Identifier ident = s.ident;
             Ptr<Dsymbol> ps = pcopy(this.tab.getLvalue(ident));
@@ -2055,6 +2225,7 @@ public class dsymbol {
             return s;
         }
 
+        // Erasure: insert<Identifier, Dsymbol>
         public  Dsymbol insert(Identifier ident, Dsymbol s) {
             Ptr<Dsymbol> ps = pcopy(this.tab.getLvalue(ident));
             if (ps.get() != null)
@@ -2065,10 +2236,12 @@ public class dsymbol {
             return s;
         }
 
+        // Erasure: len<>
         public  int len() {
             return this.tab.length();
         }
 
+        // Erasure: __ctor<>
         public  DsymbolTable() {
             super();
         }

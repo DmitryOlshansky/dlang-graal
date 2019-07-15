@@ -19,10 +19,12 @@ import static org.dlang.dmd.tokens.*;
 public class builtin {
 
     static StringTable builtins = new StringTable();
+    // Erasure: add_builtin<Ptr, Ptr>
     public static void add_builtin(BytePtr mangle, Function3<Loc,FuncDeclaration,Ptr<DArray<Expression>>,Expression> fp) {
         builtins.insert(mangle, strlen(mangle), fp);
     }
 
+    // Erasure: builtin_lookup<Ptr>
     public static Function3<Loc,FuncDeclaration,Ptr<DArray<Expression>>,Expression> builtin_lookup(BytePtr mangle) {
         {
             Ptr<StringValue> sv = builtins.lookup(mangle, strlen(mangle));
@@ -34,40 +36,47 @@ public class builtin {
         return null;
     }
 
+    // Erasure: eval_unimp<Loc, FuncDeclaration, Ptr>
     public static Expression eval_unimp(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         return null;
     }
 
+    // Erasure: eval_sin<Loc, FuncDeclaration, Ptr>
     public static Expression eval_sin(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.sin(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_cos<Loc, FuncDeclaration, Ptr>
     public static Expression eval_cos(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.cos(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_tan<Loc, FuncDeclaration, Ptr>
     public static Expression eval_tan(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.tan(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_sqrt<Loc, FuncDeclaration, Ptr>
     public static Expression eval_sqrt(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.sqrt(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_fabs<Loc, FuncDeclaration, Ptr>
     public static Expression eval_fabs(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.fabs(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_ldexp<Loc, FuncDeclaration, Ptr>
     public static Expression eval_ldexp(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
@@ -76,66 +85,77 @@ public class builtin {
         return new RealExp(loc, CTFloat.ldexp(arg0.toReal(), (int)arg1.toInteger()), arg0.type.value);
     }
 
+    // Erasure: eval_log<Loc, FuncDeclaration, Ptr>
     public static Expression eval_log(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.log(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_log2<Loc, FuncDeclaration, Ptr>
     public static Expression eval_log2(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.log2(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_log10<Loc, FuncDeclaration, Ptr>
     public static Expression eval_log10(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.log10(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_exp<Loc, FuncDeclaration, Ptr>
     public static Expression eval_exp(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.exp(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_expm1<Loc, FuncDeclaration, Ptr>
     public static Expression eval_expm1(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.expm1(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_exp2<Loc, FuncDeclaration, Ptr>
     public static Expression eval_exp2(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.exp2(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_round<Loc, FuncDeclaration, Ptr>
     public static Expression eval_round(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.round(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_floor<Loc, FuncDeclaration, Ptr>
     public static Expression eval_floor(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.floor(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_ceil<Loc, FuncDeclaration, Ptr>
     public static Expression eval_ceil(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.ceil(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_trunc<Loc, FuncDeclaration, Ptr>
     public static Expression eval_trunc(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new RealExp(loc, CTFloat.trunc(arg0.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_copysign<Loc, FuncDeclaration, Ptr>
     public static Expression eval_copysign(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
@@ -144,6 +164,7 @@ public class builtin {
         return new RealExp(loc, CTFloat.copysign(arg0.toReal(), arg1.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_pow<Loc, FuncDeclaration, Ptr>
     public static Expression eval_pow(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
@@ -152,6 +173,7 @@ public class builtin {
         return new RealExp(loc, CTFloat.pow(arg0.toReal(), arg1.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_fmin<Loc, FuncDeclaration, Ptr>
     public static Expression eval_fmin(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
@@ -160,6 +182,7 @@ public class builtin {
         return new RealExp(loc, CTFloat.fmin(arg0.toReal(), arg1.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_fmax<Loc, FuncDeclaration, Ptr>
     public static Expression eval_fmax(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
@@ -168,6 +191,7 @@ public class builtin {
         return new RealExp(loc, CTFloat.fmax(arg0.toReal(), arg1.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_fma<Loc, FuncDeclaration, Ptr>
     public static Expression eval_fma(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
@@ -178,18 +202,21 @@ public class builtin {
         return new RealExp(loc, CTFloat.fma(arg0.toReal(), arg1.toReal(), arg2.toReal()), arg0.type.value);
     }
 
+    // Erasure: eval_isnan<Loc, FuncDeclaration, Ptr>
     public static Expression eval_isnan(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new IntegerExp(loc, (CTFloat.isNaN(arg0.toReal()) ? 1 : 0), Type.tbool);
     }
 
+    // Erasure: eval_isinfinity<Loc, FuncDeclaration, Ptr>
     public static Expression eval_isinfinity(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
         return new IntegerExp(loc, (CTFloat.isInfinity(arg0.toReal()) ? 1 : 0), Type.tbool);
     }
 
+    // Erasure: eval_isfinite<Loc, FuncDeclaration, Ptr>
     public static Expression eval_isfinite(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
@@ -197,6 +224,7 @@ public class builtin {
         return new IntegerExp(loc, (value ? 1 : 0), Type.tbool);
     }
 
+    // Erasure: eval_bsf<Loc, FuncDeclaration, Ptr>
     public static Expression eval_bsf(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 135));
@@ -208,6 +236,7 @@ public class builtin {
         return new IntegerExp(loc, (long)bsf(n), Type.tint32);
     }
 
+    // Erasure: eval_bsr<Loc, FuncDeclaration, Ptr>
     public static Expression eval_bsr(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 135));
@@ -219,6 +248,7 @@ public class builtin {
         return new IntegerExp(loc, (long)bsr(n), Type.tint32);
     }
 
+    // Erasure: eval_bswap<Loc, FuncDeclaration, Ptr>
     public static Expression eval_bswap(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 135));
@@ -234,6 +264,7 @@ public class builtin {
         }
     }
 
+    // Erasure: eval_popcnt<Loc, FuncDeclaration, Ptr>
     public static Expression eval_popcnt(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 135));
@@ -241,6 +272,7 @@ public class builtin {
         return new IntegerExp(loc, (long)popcnt(n), Type.tint32);
     }
 
+    // Erasure: eval_yl2x<Loc, FuncDeclaration, Ptr>
     public static Expression eval_yl2x(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
@@ -253,6 +285,7 @@ public class builtin {
         return new RealExp(loc, result.value, arg0.type.value);
     }
 
+    // Erasure: eval_yl2xp1<Loc, FuncDeclaration, Ptr>
     public static Expression eval_yl2xp1(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         Expression arg0 = (arguments.get()).get(0);
         assert(((arg0.op & 0xFF) == 140));
@@ -265,6 +298,7 @@ public class builtin {
         return new RealExp(loc, result.value, arg0.type.value);
     }
 
+    // Erasure: builtin_init<>
     public static void builtin_init() {
         builtins._init(65);
         add_builtin(new BytePtr("_D4core4math3sinFNaNbNiNfeZe"), builtin::eval_sin);
@@ -351,10 +385,12 @@ public class builtin {
         }
     }
 
+    // Erasure: builtinDeinitialize<>
     public static void builtinDeinitialize() {
         builtins.opAssign(new StringTable(null, 0, null, 0, 0, 0, 0));
     }
 
+    // Erasure: isBuiltin<FuncDeclaration>
     public static int isBuiltin(FuncDeclaration fd) {
         if ((fd.builtin == BUILTIN.unknown))
         {
@@ -364,6 +400,7 @@ public class builtin {
         return fd.builtin;
     }
 
+    // Erasure: eval_builtin<Loc, FuncDeclaration, Ptr>
     public static Expression eval_builtin(Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments) {
         if ((fd.builtin == BUILTIN.yes))
         {

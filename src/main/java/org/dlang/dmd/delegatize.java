@@ -28,19 +28,23 @@ public class delegatize {
     private static class LambdaSetParent extends StoppableVisitor
     {
         private FuncDeclaration fd = null;
+        // Erasure: __ctor<FuncDeclaration>
         public  LambdaSetParent(FuncDeclaration fd) {
             super();
             this.fd = fd;
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression _param_0) {
         }
 
+        // Erasure: visit<DeclarationExp>
         public  void visit(DeclarationExp e) {
             e.declaration.parent.value = this.fd;
             e.declaration.accept(this);
         }
 
+        // Erasure: visit<IndexExp>
         public  void visit(IndexExp e) {
             if (e.lengthVar.value != null)
             {
@@ -49,6 +53,7 @@ public class delegatize {
             }
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             if (e.lengthVar.value != null)
             {
@@ -57,9 +62,11 @@ public class delegatize {
             }
         }
 
+        // Erasure: visit<Dsymbol>
         public  void visit(Dsymbol _param_0) {
         }
 
+        // Erasure: visit<VarDeclaration>
         public  void visit(VarDeclaration v) {
             if (v._init != null)
             {
@@ -67,13 +74,16 @@ public class delegatize {
             }
         }
 
+        // Erasure: visit<Initializer>
         public  void visit(Initializer _param_0) {
         }
 
+        // Erasure: visit<ExpInitializer>
         public  void visit(ExpInitializer ei) {
             walkPostorder(ei.exp, this);
         }
 
+        // Erasure: visit<StructInitializer>
         public  void visit(StructInitializer si) {
             {
                 Slice<Identifier> __r938 = si.field.opSlice().copy();
@@ -92,6 +102,7 @@ public class delegatize {
             }
         }
 
+        // Erasure: visit<ArrayInitializer>
         public  void visit(ArrayInitializer ai) {
             {
                 Slice<Expression> __r940 = ai.index.opSlice().copy();
@@ -121,14 +132,17 @@ public class delegatize {
     {
         private Ptr<Scope> sc = null;
         private boolean result = false;
+        // Erasure: __ctor<Ptr>
         public  LambdaCheckForNestedRef(Ptr<Scope> sc) {
             super();
             this.sc = pcopy(sc);
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression _param_0) {
         }
 
+        // Erasure: visit<SymOffExp>
         public  void visit(SymOffExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
@@ -137,6 +151,7 @@ public class delegatize {
             }
         }
 
+        // Erasure: visit<VarExp>
         public  void visit(VarExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
@@ -145,6 +160,7 @@ public class delegatize {
             }
         }
 
+        // Erasure: visit<ThisExp>
         public  void visit(ThisExp e) {
             if (e.var != null)
             {
@@ -152,6 +168,7 @@ public class delegatize {
             }
         }
 
+        // Erasure: visit<DeclarationExp>
         public  void visit(DeclarationExp e) {
             VarDeclaration v = e.declaration.isVarDeclaration();
             if (v != null)
@@ -173,6 +190,7 @@ public class delegatize {
         public LambdaCheckForNestedRef() {}
     }
 
+    // Erasure: toDelegate<Expression, Type, Ptr>
     public static Expression toDelegate(Expression e, Type t, Ptr<Scope> sc) {
         Loc loc = e.loc.copy();
         TypeFunction tf = new TypeFunction(new ParameterList(null, VarArg.none), t, LINK.d, 0L);
@@ -205,12 +223,14 @@ public class delegatize {
         return e;
     }
 
+    // Erasure: lambdaSetParent<Expression, FuncDeclaration>
     public static void lambdaSetParent(Expression e, FuncDeclaration fd) {
         // skipping duplicate class LambdaSetParent
         LambdaSetParent lsp = new LambdaSetParent(fd);
         walkPostorder(e, lsp);
     }
 
+    // Erasure: lambdaCheckForNestedRef<Expression, Ptr>
     public static boolean lambdaCheckForNestedRef(Expression e, Ptr<Scope> sc) {
         // skipping duplicate class LambdaCheckForNestedRef
         LambdaCheckForNestedRef v = new LambdaCheckForNestedRef(sc);
@@ -218,6 +238,7 @@ public class delegatize {
         return v.result;
     }
 
+    // Erasure: ensureStaticLinkTo<Dsymbol, Dsymbol>
     public static boolean ensureStaticLinkTo(Dsymbol s, Dsymbol p) {
         for (; s != null;){
             if ((pequals(s, p)))

@@ -23,17 +23,20 @@ public class nspace {
     public static class Nspace extends ScopeDsymbol
     {
         public Expression identExp = null;
+        // Erasure: __ctor<Loc, Identifier, Expression, Ptr>
         public  Nspace(Loc loc, Identifier ident, Expression identExp, Ptr<DArray<Dsymbol>> members) {
             super(loc, ident);
             this.members = pcopy(members);
             this.identExp = identExp;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             Nspace ns = new Nspace(this.loc, this.ident, this.identExp, null);
             return this.syntaxCopy(ns);
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             this.addMember(sc, sds);
             if (this.members != null)
@@ -70,6 +73,7 @@ public class nspace {
             }
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             this.setScope(sc);
             if (this.members != null)
@@ -91,10 +95,12 @@ public class nspace {
             }
         }
 
+        // Erasure: oneMember<Ptr, Identifier>
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             return this.oneMember(ps, ident);
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if ((this._scope != null) && (this.symtab == null))
             {
@@ -113,6 +119,7 @@ public class nspace {
             return search(loc, ident, 8);
         }
 
+        // Erasure: apply<Ptr, Ptr>
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
             Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
@@ -124,6 +131,7 @@ public class nspace {
             return foreachDsymbol(this.members, __lambda3);
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
@@ -135,6 +143,7 @@ public class nspace {
             return foreachDsymbol(this.members, __lambda1) != 0;
         }
 
+        // Erasure: setFieldOffset<AggregateDeclaration, Ptr, boolean>
         public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
             if (this._scope != null)
             {
@@ -151,14 +160,17 @@ public class nspace {
             foreachDsymbol(this.members, __lambda4);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("namespace");
         }
 
+        // Erasure: isNspace<>
         public  Nspace isNspace() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }

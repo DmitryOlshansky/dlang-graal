@@ -41,8 +41,6 @@ public class target {
         public boolean cppExceptions = false;
         public boolean twoDtorInVtable = false;
         // from template FPTypeProperties!(Double)
-
-        // from template FPTypeProperties!(Double)
         public static class FPTypePropertiesDouble
         {
             public double max = 0.0;
@@ -56,6 +54,7 @@ public class target {
             public long min_exp = -1021L;
             public long max_10_exp = 308L;
             public long min_10_exp = -307L;
+            // Erasure: _init<>
             public  void _init() {
                 this.max = 1.79769e+308;
                 this.min_normal = 2.22507e-308;
@@ -111,6 +110,8 @@ public class target {
             }
         }
 
+        // from template FPTypeProperties!(Double)
+
         // from template FPTypeProperties!(Float)
         public static class FPTypePropertiesFloat
         {
@@ -125,6 +126,7 @@ public class target {
             public long min_exp = -125L;
             public long max_10_exp = 38L;
             public long min_10_exp = -37L;
+            // Erasure: _init<>
             public  void _init() {
                 this.max = 3.40282e+38;
                 this.min_normal = 1.17549e-38;
@@ -183,6 +185,7 @@ public class target {
         public FPTypePropertiesFloat FloatProperties = new FPTypePropertiesFloat();
         public FPTypePropertiesDouble DoubleProperties = new FPTypePropertiesDouble();
         public FPTypePropertiesDouble RealProperties = new FPTypePropertiesDouble();
+        // Erasure: _init<Param>
         public  void _init(Param params) {
             this.FloatProperties._init();
             this.DoubleProperties._init();
@@ -251,10 +254,12 @@ public class target {
             this.cppExceptions = params.isLinux || params.isFreeBSD || params.isDragonFlyBSD || params.isOSX;
         }
 
+        // Erasure: deinitialize<>
         public  void deinitialize() {
             this.opAssign(new Target(0, 0, 0, 0, 0, 0L, 0, 0, 0, false, false, false, new FPTypePropertiesFloat(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 6L, 24L, 128L, -125L, 38L, -37L), new FPTypePropertiesDouble(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 15L, 53L, 1024L, -1021L, 308L, -307L), new FPTypePropertiesDouble(0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 0.0/0.0, 18L, 64L, 16384L, -16381L, 4932L, -4931L)));
         }
 
+        // Erasure: alignsize<Type>
         public  int alignsize(Type type) {
             assert(type.isTypeBasic() != null);
             switch ((type.ty & 0xFF))
@@ -285,6 +290,7 @@ public class target {
             return (int)type.size(Loc.initial);
         }
 
+        // Erasure: fieldalign<Type>
         public  int fieldalign(Type type) {
             int size = type.alignsize();
             if (global.params.is64bit || global.params.isOSX && (size == 16) || (size == 32))
@@ -294,10 +300,12 @@ public class target {
             return (8 < size) ? 8 : size;
         }
 
+        // Erasure: critsecsize<>
         public  int critsecsize() {
             return this.criticalSectionSize;
         }
 
+        // Erasure: getCriticalSectionSize<Param>
         public static int getCriticalSectionSize(Param params) {
             if (params.isWindows)
             {
@@ -337,6 +345,7 @@ public class target {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: va_listType<>
         public  Type va_listType() {
             if (global.params.isWindows)
             {
@@ -359,10 +368,12 @@ public class target {
             }
         }
 
+        // Erasure: isXmmSupported<>
         public  boolean isXmmSupported() {
             return global.params.is64bit || global.params.isOSX;
         }
 
+        // Erasure: isVectorTypeSupported<int, Type>
         public  int isVectorTypeSupported(int sz, Type type) {
             if (!this.isXmmSupported())
             {
@@ -392,6 +403,7 @@ public class target {
             return 0;
         }
 
+        // Erasure: isVectorOpSupported<Type, byte, Type>
         public  boolean isVectorOpSupported(Type type, byte op, Type t2) {
             if (((type.ty & 0xFF) != ENUMTY.Tvector))
             {
@@ -474,21 +486,25 @@ public class target {
 
         // defaulted all parameters starting with #3
         public  boolean isVectorOpSupported(Type type, byte op) {
-            return isVectorOpSupported(type, op, null);
+            return isVectorOpSupported(type, op, (Type)null);
         }
 
+        // Erasure: toCppMangle<Dsymbol>
         public  BytePtr toCppMangle(Dsymbol s) {
             return toCppMangleItanium(s);
         }
 
+        // Erasure: cppTypeInfoMangle<ClassDeclaration>
         public  BytePtr cppTypeInfoMangle(ClassDeclaration cd) {
             return cppTypeInfoMangleItanium(cd);
         }
 
+        // Erasure: cppTypeMangle<Type>
         public  BytePtr cppTypeMangle(Type t) {
             return null;
         }
 
+        // Erasure: cppParameterType<Parameter>
         public  Type cppParameterType(Parameter p) {
             Type t = p.type.merge2();
             if ((p.storageClass & 2101248L) != 0)
@@ -504,14 +520,17 @@ public class target {
             return t;
         }
 
+        // Erasure: cppFundamentalType<Type, boolean>
         public  boolean cppFundamentalType(Type t, Ref<Boolean> isFundamental) {
             return false;
         }
 
+        // Erasure: systemLinkage<>
         public  int systemLinkage() {
             return global.params.isWindows ? LINK.windows : LINK.c;
         }
 
+        // Erasure: toArgTypes<Type>
         public  TypeTuple toArgTypes(Type t) {
             if (global.params.is64bit && global.params.isWindows)
             {
@@ -520,6 +539,7 @@ public class target {
             return toArgTypes(t);
         }
 
+        // Erasure: isReturnOnStack<TypeFunction, boolean>
         public  boolean isReturnOnStack(TypeFunction tf, boolean needsThis) {
             if (tf.isref)
             {
@@ -663,6 +683,7 @@ public class target {
             } catch(Dispatch0 __d){}
         }
 
+        // Erasure: parameterSize<Loc, Type>
         public  long parameterSize(Loc loc, Type t) {
             if (!global.params.is64bit && global.params.isFreeBSD || global.params.isOSX)
             {
@@ -688,6 +709,7 @@ public class target {
             public static final int objectFormat = 3;
         }
 
+        // Erasure: getTargetInfo<Ptr, Loc>
         public  Expression getTargetInfo(BytePtr name, Loc loc) {
             Function1<ByteSlice,StringExp> stringExp = new Function1<ByteSlice,StringExp>() {
                 public StringExp invoke(ByteSlice sval) {

@@ -42,10 +42,12 @@ public class dclass {
         public int offset = 0;
         public DArray<FuncDeclaration> vtbl = new DArray<FuncDeclaration>();
         public Slice<BaseClass> baseInterfaces = new Slice<BaseClass>();
+        // Erasure: __ctor<Type>
         public  BaseClass(Type type) {
             this.type = type;
         }
 
+        // Erasure: fillVtbl<ClassDeclaration, Ptr, int>
         public  boolean fillVtbl(ClassDeclaration cd, Ptr<DArray<FuncDeclaration>> vtbl, int newinstance) {
             boolean result = false;
             if (vtbl != null)
@@ -93,6 +95,7 @@ public class dclass {
             return result;
         }
 
+        // Erasure: copyBaseInterfaces<Ptr>
         public  void copyBaseInterfaces(Ptr<DArray<Ptr<BaseClass>>> vtblInterfaces) {
             Ptr<BaseClass> bc = ptr(new BaseClass[36]);
             this.baseInterfaces = bc.slice(0,this.sym.interfaces.getLength()).copy();
@@ -173,6 +176,7 @@ public class dclass {
         public int baseok = 0;
         public ObjcClassDeclaration objc = new ObjcClassDeclaration();
         public Ptr<Symbol> cpp_type_info_ptr_sym = null;
+        // Erasure: __ctor<Loc, Identifier, Ptr, Ptr, boolean>
         public  ClassDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses, Ptr<DArray<Dsymbol>> members, boolean inObject) {
             this.objc = new ObjcClassDeclaration(this);
             if (id == null)
@@ -375,10 +379,12 @@ public class dclass {
             this.baseok = Baseok.none;
         }
 
+        // Erasure: create<Loc, Identifier, Ptr, Ptr, boolean>
         public static ClassDeclaration create(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses, Ptr<DArray<Dsymbol>> members, boolean inObject) {
             return new ClassDeclaration(loc, id, baseclasses, members, inObject);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             ClassDeclaration cd = s != null ? (ClassDeclaration)s : new ClassDeclaration(this.loc, this.ident, null, null, false);
             cd.storage_class |= this.storage_class;
@@ -394,6 +400,7 @@ public class dclass {
             return this.syntaxCopy(cd);
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             Ptr<Scope> sc2 = super.newScope(sc);
             if (this.isCOMclass())
@@ -403,6 +410,7 @@ public class dclass {
             return sc2;
         }
 
+        // Erasure: isBaseOf2<ClassDeclaration>
         public  boolean isBaseOf2(ClassDeclaration cd) {
             if (cd == null)
             {
@@ -423,6 +431,7 @@ public class dclass {
 
         public int OFFSET_RUNTIME = 1985229328;
         public int OFFSET_FWDREF = 1985229329;
+        // Erasure: isBaseOf<ClassDeclaration, Ptr>
         public  boolean isBaseOf(ClassDeclaration cd, Ptr<Integer> poffset) {
             if (poffset != null)
             {
@@ -446,10 +455,12 @@ public class dclass {
             return false;
         }
 
+        // Erasure: isBaseInfoComplete<>
         public  boolean isBaseInfoComplete() {
             return this.baseok >= Baseok.done;
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if ((this._scope != null) && (this.baseok < Baseok.done))
             {
@@ -514,6 +525,7 @@ public class dclass {
             return search(loc, ident, 8);
         }
 
+        // Erasure: searchBase<Identifier>
         public  ClassDeclaration searchBase(Identifier ident) {
             {
                 Slice<Ptr<BaseClass>> __r919 = (this.baseclasses.get()).opSlice().copy();
@@ -539,6 +551,7 @@ public class dclass {
             return null;
         }
 
+        // Erasure: finalizeSize<>
         public  void finalizeSize() {
             assert((this.sizeok != Sizeok.done));
             if (this.baseClass != null)
@@ -634,14 +647,17 @@ public class dclass {
             this.checkOverlappedFields();
         }
 
+        // Erasure: hasMonitor<>
         public  boolean hasMonitor() {
             return this.classKind == ClassKind.d;
         }
 
+        // Erasure: isAnonymous<>
         public  boolean isAnonymous() {
             return this.isActuallyAnonymous;
         }
 
+        // Erasure: isFuncHidden<FuncDeclaration>
         public  boolean isFuncHidden(FuncDeclaration fd) {
             Dsymbol s = this.search(Loc.initial, fd.ident, 6);
             if (s == null)
@@ -679,6 +695,7 @@ public class dclass {
             }
         }
 
+        // Erasure: findFunc<Identifier, TypeFunction>
         public  FuncDeclaration findFunc(Identifier ident, TypeFunction tf) {
             Ref<FuncDeclaration> fdmatch = ref(null);
             Ref<FuncDeclaration> fdambig = ref(null);
@@ -776,22 +793,27 @@ public class dclass {
             return fdmatch.value;
         }
 
+        // Erasure: isCOMclass<>
         public  boolean isCOMclass() {
             return this.com;
         }
 
+        // Erasure: isCOMinterface<>
         public  boolean isCOMinterface() {
             return false;
         }
 
+        // Erasure: isCPPclass<>
         public  boolean isCPPclass() {
             return this.classKind == ClassKind.cpp;
         }
 
+        // Erasure: isCPPinterface<>
         public  boolean isCPPinterface() {
             return false;
         }
 
+        // Erasure: isAbstract<>
         public  boolean isAbstract() {
             boolean log = false;
             if ((this.isabstract != Abstract.fwdref))
@@ -905,14 +927,17 @@ public class dclass {
             return no.invoke();
         }
 
+        // Erasure: vtblOffset<>
         public  int vtblOffset() {
             return (this.classKind == ClassKind.cpp) ? 0 : 1;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("class");
         }
 
+        // Erasure: addLocalClass<Ptr>
         public  void addLocalClass(Ptr<DArray<ClassDeclaration>> aclasses) {
             if ((this.classKind != ClassKind.objc))
             {
@@ -920,11 +945,13 @@ public class dclass {
             }
         }
 
+        // Erasure: addObjcSymbols<Ptr, Ptr>
         public  void addObjcSymbols(Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
             objc().addSymbols(this, classes, categories);
         }
 
         public Dsymbol vtblsym = null;
+        // Erasure: vtblSymbol<>
         public  Dsymbol vtblSymbol() {
             if (this.vtblsym == null)
             {
@@ -939,10 +966,12 @@ public class dclass {
             return this.vtblsym;
         }
 
+        // Erasure: isClassDeclaration<>
         public  ClassDeclaration isClassDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1028,6 +1057,7 @@ public class dclass {
     }
     public static class InterfaceDeclaration extends ClassDeclaration
     {
+        // Erasure: __ctor<Loc, Identifier, Ptr>
         public  InterfaceDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses) {
             super(loc, id, baseclasses, null, false);
             if ((pequals(id, Id.IUnknown)))
@@ -1037,11 +1067,13 @@ public class dclass {
             }
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             InterfaceDeclaration id = s != null ? (InterfaceDeclaration)s : new InterfaceDeclaration(this.loc, this.ident, null);
             return this.syntaxCopy(id);
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             Ptr<Scope> sc2 = super.newScope(sc);
             if (this.com)
@@ -1059,6 +1091,7 @@ public class dclass {
             return sc2;
         }
 
+        // Erasure: isBaseOf<ClassDeclaration, Ptr>
         public  boolean isBaseOf(ClassDeclaration cd, Ptr<Integer> poffset) {
             assert(this.baseClass == null);
             {
@@ -1091,6 +1124,7 @@ public class dclass {
             return false;
         }
 
+        // Erasure: isBaseOf<Ptr, Ptr>
         public  boolean isBaseOf(Ptr<BaseClass> bc, Ptr<Integer> poffset) {
             {
                 int j = 0;
@@ -1117,10 +1151,12 @@ public class dclass {
             return false;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("interface");
         }
 
+        // Erasure: vtblOffset<>
         public  int vtblOffset() {
             if (this.isCOMinterface() || this.isCPPinterface())
             {
@@ -1129,18 +1165,22 @@ public class dclass {
             return 1;
         }
 
+        // Erasure: isCPPinterface<>
         public  boolean isCPPinterface() {
             return this.classKind == ClassKind.cpp;
         }
 
+        // Erasure: isCOMinterface<>
         public  boolean isCOMinterface() {
             return this.com;
         }
 
+        // Erasure: isInterfaceDeclaration<>
         public  InterfaceDeclaration isInterfaceDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }

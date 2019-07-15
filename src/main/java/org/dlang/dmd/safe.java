@@ -18,6 +18,7 @@ import static org.dlang.dmd.tokens.*;
 
 public class safe {
 
+    // Erasure: checkUnsafeAccess<Ptr, Expression, boolean, boolean>
     public static boolean checkUnsafeAccess(Ptr<Scope> sc, Expression e, boolean readonly, boolean printmsg) {
         if (((e.op & 0xFF) != 27))
         {
@@ -81,6 +82,7 @@ public class safe {
         return false;
     }
 
+    // Erasure: isSafeCast<Expression, Type, Type>
     public static boolean isSafeCast(Expression e, Type tfrom, Type tto) {
         if (tfrom.implicitConvTo(tto) != 0)
         {

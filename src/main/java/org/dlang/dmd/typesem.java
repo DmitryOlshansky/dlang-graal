@@ -56,6 +56,7 @@ public class typesem {
     static Ref<FuncDeclaration> visitAArrayfd_aaLen = ref(null);
     static Ref<Integer> noMembernest = ref(0);
 
+    // Erasure: semanticLength<Ptr, Type, Expression>
     public static Expression semanticLength(Ptr<Scope> sc, Type t, Expression exp) {
         {
             TypeTuple tt = t.isTypeTuple();
@@ -79,6 +80,7 @@ public class typesem {
         return exp;
     }
 
+    // Erasure: semanticLength<Ptr, TupleDeclaration, Expression>
     public static Expression semanticLength(Ptr<Scope> sc, TupleDeclaration tup, Expression exp) {
         ScopeDsymbol sym = new ArrayScopeSymbol(sc, tup);
         sym.parent.value = (sc.get()).scopesym;
@@ -90,6 +92,7 @@ public class typesem {
         return exp;
     }
 
+    // Erasure: resolveTupleIndex<Loc, Ptr, Dsymbol, Ptr, Ptr, Ptr, RootObject>
     public static void resolveTupleIndex(Loc loc, Ptr<Scope> sc, Dsymbol s, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps, RootObject oindex) {
         pt.set(0, null);
         ps.set(0, null);
@@ -155,6 +158,7 @@ public class typesem {
         }
     }
 
+    // Erasure: resolveHelper<TypeQualified, Loc, Ptr, Dsymbol, Dsymbol, Ptr, Ptr, Ptr, boolean>
     public static void resolveHelper(TypeQualified mt, Loc loc, Ptr<Scope> sc, Dsymbol s, Dsymbol scopesym, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps, boolean intypeid) {
         pe.set(0, null);
         pt.set(0, null);
@@ -450,6 +454,7 @@ public class typesem {
         resolveHelper(mt, loc, sc, s, scopesym, pe, pt, ps, false);
     }
 
+    // Erasure: stripDefaultArgs<Type>
     public static Type stripDefaultArgs(Type t) {
         Function1<Ptr<DArray<Parameter>>,Ptr<DArray<Parameter>>> stripParams = new Function1<Ptr<DArray<Parameter>>,Ptr<DArray<Parameter>>>() {
             public Ptr<DArray<Parameter>> invoke(Ptr<DArray<Parameter>> parameters) {
@@ -557,6 +562,7 @@ public class typesem {
         }
     }
 
+    // Erasure: typeToExpression<Type>
     public static Expression typeToExpression(Type t) {
         Function1<TypeSArray,Expression> visitSArray = new Function1<TypeSArray,Expression>() {
             public Expression invoke(TypeSArray t) {
@@ -621,6 +627,7 @@ public class typesem {
         }
     }
 
+    // Erasure: typeToExpressionHelper<TypeQualified, Expression, int>
     public static Expression typeToExpressionHelper(TypeQualified t, Expression e, int i) {
         {
             Slice<RootObject> __r1717 = t.idents.opSlice(i, t.idents.length).copy();
@@ -663,6 +670,7 @@ public class typesem {
         return typeToExpressionHelper(t, e, 0);
     }
 
+    // Erasure: typeSemantic<Type, Loc, Ptr>
     public static Type typeSemantic(Type t, Loc loc, Ptr<Scope> sc) {
         Ref<Ptr<Scope>> sc_ref = ref(sc);
         Function0<Type> error = new Function0<Type>() {
@@ -1872,6 +1880,7 @@ public class typesem {
         }
     }
 
+    // Erasure: merge<Type>
     public static Type merge(Type type) {
         {
             int __dispatch10 = 0;
@@ -1929,6 +1938,7 @@ public class typesem {
         return type;
     }
 
+    // Erasure: getProperty<Type, Loc, Identifier, int>
     public static Expression getProperty(Type t, Loc loc, Identifier ident, int flag) {
         Function1<Type,Expression> visitType = new Function1<Type,Expression>() {
             public Expression invoke(Type mt) {
@@ -2404,6 +2414,7 @@ public class typesem {
         }
     }
 
+    // Erasure: resolveExp<Expression, Ptr, Ptr, Ptr>
     public static void resolveExp(Expression e, Ptr<Type> pt, Ptr<Expression> pe, Ptr<Dsymbol> ps) {
         pt.set(0, null);
         pe.set(0, null);
@@ -2450,6 +2461,7 @@ public class typesem {
         ps.set(0, s);
     }
 
+    // Erasure: resolve<Type, Loc, Ptr, Ptr, Ptr, Ptr, boolean>
     public static void resolve(Type mt, Loc loc, Ptr<Scope> sc, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps, boolean intypeid) {
         Ref<Ptr<Scope>> sc_ref = ref(sc);
         Function1<Expression,Void> returnExp = new Function1<Expression,Void>() {
@@ -3045,6 +3057,7 @@ public class typesem {
         resolve(mt, loc, sc, pe, pt, ps, false);
     }
 
+    // Erasure: dotExp<Type, Ptr, Expression, Identifier, int>
     public static Expression dotExp(Type mt, Ptr<Scope> sc, Expression e, Identifier ident, int flag) {
         Ref<Expression> e_ref = ref(e);
         Function1<Type,Expression> visitType = new Function1<Type,Expression>() {
@@ -4249,6 +4262,7 @@ public class typesem {
         }
     }
 
+    // Erasure: defaultInit<Type, Loc>
     public static Expression defaultInit(Type mt, Loc loc) {
         Function1<TypeBasic,Expression> visitBasic = new Function1<TypeBasic,Expression>() {
             public Expression invoke(TypeBasic mt) {

@@ -65,6 +65,7 @@ public class dsymbolsem {
     static boolean funcDeclarationSemanticprintedMain = false;
 
     static boolean LOG = false;
+    // Erasure: buildPostBlit<StructDeclaration, Ptr>
     public static FuncDeclaration buildPostBlit(StructDeclaration sd, Ptr<Scope> sc) {
         if (sd.isUnionDeclaration() != null)
         {
@@ -282,6 +283,7 @@ public class dsymbolsem {
         return xpostblit;
     }
 
+    // Erasure: generateCopyCtorDeclaration<StructDeclaration, long, long>
     public static CtorDeclaration generateCopyCtorDeclaration(StructDeclaration sd, long paramStc, long funcStc) {
         Ptr<DArray<Parameter>> fparams = refPtr(new DArray<Parameter>());
         Type structType = sd.type;
@@ -295,6 +297,7 @@ public class dsymbolsem {
         return ccd;
     }
 
+    // Erasure: generateCopyCtorBody<StructDeclaration>
     public static Statement generateCopyCtorBody(StructDeclaration sd) {
         Loc loc = new Loc();
         Expression e = null;
@@ -311,6 +314,7 @@ public class dsymbolsem {
         return new CompoundStatement(loc, slice(new Statement[]{s1}));
     }
 
+    // Erasure: buildCopyCtor<StructDeclaration, Ptr>
     public static boolean buildCopyCtor(StructDeclaration sd, Ptr<Scope> sc) {
         if (global.errors != 0)
         {
@@ -453,6 +457,7 @@ public class dsymbolsem {
         return true;
     }
 
+    // Erasure: setMangleOverride<Dsymbol, Array>
     public static int setMangleOverride(Dsymbol s, ByteSlice sym) {
         if ((s.isFuncDeclaration() != null) || (s.isVarDeclaration() != null))
         {
@@ -479,11 +484,13 @@ public class dsymbolsem {
         return 0;
     }
 
+    // Erasure: dsymbolSemantic<Dsymbol, Ptr>
     public static void dsymbolSemantic(Dsymbol dsym, Ptr<Scope> sc) {
         DsymbolSemanticVisitor v = new DsymbolSemanticVisitor(sc);
         dsym.accept(v);
     }
 
+    // Erasure: getAlignment<AlignDeclaration, Ptr>
     public static int getAlignment(AlignDeclaration ad, Ptr<Scope> sc) {
         if ((ad.salign != 0))
         {
@@ -512,6 +519,7 @@ public class dsymbolsem {
         return ad.salign = (int)n;
     }
 
+    // Erasure: getMessage<DeprecatedDeclaration>
     public static BytePtr getMessage(DeprecatedDeclaration dd) {
         {
             Ptr<Scope> sc = dd._scope;
@@ -539,6 +547,7 @@ public class dsymbolsem {
         return dd.msgstr;
     }
 
+    // Erasure: allowsContractWithoutBody<FuncDeclaration>
     public static boolean allowsContractWithoutBody(FuncDeclaration funcdecl) {
         assert(funcdecl.fbody.value == null);
         Dsymbol parent = funcdecl.toParent();
@@ -557,20 +566,25 @@ public class dsymbolsem {
     public static class DsymbolSemanticVisitor extends Visitor
     {
         public Ptr<Scope> sc = null;
+        // Erasure: __ctor<Ptr>
         public  DsymbolSemanticVisitor(Ptr<Scope> sc) {
             this.sc = pcopy(sc);
         }
 
+        // Erasure: visit<Dsymbol>
         public  void visit(Dsymbol dsym) {
             dsym.error(new BytePtr("%p has no semantic routine"), dsym);
         }
 
+        // Erasure: visit<ScopeDsymbol>
         public  void visit(ScopeDsymbol _param_0) {
         }
 
+        // Erasure: visit<Declaration>
         public  void visit(Declaration _param_0) {
         }
 
+        // Erasure: visit<AliasThis>
         public  void visit(AliasThis dsym) {
             if ((dsym.semanticRun != PASS.init))
             {
@@ -637,6 +651,7 @@ public class dsymbolsem {
             dsym.semanticRun = PASS.semanticdone;
         }
 
+        // Erasure: visit<AliasDeclaration>
         public  void visit(AliasDeclaration dsym) {
             if ((dsym.semanticRun >= PASS.semanticdone))
             {
@@ -653,6 +668,7 @@ public class dsymbolsem {
             aliasSemantic(dsym, this.sc);
         }
 
+        // Erasure: visit<VarDeclaration>
         public  void visit(VarDeclaration dsym) {
             if ((dsym.semanticRun >= PASS.semanticdone))
             {
@@ -1420,10 +1436,12 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<TypeInfoDeclaration>
         public  void visit(TypeInfoDeclaration dsym) {
             assert((dsym.linkage == LINK.c));
         }
 
+        // Erasure: visit<Import>
         public  void visit(Import imp) {
             if ((imp.semanticRun > PASS.init))
             {
@@ -1613,6 +1631,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: attribSemantic<AttribDeclaration>
         public  void attribSemantic(AttribDeclaration ad) {
             if ((ad.semanticRun != PASS.init))
             {
@@ -1641,10 +1660,12 @@ public class dsymbolsem {
             ad.semanticRun = PASS.semanticdone;
         }
 
+        // Erasure: visit<AttribDeclaration>
         public  void visit(AttribDeclaration atd) {
             this.attribSemantic(atd);
         }
 
+        // Erasure: visit<AnonDeclaration>
         public  void visit(AnonDeclaration scd) {
             assert((this.sc.get()).parent.value != null);
             Dsymbol p = (this.sc.get()).parent.value.pastMixin();
@@ -1672,6 +1693,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<PragmaDeclaration>
         public  void visit(PragmaDeclaration pd) {
             try {
                 try {
@@ -1959,14 +1981,17 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<StaticIfDeclaration>
         public  void visit(StaticIfDeclaration sid) {
             this.attribSemantic(sid);
         }
 
+        // Erasure: visit<StaticForeachDeclaration>
         public  void visit(StaticForeachDeclaration sfd) {
             this.attribSemantic(sfd);
         }
 
+        // Erasure: compileIt<CompileDeclaration>
         public  Ptr<DArray<Dsymbol>> compileIt(CompileDeclaration cd) {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -2005,6 +2030,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<CompileDeclaration>
         public  void visit(CompileDeclaration cd) {
             if (!cd.compiled)
             {
@@ -2025,6 +2051,7 @@ public class dsymbolsem {
             this.attribSemantic(cd);
         }
 
+        // Erasure: visit<CPPNamespaceDeclaration>
         public  void visit(CPPNamespaceDeclaration ns) {
             Function1<StringExp,Identifier> identFromSE = new Function1<StringExp,Identifier>() {
                 public Identifier invoke(StringExp se) {
@@ -2101,6 +2128,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<UserAttributeDeclaration>
         public  void visit(UserAttributeDeclaration uad) {
             if ((uad.decl != null) && (uad._scope == null))
             {
@@ -2110,6 +2138,7 @@ public class dsymbolsem {
             return ;
         }
 
+        // Erasure: visit<StaticAssert>
         public  void visit(StaticAssert sa) {
             if ((sa.semanticRun < PASS.semanticdone))
             {
@@ -2117,6 +2146,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<DebugSymbol>
         public  void visit(DebugSymbol ds) {
             if ((ds.semanticRun < PASS.semanticdone))
             {
@@ -2124,6 +2154,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<VersionSymbol>
         public  void visit(VersionSymbol vs) {
             if ((vs.semanticRun < PASS.semanticdone))
             {
@@ -2131,6 +2162,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<Package>
         public  void visit(dmodule.Package pkg) {
             if ((pkg.semanticRun < PASS.semanticdone))
             {
@@ -2138,6 +2170,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<Module>
         public  void visit(dmodule.Module m) {
             if ((m.semanticRun != PASS.init))
             {
@@ -2171,6 +2204,7 @@ public class dsymbolsem {
             m.semanticRun = PASS.semanticdone;
         }
 
+        // Erasure: visit<EnumDeclaration>
         public  void visit(EnumDeclaration ed) {
             if ((ed.semanticRun >= PASS.semanticdone))
             {
@@ -2346,6 +2380,7 @@ public class dsymbolsem {
             foreachDsymbol(ed.members, __lambda5);
         }
 
+        // Erasure: visit<EnumMember>
         public  void visit(EnumMember em) {
             Function0<Void> errorReturn = new Function0<Void>() {
                 public Void invoke() {
@@ -2590,6 +2625,7 @@ public class dsymbolsem {
             em.semanticRun = PASS.semanticdone;
         }
 
+        // Erasure: visit<TemplateDeclaration>
         public  void visit(TemplateDeclaration tempdecl) {
             if ((tempdecl.semanticRun != PASS.init))
             {
@@ -2721,10 +2757,12 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<TemplateInstance>
         public  void visit(TemplateInstance ti) {
             templateInstanceSemantic(ti, this.sc, null);
         }
 
+        // Erasure: visit<TemplateMixin>
         public  void visit(TemplateMixin tm) {
             if ((tm.semanticRun != PASS.init))
             {
@@ -2927,6 +2965,7 @@ public class dsymbolsem {
             (scy.get()).pop();
         }
 
+        // Erasure: visit<Nspace>
         public  void visit(Nspace ns) {
             if ((ns.semanticRun != PASS.init))
             {
@@ -3038,6 +3077,7 @@ public class dsymbolsem {
             ns.semanticRun = PASS.semanticdone;
         }
 
+        // Erasure: funcDeclarationSemantic<FuncDeclaration>
         public  void funcDeclarationSemantic(FuncDeclaration funcdecl) {
             TypeFunction f = null;
             AggregateDeclaration ad = null;
@@ -3821,10 +3861,12 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<FuncDeclaration>
         public  void visit(FuncDeclaration funcdecl) {
             this.funcDeclarationSemantic(funcdecl);
         }
 
+        // Erasure: visit<CtorDeclaration>
         public  void visit(CtorDeclaration ctd) {
             if ((ctd.semanticRun >= PASS.semanticdone))
             {
@@ -3915,6 +3957,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<PostBlitDeclaration>
         public  void visit(PostBlitDeclaration pbd) {
             if ((pbd.semanticRun >= PASS.semanticdone))
             {
@@ -3950,6 +3993,7 @@ public class dsymbolsem {
             (this.sc.get()).pop();
         }
 
+        // Erasure: visit<DtorDeclaration>
         public  void visit(DtorDeclaration dd) {
             if ((dd.semanticRun >= PASS.semanticdone))
             {
@@ -4011,6 +4055,7 @@ public class dsymbolsem {
             (this.sc.get()).pop();
         }
 
+        // Erasure: visit<StaticCtorDeclaration>
         public  void visit(StaticCtorDeclaration scd) {
             if ((scd.semanticRun >= PASS.semanticdone))
             {
@@ -4065,6 +4110,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<StaticDtorDeclaration>
         public  void visit(StaticDtorDeclaration sdd) {
             if ((sdd.semanticRun >= PASS.semanticdone))
             {
@@ -4120,6 +4166,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<InvariantDeclaration>
         public  void visit(InvariantDeclaration invd) {
             if ((invd.semanticRun >= PASS.semanticdone))
             {
@@ -4157,6 +4204,7 @@ public class dsymbolsem {
             (this.sc.get()).pop();
         }
 
+        // Erasure: visit<UnitTestDeclaration>
         public  void visit(UnitTestDeclaration utd) {
             if ((utd.semanticRun >= PASS.semanticdone))
             {
@@ -4190,6 +4238,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<NewDeclaration>
         public  void visit(NewDeclaration nd) {
             if (!nd.isDisabled())
             {
@@ -4238,6 +4287,7 @@ public class dsymbolsem {
             this.funcDeclarationSemantic(nd);
         }
 
+        // Erasure: visit<DeleteDeclaration>
         public  void visit(DeleteDeclaration deld) {
             error(deld.loc, new BytePtr("class deallocators are obsolete, consider moving the deallocation strategy outside of the class"));
             if ((deld.semanticRun >= PASS.semanticdone))
@@ -4279,6 +4329,7 @@ public class dsymbolsem {
             this.funcDeclarationSemantic(deld);
         }
 
+        // Erasure: reinforceInvariant<AggregateDeclaration, Ptr>
         public  void reinforceInvariant(AggregateDeclaration ad, Ptr<Scope> sc) {
             {
                 int i = 0;
@@ -4307,6 +4358,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<StructDeclaration>
         public  void visit(StructDeclaration sd) {
             if ((sd.semanticRun >= PASS.semanticdone))
             {
@@ -4527,6 +4579,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: interfaceSemantic<ClassDeclaration>
         public  void interfaceSemantic(ClassDeclaration cd) {
             cd.vtblInterfaces = pcopy((refPtr(new DArray<Ptr<BaseClass>>())));
             (cd.vtblInterfaces.get()).reserve(cd.interfaces.getLength());
@@ -4541,6 +4594,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<ClassDeclaration>
         public  void visit(ClassDeclaration cldec) {
             if ((cldec.semanticRun >= PASS.semanticdone))
             {
@@ -5208,6 +5262,7 @@ public class dsymbolsem {
             }
         }
 
+        // Erasure: visit<InterfaceDeclaration>
         public  void visit(InterfaceDeclaration idec) {
             Function1<InterfaceDeclaration,Boolean> isAnonymousMetaclass = new Function1<InterfaceDeclaration,Boolean>() {
                 public Boolean invoke(InterfaceDeclaration idec) {
@@ -5588,6 +5643,7 @@ public class dsymbolsem {
             return that;
         }
     }
+    // Erasure: templateInstanceSemantic<TemplateInstance, Ptr, Ptr>
     public static void templateInstanceSemantic(TemplateInstance tempinst, Ptr<Scope> sc, Ptr<DArray<Expression>> fargs) {
         if (tempinst.inst != null)
         {
@@ -5980,6 +6036,7 @@ public class dsymbolsem {
         }
     }
 
+    // Erasure: aliasSemantic<AliasDeclaration, Ptr>
     public static void aliasSemantic(AliasDeclaration ds, Ptr<Scope> sc) {
         if ((ds.type != null) && ((ds.type.ty & 0xFF) == ENUMTY.TTraits))
         {

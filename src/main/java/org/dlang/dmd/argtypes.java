@@ -16,25 +16,31 @@ public class argtypes {
     private static class ToArgTypes extends Visitor
     {
         private TypeTuple result = null;
+        // Erasure: memory<>
         public  void memory() {
             this.result = new TypeTuple();
         }
 
+        // Erasure: oneType<Type>
         public  void oneType(Type t) {
             this.result = new TypeTuple(t);
         }
 
+        // Erasure: twoTypes<Type, Type>
         public  void twoTypes(Type t1, Type t2) {
             this.result = new TypeTuple(t1, t2);
         }
 
+        // Erasure: visit<Type>
         public  void visit(Type _param_0) {
         }
 
+        // Erasure: visit<TypeError>
         public  void visit(TypeError _param_0) {
             this.result = new TypeTuple(Type.terror);
         }
 
+        // Erasure: visit<TypeBasic>
         public  void visit(TypeBasic t) {
             Type t1 = null;
             Type t2 = null;
@@ -118,21 +124,25 @@ public class argtypes {
             }
         }
 
+        // Erasure: visit<TypeVector>
         public  void visit(TypeVector t) {
             this.oneType(t);
             return ;
         }
 
+        // Erasure: visit<TypeAArray>
         public  void visit(TypeAArray _param_0) {
             this.oneType(Type.tvoidptr);
             return ;
         }
 
+        // Erasure: visit<TypePointer>
         public  void visit(TypePointer _param_0) {
             this.oneType(Type.tvoidptr);
             return ;
         }
 
+        // Erasure: mergeFloatToInt<Type>
         public static Type mergeFloatToInt(Type t) {
             switch ((t.ty & 0xFF))
             {
@@ -151,6 +161,7 @@ public class argtypes {
             return t;
         }
 
+        // Erasure: argtypemerge<Type, Type, int>
         public static Type argtypemerge(Type t1, Type t2, int offset2) {
             if (t1 == null)
             {
@@ -214,6 +225,7 @@ public class argtypes {
             return t;
         }
 
+        // Erasure: visit<TypeDArray>
         public  void visit(TypeDArray _param_0) {
             if (isDMDx64Target() && !global.params.isLP64)
             {
@@ -229,6 +241,7 @@ public class argtypes {
             return ;
         }
 
+        // Erasure: visit<TypeDelegate>
         public  void visit(TypeDelegate _param_0) {
             if (isDMDx64Target() && !global.params.isLP64)
             {
@@ -244,6 +257,7 @@ public class argtypes {
             return ;
         }
 
+        // Erasure: visit<TypeSArray>
         public  void visit(TypeSArray t) {
             long sz = t.size(Loc.initial);
             if ((sz > 16L))
@@ -269,6 +283,7 @@ public class argtypes {
             this.aggregate(sz, (int)dim, getNthElement);
         }
 
+        // Erasure: visit<TypeStruct>
         public  void visit(TypeStruct t) {
             if (!t.sym.isPOD())
             {
@@ -290,6 +305,7 @@ public class argtypes {
             this.aggregate(t.size(Loc.initial), t.sym.fields.length, getNthField);
         }
 
+        // Erasure: aggregate<long, int, Function3>
         public  void aggregate(long sz, int nfields, Function3<Integer,Ref<Integer>,Ref<Integer>,Type> getFieldInfo) {
             if ((nfields == 0))
             {
@@ -472,10 +488,12 @@ public class argtypes {
             }
         }
 
+        // Erasure: visit<TypeEnum>
         public  void visit(TypeEnum t) {
             t.toBasetype().accept(this);
         }
 
+        // Erasure: visit<TypeClass>
         public  void visit(TypeClass _param_0) {
             this.result = new TypeTuple(Type.tvoidptr);
         }
@@ -484,10 +502,12 @@ public class argtypes {
         public ToArgTypes() {}
     }
 
+    // Erasure: isDMDx64Target<>
     public static boolean isDMDx64Target() {
         return global.params.is64bit;
     }
 
+    // Erasure: toArgTypes<Type>
     public static TypeTuple toArgTypes(Type t) {
         // skipping duplicate class ToArgTypes
         ToArgTypes v = new ToArgTypes();

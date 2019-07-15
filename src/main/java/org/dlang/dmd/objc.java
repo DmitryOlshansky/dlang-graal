@@ -40,16 +40,19 @@ public class objc {
         public BytePtr stringvalue = null;
         public int stringlen = 0;
         public int paramCount = 0;
+        // Erasure: _init<>
         public static void _init() {
             stringtable._init(0);
         }
 
+        // Erasure: __ctor<Ptr, int, int>
         public  ObjcSelector(BytePtr sv, int len, int pcount) {
             this.stringvalue = pcopy(sv);
             this.stringlen = len;
             this.paramCount = pcount;
         }
 
+        // Erasure: lookup<Ptr>
         public static Ptr<ObjcSelector> lookup(BytePtr s) {
             int len = 0;
             int pcount = 0;
@@ -65,6 +68,7 @@ public class objc {
             return lookup(s, len, pcount);
         }
 
+        // Erasure: lookup<Ptr, int, int>
         public static Ptr<ObjcSelector> lookup(BytePtr s, int len, int pcount) {
             Ptr<StringValue> sv = stringtable.update(s, len);
             Ptr<ObjcSelector> sel = ((Ptr<ObjcSelector>)(sv.get()).ptrvalue);
@@ -76,6 +80,7 @@ public class objc {
             return sel;
         }
 
+        // Erasure: create<FuncDeclaration>
         public static Ptr<ObjcSelector> create(FuncDeclaration fdecl) {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -122,6 +127,7 @@ public class objc {
             }
         }
 
+        // Erasure: asString<>
         public  ByteSlice asString() {
             return this.stringvalue.slice(0,this.stringlen);
         }
@@ -143,6 +149,7 @@ public class objc {
         }
     }
     static Objc _objc = null;
+    // Erasure: objc<>
     public static Objc objc() {
         return _objc;
     }
@@ -155,11 +162,13 @@ public class objc {
         public ClassDeclaration classDeclaration = null;
         public ClassDeclaration metaclass = null;
         public Ptr<DArray<Dsymbol>> methodList = null;
+        // Erasure: __ctor<ClassDeclaration>
         public  ObjcClassDeclaration(ClassDeclaration classDeclaration) {
             this.classDeclaration = classDeclaration;
             this.methodList = pcopy((refPtr(new DArray<Dsymbol>())));
         }
 
+        // Erasure: isRootClass<>
         public  boolean isRootClass() {
             return (this.classDeclaration.classKind == ClassKind.objc) && (this.metaclass == null) && (this.classDeclaration.baseClass == null);
         }
@@ -188,6 +197,7 @@ public class objc {
     }
     public static abstract class Objc
     {
+        // Erasure: _init<>
         public static void _init() {
             if (global.params.isOSX && global.params.is64bit)
             {
@@ -199,61 +209,80 @@ public class objc {
             }
         }
 
+        // Erasure: deinitialize<>
         public static void deinitialize() {
             _objc = null;
         }
 
+        // Erasure: setObjc<>
         public abstract void setObjc(ClassDeclaration cd);
 
 
-        public abstract void setObjc(InterfaceDeclaration arg0);
+        // Erasure: setObjc<>
+        public abstract void setObjc(InterfaceDeclaration arg0, ETag1 __tag);
 
 
+        // Erasure: deprecate<>
         public abstract void deprecate(InterfaceDeclaration interfaceDeclaration);
 
 
+        // Erasure: setSelector<>
         public abstract void setSelector(FuncDeclaration arg0, Ptr<Scope> sc);
 
 
+        // Erasure: validateSelector<>
         public abstract void validateSelector(FuncDeclaration fd);
 
 
+        // Erasure: checkLinkage<>
         public abstract void checkLinkage(FuncDeclaration fd);
 
 
+        // Erasure: isVirtual<>
         public abstract boolean isVirtual(FuncDeclaration fd);
 
 
+        // Erasure: getParent<>
         public abstract ClassDeclaration getParent(FuncDeclaration fd, ClassDeclaration cd);
 
 
+        // Erasure: addToClassMethodList<>
         public abstract void addToClassMethodList(FuncDeclaration fd, ClassDeclaration cd);
 
 
+        // Erasure: isThis<>
         public abstract AggregateDeclaration isThis(FuncDeclaration funcDeclaration);
 
 
+        // Erasure: createSelectorParameter<>
         public abstract VarDeclaration createSelectorParameter(FuncDeclaration fd, Ptr<Scope> sc);
 
 
+        // Erasure: setMetaclass<>
         public abstract void setMetaclass(InterfaceDeclaration interfaceDeclaration, Ptr<Scope> sc);
 
 
-        public abstract void setMetaclass(ClassDeclaration classDeclaration, Ptr<Scope> sc);
+        // Erasure: setMetaclass<>
+        public abstract void setMetaclass(ClassDeclaration classDeclaration, Ptr<Scope> sc, ETag1 __tag);
 
 
+        // Erasure: getRuntimeMetaclass<>
         public abstract ClassDeclaration getRuntimeMetaclass(ClassDeclaration classDeclaration);
 
 
+        // Erasure: addSymbols<>
         public abstract void addSymbols(AttribDeclaration attribDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories);
 
 
-        public abstract void addSymbols(ClassDeclaration classDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories);
+        // Erasure: addSymbols<>
+        public abstract void addSymbols(ClassDeclaration classDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories, ETag1 __tag);
 
 
+        // Erasure: checkOffsetof<>
         public abstract void checkOffsetof(Expression expression, AggregateDeclaration aggregateDeclaration);
 
 
+        // Erasure: checkTupleof<>
         public abstract void checkTupleof(Expression expression, TypeClass type);
 
 
@@ -264,68 +293,87 @@ public class objc {
     }
     public static class Unsupported extends Objc
     {
+        // Erasure: __ctor<>
         public  Unsupported() {
             ObjcGlue.initialize();
         }
 
+        // Erasure: setObjc<ClassDeclaration>
         public  void setObjc(ClassDeclaration cd) {
             cd.error(new BytePtr("Objective-C classes not supported"));
         }
 
+        // Erasure: setObjc<InterfaceDeclaration>
         public  void setObjc(InterfaceDeclaration id) {
             id.error(new BytePtr("Objective-C interfaces not supported"));
         }
 
+        // Erasure: deprecate<InterfaceDeclaration>
         public  void deprecate(InterfaceDeclaration _param_0) {
         }
 
+        // Erasure: setSelector<FuncDeclaration, Ptr>
         public  void setSelector(FuncDeclaration _param_0, Ptr<Scope> _param_1) {
         }
 
+        // Erasure: validateSelector<FuncDeclaration>
         public  void validateSelector(FuncDeclaration _param_0) {
         }
 
+        // Erasure: checkLinkage<FuncDeclaration>
         public  void checkLinkage(FuncDeclaration _param_0) {
         }
 
+        // Erasure: isVirtual<FuncDeclaration>
         public  boolean isVirtual(FuncDeclaration _param_0) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: getParent<FuncDeclaration, ClassDeclaration>
         public  ClassDeclaration getParent(FuncDeclaration _param_0, ClassDeclaration cd) {
             return cd;
         }
 
+        // Erasure: addToClassMethodList<FuncDeclaration, ClassDeclaration>
         public  void addToClassMethodList(FuncDeclaration _param_0, ClassDeclaration _param_1) {
         }
 
+        // Erasure: isThis<FuncDeclaration>
         public  AggregateDeclaration isThis(FuncDeclaration funcDeclaration) {
             return null;
         }
 
+        // Erasure: createSelectorParameter<FuncDeclaration, Ptr>
         public  VarDeclaration createSelectorParameter(FuncDeclaration _param_0, Ptr<Scope> _param_1) {
             return null;
         }
 
+        // Erasure: setMetaclass<InterfaceDeclaration, Ptr>
         public  void setMetaclass(InterfaceDeclaration _param_0, Ptr<Scope> _param_1) {
         }
 
+        // Erasure: setMetaclass<ClassDeclaration, Ptr>
         public  void setMetaclass(ClassDeclaration _param_0, Ptr<Scope> _param_1) {
         }
 
+        // Erasure: getRuntimeMetaclass<ClassDeclaration>
         public  ClassDeclaration getRuntimeMetaclass(ClassDeclaration classDeclaration) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: addSymbols<AttribDeclaration, Ptr, Ptr>
         public  void addSymbols(AttribDeclaration attribDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
         }
 
+        // Erasure: addSymbols<ClassDeclaration, Ptr, Ptr>
         public  void addSymbols(ClassDeclaration classDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
         }
 
+        // Erasure: checkOffsetof<Expression, AggregateDeclaration>
         public  void checkOffsetof(Expression expression, AggregateDeclaration aggregateDeclaration) {
         }
 
+        // Erasure: checkTupleof<Expression, TypeClass>
         public  void checkTupleof(Expression expression, TypeClass type) {
         }
 
@@ -337,22 +385,26 @@ public class objc {
     }
     public static class Supported extends Objc
     {
+        // Erasure: __ctor<>
         public  Supported() {
             VersionCondition.addPredefinedGlobalIdent(new ByteSlice("D_ObjectiveC"));
             ObjcGlue.initialize();
             ObjcSelector._init();
         }
 
+        // Erasure: setObjc<ClassDeclaration>
         public  void setObjc(ClassDeclaration cd) {
             cd.classKind = ClassKind.objc;
             cd.objc.isExtern = (cd.storage_class & 2L) > 0L;
         }
 
+        // Erasure: setObjc<InterfaceDeclaration>
         public  void setObjc(InterfaceDeclaration id) {
             id.classKind = ClassKind.objc;
             id.objc.isExtern = true;
         }
 
+        // Erasure: deprecate<InterfaceDeclaration>
         public  void deprecate(InterfaceDeclaration id) {
             if (id.objc.isMeta)
             {
@@ -362,6 +414,7 @@ public class objc {
             deprecationSupplemental(id.loc, new BytePtr("Representing an Objective-C class as a D interface has been deprecated. Please use `extern (Objective-C) extern class` instead"));
         }
 
+        // Erasure: setSelector<FuncDeclaration, Ptr>
         public  void setSelector(FuncDeclaration fd, Ptr<Scope> sc) {
             if (fd.userAttribDecl == null)
             {
@@ -409,6 +462,7 @@ public class objc {
             }
         }
 
+        // Erasure: validateSelector<FuncDeclaration>
         public  void validateSelector(FuncDeclaration fd) {
             if (fd.selector == null)
             {
@@ -425,6 +479,7 @@ public class objc {
             }
         }
 
+        // Erasure: checkLinkage<FuncDeclaration>
         public  void checkLinkage(FuncDeclaration fd) {
             if ((fd.linkage != LINK.objc) && (fd.selector != null))
             {
@@ -432,10 +487,12 @@ public class objc {
             }
         }
 
+        // Erasure: isVirtual<FuncDeclaration>
         public  boolean isVirtual(FuncDeclaration fd) {
             return !(((__withSym.get()).kind == Prot.Kind.private_) || ((__withSym.get()).kind == Prot.Kind.package_));
         }
 
+        // Erasure: getParent<FuncDeclaration, ClassDeclaration>
         public  ClassDeclaration getParent(FuncDeclaration fd, ClassDeclaration cd) {
             ClassDeclaration __result = null;
             Ref<FuncDeclaration> fd_ref = ref(fd);
@@ -471,6 +528,7 @@ public class objc {
             return __result;
         }
 
+        // Erasure: addToClassMethodList<FuncDeclaration, ClassDeclaration>
         public  void addToClassMethodList(FuncDeclaration fd, ClassDeclaration cd) {
             if ((cd.classKind != ClassKind.objc))
             {
@@ -484,6 +542,7 @@ public class objc {
             (cd.objc.methodList.get()).push(fd);
         }
 
+        // Erasure: isThis<FuncDeclaration>
         public  AggregateDeclaration isThis(FuncDeclaration funcDeclaration) {
             {
                 if (__withSym.selector == null)
@@ -502,6 +561,7 @@ public class objc {
             }
         }
 
+        // Erasure: createSelectorParameter<FuncDeclaration, Ptr>
         public  VarDeclaration createSelectorParameter(FuncDeclaration fd, Ptr<Scope> sc) {
             if (fd.selector == null)
             {
@@ -518,6 +578,7 @@ public class objc {
             return var;
         }
 
+        // Erasure: setMetaclass<InterfaceDeclaration, Ptr>
         public  void setMetaclass(InterfaceDeclaration interfaceDeclaration, Ptr<Scope> sc) {
             Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration> newMetaclass = new Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration>() {
                 public InterfaceDeclaration invoke(Loc loc, Ptr<DArray<Ptr<BaseClass>>> metaBases) {
@@ -529,6 +590,7 @@ public class objc {
             setMetaclass_98AC5D09E954A8ECInterfaceDeclaration(interfaceDeclaration, sc);
         }
 
+        // Erasure: setMetaclass<ClassDeclaration, Ptr>
         public  void setMetaclass(ClassDeclaration classDeclaration, Ptr<Scope> sc) {
             Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration> newMetaclass = new Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration>() {
                 public ClassDeclaration invoke(Loc loc, Ptr<DArray<Ptr<BaseClass>>> metaBases) {
@@ -540,6 +602,7 @@ public class objc {
             setMetaclass_98AC5D09E954A8ECClassDeclaration.invoke(classDeclaration, sc);
         }
 
+        // Erasure: getRuntimeMetaclass<ClassDeclaration>
         public  ClassDeclaration getRuntimeMetaclass(ClassDeclaration classDeclaration) {
             if ((classDeclaration.objc.metaclass == null) && classDeclaration.objc.isMeta)
             {
@@ -558,6 +621,7 @@ public class objc {
             }
         }
 
+        // Erasure: addSymbols<AttribDeclaration, Ptr, Ptr>
         public  void addSymbols(AttribDeclaration attribDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
             Ptr<DArray<Dsymbol>> symbols = attribDeclaration.include(null);
             if (symbols == null)
@@ -574,6 +638,7 @@ public class objc {
             }
         }
 
+        // Erasure: addSymbols<ClassDeclaration, Ptr, Ptr>
         public  void addSymbols(ClassDeclaration classDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
             if ((__withSym.classKind == ClassKind.objc) && !__withSym.objc.isExtern && !__withSym.objc.isMeta)
             {
@@ -581,6 +646,7 @@ public class objc {
             }
         }
 
+        // Erasure: checkOffsetof<Expression, AggregateDeclaration>
         public  void checkOffsetof(Expression expression, AggregateDeclaration aggregateDeclaration) {
             if ((aggregateDeclaration.classKind != ClassKind.objc))
             {
@@ -592,6 +658,7 @@ public class objc {
             expression.errorSupplemental(new BytePtr("`offsetof` is not available for members of Objective-C classes. Please use the Objective-C runtime instead"));
         }
 
+        // Erasure: checkTupleof<Expression, TypeClass>
         public  void checkTupleof(Expression expression, TypeClass type) {
             if ((type.sym.classKind != ClassKind.objc))
             {
@@ -601,6 +668,7 @@ public class objc {
             expression.errorSupplemental(new BytePtr("`tupleof` is not available for members of Objective-C classes. Please use the Objective-C runtime instead"));
         }
 
+        // Erasure: isUdaSelector<StructDeclaration>
         public  boolean isUdaSelector(StructDeclaration sd) {
             if ((!pequals(sd.ident, Id.udaSelector)) || (sd.parent.value == null))
             {
@@ -617,6 +685,7 @@ public class objc {
         }
     }
     // from template setMetaclass!(_98AC5D09E954A8ECClassDeclaration)
+    // Erasure: setMetaclass_98AC5D09E954A8ECClassDeclaration<ClassDeclaration, Ptr>
     public static void setMetaclass_98AC5D09E954A8ECClassDeclaration(ClassDeclaration classDeclaration, Ptr<Scope> sc) {
         ByteSlice errorType = new ByteSlice("class");
         {
@@ -669,6 +738,7 @@ public class objc {
 
 
     // from template setMetaclass!(_98AC5D09E954A8ECInterfaceDeclaration)
+    // Erasure: setMetaclass_98AC5D09E954A8ECInterfaceDeclaration<InterfaceDeclaration, Ptr>
     public static void setMetaclass_98AC5D09E954A8ECInterfaceDeclaration(InterfaceDeclaration classDeclaration, Ptr<Scope> sc) {
         ByteSlice errorType = new ByteSlice("interface");
         {

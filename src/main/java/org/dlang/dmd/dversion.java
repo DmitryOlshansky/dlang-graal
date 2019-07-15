@@ -22,15 +22,18 @@ public class dversion {
     public static class DebugSymbol extends Dsymbol
     {
         public int level = 0;
+        // Erasure: __ctor<Loc, Identifier>
         public  DebugSymbol(Loc loc, Identifier ident) {
             super(loc, ident);
         }
 
+        // Erasure: __ctor<Loc, int>
         public  DebugSymbol(Loc loc, int level) {
             super(loc, null);
             this.level = level;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             DebugSymbol ds = new DebugSymbol(this.loc, this.ident);
@@ -38,6 +41,7 @@ public class dversion {
             return ds;
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             if (this.ident != null)
             {
@@ -55,6 +59,7 @@ public class dversion {
             }
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             dmodule.Module m = sds.isModule();
             if (this.ident != null)
@@ -92,10 +97,12 @@ public class dversion {
             }
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("debug");
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -126,21 +133,25 @@ public class dversion {
     public static class VersionSymbol extends Dsymbol
     {
         public int level = 0;
+        // Erasure: __ctor<Loc, Identifier>
         public  VersionSymbol(Loc loc, Identifier ident) {
             super(loc, ident);
         }
 
+        // Erasure: __ctor<Loc, int>
         public  VersionSymbol(Loc loc, int level) {
             super(loc, null);
             this.level = level;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             VersionSymbol ds = this.ident != null ? new VersionSymbol(this.loc, this.ident) : new VersionSymbol(this.loc, this.level);
             return ds;
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             if (this.ident != null)
             {
@@ -158,6 +169,7 @@ public class dversion {
             }
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             dmodule.Module m = sds.isModule();
             if (this.ident != null)
@@ -196,10 +208,12 @@ public class dversion {
             }
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("version");
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }

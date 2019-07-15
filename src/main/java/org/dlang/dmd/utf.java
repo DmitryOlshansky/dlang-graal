@@ -25,6 +25,7 @@ public class utf {
     static BytePtr utf_decodeWcharUTF16_DECODE_UNPAIRED_SURROGATE = new BytePtr("Unpaired surrogate");
     static BytePtr utf_decodeWcharUTF16_DECODE_INVALID_CODE_POINT = new BytePtr("Invalid code point decoded");
 
+    // Erasure: utf_isValidDchar<int>
     public static boolean utf_isValidDchar(int c) {
         if ((c < 55296))
         {
@@ -37,6 +38,7 @@ public class utf {
         return false;
     }
 
+    // Erasure: isUniAlpha<int>
     public static boolean isUniAlpha(int c) {
         int high = 244;
         int low = (c < (int)utf.isUniAlphaALPHA_TABLE.get(0).get(0)) || ((int)utf.isUniAlphaALPHA_TABLE.get(high).get(1) < c) ? high + 1 : 0;
@@ -59,6 +61,7 @@ public class utf {
         return false;
     }
 
+    // Erasure: utf_codeLengthChar<int>
     public static int utf_codeLengthChar(int c) {
         if ((c <= 127))
         {
@@ -79,10 +82,12 @@ public class utf {
         throw new AssertionError("Unreachable code!");
     }
 
+    // Erasure: utf_codeLengthWchar<int>
     public static int utf_codeLengthWchar(int c) {
         return (c <= 65535) ? 1 : 2;
     }
 
+    // Erasure: utf_codeLength<int, int>
     public static int utf_codeLength(int sz, int c) {
         if ((sz == 1))
         {
@@ -96,6 +101,7 @@ public class utf {
         return 1;
     }
 
+    // Erasure: utf_encodeChar<Ptr, int>
     public static void utf_encodeChar(BytePtr s, int c) {
         assert((s != null));
         assert(utf_isValidDchar(c));
@@ -127,6 +133,7 @@ public class utf {
         }
     }
 
+    // Erasure: utf_encodeWchar<Ptr, int>
     public static void utf_encodeWchar(CharPtr s, int c) {
         assert((s != null));
         assert(utf_isValidDchar(c));
@@ -141,6 +148,7 @@ public class utf {
         }
     }
 
+    // Erasure: utf_encode<int, Ptr, int>
     public static void utf_encode(int sz, Object s, int c) {
         if ((sz == 1))
         {
@@ -157,6 +165,7 @@ public class utf {
         }
     }
 
+    // Erasure: utf_decodeChar<Ptr, int, int, int>
     public static BytePtr utf_decodeChar(BytePtr s, int len, Ref<Integer> ridx, Ref<Integer> rresult) {
         rresult.value = 0x0ffff;
         assert((s != null));
@@ -206,6 +215,7 @@ public class utf {
         return utf.utf_decodeCharUTF8_DECODE_OK;
     }
 
+    // Erasure: utf_decodeWchar<Ptr, int, int, int>
     public static BytePtr utf_decodeWchar(CharPtr s, int len, Ref<Integer> ridx, Ref<Integer> rresult) {
         rresult.value = 0x0ffff;
         assert((s != null));

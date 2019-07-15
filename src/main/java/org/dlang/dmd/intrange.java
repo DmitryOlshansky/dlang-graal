@@ -13,6 +13,7 @@ import static org.dlang.dmd.mtype.*;
 
 public class intrange {
 
+    // Erasure: copySign<long, boolean>
     public static long copySign(long x, boolean sign) {
         return x - (sign ? 1 : 0) ^ -(sign ? 1 : 0);
     }
@@ -21,30 +22,37 @@ public class intrange {
     {
         public long value = 0L;
         public boolean negative = false;
+        // Erasure: fromInteger<long>
         public static SignExtendedNumber fromInteger(long value_) {
             return new SignExtendedNumber(value_, (value_ >> 63 != 0));
         }
 
+        // Erasure: extreme<boolean>
         public static SignExtendedNumber extreme(boolean minimum) {
             return new SignExtendedNumber((long)((minimum ? 1 : 0) - 1), minimum);
         }
 
+        // Erasure: max<>
         public static SignExtendedNumber max() {
             return new SignExtendedNumber(-1L, false);
         }
 
+        // Erasure: min<>
         public static SignExtendedNumber min() {
             return new SignExtendedNumber(0L, true);
         }
 
+        // Erasure: isMinimum<>
         public  boolean isMinimum() {
             return this.negative && (this.value == 0L);
         }
 
+        // Erasure: opEquals<SignExtendedNumber>
         public  boolean opEquals(SignExtendedNumber a) {
             return (this.value == a.value) && ((this.negative ? 1 : 0) == (a.negative ? 1 : 0));
         }
 
+        // Erasure: opCmp<SignExtendedNumber>
         public  int opCmp(SignExtendedNumber a) {
             if (((this.negative ? 1 : 0) != (a.negative ? 1 : 0)))
             {
@@ -72,6 +80,7 @@ public class intrange {
         }
 
         // from template opUnary!(_invert)
+        // Erasure: opUnary_invert<>
         public  SignExtendedNumber opUnary_invert() {
             if ((~this.value == 0L))
             {
@@ -85,6 +94,7 @@ public class intrange {
 
 
         // from template opUnary!(_minus)
+        // Erasure: opUnary_minus<>
         public  SignExtendedNumber opUnary_minus() {
             if ((this.value == 0L))
             {
@@ -98,6 +108,7 @@ public class intrange {
 
 
         // from template opBinary!(_plus)
+        // Erasure: opBinary_plus<SignExtendedNumber>
         public  SignExtendedNumber opBinary_plus(SignExtendedNumber rhs) {
             long sum = this.value + rhs.value;
             boolean carry = (sum < this.value) && (sum < rhs.value);
@@ -117,6 +128,7 @@ public class intrange {
 
 
         // from template opBinary!(_minus)
+        // Erasure: opBinary_minus<SignExtendedNumber>
         public  SignExtendedNumber opBinary_minus(SignExtendedNumber rhs) {
             if (rhs.isMinimum())
             {
@@ -130,6 +142,7 @@ public class intrange {
 
 
         // from template opBinary!(_mul)
+        // Erasure: opBinary_mul<SignExtendedNumber>
         public  SignExtendedNumber opBinary_mul(SignExtendedNumber rhs) {
             if ((this.value == 0L))
             {
@@ -167,6 +180,7 @@ public class intrange {
 
 
         // from template opBinary!(_div)
+        // Erasure: opBinary_div<SignExtendedNumber>
         public  SignExtendedNumber opBinary_div(SignExtendedNumber rhs) {
             if ((rhs.value == 0L))
             {
@@ -229,6 +243,7 @@ public class intrange {
 
 
         // from template opBinary!(_ll)
+        // Erasure: opBinary_ll<SignExtendedNumber>
         public  SignExtendedNumber opBinary_ll(SignExtendedNumber rhs) {
             if ((this.value == 0L))
             {
@@ -269,6 +284,7 @@ public class intrange {
 
 
         // from template opBinary!(_rr)
+        // Erasure: opBinary_rr<SignExtendedNumber>
         public  SignExtendedNumber opBinary_rr(SignExtendedNumber rhs) {
             if (rhs.negative || (rhs.value > 63L))
             {
@@ -307,25 +323,30 @@ public class intrange {
     {
         public SignExtendedNumber imin = new SignExtendedNumber();
         public SignExtendedNumber imax = new SignExtendedNumber();
+        // Erasure: __ctor<IntRange>
         public  IntRange(IntRange another) {
             this.imin.opAssign(another.imin.copy());
             this.imax.opAssign(another.imax.copy());
         }
 
+        // Erasure: __ctor<SignExtendedNumber>
         public  IntRange(SignExtendedNumber a) {
             this.imin.opAssign(a.copy());
             this.imax.opAssign(a.copy());
         }
 
+        // Erasure: __ctor<SignExtendedNumber, SignExtendedNumber>
         public  IntRange(SignExtendedNumber lower, SignExtendedNumber upper) {
             this.imin.opAssign(lower.copy());
             this.imax.opAssign(upper.copy());
         }
 
+        // Erasure: fromType<Type>
         public static IntRange fromType(Type type) {
             return fromType(type, type.isunsigned());
         }
 
+        // Erasure: fromType<Type, boolean>
         public static IntRange fromType(Type type, boolean isUnsigned) {
             if (!type.isintegral() || ((type.toBasetype().ty & 0xFF) == ENUMTY.Tvector))
             {
@@ -347,6 +368,7 @@ public class intrange {
             return new IntRange(lower, upper);
         }
 
+        // Erasure: fromNumbers2<Ptr>
         public static IntRange fromNumbers2(Ptr<SignExtendedNumber> numbers) {
             if ((numbers.get(0).opCmp(numbers.get(1)) < 0))
             {
@@ -358,6 +380,7 @@ public class intrange {
             }
         }
 
+        // Erasure: fromNumbers4<Ptr>
         public static IntRange fromNumbers4(Ptr<SignExtendedNumber> numbers) {
             IntRange ab = fromNumbers2(numbers).copy();
             IntRange cd = fromNumbers2(numbers.plus(24)).copy();
@@ -372,10 +395,12 @@ public class intrange {
             return ab;
         }
 
+        // Erasure: widest<>
         public static IntRange widest() {
             return new IntRange(SignExtendedNumber.min(), SignExtendedNumber.max());
         }
 
+        // Erasure: castSigned<long>
         public  IntRange castSigned(long mask) {
             long halfChunkMask = mask >> 1;
             long minHalfChunk = this.imin.value & ~halfChunkMask;
@@ -416,6 +441,7 @@ public class intrange {
             return this;
         }
 
+        // Erasure: castUnsigned<long>
         public  IntRange castUnsigned(long mask) {
             long minChunk = this.imin.value & ~mask;
             long maxChunk = this.imax.value & ~mask;
@@ -433,6 +459,7 @@ public class intrange {
             return this;
         }
 
+        // Erasure: castDchar<>
         public  IntRange castDchar() {
             this.castUnsigned(4294967295L);
             if ((this.imin.value > 1114111L))
@@ -446,6 +473,7 @@ public class intrange {
             return this;
         }
 
+        // Erasure: _cast<Type>
         public  IntRange _cast(Type type) {
             if (!type.isintegral() || ((type.toBasetype().ty & 0xFF) == ENUMTY.Tvector))
             {
@@ -465,6 +493,7 @@ public class intrange {
             }
         }
 
+        // Erasure: castUnsigned<Type>
         public  IntRange castUnsigned(Type type) {
             if (!type.isintegral() || ((type.toBasetype().ty & 0xFF) == ENUMTY.Tvector))
             {
@@ -480,14 +509,17 @@ public class intrange {
             }
         }
 
+        // Erasure: contains<IntRange>
         public  boolean contains(IntRange a) {
             return (this.imin.opCmp(a.imin) <= 0) && (this.imax.opCmp(a.imax) >= 0);
         }
 
+        // Erasure: containsZero<>
         public  boolean containsZero() {
             return this.imin.negative && !this.imax.negative || !this.imin.negative && (this.imin.value == 0L);
         }
 
+        // Erasure: absNeg<>
         public  IntRange absNeg() {
             if (this.imax.negative)
             {
@@ -504,10 +536,12 @@ public class intrange {
             }
         }
 
+        // Erasure: unionWith<IntRange>
         public  IntRange unionWith(IntRange other) {
             return new IntRange((this.imin.opCmp(other.imin) < 0) ? this.imin : other.imin, (this.imax.opCmp(other.imax) > 0) ? this.imax : other.imax);
         }
 
+        // Erasure: unionOrAssign<IntRange, boolean>
         public  void unionOrAssign(IntRange other, Ref<Boolean> union_) {
             if (!union_.value || (this.imin.opCmp(other.imin) > 0))
             {
@@ -520,11 +554,13 @@ public class intrange {
             union_.value = true;
         }
 
+        // Erasure: dump<Ptr, Expression>
         public  IntRange dump(BytePtr funcName, Expression e) {
             printf(new BytePtr("[(%c)%#018llx, (%c)%#018llx] @ %s ::: %s\n"), this.imin.negative ? 45 : 43, this.imin.value, this.imax.negative ? 45 : 43, this.imax.value, funcName, e.toChars());
             return this;
         }
 
+        // Erasure: splitBySign<IntRange, boolean, IntRange, boolean>
         public  void splitBySign(IntRange negRange, Ref<Boolean> hasNegRange, IntRange nonNegRange, Ref<Boolean> hasNonNegRange) {
             hasNegRange.value = this.imin.negative;
             if (hasNegRange.value)
@@ -541,18 +577,21 @@ public class intrange {
         }
 
         // from template opUnary!(_invert)
+        // Erasure: opUnary_invert<>
         public  IntRange opUnary_invert() {
             return new IntRange(this.imax.opUnary_invert(), this.imin.opUnary_invert());
         }
 
 
         // from template opUnary!(_minus)
+        // Erasure: opUnary_minus<>
         public  IntRange opUnary_minus() {
             return new IntRange(this.imax.opUnary_minus(), this.imin.opUnary_minus());
         }
 
 
         // from template opBinary!(__)
+        // Erasure: opBinary__<IntRange>
         public  IntRange opBinary__(IntRange rhs) {
             if ((((this.imin.negative ^ this.imax.negative) ? 1 : 0) != 1) && (((rhs.imin.negative ^ rhs.imax.negative) ? 1 : 0) != 1))
             {
@@ -594,18 +633,21 @@ public class intrange {
         // removed duplicate function, [["IntRange fromNumbers4Ptr<SignExtendedNumber>", "IntRange castUnsignedlong", "IntRange castDchar", "IntRange opBinaryIntRange__", "IntRange fromTypeType, boolean", "IntRange _castType", "IntRange opUnary_invert", "IntRange absNeg", "boolean containsIntRange", "IntRange widest", "IntRange fromTypeType", "IntRange __ctorSignExtendedNumber", "void splitBySignIntRange, Ref<Boolean>, IntRange, Ref<Boolean>", "IntRange __ctorSignExtendedNumber, SignExtendedNumber", "boolean containsZero", "IntRange castSignedlong", "IntRange castUnsignedType", "IntRange unionWithIntRange", "IntRange __ctorIntRange", "void unionOrAssignIntRange, Ref<Boolean>", "IntRange dumpBytePtr, Expression", "IntRange opUnary_minus", "IntRange fromNumbers2Ptr<SignExtendedNumber>"]] signature: IntRange opBinaryIntRange__
 
         // from template opBinary!(_plus)
+        // Erasure: opBinary_plus<IntRange>
         public  IntRange opBinary_plus(IntRange rhs) {
             return new IntRange(this.imin.opBinary_plus(rhs.imin), this.imax.opBinary_plus(rhs.imax));
         }
 
 
         // from template opBinary!(_minus)
+        // Erasure: opBinary_minus<IntRange>
         public  IntRange opBinary_minus(IntRange rhs) {
             return new IntRange(this.imin.opBinary_minus(rhs.imax), this.imax.opBinary_minus(rhs.imin));
         }
 
 
         // from template opBinary!(_mul)
+        // Erasure: opBinary_mul<IntRange>
         public  IntRange opBinary_mul(IntRange rhs) {
             Slice<SignExtendedNumber> bdy = new RawSlice<SignExtendedNumber>(new SignExtendedNumber[4]);
             bdy.set(0, this.imin.opBinary_mul(rhs.imin));
@@ -617,6 +659,7 @@ public class intrange {
 
 
         // from template opBinary!(_div)
+        // Erasure: opBinary_div<IntRange>
         public  IntRange opBinary_div(IntRange rhs) {
             if ((rhs.imax.value == 0L) && (rhs.imin.value == 0L))
             {
@@ -647,6 +690,7 @@ public class intrange {
 
 
         // from template opBinary!(_mod)
+        // Erasure: opBinary_mod<IntRange>
         public  IntRange opBinary_mod(IntRange rhs) {
             IntRange irNum = this.copy();
             IntRange irDen = rhs.absNeg().copy();
@@ -674,6 +718,7 @@ public class intrange {
 
 
         // from template opBinary!(_ll)
+        // Erasure: opBinary_ll<IntRange>
         public  IntRange opBinary_ll(IntRange rhs) {
             if (rhs.imin.negative)
             {
@@ -686,6 +731,7 @@ public class intrange {
 
 
         // from template opBinary!(_rr)
+        // Erasure: opBinary_rr<IntRange>
         public  IntRange opBinary_rr(IntRange rhs) {
             if (rhs.imin.negative)
             {
@@ -698,6 +744,7 @@ public class intrange {
 
 
         // from template opBinary!(_rrr)
+        // Erasure: opBinary_rrr<IntRange>
         public  IntRange opBinary_rrr(IntRange rhs) {
             if (rhs.imin.negative)
             {
@@ -707,6 +754,7 @@ public class intrange {
         }
 
 
+        // Erasure: maxOr<IntRange, IntRange>
         public static SignExtendedNumber maxOr(IntRange lhs, IntRange rhs) {
             long x = 0L;
             boolean sign = false;
@@ -773,10 +821,12 @@ public class intrange {
             return range;
         }
 
+        // Erasure: minOr<IntRange, IntRange>
         public static SignExtendedNumber minOr(IntRange lhs, IntRange rhs) {
             return maxAnd(lhs.opUnary_invert(), rhs.opUnary_invert()).opUnary_invert();
         }
 
+        // Erasure: maxAnd<IntRange, IntRange>
         public static SignExtendedNumber maxAnd(IntRange lhs, IntRange rhs) {
             long x = 0L;
             boolean sign = false;
@@ -815,10 +865,12 @@ public class intrange {
             return range;
         }
 
+        // Erasure: minAnd<IntRange, IntRange>
         public static SignExtendedNumber minAnd(IntRange lhs, IntRange rhs) {
             return maxOr(lhs.opUnary_invert(), rhs.opUnary_invert()).opUnary_invert();
         }
 
+        // Erasure: swap<IntRange, IntRange>
         public static void swap(IntRange a, IntRange b) {
             IntRange aux = a.copy();
             a.opAssign(b.copy());

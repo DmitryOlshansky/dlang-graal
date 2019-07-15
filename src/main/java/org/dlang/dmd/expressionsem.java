@@ -67,6 +67,7 @@ public class expressionsem {
     static ByteSlice visitcompMsg = new ByteSlice("==");
 
     static boolean LOGSEMANTIC = false;
+    // Erasure: expressionsToString<OutBuffer, Ptr, Ptr>
     public static boolean expressionsToString(OutBuffer buf, Ptr<Scope> sc, Ptr<DArray<Expression>> exps) {
         Ref<OutBuffer> buf_ref = ref(buf);
         if (exps == null)
@@ -125,6 +126,7 @@ public class expressionsem {
         return false;
     }
 
+    // Erasure: semanticString<Ptr, Expression, Ptr>
     public static StringExp semanticString(Ptr<Scope> sc, Expression exp, BytePtr s) {
         sc = pcopy((sc.get()).startCTFE());
         exp = expressionSemantic(exp, sc);
@@ -152,6 +154,7 @@ public class expressionsem {
         return se;
     }
 
+    // Erasure: extractOpDollarSideEffect<Ptr, UnaExp>
     public static Expression extractOpDollarSideEffect(Ptr<Scope> sc, UnaExp ue) {
         Ref<Expression> e0 = ref(null);
         Expression e1 = Expression.extractLast(ue.e1.value, e0);
@@ -166,6 +169,7 @@ public class expressionsem {
         return e0.value;
     }
 
+    // Erasure: resolveOpDollar<Ptr, ArrayExp, Ptr>
     public static Expression resolveOpDollar(Ptr<Scope> sc, ArrayExp ae, Ptr<Expression> pe0) {
         assert(ae.lengthVar.value == null);
         pe0.set(0, null);
@@ -244,6 +248,7 @@ public class expressionsem {
         return ae;
     }
 
+    // Erasure: resolveOpDollar<Ptr, ArrayExp, IntervalExp, Ptr>
     public static Expression resolveOpDollar(Ptr<Scope> sc, ArrayExp ae, IntervalExp ie, Ptr<Expression> pe0) {
         if (ie == null)
         {
@@ -279,6 +284,7 @@ public class expressionsem {
         return ae;
     }
 
+    // Erasure: arrayExpressionSemantic<Ptr, Ptr, boolean>
     public static boolean arrayExpressionSemantic(Ptr<DArray<Expression>> exps, Ptr<Scope> sc, boolean preserveErrors) {
         boolean err = false;
         if (exps != null)
@@ -311,6 +317,7 @@ public class expressionsem {
         return arrayExpressionSemantic(exps, sc, false);
     }
 
+    // Erasure: checkPropertyCall<Expression>
     public static boolean checkPropertyCall(Expression e) {
         e = lastComma(e);
         if (((e.op & 0xFF) == 18))
@@ -346,6 +353,7 @@ public class expressionsem {
         return false;
     }
 
+    // Erasure: searchUFCS<Ptr, UnaExp, Identifier>
     public static Expression searchUFCS(Ptr<Scope> sc, UnaExp ue, Identifier ident) {
         Loc loc = ue.loc.copy();
         Function1<Integer,Dsymbol> searchScopes = new Function1<Integer,Dsymbol>() {
@@ -442,6 +450,7 @@ public class expressionsem {
         }
     }
 
+    // Erasure: resolveUFCS<Ptr, CallExp>
     public static Expression resolveUFCS(Ptr<Scope> sc, CallExp ce) {
         Loc loc = ce.loc.copy();
         Expression eleft = null;
@@ -568,6 +577,7 @@ public class expressionsem {
         return null;
     }
 
+    // Erasure: resolveUFCSProperties<Ptr, Expression, Expression>
     public static Expression resolveUFCSProperties(Ptr<Scope> sc, Expression e1, Expression e2) {
         Loc loc = e1.loc.copy();
         Expression eleft = null;
@@ -635,9 +645,10 @@ public class expressionsem {
 
     // defaulted all parameters starting with #3
     public static Expression resolveUFCSProperties(Ptr<Scope> sc, Expression e1) {
-        return resolveUFCSProperties(sc, e1, null);
+        return resolveUFCSProperties(sc, e1, (Expression)null);
     }
 
+    // Erasure: resolvePropertiesOnly<Ptr, Expression>
     public static Expression resolvePropertiesOnly(Ptr<Scope> sc, Expression e1) {
         OverloadSet os = null;
         FuncDeclaration fd = null;
@@ -795,6 +806,7 @@ public class expressionsem {
         return e1;
     }
 
+    // Erasure: symbolToExp<Dsymbol, Loc, Ptr, boolean>
     public static Expression symbolToExp(Dsymbol s, Loc loc, Ptr<Scope> sc, boolean hasOverloads) {
         while(true) try {
         /*Lagain:*/
@@ -1031,6 +1043,7 @@ public class expressionsem {
         } catch(Dispatch0 __d){}
     }
 
+    // Erasure: getRightThis<Loc, Ptr, AggregateDeclaration, Expression, Dsymbol, int>
     public static Expression getRightThis(Loc loc, Ptr<Scope> sc, AggregateDeclaration ad, Expression e1, Dsymbol var, int flag) {
         while(true) try {
         /*L1:*/
@@ -1099,6 +1112,7 @@ public class expressionsem {
         return getRightThis(loc, sc, ad, e1, var, 0);
     }
 
+    // Erasure: resolvePropertiesX<Ptr, Expression, Expression>
     public static Expression resolvePropertiesX(Ptr<Scope> sc, Expression e1, Expression e2) {
         Loc loc = e1.loc.copy();
         OverloadSet os = null;
@@ -1790,9 +1804,10 @@ public class expressionsem {
 
     // defaulted all parameters starting with #3
     public static Expression resolvePropertiesX(Ptr<Scope> sc, Expression e1) {
-        return resolvePropertiesX(sc, e1, null);
+        return resolvePropertiesX(sc, e1, (Expression)null);
     }
 
+    // Erasure: resolveProperties<Ptr, Expression>
     public static Expression resolveProperties(Ptr<Scope> sc, Expression e) {
         e = resolvePropertiesX(sc, e, null);
         if (e.checkRightThis(sc))
@@ -1802,6 +1817,7 @@ public class expressionsem {
         return e;
     }
 
+    // Erasure: arrayExpressionToCommonType<Ptr, Ptr, Ptr>
     public static boolean arrayExpressionToCommonType(Ptr<Scope> sc, Ptr<DArray<Expression>> exps, Ptr<Type> pt) {
         IntegerExp integerexp = literal_B6589FC6AB0DC82C();
         CondExp condexp = new CondExp(Loc.initial, integerexp, null, null);
@@ -1898,6 +1914,7 @@ public class expressionsem {
         return pequals(t0, Type.terror);
     }
 
+    // Erasure: opAssignToOp<Loc, byte, Expression, Expression>
     public static Expression opAssignToOp(Loc loc, byte op, Expression e1, Expression e2) {
         Expression e = null;
         switch ((op & 0xFF))
@@ -1941,6 +1958,7 @@ public class expressionsem {
         return e;
     }
 
+    // Erasure: rewriteOpAssign<BinExp>
     public static Expression rewriteOpAssign(BinExp exp) {
         Expression e = null;
         assert(((exp.e1.value.op & 0xFF) == 32));
@@ -1962,6 +1980,7 @@ public class expressionsem {
         return e;
     }
 
+    // Erasure: preFunctionParameters<Ptr, Ptr>
     public static boolean preFunctionParameters(Ptr<Scope> sc, Ptr<DArray<Expression>> exps) {
         boolean err = false;
         if (exps != null)
@@ -2000,6 +2019,7 @@ public class expressionsem {
         return err;
     }
 
+    // Erasure: checkDefCtor<Loc, Type>
     public static boolean checkDefCtor(Loc loc, Type t) {
         t = t.baseElemOf();
         if (((t.ty & 0xFF) == ENUMTY.Tstruct))
@@ -2014,6 +2034,7 @@ public class expressionsem {
         return false;
     }
 
+    // Erasure: functionParameters<Loc, Ptr, TypeFunction, Expression, Type, Ptr, FuncDeclaration, Ptr, Ptr>
     public static boolean functionParameters(Loc loc, Ptr<Scope> sc, TypeFunction tf, Expression ethis, Type tthis, Ptr<DArray<Expression>> arguments, FuncDeclaration fd, Ptr<Type> prettype, Ptr<Expression> peprefix) {
         assert(arguments != null);
         assert((fd != null) || (tf.next.value != null));
@@ -2647,6 +2668,7 @@ public class expressionsem {
         return err || (olderrors != global.errors);
     }
 
+    // Erasure: resolveIsPackage<Dsymbol>
     public static dmodule.Package resolveIsPackage(Dsymbol sym) {
         dmodule.Package pkg = null;
         {
@@ -2672,6 +2694,7 @@ public class expressionsem {
         return pkg;
     }
 
+    // Erasure: loadStdMath<>
     public static dmodule.Module loadStdMath() {
         if (expressionsem.loadStdMathimpStdMath == null)
         {
@@ -2695,14 +2718,17 @@ public class expressionsem {
     {
         public Ptr<Scope> sc = null;
         public Expression result = null;
+        // Erasure: __ctor<Ptr>
         public  ExpressionSemanticVisitor(Ptr<Scope> sc) {
             this.sc = pcopy(sc);
         }
 
+        // Erasure: setError<>
         public  void setError() {
             this.result = new ErrorExp();
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             if (e.type.value != null)
             {
@@ -2715,6 +2741,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<IntegerExp>
         public  void visit(IntegerExp e) {
             assert(e.type.value != null);
             if (((e.type.value.ty & 0xFF) == ENUMTY.Terror))
@@ -2727,6 +2754,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<RealExp>
         public  void visit(RealExp e) {
             if (e.type.value == null)
             {
@@ -2739,6 +2767,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<ComplexExp>
         public  void visit(ComplexExp e) {
             if (e.type.value == null)
             {
@@ -2751,6 +2780,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<IdentifierExp>
         public  void visit(IdentifierExp exp) {
             if (exp.type.value != null)
             {
@@ -2954,10 +2984,12 @@ public class expressionsem {
             this.result = new ErrorExp();
         }
 
+        // Erasure: visit<DsymbolExp>
         public  void visit(DsymbolExp e) {
             this.result = symbolToExp(e.s, e.loc, this.sc, e.hasOverloads);
         }
 
+        // Erasure: visit<ThisExp>
         public  void visit(ThisExp e) {
             if (e.type.value != null)
             {
@@ -3023,6 +3055,7 @@ public class expressionsem {
             this.result = new ErrorExp();
         }
 
+        // Erasure: visit<SuperExp>
         public  void visit(SuperExp e) {
             if (e.type.value != null)
             {
@@ -3101,6 +3134,7 @@ public class expressionsem {
             this.result = new ErrorExp();
         }
 
+        // Erasure: visit<NullExp>
         public  void visit(NullExp e) {
             if (e.type.value != null)
             {
@@ -3111,6 +3145,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<StringExp>
         public  void visit(StringExp e) {
             if (e.type.value != null)
             {
@@ -3200,6 +3235,7 @@ public class expressionsem {
             }
         }
 
+        // Erasure: visit<TupleExp>
         public  void visit(TupleExp exp) {
             if (exp.type.value != null)
             {
@@ -3242,6 +3278,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             if (e.type.value != null)
             {
@@ -3288,6 +3325,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
             if (e.type.value != null)
             {
@@ -3337,6 +3375,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             if (e.type.value != null)
             {
@@ -3375,6 +3414,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<TypeExp>
         public  void visit(TypeExp exp) {
             if (((exp.type.value.ty & 0xFF) == ENUMTY.Terror))
             {
@@ -3409,6 +3449,7 @@ public class expressionsem {
             this.result = e.value;
         }
 
+        // Erasure: visit<ScopeExp>
         public  void visit(ScopeExp exp) {
             if (exp.type.value != null)
             {
@@ -3541,6 +3582,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<NewExp>
         public  void visit(NewExp exp) {
             if (exp.type.value != null)
             {
@@ -4046,6 +4088,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<NewAnonClassExp>
         public  void visit(NewAnonClassExp e) {
             Expression d = new DeclarationExp(e.loc, e.cd);
             this.sc = pcopy((this.sc.get()).push());
@@ -4066,6 +4109,7 @@ public class expressionsem {
             this.result = expressionSemantic(c, this.sc);
         }
 
+        // Erasure: visit<SymOffExp>
         public  void visit(SymOffExp e) {
             if (e.type.value == null)
             {
@@ -4096,6 +4140,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<VarExp>
         public  void visit(VarExp e) {
             VarDeclaration vd = e.var.isVarDeclaration();
             FuncDeclaration fd = e.var.isFuncDeclaration();
@@ -4150,6 +4195,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp exp) {
             if (exp.type.value != null)
             {
@@ -4238,6 +4284,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: callExpSemantic<FuncExp, Ptr, Ptr>
         public  Expression callExpSemantic(FuncExp exp, Ptr<Scope> sc, Ptr<DArray<Expression>> arguments) {
             if ((exp.type.value == null) || (pequals(exp.type.value, Type.tvoid)) && (exp.td != null) && (arguments != null) && ((arguments.get()).length != 0))
             {
@@ -4295,6 +4342,7 @@ public class expressionsem {
             return expressionSemantic(exp, sc);
         }
 
+        // Erasure: visit<CallExp>
         public  void visit(CallExp exp) {
             if (exp.type.value != null)
             {
@@ -5289,6 +5337,7 @@ public class expressionsem {
             } catch(Dispatch1 __d){}
         }
 
+        // Erasure: visit<DeclarationExp>
         public  void visit(DeclarationExp e) {
             if (e.type.value != null)
             {
@@ -5382,6 +5431,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<TypeidExp>
         public  void visit(TypeidExp exp) {
             Ref<Type> ta = ref(isType(exp.obj));
             Ref<Expression> ea = ref(isExpression(exp.obj));
@@ -5459,15 +5509,18 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<TraitsExp>
         public  void visit(TraitsExp e) {
             this.result = semanticTraits(e, this.sc);
         }
 
+        // Erasure: visit<HaltExp>
         public  void visit(HaltExp e) {
             e.type.value = Type.tvoid;
             this.result = e;
         }
 
+        // Erasure: visit<IsExp>
         public  void visit(IsExp e) {
             if ((e.id != null) && (((this.sc.get()).flags & 4) == 0))
             {
@@ -5827,6 +5880,7 @@ public class expressionsem {
             this.result = new IntegerExp(e.loc, 0L, Type.tbool);
         }
 
+        // Erasure: visit<BinAssignExp>
         public  void visit(BinAssignExp exp) {
             if (exp.type.value != null)
             {
@@ -5959,6 +6013,7 @@ public class expressionsem {
             this.result = ((BinExp)e).reorderSettingAAElem(this.sc);
         }
 
+        // Erasure: compileIt<CompileExp>
         public  Expression compileIt(CompileExp exp) {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -5997,6 +6052,7 @@ public class expressionsem {
             }
         }
 
+        // Erasure: visit<CompileExp>
         public  void visit(CompileExp exp) {
             Expression e = this.compileIt(exp);
             if (e == null)
@@ -6007,6 +6063,7 @@ public class expressionsem {
             this.result = expressionSemantic(e, this.sc);
         }
 
+        // Erasure: visit<ImportExp>
         public  void visit(ImportExp e) {
             StringExp se = semanticString(this.sc, e.e1.value, new BytePtr("file name argument"));
             if (se == null)
@@ -6077,6 +6134,7 @@ public class expressionsem {
             this.result = expressionSemantic(se, this.sc);
         }
 
+        // Erasure: visit<AssertExp>
         public  void visit(AssertExp exp) {
             BytePtr assertExpMsg = pcopy(exp.msg != null ? null : exp.toChars());
             {
@@ -6194,6 +6252,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<DotIdExp>
         public  void visit(DotIdExp exp) {
             Expression e = semanticY(exp, this.sc, 1);
             if ((e != null) && isDotOpDispatch(e))
@@ -6217,6 +6276,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<DotTemplateExp>
         public  void visit(DotTemplateExp e) {
             {
                 Expression ex = unaSemantic(e, this.sc);
@@ -6229,6 +6289,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<DotVarExp>
         public  void visit(DotVarExp exp) {
             if (exp.type.value != null)
             {
@@ -6364,6 +6425,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<DotTemplateInstanceExp>
         public  void visit(DotTemplateInstanceExp exp) {
             Expression e = semanticY(exp, this.sc, 1);
             if (e == null)
@@ -6373,6 +6435,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<DelegateExp>
         public  void visit(DelegateExp e) {
             if (e.type.value != null)
             {
@@ -6457,6 +6520,7 @@ public class expressionsem {
             }
         }
 
+        // Erasure: visit<DotTypeExp>
         public  void visit(DotTypeExp exp) {
             if (exp.type.value != null)
             {
@@ -6475,6 +6539,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<AddrExp>
         public  void visit(AddrExp exp) {
             if (exp.type.value != null)
             {
@@ -6733,6 +6798,7 @@ public class expressionsem {
             this.result = exp.optimize(0, false);
         }
 
+        // Erasure: visit<PtrExp>
         public  void visit(PtrExp exp) {
             if (exp.type.value != null)
             {
@@ -6784,6 +6850,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<NegExp>
         public  void visit(NegExp exp) {
             if (exp.type.value != null)
             {
@@ -6827,6 +6894,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<UAddExp>
         public  void visit(UAddExp exp) {
             assert(exp.type.value == null);
             Expression e = op_overload(exp, this.sc, null);
@@ -6854,6 +6922,7 @@ public class expressionsem {
             this.result = exp.e1.value;
         }
 
+        // Erasure: visit<ComExp>
         public  void visit(ComExp exp) {
             if (exp.type.value != null)
             {
@@ -6897,6 +6966,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<NotExp>
         public  void visit(NotExp e) {
             if (e.type.value != null)
             {
@@ -6936,6 +7006,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<DeleteExp>
         public  void visit(DeleteExp exp) {
             if (!(this.sc.get()).isDeprecated())
             {
@@ -7067,6 +7138,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<CastExp>
         public  void visit(CastExp exp) {
             if (exp.type.value != null)
             {
@@ -7248,6 +7320,7 @@ public class expressionsem {
             this.result = ex;
         }
 
+        // Erasure: visit<VectorExp>
         public  void visit(VectorExp exp) {
             if (exp.type.value != null)
             {
@@ -7298,6 +7371,7 @@ public class expressionsem {
             this.result = res ? new ErrorExp() : exp;
         }
 
+        // Erasure: visit<VectorArrayExp>
         public  void visit(VectorArrayExp e) {
             if (e.type.value == null)
             {
@@ -7314,6 +7388,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp exp) {
             if (exp.type.value != null)
             {
@@ -7608,6 +7683,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<ArrayLengthExp>
         public  void visit(ArrayLengthExp e) {
             if (e.type.value != null)
             {
@@ -7627,6 +7703,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<ArrayExp>
         public  void visit(ArrayExp exp) {
             assert(exp.type.value == null);
             Expression e = op_overload(exp, this.sc, null);
@@ -7654,6 +7731,7 @@ public class expressionsem {
             this.result = new ErrorExp();
         }
 
+        // Erasure: visit<DotExp>
         public  void visit(DotExp exp) {
             exp.e1.value = expressionSemantic(exp.e1.value, this.sc);
             exp.e2.value = expressionSemantic(exp.e2.value, this.sc);
@@ -7681,6 +7759,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<CommaExp>
         public  void visit(CommaExp e) {
             if (e.type.value != null)
             {
@@ -7714,6 +7793,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<IntervalExp>
         public  void visit(IntervalExp e) {
             if (e.type.value != null)
             {
@@ -7742,6 +7822,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<DelegatePtrExp>
         public  void visit(DelegatePtrExp e) {
             if (e.type.value == null)
             {
@@ -7757,6 +7838,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<DelegateFuncptrExp>
         public  void visit(DelegateFuncptrExp e) {
             if (e.type.value == null)
             {
@@ -7772,6 +7854,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<IndexExp>
         public  void visit(IndexExp exp) {
             if (exp.type.value != null)
             {
@@ -7987,6 +8070,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<PostExp>
         public  void visit(PostExp exp) {
             if (exp.type.value != null)
             {
@@ -8076,6 +8160,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<PreExp>
         public  void visit(PreExp exp) {
             Expression e = op_overload(exp, this.sc, null);
             if (e != null)
@@ -8094,6 +8179,7 @@ public class expressionsem {
             this.result = expressionSemantic(e, this.sc);
         }
 
+        // Erasure: getInitExp<StructDeclaration, Loc, Ptr, Type>
         public  Expression getInitExp(StructDeclaration sd, Loc loc, Ptr<Scope> sc, Type t) {
             if (sd.zeroInit && !sd.isNested())
             {
@@ -8116,6 +8202,7 @@ public class expressionsem {
             return defaultInit(t, loc);
         }
 
+        // Erasure: visit<AssignExp>
         public  void visit(AssignExp exp) {
             Function2<Expression,Integer,Void> setResult = new Function2<Expression,Integer,Void>() {
                 public Void invoke(Expression e, Integer line) {
@@ -9076,6 +9163,7 @@ public class expressionsem {
             return ;
         }
 
+        // Erasure: visit<PowAssignExp>
         public  void visit(PowAssignExp exp) {
             if (exp.type.value != null)
             {
@@ -9158,6 +9246,7 @@ public class expressionsem {
             this.result = exp.incompatibleTypes();
         }
 
+        // Erasure: visit<CatAssignExp>
         public  void visit(CatAssignExp exp) {
             if (exp.type.value != null)
             {
@@ -9315,6 +9404,7 @@ public class expressionsem {
             this.result = res;
         }
 
+        // Erasure: visit<AddExp>
         public  void visit(AddExp exp) {
             if (exp.type.value != null)
             {
@@ -9409,6 +9499,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<MinExp>
         public  void visit(MinExp exp) {
             if (exp.type.value != null)
             {
@@ -9545,6 +9636,7 @@ public class expressionsem {
             return ;
         }
 
+        // Erasure: visit<CatExp>
         public  void visit(CatExp exp) {
             if (exp.type.value != null)
             {
@@ -9754,6 +9846,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<MulExp>
         public  void visit(MulExp exp) {
             if (exp.type.value != null)
             {
@@ -9853,6 +9946,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<DivExp>
         public  void visit(DivExp exp) {
             if (exp.type.value != null)
             {
@@ -9954,6 +10048,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<ModExp>
         public  void visit(ModExp exp) {
             if (exp.type.value != null)
             {
@@ -10016,6 +10111,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<PowExp>
         public  void visit(PowExp exp) {
             if (exp.type.value != null)
             {
@@ -10117,6 +10213,7 @@ public class expressionsem {
             return ;
         }
 
+        // Erasure: visit<ShlExp>
         public  void visit(ShlExp exp) {
             if (exp.type.value != null)
             {
@@ -10156,6 +10253,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<ShrExp>
         public  void visit(ShrExp exp) {
             if (exp.type.value != null)
             {
@@ -10195,6 +10293,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<UshrExp>
         public  void visit(UshrExp exp) {
             if (exp.type.value != null)
             {
@@ -10234,6 +10333,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<AndExp>
         public  void visit(AndExp exp) {
             if (exp.type.value != null)
             {
@@ -10292,6 +10392,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<OrExp>
         public  void visit(OrExp exp) {
             if (exp.type.value != null)
             {
@@ -10350,6 +10451,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<XorExp>
         public  void visit(XorExp exp) {
             if (exp.type.value != null)
             {
@@ -10408,6 +10510,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<LogicalExp>
         public  void visit(LogicalExp exp) {
             if (exp.type.value != null)
             {
@@ -10480,6 +10583,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<CmpExp>
         public  void visit(CmpExp exp) {
             if (exp.type.value != null)
             {
@@ -10621,6 +10725,7 @@ public class expressionsem {
             return ;
         }
 
+        // Erasure: visit<InExp>
         public  void visit(InExp exp) {
             if (exp.type.value != null)
             {
@@ -10663,6 +10768,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<RemoveExp>
         public  void visit(RemoveExp e) {
             {
                 Expression ex = binSemantic(e, this.sc);
@@ -10675,6 +10781,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<EqualExp>
         public  void visit(EqualExp exp) {
             if (exp.type.value != null)
             {
@@ -10822,6 +10929,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<IdentityExp>
         public  void visit(IdentityExp exp) {
             if (exp.type.value != null)
             {
@@ -10885,6 +10993,7 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<CondExp>
         public  void visit(CondExp exp) {
             if (exp.type.value != null)
             {
@@ -11001,21 +11110,25 @@ public class expressionsem {
             this.result = exp;
         }
 
+        // Erasure: visit<FileInitExp>
         public  void visit(FileInitExp e) {
             e.type.value = Type.tstring;
             this.result = e;
         }
 
+        // Erasure: visit<LineInitExp>
         public  void visit(LineInitExp e) {
             e.type.value = Type.tint32;
             this.result = e;
         }
 
+        // Erasure: visit<ModuleInitExp>
         public  void visit(ModuleInitExp e) {
             e.type.value = Type.tstring;
             this.result = e;
         }
 
+        // Erasure: visit<FuncInitExp>
         public  void visit(FuncInitExp e) {
             e.type.value = Type.tstring;
             if ((this.sc.get()).func != null)
@@ -11026,6 +11139,7 @@ public class expressionsem {
             this.result = e;
         }
 
+        // Erasure: visit<PrettyFuncInitExp>
         public  void visit(PrettyFuncInitExp e) {
             e.type.value = Type.tstring;
             if ((this.sc.get()).func != null)
@@ -11046,6 +11160,7 @@ public class expressionsem {
             return that;
         }
     }
+    // Erasure: trySemantic<Expression, Ptr>
     public static Expression trySemantic(Expression exp, Ptr<Scope> sc) {
         int errors = global.startGagging();
         Expression e = expressionSemantic(exp, sc);
@@ -11056,6 +11171,7 @@ public class expressionsem {
         return e;
     }
 
+    // Erasure: unaSemantic<UnaExp, Ptr>
     public static Expression unaSemantic(UnaExp e, Ptr<Scope> sc) {
         Expression e1x = expressionSemantic(e.e1.value, sc);
         if (((e1x.op & 0xFF) == 127))
@@ -11066,6 +11182,7 @@ public class expressionsem {
         return null;
     }
 
+    // Erasure: binSemantic<BinExp, Ptr>
     public static Expression binSemantic(BinExp e, Ptr<Scope> sc) {
         Expression e1x = expressionSemantic(e.e1.value, sc);
         Expression e2x = expressionSemantic(e.e2.value, sc);
@@ -11090,6 +11207,7 @@ public class expressionsem {
         return null;
     }
 
+    // Erasure: binSemanticProp<BinExp, Ptr>
     public static Expression binSemanticProp(BinExp e, Ptr<Scope> sc) {
         {
             Expression ex = binSemantic(e, sc);
@@ -11113,12 +11231,14 @@ public class expressionsem {
         return null;
     }
 
+    // Erasure: expressionSemantic<Expression, Ptr>
     public static Expression expressionSemantic(Expression e, Ptr<Scope> sc) {
         ExpressionSemanticVisitor v = new ExpressionSemanticVisitor(sc);
         e.accept(v);
         return v.result;
     }
 
+    // Erasure: semanticX<DotIdExp, Ptr>
     public static Expression semanticX(DotIdExp exp, Ptr<Scope> sc) {
         {
             Expression ex = unaSemantic(exp, sc);
@@ -11232,6 +11352,7 @@ public class expressionsem {
         return exp;
     }
 
+    // Erasure: semanticY<DotIdExp, Ptr, int>
     public static Expression semanticY(DotIdExp exp, Ptr<Scope> sc, int flag) {
         if (((exp.e1.value.op & 0xFF) == 123) || ((exp.e1.value.op & 0xFF) == 124) && (hasThis(sc) == null))
         {
@@ -11528,6 +11649,7 @@ public class expressionsem {
         }
     }
 
+    // Erasure: semanticY<DotTemplateInstanceExp, Ptr, int>
     public static Expression semanticY(DotTemplateInstanceExp exp, Ptr<Scope> sc, int flag) {
         Function0<Expression> errorExp = new Function0<Expression>() {
             public Expression invoke() {
@@ -11719,6 +11841,7 @@ public class expressionsem {
         return errorExp.invoke();
     }
 
+    // Erasure: checkAddressVar<Ptr, UnaExp, VarDeclaration>
     public static boolean checkAddressVar(Ptr<Scope> sc, UnaExp exp, VarDeclaration v) {
         if (v != null)
         {
@@ -11750,6 +11873,7 @@ public class expressionsem {
         return true;
     }
 
+    // Erasure: checkFunctionAttributes<Expression, Ptr, FuncDeclaration>
     public static boolean checkFunctionAttributes(Expression exp, Ptr<Scope> sc, FuncDeclaration f) {
         {
             boolean error = __withSym.checkDisabled(sc, f);
@@ -11761,6 +11885,7 @@ public class expressionsem {
         }
     }
 
+    // Erasure: getThisSkipNestedFuncs<Loc, Ptr, Dsymbol, AggregateDeclaration, Expression, Type, Dsymbol, boolean>
     public static Expression getThisSkipNestedFuncs(Loc loc, Ptr<Scope> sc, Dsymbol s, AggregateDeclaration ad, Expression e1, Type t, Dsymbol var, boolean flag) {
         int n = 0;
         for (; (s != null) && (s.isFuncDeclaration() != null);){
@@ -11822,6 +11947,7 @@ public class expressionsem {
         return getThisSkipNestedFuncs(loc, sc, s, ad, e1, t, var, false);
     }
 
+    // Erasure: makeThis2Argument<Loc, Ptr, FuncDeclaration>
     public static VarDeclaration makeThis2Argument(Loc loc, Ptr<Scope> sc, FuncDeclaration fd) {
         Type tthis2 = Type.tvoidptr.sarrayOf(2L);
         VarDeclaration vthis2 = new VarDeclaration(loc, tthis2, Identifier.generateId(new BytePtr("__this")), null, 0L);
@@ -11834,6 +11960,7 @@ public class expressionsem {
         return vthis2;
     }
 
+    // Erasure: verifyHookExist<Loc, Scope, Identifier, Array, Identifier>
     public static boolean verifyHookExist(Loc loc, Scope sc, Identifier id, ByteSlice description, Identifier module_) {
         Dsymbol rootSymbol = sc.search(loc, Id.empty, null, 0);
         {

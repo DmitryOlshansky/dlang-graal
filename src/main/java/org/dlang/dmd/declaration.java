@@ -34,6 +34,7 @@ import static org.dlang.dmd.visitor.*;
 
 public class declaration {
 
+    // Erasure: checkFrameAccess<Loc, Ptr, AggregateDeclaration, int>
     public static boolean checkFrameAccess(Loc loc, Ptr<Scope> sc, AggregateDeclaration ad, int iStart) {
         Dsymbol sparent = ad.toParentLocal();
         Dsymbol sparent2 = ad.toParent2();
@@ -66,6 +67,7 @@ public class declaration {
         return checkFrameAccess(loc, sc, ad, 0);
     }
 
+    // Erasure: modifyFieldVar<Loc, Ptr, VarDeclaration, Expression>
     public static boolean modifyFieldVar(Loc loc, Ptr<Scope> sc, VarDeclaration var, Expression e1) {
         Dsymbol s = (sc.get()).func;
         for (; 1 != 0;){
@@ -182,6 +184,7 @@ public class declaration {
         return false;
     }
 
+    // Erasure: ObjectNotFound<Identifier>
     public static void ObjectNotFound(Identifier id) {
         error(Loc.initial, new BytePtr("`%s` not found. object.d may be incorrectly installed or corrupt."), id.toChars());
         fatal();
@@ -288,25 +291,30 @@ public class declaration {
         public int linkage = LINK.default_;
         public int inuse = 0;
         public ByteSlice mangleOverride = new ByteSlice();
+        // Erasure: __ctor<Identifier>
         public  Declaration(Identifier ident) {
             super(ident);
             this.protection = new Prot(Prot.Kind.undefined);
         }
 
+        // Erasure: __ctor<Loc, Identifier>
         public  Declaration(Loc loc, Identifier ident) {
             super(loc, ident);
             this.protection = new Prot(Prot.Kind.undefined);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("declaration");
         }
 
+        // Erasure: size<Loc>
         public  long size(Loc loc) {
             assert(this.type != null);
             return this.type.size();
         }
 
+        // Erasure: checkDisabled<Loc, Ptr, boolean>
         public  boolean checkDisabled(Loc loc, Ptr<Scope> sc, boolean isAliasedDeclaration) {
             if ((this.storage_class & 137438953472L) != 0)
             {
@@ -348,6 +356,7 @@ public class declaration {
             return checkDisabled(loc, sc, false);
         }
 
+        // Erasure: checkModify<Loc, Ptr, Expression, int>
         public  int checkModify(Loc loc, Ptr<Scope> sc, Expression e1, int flag) {
             VarDeclaration v = this.isVarDeclaration();
             if ((v != null) && (v.canassign != 0))
@@ -399,6 +408,7 @@ public class declaration {
             return Modifiable.yes;
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             Dsymbol s = this.search(loc, ident, flags);
             if ((s == null) && (this.type != null))
@@ -417,110 +427,137 @@ public class declaration {
             return search(loc, ident, 8);
         }
 
+        // Erasure: isStatic<>
         public  boolean isStatic() {
             return (this.storage_class & 1L) != 0L;
         }
 
+        // Erasure: isDelete<>
         public  boolean isDelete() {
             return false;
         }
 
+        // Erasure: isDataseg<>
         public  boolean isDataseg() {
             return false;
         }
 
+        // Erasure: isThreadlocal<>
         public  boolean isThreadlocal() {
             return false;
         }
 
+        // Erasure: isCodeseg<>
         public  boolean isCodeseg() {
             return false;
         }
 
+        // Erasure: isCtorinit<>
         public  boolean isCtorinit() {
             return (this.storage_class & 131072L) != 0L;
         }
 
+        // Erasure: isFinal<>
         public  boolean isFinal() {
             return (this.storage_class & 8L) != 0L;
         }
 
+        // Erasure: isAbstract<>
         public  boolean isAbstract() {
             return (this.storage_class & 16L) != 0L;
         }
 
+        // Erasure: isConst<>
         public  boolean isConst() {
             return (this.storage_class & 4L) != 0L;
         }
 
+        // Erasure: isImmutable<>
         public  boolean isImmutable() {
             return (this.storage_class & 1048576L) != 0L;
         }
 
+        // Erasure: isWild<>
         public  boolean isWild() {
             return (this.storage_class & 2147483648L) != 0L;
         }
 
+        // Erasure: isAuto<>
         public  boolean isAuto() {
             return (this.storage_class & 256L) != 0L;
         }
 
+        // Erasure: isScope<>
         public  boolean isScope() {
             return (this.storage_class & 524288L) != 0L;
         }
 
+        // Erasure: isSynchronized<>
         public  boolean isSynchronized() {
             return (this.storage_class & 512L) != 0L;
         }
 
+        // Erasure: isParameter<>
         public  boolean isParameter() {
             return (this.storage_class & 32L) != 0L;
         }
 
+        // Erasure: isDeprecated<>
         public  boolean isDeprecated() {
             return (this.storage_class & 1024L) != 0L;
         }
 
+        // Erasure: isDisabled<>
         public  boolean isDisabled() {
             return (this.storage_class & 137438953472L) != 0L;
         }
 
+        // Erasure: isOverride<>
         public  boolean isOverride() {
             return (this.storage_class & 128L) != 0L;
         }
 
+        // Erasure: isResult<>
         public  boolean isResult() {
             return (this.storage_class & 274877906944L) != 0L;
         }
 
+        // Erasure: isField<>
         public  boolean isField() {
             return (this.storage_class & 64L) != 0L;
         }
 
+        // Erasure: isIn<>
         public  boolean isIn() {
             return (this.storage_class & 2048L) != 0L;
         }
 
+        // Erasure: isOut<>
         public  boolean isOut() {
             return (this.storage_class & 4096L) != 0L;
         }
 
+        // Erasure: isRef<>
         public  boolean isRef() {
             return (this.storage_class & 2097152L) != 0L;
         }
 
+        // Erasure: isFuture<>
         public  boolean isFuture() {
             return (this.storage_class & 1125899906842624L) != 0L;
         }
 
+        // Erasure: prot<>
         public  Prot prot() {
             return this.protection;
         }
 
+        // Erasure: isDeclaration<>
         public  Declaration isDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -535,19 +572,23 @@ public class declaration {
         public Ptr<DArray<RootObject>> objects = null;
         public boolean isexp = false;
         public TypeTuple tupletype = null;
+        // Erasure: __ctor<Loc, Identifier, Ptr>
         public  TupleDeclaration(Loc loc, Identifier ident, Ptr<DArray<RootObject>> objects) {
             super(loc, ident);
             this.objects = pcopy(objects);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("tuple");
         }
 
+        // Erasure: getType<>
         public  Type getType() {
             if (this.isexp)
             {
@@ -594,6 +635,7 @@ public class declaration {
             return this.tupletype;
         }
 
+        // Erasure: toAlias2<>
         public  Dsymbol toAlias2() {
             {
                 int i = 0;
@@ -612,6 +654,7 @@ public class declaration {
             return this;
         }
 
+        // Erasure: needThis<>
         public  boolean needThis() {
             {
                 int i = 0;
@@ -635,10 +678,12 @@ public class declaration {
             return false;
         }
 
+        // Erasure: isTupleDeclaration<>
         public  TupleDeclaration isTupleDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -680,12 +725,14 @@ public class declaration {
         public Dsymbol aliassym = null;
         public Dsymbol overnext = null;
         public Dsymbol _import = null;
+        // Erasure: __ctor<Loc, Identifier, Type>
         public  AliasDeclaration(Loc loc, Identifier ident, Type type) {
             super(loc, ident);
             this.type = type;
             assert(type != null);
         }
 
+        // Erasure: __ctor<Loc, Identifier, Dsymbol>
         public  AliasDeclaration(Loc loc, Identifier ident, Dsymbol s) {
             super(loc, ident);
             assert((!pequals(s, this)));
@@ -693,10 +740,12 @@ public class declaration {
             assert(s != null);
         }
 
+        // Erasure: create<Loc, Identifier, Type>
         public static AliasDeclaration create(Loc loc, Identifier id, Type type) {
             return new AliasDeclaration(loc, id, type);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             AliasDeclaration sa = this.type != null ? new AliasDeclaration(this.loc, this.ident, this.type.syntaxCopy()) : new AliasDeclaration(this.loc, this.ident, this.aliassym.syntaxCopy(null));
@@ -704,6 +753,7 @@ public class declaration {
             return sa;
         }
 
+        // Erasure: overloadInsert<Dsymbol>
         public  boolean overloadInsert(Dsymbol s) {
             if ((this.semanticRun >= PASS.semanticdone))
             {
@@ -776,10 +826,12 @@ public class declaration {
             return true;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("alias");
         }
 
+        // Erasure: getType<>
         public  Type getType() {
             if (this.type != null)
             {
@@ -788,6 +840,7 @@ public class declaration {
             return this.toAlias().getType();
         }
 
+        // Erasure: toAlias<>
         public  Dsymbol toAlias() {
             assert((!pequals(this, this.aliassym)));
             if ((this.inuse == 1) && (this.type != null) && (this._scope != null))
@@ -887,6 +940,7 @@ public class declaration {
             return s;
         }
 
+        // Erasure: toAlias2<>
         public  Dsymbol toAlias2() {
             if (this.inuse != 0)
             {
@@ -899,14 +953,17 @@ public class declaration {
             return s;
         }
 
+        // Erasure: isOverloadable<>
         public  boolean isOverloadable() {
             return (this.semanticRun < PASS.semanticdone) || (this.aliassym != null) && this.aliassym.isOverloadable();
         }
 
+        // Erasure: isAliasDeclaration<>
         public  AliasDeclaration isAliasDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -948,6 +1005,7 @@ public class declaration {
         public Dsymbol overnext = null;
         public Dsymbol aliassym = null;
         public boolean hasOverloads = false;
+        // Erasure: __ctor<Identifier, Dsymbol, boolean>
         public  OverDeclaration(Identifier ident, Dsymbol s, boolean hasOverloads) {
             super(ident);
             this.aliassym = s;
@@ -973,10 +1031,12 @@ public class declaration {
             this(ident, s, true);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("overload alias");
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -1019,6 +1079,7 @@ public class declaration {
             return false;
         }
 
+        // Erasure: overloadInsert<Dsymbol>
         public  boolean overloadInsert(Dsymbol s) {
             if (this.overnext != null)
             {
@@ -1032,10 +1093,12 @@ public class declaration {
             return true;
         }
 
+        // Erasure: isOverloadable<>
         public  boolean isOverloadable() {
             return true;
         }
 
+        // Erasure: isUnique<>
         public  Dsymbol isUnique() {
             if (!this.hasOverloads)
             {
@@ -1065,10 +1128,12 @@ public class declaration {
             return result;
         }
 
+        // Erasure: isOverDeclaration<>
         public  OverDeclaration isOverDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1131,6 +1196,7 @@ public class declaration {
         public Ptr<IntRange> range = null;
         public Ptr<DArray<VarDeclaration>> maybes = null;
         public boolean _isAnonymous = false;
+        // Erasure: __ctor<Loc, Type, Identifier, Initializer, long>
         public  VarDeclaration(Loc loc, Type type, Identifier ident, Initializer _init, long storage_class) {
             if ((ident == Identifier.anonymous()))
             {
@@ -1152,6 +1218,7 @@ public class declaration {
             this(loc, type, ident, _init, 0L);
         }
 
+        // Erasure: create<Loc, Type, Identifier, Initializer, long>
         public static VarDeclaration create(Loc loc, Type type, Identifier ident, Initializer _init, long storage_class) {
             return new VarDeclaration(loc, type, ident, _init, storage_class);
         }
@@ -1161,12 +1228,14 @@ public class declaration {
             return create(loc, type, ident, _init, 0L);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             VarDeclaration v = new VarDeclaration(this.loc, this.type != null ? this.type.syntaxCopy() : null, this.ident, this._init != null ? syntaxCopy(this._init) : null, this.storage_class);
             return v;
         }
 
+        // Erasure: setFieldOffset<AggregateDeclaration, Ptr, boolean>
         public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
             if (this.aliassym != null)
             {
@@ -1234,10 +1303,12 @@ public class declaration {
             this.offset = AggregateDeclaration.placeField(poffset, memsize, memalignsize, this.alignment, ptr(ad.structsize), ptr(ad.alignsize), isunion);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("variable");
         }
 
+        // Erasure: isThis<>
         public  AggregateDeclaration isThis() {
             if ((this.storage_class & 69936087043L) == 0)
             {
@@ -1259,18 +1330,22 @@ public class declaration {
             return null;
         }
 
+        // Erasure: needThis<>
         public  boolean needThis() {
             return this.isField();
         }
 
+        // Erasure: isAnonymous<>
         public  boolean isAnonymous() {
             return this._isAnonymous;
         }
 
+        // Erasure: isExport<>
         public  boolean isExport() {
             return this.protection.kind == Prot.Kind.export_;
         }
 
+        // Erasure: isImportedSymbol<>
         public  boolean isImportedSymbol() {
             if ((this.protection.kind == Prot.Kind.export_) && (this._init == null) && ((this.storage_class & 1L) != 0) || (this.parent.value.isModule() != null))
             {
@@ -1279,6 +1354,7 @@ public class declaration {
             return false;
         }
 
+        // Erasure: isDataseg<>
         public  boolean isDataseg() {
             if (((this.isdataseg & 0xFF) == 0))
             {
@@ -1302,15 +1378,18 @@ public class declaration {
             return (this.isdataseg & 0xFF) == 1;
         }
 
+        // Erasure: isThreadlocal<>
         public  boolean isThreadlocal() {
             boolean i = this.isDataseg() && ((this.storage_class & 1611661316L) == 0);
             return i;
         }
 
+        // Erasure: isCTFE<>
         public  boolean isCTFE() {
             return (this.storage_class & 68719476736L) != 0L;
         }
 
+        // Erasure: isOverlappedWith<VarDeclaration>
         public  boolean isOverlappedWith(VarDeclaration v) {
             long vsz = v.type.size();
             long tsz = this.type.size();
@@ -1318,18 +1397,22 @@ public class declaration {
             return ((long)this.offset < (long)v.offset + vsz) && ((long)v.offset < (long)this.offset + tsz);
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             return !this.isDataseg() && this.type.hasPointers();
         }
 
+        // Erasure: canTakeAddressOf<>
         public  boolean canTakeAddressOf() {
             return (this.storage_class & 8388608L) == 0;
         }
 
+        // Erasure: needsScopeDtor<>
         public  boolean needsScopeDtor() {
             return (this.edtor != null) && ((this.storage_class & 16777216L) == 0);
         }
 
+        // Erasure: callScopeDtor<Ptr>
         public  Expression callScopeDtor(Ptr<Scope> sc) {
             if ((this.storage_class & 18878528L) != 0)
             {
@@ -1399,6 +1482,7 @@ public class declaration {
             return e;
         }
 
+        // Erasure: getConstInitializer<boolean>
         public  Expression getConstInitializer(boolean needFullType) {
             assert((this.type != null) && (this._init != null));
             int oldgag = global.gag;
@@ -1427,6 +1511,7 @@ public class declaration {
             return getConstInitializer(true);
         }
 
+        // Erasure: expandInitializer<Loc>
         public  Expression expandInitializer(Loc loc) {
             assert(((this.storage_class & 8388608L) != 0) && (this._init != null));
             Expression e = this.getConstInitializer(true);
@@ -1440,9 +1525,11 @@ public class declaration {
             return e;
         }
 
+        // Erasure: checkCtorConstInit<>
         public  void checkCtorConstInit() {
         }
 
+        // Erasure: checkNestedReference<Ptr, Loc>
         public  boolean checkNestedReference(Ptr<Scope> sc, Loc loc) {
             if (((sc.get()).intypeof == 1) || (((sc.get()).flags & 128) != 0))
             {
@@ -1529,6 +1616,7 @@ public class declaration {
             return false;
         }
 
+        // Erasure: toAlias<>
         public  Dsymbol toAlias() {
             if ((this.type == null) || (this.type.deco == null) && (this._scope != null))
             {
@@ -1539,18 +1627,22 @@ public class declaration {
             return s;
         }
 
+        // Erasure: isVarDeclaration<>
         public  VarDeclaration isVarDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: enclosesLifetimeOf<VarDeclaration>
         public  boolean enclosesLifetimeOf(VarDeclaration v) {
             return this.sequenceNumber < v.sequenceNumber;
         }
 
+        // Erasure: addMaybe<VarDeclaration>
         public  void addMaybe(VarDeclaration v) {
             if (this.maybes == null)
             {
@@ -1614,16 +1706,19 @@ public class declaration {
     public static class SymbolDeclaration extends Declaration
     {
         public StructDeclaration dsym = null;
+        // Erasure: __ctor<Loc, StructDeclaration>
         public  SymbolDeclaration(Loc loc, StructDeclaration dsym) {
             super(loc, dsym.ident);
             this.dsym = dsym;
             this.storage_class |= 4L;
         }
 
+        // Erasure: isSymbolDeclaration<>
         public  SymbolDeclaration isSymbolDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1661,6 +1756,7 @@ public class declaration {
     public static class TypeInfoDeclaration extends VarDeclaration
     {
         public Type tinfo = null;
+        // Erasure: __ctor<Type>
         public  TypeInfoDeclaration(Type tinfo) {
             super(Loc.initial, Type.dtypeinfo.type, tinfo.getTypeInfoIdent(), null, 0L);
             this.tinfo = tinfo;
@@ -1670,14 +1766,17 @@ public class declaration {
             this.alignment = target.ptrsize;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoDeclaration create(Type tinfo) {
             return new TypeInfoDeclaration(tinfo);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -1690,10 +1789,12 @@ public class declaration {
             }
         }
 
+        // Erasure: isTypeInfoDeclaration<>
         public  TypeInfoDeclaration isTypeInfoDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1753,6 +1854,7 @@ public class declaration {
     }
     public static class TypeInfoStructDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoStructDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfostruct == null)
@@ -1762,10 +1864,12 @@ public class declaration {
             this.type = Type.typeinfostruct.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoStructDeclaration create(Type tinfo) {
             return new TypeInfoStructDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1825,6 +1929,7 @@ public class declaration {
     }
     public static class TypeInfoClassDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoClassDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfoclass == null)
@@ -1834,10 +1939,12 @@ public class declaration {
             this.type = Type.typeinfoclass.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoClassDeclaration create(Type tinfo) {
             return new TypeInfoClassDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1897,6 +2004,7 @@ public class declaration {
     }
     public static class TypeInfoInterfaceDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoInterfaceDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfointerface == null)
@@ -1906,10 +2014,12 @@ public class declaration {
             this.type = Type.typeinfointerface.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoInterfaceDeclaration create(Type tinfo) {
             return new TypeInfoInterfaceDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1969,6 +2079,7 @@ public class declaration {
     }
     public static class TypeInfoPointerDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoPointerDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfopointer == null)
@@ -1978,10 +2089,12 @@ public class declaration {
             this.type = Type.typeinfopointer.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoPointerDeclaration create(Type tinfo) {
             return new TypeInfoPointerDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2041,6 +2154,7 @@ public class declaration {
     }
     public static class TypeInfoArrayDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoArrayDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfoarray == null)
@@ -2050,10 +2164,12 @@ public class declaration {
             this.type = Type.typeinfoarray.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoArrayDeclaration create(Type tinfo) {
             return new TypeInfoArrayDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2113,6 +2229,7 @@ public class declaration {
     }
     public static class TypeInfoStaticArrayDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoStaticArrayDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfostaticarray == null)
@@ -2122,10 +2239,12 @@ public class declaration {
             this.type = Type.typeinfostaticarray.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoStaticArrayDeclaration create(Type tinfo) {
             return new TypeInfoStaticArrayDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2185,6 +2304,7 @@ public class declaration {
     }
     public static class TypeInfoAssociativeArrayDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoAssociativeArrayDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfoassociativearray == null)
@@ -2194,10 +2314,12 @@ public class declaration {
             this.type = Type.typeinfoassociativearray.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoAssociativeArrayDeclaration create(Type tinfo) {
             return new TypeInfoAssociativeArrayDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2257,6 +2379,7 @@ public class declaration {
     }
     public static class TypeInfoEnumDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoEnumDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfoenum == null)
@@ -2266,10 +2389,12 @@ public class declaration {
             this.type = Type.typeinfoenum.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoEnumDeclaration create(Type tinfo) {
             return new TypeInfoEnumDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2329,6 +2454,7 @@ public class declaration {
     }
     public static class TypeInfoFunctionDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoFunctionDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfofunction == null)
@@ -2338,10 +2464,12 @@ public class declaration {
             this.type = Type.typeinfofunction.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoFunctionDeclaration create(Type tinfo) {
             return new TypeInfoFunctionDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2401,6 +2529,7 @@ public class declaration {
     }
     public static class TypeInfoDelegateDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoDelegateDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfodelegate == null)
@@ -2410,10 +2539,12 @@ public class declaration {
             this.type = Type.typeinfodelegate.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoDelegateDeclaration create(Type tinfo) {
             return new TypeInfoDelegateDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2473,6 +2604,7 @@ public class declaration {
     }
     public static class TypeInfoTupleDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoTupleDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfotypelist == null)
@@ -2482,10 +2614,12 @@ public class declaration {
             this.type = Type.typeinfotypelist.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoTupleDeclaration create(Type tinfo) {
             return new TypeInfoTupleDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2545,6 +2679,7 @@ public class declaration {
     }
     public static class TypeInfoConstDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoConstDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfoconst == null)
@@ -2554,10 +2689,12 @@ public class declaration {
             this.type = Type.typeinfoconst.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoConstDeclaration create(Type tinfo) {
             return new TypeInfoConstDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2617,6 +2754,7 @@ public class declaration {
     }
     public static class TypeInfoInvariantDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoInvariantDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfoinvariant == null)
@@ -2626,10 +2764,12 @@ public class declaration {
             this.type = Type.typeinfoinvariant.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoInvariantDeclaration create(Type tinfo) {
             return new TypeInfoInvariantDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2689,6 +2829,7 @@ public class declaration {
     }
     public static class TypeInfoSharedDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoSharedDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfoshared == null)
@@ -2698,10 +2839,12 @@ public class declaration {
             this.type = Type.typeinfoshared.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoSharedDeclaration create(Type tinfo) {
             return new TypeInfoSharedDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2761,6 +2904,7 @@ public class declaration {
     }
     public static class TypeInfoWildDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoWildDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfowild == null)
@@ -2770,10 +2914,12 @@ public class declaration {
             this.type = Type.typeinfowild.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoWildDeclaration create(Type tinfo) {
             return new TypeInfoWildDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2833,6 +2979,7 @@ public class declaration {
     }
     public static class TypeInfoVectorDeclaration extends TypeInfoDeclaration
     {
+        // Erasure: __ctor<Type>
         public  TypeInfoVectorDeclaration(Type tinfo) {
             super(tinfo);
             if (Type.typeinfovector == null)
@@ -2842,10 +2989,12 @@ public class declaration {
             this.type = Type.typeinfovector.type;
         }
 
+        // Erasure: create<Type>
         public static TypeInfoVectorDeclaration create(Type tinfo) {
             return new TypeInfoVectorDeclaration(tinfo);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2905,19 +3054,23 @@ public class declaration {
     }
     public static class ThisDeclaration extends VarDeclaration
     {
+        // Erasure: __ctor<Loc, Type>
         public  ThisDeclaration(Loc loc, Type t) {
             super(loc, t, Id.This, null, 0L);
             this.storage_class |= 16777216L;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: isThisDeclaration<>
         public  ThisDeclaration isThisDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }

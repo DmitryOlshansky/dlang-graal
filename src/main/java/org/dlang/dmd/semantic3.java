@@ -61,6 +61,7 @@ import static org.dlang.dmd.visitor.*;
 public class semantic3 {
 
     static boolean LOG = false;
+    // Erasure: semantic3<Dsymbol, Ptr>
     public static void semantic3(Dsymbol dsym, Ptr<Scope> sc) {
         Semantic3Visitor v = new Semantic3Visitor(sc);
         dsym.accept(v);
@@ -69,13 +70,16 @@ public class semantic3 {
     public static class Semantic3Visitor extends Visitor
     {
         public Ptr<Scope> sc = null;
+        // Erasure: __ctor<Ptr>
         public  Semantic3Visitor(Ptr<Scope> sc) {
             this.sc = pcopy(sc);
         }
 
+        // Erasure: visit<Dsymbol>
         public  void visit(Dsymbol _param_0) {
         }
 
+        // Erasure: visit<TemplateInstance>
         public  void visit(TemplateInstance tempinst) {
             if ((tempinst.semanticRun >= PASS.semantic3))
             {
@@ -133,6 +137,7 @@ public class semantic3 {
             }
         }
 
+        // Erasure: visit<TemplateMixin>
         public  void visit(TemplateMixin tmix) {
             if ((tmix.semanticRun >= PASS.semantic3))
             {
@@ -155,6 +160,7 @@ public class semantic3 {
             }
         }
 
+        // Erasure: visit<Module>
         public  void visit(dmodule.Module mod) {
             if ((mod.semanticRun != PASS.semantic2done))
             {
@@ -179,6 +185,7 @@ public class semantic3 {
             mod.semanticRun = PASS.semantic3done;
         }
 
+        // Erasure: visit<FuncDeclaration>
         public  void visit(FuncDeclaration funcdecl) {
             Function0<Boolean> addReturn0 = new Function0<Boolean>() {
                 public Boolean invoke() {
@@ -1202,6 +1209,7 @@ public class semantic3 {
             }
         }
 
+        // Erasure: visit<CtorDeclaration>
         public  void visit(CtorDeclaration ctor) {
             if ((ctor.semanticRun >= PASS.semantic3))
             {
@@ -1227,6 +1235,7 @@ public class semantic3 {
             this.visit((FuncDeclaration)ctor);
         }
 
+        // Erasure: visit<Nspace>
         public  void visit(Nspace ns) {
             if ((ns.semanticRun >= PASS.semantic3))
             {
@@ -1249,6 +1258,7 @@ public class semantic3 {
             }
         }
 
+        // Erasure: visit<AttribDeclaration>
         public  void visit(AttribDeclaration ad) {
             Ptr<DArray<Dsymbol>> d = ad.include(this.sc);
             if (d != null)
@@ -1268,6 +1278,7 @@ public class semantic3 {
             }
         }
 
+        // Erasure: visit<AggregateDeclaration>
         public  void visit(AggregateDeclaration ad) {
             if (ad.members == null)
             {
@@ -1329,11 +1340,13 @@ public class semantic3 {
     {
         public FuncDeclaration funcdecl = null;
         public Ptr<Scope> sc = null;
+        // Erasure: __ctor<FuncDeclaration, Ptr>
         public  FuncDeclSem3(FuncDeclaration fd, Ptr<Scope> s) {
             this.funcdecl = fd;
             this.sc = pcopy(s);
         }
 
+        // Erasure: checkInContractOverrides<>
         public  void checkInContractOverrides() {
             if (this.funcdecl.frequires != null)
             {

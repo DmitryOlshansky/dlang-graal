@@ -25,6 +25,7 @@ import static org.dlang.dmd.tokens.*;
 public class access {
 
     static boolean LOG = false;
+    // Erasure: checkAccess<AggregateDeclaration, Loc, Ptr, Dsymbol>
     public static boolean checkAccess(AggregateDeclaration ad, Loc loc, Ptr<Scope> sc, Dsymbol smember) {
         if (smember.toParent().isTemplateInstance() != null)
         {
@@ -38,10 +39,12 @@ public class access {
         return false;
     }
 
+    // Erasure: hasPackageAccess<Ptr, Dsymbol>
     public static boolean hasPackageAccess(Ptr<Scope> sc, Dsymbol s) {
         return hasPackageAccess((sc.get())._module, s);
     }
 
+    // Erasure: hasPackageAccess<Module, Dsymbol>
     public static boolean hasPackageAccess(dmodule.Module mod, Dsymbol s) {
         dmodule.Package pkg = null;
         if (s.prot().pkg != null)
@@ -94,6 +97,7 @@ public class access {
         return false;
     }
 
+    // Erasure: hasProtectedAccess<Ptr, Dsymbol>
     public static boolean hasProtectedAccess(Ptr<Scope> sc, Dsymbol s) {
         {
             ClassDeclaration cd = s.isClassMember();
@@ -118,6 +122,7 @@ public class access {
         return pequals((sc.get())._module, s.getAccessModule());
     }
 
+    // Erasure: checkAccess<Loc, Ptr, Expression, Declaration>
     public static boolean checkAccess(Loc loc, Ptr<Scope> sc, Expression e, Declaration d) {
         if (((sc.get()).flags & 2) != 0)
         {
@@ -154,6 +159,7 @@ public class access {
         return false;
     }
 
+    // Erasure: checkAccess<Loc, Ptr, Package>
     public static boolean checkAccess(Loc loc, Ptr<Scope> sc, dmodule.Package p) {
         if ((pequals((sc.get())._module, p)))
         {
@@ -168,6 +174,7 @@ public class access {
         return true;
     }
 
+    // Erasure: symbolIsVisible<Module, Dsymbol>
     public static boolean symbolIsVisible(dmodule.Module mod, Dsymbol s) {
         s = mostVisibleOverload(s, null);
         switch (s.prot().kind)
@@ -190,15 +197,18 @@ public class access {
         }
     }
 
+    // Erasure: symbolIsVisible<Dsymbol, Dsymbol>
     public static boolean symbolIsVisible(Dsymbol origin, Dsymbol s) {
         return symbolIsVisible(origin.getAccessModule(), s);
     }
 
+    // Erasure: symbolIsVisible<Ptr, Dsymbol>
     public static boolean symbolIsVisible(Ptr<Scope> sc, Dsymbol s) {
         s = mostVisibleOverload(s, null);
         return checkSymbolAccess(sc, s);
     }
 
+    // Erasure: checkSymbolAccess<Ptr, Dsymbol>
     public static boolean checkSymbolAccess(Ptr<Scope> sc, Dsymbol s) {
         switch (s.prot().kind)
         {
@@ -220,6 +230,7 @@ public class access {
         }
     }
 
+    // Erasure: mostVisibleOverload<Dsymbol, Module>
     public static Dsymbol mostVisibleOverload(Dsymbol s, dmodule.Module mod) {
         if (!s.isOverloadable())
         {
@@ -309,7 +320,7 @@ public class access {
 
     // defaulted all parameters starting with #2
     public static Dsymbol mostVisibleOverload(Dsymbol s) {
-        return mostVisibleOverload(s, null);
+        return mostVisibleOverload(s, (dmodule.Module)null);
     }
 
 }

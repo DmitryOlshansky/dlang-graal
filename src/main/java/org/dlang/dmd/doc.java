@@ -43,35 +43,45 @@ public class doc {
     {
         private Ptr<OutBuffer> buf = null;
         private Ptr<Scope> sc = null;
+        // Erasure: __ctor<Ptr, Ptr>
         public  EmitComment(Ptr<OutBuffer> buf, Ptr<Scope> sc) {
             this.buf = pcopy(buf);
             this.sc = pcopy(sc);
         }
 
+        // Erasure: visit<Dsymbol>
         public  void visit(Dsymbol _param_0) {
         }
 
+        // Erasure: visit<InvariantDeclaration>
         public  void visit(InvariantDeclaration _param_0) {
         }
 
+        // Erasure: visit<UnitTestDeclaration>
         public  void visit(UnitTestDeclaration _param_0) {
         }
 
+        // Erasure: visit<PostBlitDeclaration>
         public  void visit(PostBlitDeclaration _param_0) {
         }
 
+        // Erasure: visit<DtorDeclaration>
         public  void visit(DtorDeclaration _param_0) {
         }
 
+        // Erasure: visit<StaticCtorDeclaration>
         public  void visit(StaticCtorDeclaration _param_0) {
         }
 
+        // Erasure: visit<StaticDtorDeclaration>
         public  void visit(StaticDtorDeclaration _param_0) {
         }
 
+        // Erasure: visit<TypeInfoDeclaration>
         public  void visit(TypeInfoDeclaration _param_0) {
         }
 
+        // Erasure: emit<Ptr, Dsymbol, Ptr>
         public  void emit(Ptr<Scope> sc, Dsymbol s, BytePtr com) {
             if ((s != null) && ((sc.get()).lastdc != null) && isDitto(com))
             {
@@ -135,6 +145,7 @@ public class doc {
             }
         }
 
+        // Erasure: visit<Import>
         public  void visit(Import imp) {
             if ((imp.prot().kind != Prot.Kind.public_) && ((this.sc.get()).protection.kind != Prot.Kind.export_))
             {
@@ -143,6 +154,7 @@ public class doc {
             this.emit(this.sc, imp, imp.comment);
         }
 
+        // Erasure: visit<Declaration>
         public  void visit(Declaration d) {
             BytePtr com = pcopy(d.comment);
             {
@@ -184,6 +196,7 @@ public class doc {
             this.emit(this.sc, d, com);
         }
 
+        // Erasure: visit<AggregateDeclaration>
         public  void visit(AggregateDeclaration ad) {
             BytePtr com = pcopy(ad.comment);
             {
@@ -218,6 +231,7 @@ public class doc {
             this.emit(this.sc, ad, com);
         }
 
+        // Erasure: visit<TemplateDeclaration>
         public  void visit(TemplateDeclaration td) {
             if ((td.prot().kind == Prot.Kind.private_) || ((this.sc.get()).protection.kind == Prot.Kind.private_))
             {
@@ -238,6 +252,7 @@ public class doc {
             this.emit(this.sc, td, td.comment);
         }
 
+        // Erasure: visit<EnumDeclaration>
         public  void visit(EnumDeclaration ed) {
             if ((ed.prot().kind == Prot.Kind.private_) || ((this.sc.get()).protection.kind == Prot.Kind.private_))
             {
@@ -265,6 +280,7 @@ public class doc {
             this.emit(this.sc, ed, ed.comment);
         }
 
+        // Erasure: visit<EnumMember>
         public  void visit(EnumMember em) {
             if ((em.prot().kind == Prot.Kind.private_) || ((this.sc.get()).protection.kind == Prot.Kind.private_))
             {
@@ -277,6 +293,7 @@ public class doc {
             this.emit(this.sc, em, em.comment);
         }
 
+        // Erasure: visit<AttribDeclaration>
         public  void visit(AttribDeclaration ad) {
             Ptr<DArray<Dsymbol>> d = ad.include(null);
             if (d != null)
@@ -291,6 +308,7 @@ public class doc {
             }
         }
 
+        // Erasure: visit<ProtDeclaration>
         public  void visit(ProtDeclaration pd) {
             if (pd.decl != null)
             {
@@ -303,6 +321,7 @@ public class doc {
             }
         }
 
+        // Erasure: visit<ConditionalDeclaration>
         public  void visit(ConditionalDeclaration cd) {
             if ((cd.condition.inc != Include.notComputed))
             {
@@ -326,17 +345,20 @@ public class doc {
     {
         private Ptr<OutBuffer> buf = null;
         private Ptr<Scope> sc = null;
+        // Erasure: __ctor<Ptr, Ptr>
         public  ToDocBuffer(Ptr<OutBuffer> buf, Ptr<Scope> sc) {
             this.buf = pcopy(buf);
             this.sc = pcopy(sc);
         }
 
+        // Erasure: visit<Dsymbol>
         public  void visit(Dsymbol s) {
             Ref<HdrGenState> hgs = ref(new HdrGenState());
             hgs.value.ddoc = true;
             toCBuffer(s, this.buf, ptr(hgs));
         }
 
+        // Erasure: prefix<Dsymbol>
         public  void prefix(Dsymbol s) {
             if (s.isDeprecated())
             {
@@ -395,6 +417,7 @@ public class doc {
             }
         }
 
+        // Erasure: visit<Import>
         public  void visit(Import i) {
             Ref<HdrGenState> hgs = ref(new HdrGenState());
             hgs.value.ddoc = true;
@@ -402,6 +425,7 @@ public class doc {
             toCBuffer((Dsymbol)i, this.buf, ptr(hgs));
         }
 
+        // Erasure: visit<Declaration>
         public  void visit(Declaration d) {
             if (d.ident == null)
             {
@@ -469,6 +493,7 @@ public class doc {
             (this.buf.get()).writestring(new ByteSlice(";\n"));
         }
 
+        // Erasure: visit<AliasDeclaration>
         public  void visit(AliasDeclaration ad) {
             if (ad.ident == null)
             {
@@ -514,6 +539,7 @@ public class doc {
             (this.buf.get()).writestring(new ByteSlice(";\n"));
         }
 
+        // Erasure: parentToBuffer<Dsymbol>
         public  void parentToBuffer(Dsymbol s) {
             if ((s != null) && (s.isPackage() == null) && (s.isModule() == null))
             {
@@ -523,6 +549,7 @@ public class doc {
             }
         }
 
+        // Erasure: inSameModule<Dsymbol, Dsymbol>
         public static boolean inSameModule(Dsymbol s, Dsymbol p) {
             for (; s != null;s = s.parent.value){
                 if (s.isModule() != null)
@@ -539,6 +566,7 @@ public class doc {
             return pequals(s, p);
         }
 
+        // Erasure: prettyPrintDsymbol<Dsymbol, Dsymbol>
         public  void prettyPrintDsymbol(Dsymbol s, Dsymbol parent) {
             if ((s.parent.value != null) && (pequals(s.parent.value, parent)))
             {
@@ -559,6 +587,7 @@ public class doc {
             }
         }
 
+        // Erasure: visit<AggregateDeclaration>
         public  void visit(AggregateDeclaration ad) {
             if (ad.ident == null)
             {
@@ -568,6 +597,7 @@ public class doc {
             (this.buf.get()).writestring(new ByteSlice(";\n"));
         }
 
+        // Erasure: visit<StructDeclaration>
         public  void visit(StructDeclaration sd) {
             if (sd.ident == null)
             {
@@ -587,6 +617,7 @@ public class doc {
             (this.buf.get()).writestring(new ByteSlice(";\n"));
         }
 
+        // Erasure: visit<ClassDeclaration>
         public  void visit(ClassDeclaration cd) {
             if (cd.ident == null)
             {
@@ -639,6 +670,7 @@ public class doc {
             (this.buf.get()).writestring(new ByteSlice(";\n"));
         }
 
+        // Erasure: visit<EnumDeclaration>
         public  void visit(EnumDeclaration ed) {
             if (ed.ident == null)
             {
@@ -655,6 +687,7 @@ public class doc {
             (this.buf.get()).writestring(new ByteSlice(";\n"));
         }
 
+        // Erasure: visit<EnumMember>
         public  void visit(EnumMember em) {
             if (em.ident == null)
             {
@@ -671,6 +704,7 @@ public class doc {
     public static class Escape
     {
         public Slice<ByteSlice> strings = new RawSlice<ByteSlice>(new ByteSlice[255]);
+        // Erasure: escapeChar<byte>
         public  ByteSlice escapeChar(byte c) {
             return this.strings.get((c & 0xFF));
         }
@@ -698,6 +732,7 @@ public class doc {
         public BytePtr _body = null;
         public int bodylen = 0;
         public int nooutput = 0;
+        // Erasure: write<Loc, Ptr, Ptr, Ptr, Ptr>
         public  void write(Loc loc, Ptr<DocComment> dc, Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf) {
             assert((a.get()).length != 0);
             try {
@@ -758,6 +793,7 @@ public class doc {
     }
     public static class ParamSection extends Section
     {
+        // Erasure: write<Loc, Ptr, Ptr, Ptr, Ptr>
         public  void write(Loc loc, Ptr<DocComment> dc, Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf) {
             assert((a.get()).length != 0);
             Dsymbol s = (a.get()).get(0);
@@ -943,6 +979,7 @@ public class doc {
     }
     public static class MacroSection extends Section
     {
+        // Erasure: write<Loc, Ptr, Ptr, Ptr, Ptr>
         public  void write(Loc loc, Ptr<DocComment> dc, Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf) {
             DocComment.parseMacros((dc.get()).escapetable, (dc.get()).pmacrotable, this._body, this.bodylen);
         }
@@ -960,6 +997,7 @@ public class doc {
             return that;
         }
     }
+    // Erasure: isCVariadicParameter<Ptr, Array>
     public static boolean isCVariadicParameter(Ptr<DArray<Dsymbol>> a, ByteSlice p) {
         {
             Slice<Dsymbol> __r1060 = (a.get()).opSlice().copy();
@@ -976,6 +1014,7 @@ public class doc {
         return false;
     }
 
+    // Erasure: getEponymousMember<TemplateDeclaration>
     public static Dsymbol getEponymousMember(TemplateDeclaration td) {
         if (td.onemember == null)
         {
@@ -1012,6 +1051,7 @@ public class doc {
         return null;
     }
 
+    // Erasure: getEponymousParent<Dsymbol>
     public static TemplateDeclaration getEponymousParent(Dsymbol s) {
         if (s.parent.value == null)
         {
@@ -1026,6 +1066,7 @@ public class doc {
     static ByteSlice ddoc_decl_e = new ByteSlice(")\n");
     static ByteSlice ddoc_decl_dd_s = new ByteSlice("$(DDOC_DECL_DD ");
     static ByteSlice ddoc_decl_dd_e = new ByteSlice(")\n");
+    // Erasure: gendocfile<Module>
     public static void gendocfile(dmodule.Module m) {
         Ref<OutBuffer> buf = ref(new OutBuffer());
         try {
@@ -1149,6 +1190,7 @@ public class doc {
         }
     }
 
+    // Erasure: escapeDdocString<Ptr, int>
     public static void escapeDdocString(Ptr<OutBuffer> buf, int start) {
         {
             int u = start;
@@ -1178,6 +1220,7 @@ public class doc {
         }
     }
 
+    // Erasure: escapeStrayParenthesis<Loc, Ptr, int, boolean>
     public static void escapeStrayParenthesis(Loc loc, Ptr<OutBuffer> buf, int start, boolean respectBackslashEscapes) {
         int par_open = 0;
         byte inCode = (byte)0;
@@ -1298,6 +1341,7 @@ public class doc {
         }
     }
 
+    // Erasure: skipNonQualScopes<Ptr>
     public static Ptr<Scope> skipNonQualScopes(Ptr<Scope> sc) {
         for (; (sc != null) && ((sc.get()).scopesym == null);) {
             sc = pcopy((sc.get()).enclosing);
@@ -1305,6 +1349,7 @@ public class doc {
         return sc;
     }
 
+    // Erasure: emitAnchorName<Ptr, Dsymbol, Ptr, boolean>
     public static boolean emitAnchorName(Ptr<OutBuffer> buf, Dsymbol s, Ptr<Scope> sc, boolean includeParent) {
         if ((s == null) || (s.isPackage() != null) || (s.isModule() != null))
         {
@@ -1340,6 +1385,7 @@ public class doc {
         return true;
     }
 
+    // Erasure: emitAnchor<Ptr, Dsymbol, Ptr, boolean>
     public static void emitAnchor(Ptr<OutBuffer> buf, Dsymbol s, Ptr<Scope> sc, boolean forHeader) {
         Identifier ident = null;
         {
@@ -1470,6 +1516,7 @@ public class doc {
         emitAnchor(buf, s, sc, false);
     }
 
+    // Erasure: getCodeIndent<Ptr>
     public static int getCodeIndent(BytePtr src) {
         for (; (src != null) && ((src.get() & 0xFF) == 13) || ((src.get() & 0xFF) == 10);) {
             src.plusAssign(1);
@@ -1482,6 +1529,7 @@ public class doc {
         return codeIndent;
     }
 
+    // Erasure: expandTemplateMixinComments<TemplateMixin, Ptr, Ptr>
     public static void expandTemplateMixinComments(TemplateMixin tm, Ptr<OutBuffer> buf, Ptr<Scope> sc) {
         if (tm.semanticRun == 0)
         {
@@ -1508,6 +1556,7 @@ public class doc {
         }
     }
 
+    // Erasure: emitMemberComments<ScopeDsymbol, Ptr, Ptr>
     public static void emitMemberComments(ScopeDsymbol sds, Ptr<OutBuffer> buf, Ptr<Scope> sc) {
         if (sds.members == null)
         {
@@ -1561,10 +1610,12 @@ public class doc {
         }
     }
 
+    // Erasure: emitProtection<Ptr, Import>
     public static void emitProtection(Ptr<OutBuffer> buf, Import i) {
         emitProtection(buf, i.protection);
     }
 
+    // Erasure: emitProtection<Ptr, Declaration>
     public static void emitProtection(Ptr<OutBuffer> buf, Declaration d) {
         Prot prot = d.protection.copy();
         if ((prot.kind != Prot.Kind.undefined) && (prot.kind != Prot.Kind.public_))
@@ -1573,11 +1624,13 @@ public class doc {
         }
     }
 
+    // Erasure: emitProtection<Ptr, Prot>
     public static void emitProtection(Ptr<OutBuffer> buf, Prot prot) {
         protectionToBuffer(buf, prot);
         (buf.get()).writeByte(32);
     }
 
+    // Erasure: emitComment<Dsymbol, Ptr, Ptr>
     public static void emitComment(Dsymbol s, Ptr<OutBuffer> buf, Ptr<Scope> sc) {
         // skipping duplicate class EmitComment
         EmitComment v = new EmitComment(buf, sc);
@@ -1591,6 +1644,7 @@ public class doc {
         }
     }
 
+    // Erasure: toDocBuffer<Dsymbol, Ptr, Ptr>
     public static void toDocBuffer(Dsymbol s, Ptr<OutBuffer> buf, Ptr<Scope> sc) {
         // skipping duplicate class ToDocBuffer
         ToDocBuffer v = new ToDocBuffer(buf, sc);
@@ -1606,6 +1660,7 @@ public class doc {
         public Ptr<Ptr<Macro>> pmacrotable = null;
         public Ptr<Escape> escapetable = null;
         public Ref<DArray<Dsymbol>> a = ref(new DArray<Dsymbol>());
+        // Erasure: parse<Dsymbol, Ptr>
         public static Ptr<DocComment> parse(Dsymbol s, BytePtr comment) {
             Ptr<DocComment> dc = refPtr(new DocComment(new DArray<Section>(), null, null, null, null, null, new DArray<Dsymbol>()));
             (dc.get()).a.value.push(s);
@@ -1631,6 +1686,7 @@ public class doc {
             return dc;
         }
 
+        // Erasure: parseMacros<Ptr, Ptr, Ptr, int>
         public static void parseMacros(Ptr<Escape> escapetable, Ptr<Ptr<Macro>> pmacrotable, BytePtr m, int mlen) {
             BytePtr p = pcopy(m);
             int len = mlen;
@@ -1772,6 +1828,7 @@ public class doc {
             }
         }
 
+        // Erasure: parseEscapes<Ptr, Ptr, int>
         public static void parseEscapes(Ptr<Escape> escapetable, BytePtr textstart, int textlen) {
             if (escapetable == null)
             {
@@ -1818,6 +1875,7 @@ public class doc {
             }
         }
 
+        // Erasure: parseSections<Ptr>
         public  void parseSections(BytePtr comment) {
             BytePtr p = null;
             BytePtr pstart = null;
@@ -1964,6 +2022,7 @@ public class doc {
             }
         }
 
+        // Erasure: writeSections<Ptr, Ptr, Ptr>
         public  void writeSections(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf) {
             assert((a.get()).length != 0);
             Loc loc = (a.get()).get(0).loc.copy();
@@ -2092,6 +2151,7 @@ public class doc {
             return this;
         }
     }
+    // Erasure: isDitto<Ptr>
     public static boolean isDitto(BytePtr comment) {
         if (comment != null)
         {
@@ -2104,10 +2164,12 @@ public class doc {
         return false;
     }
 
+    // Erasure: skipwhitespace<Ptr>
     public static BytePtr skipwhitespace(BytePtr p) {
         return toBytePtr(skipwhitespace(toDString(p)));
     }
 
+    // Erasure: skipwhitespace<Array>
     public static ByteSlice skipwhitespace(ByteSlice p) {
         {
             ByteSlice __r1066 = p.copy();
@@ -2129,6 +2191,7 @@ public class doc {
         return p.slice(p.getLength(),p.getLength());
     }
 
+    // Erasure: skipChars<Ptr, int, Array>
     public static int skipChars(Ptr<OutBuffer> buf, int i, ByteSlice chars) {
     /*Outer:*/
         {
@@ -2154,6 +2217,7 @@ public class doc {
         return (buf.get()).offset;
     }
 
+    // Erasure: replaceChar<Array, byte, Array>
     public static ByteSlice replaceChar(ByteSlice s, byte c, ByteSlice r) {
         int count = 0;
         {
@@ -2192,6 +2256,7 @@ public class doc {
         return toByteSlice(result);
     }
 
+    // Erasure: toLowercase<Array>
     public static ByteSlice toLowercase(ByteSlice s) {
         Ref<ByteSlice> lower = ref(new RawByteSlice().copy());
         {
@@ -2223,6 +2288,7 @@ public class doc {
         return lower.value;
     }
 
+    // Erasure: getMarkdownIndent<Ptr, int, int>
     public static int getMarkdownIndent(Ptr<OutBuffer> buf, int from, int to) {
         ByteSlice slice = (buf.get()).peekSlice().copy();
         if ((to > slice.getLength()))
@@ -2241,6 +2307,7 @@ public class doc {
         return indent;
     }
 
+    // Erasure: skiptoident<Ptr, int>
     public static int skiptoident(Ptr<OutBuffer> buf, int i) {
         Ref<Integer> i_ref = ref(i);
         ByteSlice slice = (buf.get()).peekSlice().copy();
@@ -2268,6 +2335,7 @@ public class doc {
         return i_ref.value;
     }
 
+    // Erasure: skippastident<Ptr, int>
     public static int skippastident(Ptr<OutBuffer> buf, int i) {
         Ref<Integer> i_ref = ref(i);
         ByteSlice slice = (buf.get()).peekSlice().copy();
@@ -2295,6 +2363,7 @@ public class doc {
         return i_ref.value;
     }
 
+    // Erasure: skipPastIdentWithDots<Ptr, int>
     public static int skipPastIdentWithDots(Ptr<OutBuffer> buf, int i) {
         Ref<Integer> i_ref = ref(i);
         ByteSlice slice = (buf.get()).peekSlice().copy();
@@ -2342,6 +2411,7 @@ public class doc {
         return i_ref.value;
     }
 
+    // Erasure: skippastURL<Ptr, int>
     public static int skippastURL(Ptr<OutBuffer> buf, int i) {
         ByteSlice slice = (buf.get()).peekSlice().slice(i,(buf.get()).peekSlice().getLength()).copy();
         int j = 0;
@@ -2386,6 +2456,7 @@ public class doc {
         return i;
     }
 
+    // Erasure: removeBlankLineMacro<Ptr, int, int>
     public static void removeBlankLineMacro(Ptr<OutBuffer> buf, Ref<Integer> iAt, Ref<Integer> i) {
         if (iAt.value == 0)
         {
@@ -2400,6 +2471,7 @@ public class doc {
         iAt.value = 0;
     }
 
+    // Erasure: replaceMarkdownThematicBreak<Ptr, int, int, Loc>
     public static boolean replaceMarkdownThematicBreak(Ptr<OutBuffer> buf, Ref<Integer> i, int iLineStart, Loc loc) {
         if (!global.params.markdown)
         {
@@ -2436,6 +2508,7 @@ public class doc {
         return false;
     }
 
+    // Erasure: detectAtxHeadingLevel<Ptr, int>
     public static int detectAtxHeadingLevel(Ptr<OutBuffer> buf, int i) {
         if (!global.params.markdown)
         {
@@ -2457,6 +2530,7 @@ public class doc {
         return headingLevel;
     }
 
+    // Erasure: removeAnyAtxHeadingSuffix<Ptr, int>
     public static void removeAnyAtxHeadingSuffix(Ptr<OutBuffer> buf, int i) {
         int j = i;
         int iSuffixStart = 0;
@@ -2494,6 +2568,7 @@ public class doc {
         }
     }
 
+    // Erasure: endMarkdownHeading<Ptr, int, int, Loc, int>
     public static void endMarkdownHeading(Ptr<OutBuffer> buf, int iStart, Ref<Integer> iEnd, Loc loc, Ref<Integer> headingLevel) {
         if (!global.params.markdown)
         {
@@ -2516,6 +2591,7 @@ public class doc {
         headingLevel.value = 0;
     }
 
+    // Erasure: endAllMarkdownQuotes<Ptr, int, int>
     public static int endAllMarkdownQuotes(Ptr<OutBuffer> buf, int i, Ref<Integer> quoteLevel) {
         int length = quoteLevel.value;
         for (; (quoteLevel.value > 0);quoteLevel.value -= 1) {
@@ -2524,6 +2600,7 @@ public class doc {
         return length;
     }
 
+    // Erasure: endAllListsAndQuotes<Ptr, int, Array, int, int>
     public static int endAllListsAndQuotes(Ptr<OutBuffer> buf, Ref<Integer> i, Slice<MarkdownList> nestedLists, Ref<Integer> quoteLevel, Ref<Integer> quoteMacroLevel) {
         Ref<Slice<MarkdownList>> nestedLists_ref = ref(nestedLists);
         quoteMacroLevel.value = 0;
@@ -2534,6 +2611,7 @@ public class doc {
         return i.value - i0;
     }
 
+    // Erasure: replaceMarkdownEmphasis<Ptr, Loc, Array, int>
     public static int replaceMarkdownEmphasis(Ptr<OutBuffer> buf, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, int downToLevel) {
         if (!global.params.markdown)
         {
@@ -2616,6 +2694,7 @@ public class doc {
         return replaceMarkdownEmphasis(buf, loc, inlineDelimiters, 0);
     }
 
+    // Erasure: isIdentifier<Ptr, Ptr, int>
     public static boolean isIdentifier(Ptr<DArray<Dsymbol>> a, BytePtr p, int len) {
         {
             Slice<Dsymbol> __r1079 = (a.get()).opSlice().copy();
@@ -2667,6 +2746,7 @@ public class doc {
         return false;
     }
 
+    // Erasure: isKeyword<Ptr, int>
     public static boolean isKeyword(BytePtr p, int len) {
         Slice<ByteSlice> table = slice(new ByteSlice[]{new ByteSlice("true"), new ByteSlice("false"), new ByteSlice("null")});
         {
@@ -2683,6 +2763,7 @@ public class doc {
         return false;
     }
 
+    // Erasure: isTypeFunction<Dsymbol>
     public static TypeFunction isTypeFunction(Dsymbol s) {
         FuncDeclaration f = s.isFuncDeclaration();
         if ((f != null) && (f.type != null))
@@ -2696,6 +2777,7 @@ public class doc {
         return null;
     }
 
+    // Erasure: isFunctionParameter<Dsymbol, Ptr, int>
     public static Parameter isFunctionParameter(Dsymbol s, BytePtr p, int len) {
         TypeFunction tf = isTypeFunction(s);
         if ((tf != null) && (tf.parameterList.parameters != null))
@@ -2715,6 +2797,7 @@ public class doc {
         return null;
     }
 
+    // Erasure: isFunctionParameter<Ptr, Ptr, int>
     public static Parameter isFunctionParameter(Ptr<DArray<Dsymbol>> a, BytePtr p, int len) {
         {
             int i = 0;
@@ -2729,6 +2812,7 @@ public class doc {
         return null;
     }
 
+    // Erasure: isEponymousFunctionParameter<Ptr, Ptr, int>
     public static Parameter isEponymousFunctionParameter(Ptr<DArray<Dsymbol>> a, BytePtr p, int len) {
         {
             int i = 0;
@@ -2763,6 +2847,7 @@ public class doc {
         return null;
     }
 
+    // Erasure: isTemplateParameter<Ptr, Ptr, int>
     public static TemplateParameter isTemplateParameter(Ptr<DArray<Dsymbol>> a, BytePtr p, int len) {
         {
             int i = 0;
@@ -2791,6 +2876,7 @@ public class doc {
         return null;
     }
 
+    // Erasure: isReservedName<Array>
     public static boolean isReservedName(ByteSlice str) {
         Slice<ByteSlice> table = slice(new ByteSlice[]{new ByteSlice("__ctor"), new ByteSlice("__dtor"), new ByteSlice("__postblit"), new ByteSlice("__invariant"), new ByteSlice("__unitTest"), new ByteSlice("__require"), new ByteSlice("__ensure"), new ByteSlice("__dollar"), new ByteSlice("__ctfe"), new ByteSlice("__withSym"), new ByteSlice("__result"), new ByteSlice("__returnLabel"), new ByteSlice("__vptr"), new ByteSlice("__monitor"), new ByteSlice("__gate"), new ByteSlice("__xopEquals"), new ByteSlice("__xopCmp"), new ByteSlice("__LINE__"), new ByteSlice("__FILE__"), new ByteSlice("__MODULE__"), new ByteSlice("__FUNCTION__"), new ByteSlice("__PRETTY_FUNCTION__"), new ByteSlice("__DATE__"), new ByteSlice("__TIME__"), new ByteSlice("__TIMESTAMP__"), new ByteSlice("__VENDOR__"), new ByteSlice("__VERSION__"), new ByteSlice("__EOF__"), new ByteSlice("__CXXLIB__"), new ByteSlice("__LOCAL_SIZE"), new ByteSlice("___tls_get_addr"), new ByteSlice("__entrypoint")}).copy();
         {
@@ -2816,10 +2902,12 @@ public class doc {
         public boolean rightFlanking = false;
         public boolean atParagraphStart = false;
         public byte type = 0;
+        // Erasure: isValid<>
         public  boolean isValid() {
             return this.count != 0;
         }
 
+        // Erasure: invalidate<>
         public  void invalidate() {
             this.count = 0;
         }
@@ -2867,10 +2955,12 @@ public class doc {
         public int contentIndent = 0;
         public int macroLevel = 0;
         public byte type = 0;
+        // Erasure: isValid<>
         public  boolean isValid() {
             return (this.type & 0xFF) != 255;
         }
 
+        // Erasure: parseItem<Ptr, int, int>
         public static MarkdownList parseItem(Ptr<OutBuffer> buf, int iLineStart, int i) {
             if (!global.params.markdown)
             {
@@ -2886,6 +2976,7 @@ public class doc {
             }
         }
 
+        // Erasure: isAtItemInThisList<Ptr, int, int>
         public  boolean isAtItemInThisList(Ptr<OutBuffer> buf, int iLineStart, int i) {
             MarkdownList item = ((this.type & 0xFF) == 46) || ((this.type & 0xFF) == 41) ? parseOrderedListItem(buf, iLineStart, i) : parseUnorderedListItem(buf, iLineStart, i).copy();
             if (((item.type & 0xFF) == (this.type & 0xFF)))
@@ -2895,6 +2986,7 @@ public class doc {
             return false;
         }
 
+        // Erasure: startItem<Ptr, int, int, int, Array, Loc>
         public  boolean startItem(Ptr<OutBuffer> buf, Ref<Integer> iLineStart, Ref<Integer> i, Ref<Integer> iPrecedingBlankLine, Slice<MarkdownList> nestedLists, Loc loc) {
             (buf.get()).remove(this.iStart.value, this.iContentStart - this.iStart.value);
             if ((nestedLists.getLength() == 0) || (this.delimiterIndent >= nestedLists.get(nestedLists.getLength() - 1).contentIndent) || __equals((buf.get()).data.slice(iLineStart.value - 4,iLineStart.value), new ByteSlice("$(LI")))
@@ -2939,6 +3031,7 @@ public class doc {
             return true;
         }
 
+        // Erasure: endAllNestedLists<Ptr, int, Array>
         public static int endAllNestedLists(Ptr<OutBuffer> buf, int i, Slice<MarkdownList> nestedLists) {
             int iStart = i;
             for (; nestedLists.getLength() != 0;nestedLists.getLength() = nestedLists.getLength() - 1) {
@@ -2947,6 +3040,7 @@ public class doc {
             return i - iStart;
         }
 
+        // Erasure: handleSiblingOrEndingList<Ptr, int, int, Array>
         public static void handleSiblingOrEndingList(Ptr<OutBuffer> buf, Ref<Integer> i, Ref<Integer> iParagraphStart, Slice<MarkdownList> nestedLists) {
             int iAfterSpaces = skipChars(buf, i.value + 1, new ByteSlice(" \u0009"));
             if (nestedLists.get(nestedLists.getLength() - 1).isAtItemInThisList(buf, i.value + 1, iAfterSpaces))
@@ -2971,6 +3065,7 @@ public class doc {
             }
         }
 
+        // Erasure: parseUnorderedListItem<Ptr, int, int>
         public static MarkdownList parseUnorderedListItem(Ptr<OutBuffer> buf, int iLineStart, int i) {
             if ((i + 1 < (buf.get()).offset) && (((buf.get()).data.get(i) & 0xFF) == 45) || (((buf.get()).data.get(i) & 0xFF) == 42) || (((buf.get()).data.get(i) & 0xFF) == 43) && (((buf.get()).data.get(i + 1) & 0xFF) == 32) || (((buf.get()).data.get(i + 1) & 0xFF) == 9) || (((buf.get()).data.get(i + 1) & 0xFF) == 13) || (((buf.get()).data.get(i + 1) & 0xFF) == 10))
             {
@@ -2983,6 +3078,7 @@ public class doc {
             return new MarkdownList(new ByteSlice(), 0, 0, 0, 0, 0, (byte)255);
         }
 
+        // Erasure: parseOrderedListItem<Ptr, int, int>
         public static MarkdownList parseOrderedListItem(Ptr<OutBuffer> buf, int iLineStart, int i) {
             int iAfterNumbers = skipChars(buf, i, new ByteSlice("0123456789"));
             if ((iAfterNumbers - i > 0) && (iAfterNumbers - i <= 9) && (iAfterNumbers + 1 < (buf.get()).offset) && (((buf.get()).data.get(iAfterNumbers) & 0xFF) == 46) && (((buf.get()).data.get(iAfterNumbers + 1) & 0xFF) == 32) || (((buf.get()).data.get(iAfterNumbers + 1) & 0xFF) == 9) || (((buf.get()).data.get(iAfterNumbers + 1) & 0xFF) == 13) || (((buf.get()).data.get(iAfterNumbers + 1) & 0xFF) == 10))
@@ -3045,6 +3141,7 @@ public class doc {
         public ByteSlice title = new ByteSlice();
         public Ref<ByteSlice> label = ref(new ByteSlice());
         public Dsymbol symbol = null;
+        // Erasure: replaceLink<Ptr, int, Loc, Array, int, MarkdownLinkReferences>
         public static boolean replaceLink(Ptr<OutBuffer> buf, Ref<Integer> i, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, int delimiterIndex, MarkdownLinkReferences linkReferences) {
             Ref<Slice<MarkdownDelimiter>> inlineDelimiters_ref = ref(inlineDelimiters);
             Ref<MarkdownLinkReferences> linkReferences_ref = ref(linkReferences);
@@ -3092,6 +3189,7 @@ public class doc {
             return true;
         }
 
+        // Erasure: replaceReferenceDefinition<Ptr, int, Array, int, MarkdownLinkReferences, Loc>
         public static boolean replaceReferenceDefinition(Ptr<OutBuffer> buf, Ref<Integer> i, Slice<MarkdownDelimiter> inlineDelimiters, int delimiterIndex, MarkdownLinkReferences linkReferences, Loc loc) {
             Ref<MarkdownLinkReferences> linkReferences_ref = ref(linkReferences);
             MarkdownDelimiter delimiter = inlineDelimiters.get(delimiterIndex).copy();
@@ -3107,6 +3205,7 @@ public class doc {
             return true;
         }
 
+        // Erasure: parseInlineLink<Ptr, int>
         public  int parseInlineLink(Ptr<OutBuffer> buf, int i) {
             Ref<Integer> iEnd = ref(i + 1);
             if ((iEnd.value >= (buf.get()).offset) || (((buf.get()).data.get(iEnd.value) & 0xFF) != 40))
@@ -3133,6 +3232,7 @@ public class doc {
             return iEnd.value + 1;
         }
 
+        // Erasure: parseReferenceLink<Ptr, int, MarkdownDelimiter>
         public  int parseReferenceLink(Ptr<OutBuffer> buf, int i, MarkdownDelimiter delimiter) {
             Ref<Integer> iStart = ref(i + 1);
             int iEnd = iStart.value;
@@ -3156,6 +3256,7 @@ public class doc {
             return iEnd;
         }
 
+        // Erasure: parseReferenceDefinition<Ptr, int, MarkdownDelimiter>
         public  int parseReferenceDefinition(Ptr<OutBuffer> buf, int i, MarkdownDelimiter delimiter) {
             if (!delimiter.atParagraphStart || ((delimiter.type & 0xFF) != 91) || (i + 1 >= (buf.get()).offset) || (((buf.get()).data.get(i + 1) & 0xFF) != 58))
             {
@@ -3194,6 +3295,7 @@ public class doc {
             return iEnd.value;
         }
 
+        // Erasure: parseLabel<Ptr, int>
         public  boolean parseLabel(Ptr<OutBuffer> buf, Ref<Integer> i) {
             if ((((buf.get()).data.get(i.value) & 0xFF) != 91))
             {
@@ -3262,6 +3364,7 @@ public class doc {
             return false;
         }
 
+        // Erasure: parseHref<Ptr, int>
         public  boolean parseHref(Ptr<OutBuffer> buf, Ref<Integer> i) {
             int j = skipChars(buf, i.value, new ByteSlice(" \u0009"));
             int iHrefStart = j;
@@ -3338,6 +3441,7 @@ public class doc {
             return true;
         }
 
+        // Erasure: parseTitle<Ptr, int>
         public  boolean parseTitle(Ptr<OutBuffer> buf, Ref<Integer> i) {
             int j = skipChars(buf, i.value, new ByteSlice(" \u0009"));
             if ((j >= (buf.get()).offset))
@@ -3406,6 +3510,7 @@ public class doc {
             return true;
         }
 
+        // Erasure: replaceLink<Ptr, int, int, MarkdownDelimiter>
         public  void replaceLink(Ptr<OutBuffer> buf, Ref<Integer> i, int iLinkEnd, MarkdownDelimiter delimiter) {
             int iAfterLink = i.value - delimiter.count;
             ByteSlice macroName = new RawByteSlice().copy();
@@ -3462,6 +3567,7 @@ public class doc {
             i.value = iAfterLink;
         }
 
+        // Erasure: storeAndReplaceDefinition<Ptr, int, int, MarkdownLinkReferences, Loc>
         public  void storeAndReplaceDefinition(Ptr<OutBuffer> buf, Ref<Integer> i, int iEnd, MarkdownLinkReferences linkReferences, Loc loc) {
             if (global.params.vmarkdown)
             {
@@ -3477,6 +3583,7 @@ public class doc {
             }
         }
 
+        // Erasure: removeEscapeBackslashes<Array>
         public static ByteSlice removeEscapeBackslashes(ByteSlice s) {
             if (s.getLength() == 0)
             {
@@ -3512,6 +3619,7 @@ public class doc {
             return s;
         }
 
+        // Erasure: percentEncode<Array>
         public static ByteSlice percentEncode(ByteSlice s) {
             Function1<Byte,Boolean> shouldEncode = new Function1<Byte,Boolean>() {
                 public Boolean invoke(Byte c) {
@@ -3535,6 +3643,7 @@ public class doc {
             return s;
         }
 
+        // Erasure: skipOneNewline<Ptr, int>
         public static boolean skipOneNewline(Ptr<OutBuffer> buf, Ref<Integer> i) {
             if ((i.value < (buf.get()).offset) && (((buf.get()).data.get(i.value) & 0xFF) == 13))
             {
@@ -3579,6 +3688,7 @@ public class doc {
         public AA<ByteSlice,MarkdownLink> symbols = new AA<ByteSlice,MarkdownLink>();
         public Ptr<Scope> _scope = null;
         public boolean extractedAll = false;
+        // Erasure: lookupReference<Array, Ptr, int, Loc>
         public  MarkdownLink lookupReference(ByteSlice label, Ptr<OutBuffer> buf, int i, Loc loc) {
             ByteSlice lowercaseLabel = toLowercase(label).copy();
             if (this.references.getLvalue(lowercaseLabel) == null)
@@ -3592,6 +3702,7 @@ public class doc {
             return new MarkdownLink(new ByteSlice(), new ByteSlice(), new ByteSlice(), null);
         }
 
+        // Erasure: lookupSymbol<Array>
         public  MarkdownLink lookupSymbol(ByteSlice name) {
             if (this.symbols.getLvalue(name) != null)
             {
@@ -3620,6 +3731,7 @@ public class doc {
             return link;
         }
 
+        // Erasure: extractReferences<Ptr, int, Loc>
         public  void extractReferences(Ptr<OutBuffer> buf, int i, Loc loc) {
             Ref<Integer> i_ref = ref(i);
             Function2<Ptr<OutBuffer>,Integer,Boolean> isFollowedBySpace = new Function2<Ptr<OutBuffer>,Integer,Boolean>() {
@@ -3762,6 +3874,7 @@ public class doc {
             this.extractedAll = true;
         }
 
+        // Erasure: split<Array, byte>
         public static Slice<ByteSlice> split(ByteSlice s, byte delimiter) {
             Slice<ByteSlice> result = new RawSlice<ByteSlice>().copy();
             int iStart = 0;
@@ -3781,6 +3894,7 @@ public class doc {
             return result;
         }
 
+        // Erasure: createHref<Dsymbol>
         public  ByteSlice createHref(Dsymbol symbol) {
             Dsymbol root = symbol;
             ByteSlice lref = new RawByteSlice().copy();
@@ -3871,6 +3985,7 @@ public class doc {
         public static final int right = 3;
     }
 
+    // Erasure: parseTableDelimiterRow<Ptr, int, boolean, Array>
     public static int parseTableDelimiterRow(Ptr<OutBuffer> buf, int iStart, boolean inQuote, IntSlice columnAlignments) {
         int i = skipChars(buf, iStart, inQuote ? new ByteSlice(">| \u0009") : new ByteSlice("| \u0009"));
         for (; (i < (buf.get()).offset) && (((buf.get()).data.get(i) & 0xFF) != 13) && (((buf.get()).data.get(i) & 0xFF) != 10);){
@@ -3909,6 +4024,7 @@ public class doc {
         return i;
     }
 
+    // Erasure: startTable<Ptr, int, int, Loc, boolean, Array, Array>
     public static int startTable(Ptr<OutBuffer> buf, int iStart, int iEnd, Loc loc, boolean inQuote, Slice<MarkdownDelimiter> inlineDelimiters, IntSlice columnAlignments) {
         Ref<Slice<MarkdownDelimiter>> inlineDelimiters_ref = ref(inlineDelimiters);
         Ref<IntSlice> columnAlignments_ref = ref(columnAlignments);
@@ -3929,6 +4045,7 @@ public class doc {
         return 0;
     }
 
+    // Erasure: replaceTableRow<Ptr, int, int, Loc, Array, Array, boolean>
     public static int replaceTableRow(Ptr<OutBuffer> buf, int iStart, int iEnd, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, IntSlice columnAlignments, boolean headerRow) {
         Ref<Slice<MarkdownDelimiter>> inlineDelimiters_ref = ref(inlineDelimiters);
         if ((columnAlignments.getLength() == 0) || (iStart == iEnd))
@@ -4067,6 +4184,7 @@ public class doc {
         return delta.value;
     }
 
+    // Erasure: endTable<Ptr, int, Array>
     public static int endTable(Ptr<OutBuffer> buf, int i, IntSlice columnAlignments) {
         if (columnAlignments.getLength() == 0)
         {
@@ -4077,6 +4195,7 @@ public class doc {
         return 2;
     }
 
+    // Erasure: endRowAndTable<Ptr, int, int, Loc, Array, Array>
     public static int endRowAndTable(Ptr<OutBuffer> buf, int iStart, int iEnd, Loc loc, Slice<MarkdownDelimiter> inlineDelimiters, IntSlice columnAlignments) {
         Ref<Slice<MarkdownDelimiter>> inlineDelimiters_ref = ref(inlineDelimiters);
         Ref<IntSlice> columnAlignments_ref = ref(columnAlignments);
@@ -4085,6 +4204,7 @@ public class doc {
         return delta;
     }
 
+    // Erasure: highlightText<Ptr, Ptr, Loc, Ptr, int>
     public static void highlightText(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Loc loc, Ptr<OutBuffer> buf, int offset) {
         int incrementLoc = (loc.linnum == 0) ? 1 : 0;
         loc.linnum += incrementLoc;
@@ -4957,6 +5077,7 @@ public class doc {
         endAllListsAndQuotes(buf, i, nestedLists, quoteLevel, quoteMacroLevel);
     }
 
+    // Erasure: highlightCode<Ptr, Dsymbol, Ptr, int>
     public static void highlightCode(Ptr<Scope> sc, Dsymbol s, Ptr<OutBuffer> buf, int offset) {
         Import imp = s.isImport();
         if ((imp != null) && (imp.aliases.length > 0))
@@ -4997,6 +5118,7 @@ public class doc {
         }
     }
 
+    // Erasure: highlightCode<Ptr, Ptr, Ptr, int>
     public static void highlightCode(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf, int offset) {
         boolean resolvedTemplateParameters = false;
         {
@@ -5110,6 +5232,7 @@ public class doc {
         }
     }
 
+    // Erasure: highlightCode3<Ptr, Ptr, Ptr, Ptr>
     public static void highlightCode3(Ptr<Scope> sc, Ptr<OutBuffer> buf, BytePtr p, BytePtr pend) {
         for (; (p.lessThan(pend));p.postInc()){
             ByteSlice se = ((sc.get())._module.escapetable.get()).escapeChar(p.get()).copy();
@@ -5124,6 +5247,7 @@ public class doc {
         }
     }
 
+    // Erasure: highlightCode2<Ptr, Ptr, Ptr, int>
     public static void highlightCode2(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> a, Ptr<OutBuffer> buf, int offset) {
         int errorsave = global.startGagging();
         StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
@@ -5206,10 +5330,12 @@ public class doc {
         }
     }
 
+    // Erasure: isCVariadicArg<Array>
     public static boolean isCVariadicArg(ByteSlice p) {
         return (p.getLength() >= 3) && __equals(p.slice(0,3), new ByteSlice("..."));
     }
 
+    // Erasure: isIdStart<Ptr>
     public static boolean isIdStart(BytePtr p) {
         Ref<Integer> c = ref((p.get() & 0xFF));
         if ((isalpha(c.value) != 0) || (c.value == 95))
@@ -5231,6 +5357,7 @@ public class doc {
         return false;
     }
 
+    // Erasure: isIdTail<Ptr>
     public static boolean isIdTail(BytePtr p) {
         Ref<Integer> c = ref((p.get() & 0xFF));
         if ((isalnum(c.value) != 0) || (c.value == 95))
@@ -5252,10 +5379,12 @@ public class doc {
         return false;
     }
 
+    // Erasure: isIndentWS<Ptr>
     public static boolean isIndentWS(BytePtr p) {
         return ((p.get() & 0xFF) == 32) || ((p.get() & 0xFF) == 9);
     }
 
+    // Erasure: utfStride<Ptr>
     public static int utfStride(BytePtr p) {
         Ref<Integer> c = ref((p.get() & 0xFF));
         if ((c.value < 128))
@@ -5267,6 +5396,7 @@ public class doc {
         return i.value;
     }
 
+    // Erasure: stripLeadingNewlines<Ptr>
     public static BytePtr stripLeadingNewlines(BytePtr s) {
         for (; (s != null) && ((s.get() & 0xFF) == 10) || ((s.get() & 0xFF) == 13);) {
             s.postInc();

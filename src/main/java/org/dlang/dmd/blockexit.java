@@ -27,22 +27,26 @@ public class blockexit {
         private FuncDeclaration func = null;
         private boolean mustNotThrow = false;
         private int result = 0;
+        // Erasure: __ctor<FuncDeclaration, boolean>
         public  BlockExit(FuncDeclaration func, boolean mustNotThrow) {
             this.func = func;
             this.mustNotThrow = mustNotThrow;
             this.result = 0;
         }
 
+        // Erasure: visit<Statement>
         public  void visit(Statement s) {
             printf(new BytePtr("Statement::blockExit(%p)\n"), s);
             printf(new BytePtr("%s\n"), s.toChars());
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<ErrorStatement>
         public  void visit(ErrorStatement s) {
             this.result = 0;
         }
 
+        // Erasure: visit<ExpStatement>
         public  void visit(ExpStatement s) {
             this.result = 1;
             if (s.exp != null)
@@ -68,11 +72,13 @@ public class blockexit {
             }
         }
 
+        // Erasure: visit<CompileStatement>
         public  void visit(CompileStatement s) {
             assert(global.errors != 0);
             this.result = 1;
         }
 
+        // Erasure: visit<CompoundStatement>
         public  void visit(CompoundStatement cs) {
             this.result = 1;
             Statement slast = null;
@@ -121,6 +127,7 @@ public class blockexit {
             }
         }
 
+        // Erasure: visit<UnrolledLoopStatement>
         public  void visit(UnrolledLoopStatement uls) {
             this.result = 1;
             {
@@ -141,15 +148,18 @@ public class blockexit {
             }
         }
 
+        // Erasure: visit<ScopeStatement>
         public  void visit(ScopeStatement s) {
             this.result = blockExit(s.statement.value, this.func, this.mustNotThrow);
         }
 
+        // Erasure: visit<WhileStatement>
         public  void visit(WhileStatement s) {
             assert(global.errors != 0);
             this.result = 1;
         }
 
+        // Erasure: visit<DoStatement>
         public  void visit(DoStatement s) {
             if (s._body.value != null)
             {
@@ -182,6 +192,7 @@ public class blockexit {
             this.result &= -97;
         }
 
+        // Erasure: visit<ForStatement>
         public  void visit(ForStatement s) {
             this.result = 1;
             if (s._init.value != null)
@@ -226,6 +237,7 @@ public class blockexit {
             }
         }
 
+        // Erasure: visit<ForeachStatement>
         public  void visit(ForeachStatement s) {
             this.result = 1;
             if (canThrow(s.aggr.value, this.func, this.mustNotThrow))
@@ -238,11 +250,13 @@ public class blockexit {
             }
         }
 
+        // Erasure: visit<ForeachRangeStatement>
         public  void visit(ForeachRangeStatement s) {
             assert(global.errors != 0);
             this.result = 1;
         }
 
+        // Erasure: visit<IfStatement>
         public  void visit(IfStatement s) {
             this.result = 0;
             if (canThrow(s.condition, this.func, this.mustNotThrow))
@@ -264,6 +278,7 @@ public class blockexit {
             }
         }
 
+        // Erasure: visit<ConditionalStatement>
         public  void visit(ConditionalStatement s) {
             this.result = blockExit(s.ifbody, this.func, this.mustNotThrow);
             if (s.elsebody != null)
@@ -272,14 +287,17 @@ public class blockexit {
             }
         }
 
+        // Erasure: visit<PragmaStatement>
         public  void visit(PragmaStatement s) {
             this.result = 1;
         }
 
+        // Erasure: visit<StaticAssertStatement>
         public  void visit(StaticAssertStatement s) {
             this.result = 1;
         }
 
+        // Erasure: visit<SwitchStatement>
         public  void visit(SwitchStatement s) {
             this.result = 0;
             if (canThrow(s.condition, this.func, this.mustNotThrow))
@@ -301,26 +319,32 @@ public class blockexit {
             }
         }
 
+        // Erasure: visit<CaseStatement>
         public  void visit(CaseStatement s) {
             this.result = blockExit(s.statement.value, this.func, this.mustNotThrow);
         }
 
+        // Erasure: visit<DefaultStatement>
         public  void visit(DefaultStatement s) {
             this.result = blockExit(s.statement.value, this.func, this.mustNotThrow);
         }
 
+        // Erasure: visit<GotoDefaultStatement>
         public  void visit(GotoDefaultStatement s) {
             this.result = 8;
         }
 
+        // Erasure: visit<GotoCaseStatement>
         public  void visit(GotoCaseStatement s) {
             this.result = 8;
         }
 
+        // Erasure: visit<SwitchErrorStatement>
         public  void visit(SwitchErrorStatement s) {
             this.result = 16;
         }
 
+        // Erasure: visit<ReturnStatement>
         public  void visit(ReturnStatement s) {
             this.result = 4;
             if ((s.exp != null) && canThrow(s.exp, this.func, this.mustNotThrow))
@@ -329,18 +353,22 @@ public class blockexit {
             }
         }
 
+        // Erasure: visit<BreakStatement>
         public  void visit(BreakStatement s) {
             this.result = s.ident != null ? 8 : 32;
         }
 
+        // Erasure: visit<ContinueStatement>
         public  void visit(ContinueStatement s) {
             this.result = s.ident != null ? 72 : 64;
         }
 
+        // Erasure: visit<SynchronizedStatement>
         public  void visit(SynchronizedStatement s) {
             this.result = blockExit(s._body.value, this.func, this.mustNotThrow);
         }
 
+        // Erasure: visit<WithStatement>
         public  void visit(WithStatement s) {
             this.result = 0;
             if (canThrow(s.exp, this.func, this.mustNotThrow))
@@ -350,6 +378,7 @@ public class blockexit {
             this.result |= blockExit(s._body.value, this.func, this.mustNotThrow);
         }
 
+        // Erasure: visit<TryCatchStatement>
         public  void visit(TryCatchStatement s) {
             assert(s._body.value != null);
             this.result = blockExit(s._body.value, this.func, false);
@@ -387,6 +416,7 @@ public class blockexit {
             this.result |= catchresult;
         }
 
+        // Erasure: visit<TryFinallyStatement>
         public  void visit(TryFinallyStatement s) {
             this.result = 1;
             if (s._body.value != null)
@@ -424,10 +454,12 @@ public class blockexit {
             this.result |= finalresult & -2;
         }
 
+        // Erasure: visit<ScopeGuardStatement>
         public  void visit(ScopeGuardStatement s) {
             this.result = 1;
         }
 
+        // Erasure: visit<ThrowStatement>
         public  void visit(ThrowStatement s) {
             if (s.internalThrow)
             {
@@ -449,10 +481,12 @@ public class blockexit {
             this.result = 2;
         }
 
+        // Erasure: visit<GotoStatement>
         public  void visit(GotoStatement s) {
             this.result = 8;
         }
 
+        // Erasure: visit<LabelStatement>
         public  void visit(LabelStatement s) {
             this.result = blockExit(s.statement.value, this.func, this.mustNotThrow);
             if (s.breaks)
@@ -461,6 +495,7 @@ public class blockexit {
             }
         }
 
+        // Erasure: visit<CompoundAsmStatement>
         public  void visit(CompoundAsmStatement s) {
             this.result = 29;
             if ((s.stc & 33554432L) == 0)
@@ -476,6 +511,7 @@ public class blockexit {
             }
         }
 
+        // Erasure: visit<ImportStatement>
         public  void visit(ImportStatement s) {
             this.result = 1;
         }
@@ -499,6 +535,7 @@ public class blockexit {
         public static final int any = 31;
     }
 
+    // Erasure: blockExit<Statement, FuncDeclaration, boolean>
     public static int blockExit(Statement s, FuncDeclaration func, boolean mustNotThrow) {
         // skipping duplicate class BlockExit
         if (s == null)

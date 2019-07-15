@@ -32,6 +32,7 @@ import static org.dlang.dmd.typesem.*;
 
 public class initsem {
 
+    // Erasure: toAssocArrayLiteral<ArrayInitializer>
     public static Expression toAssocArrayLiteral(ArrayInitializer ai) {
         Expression e = null;
         int dim = ai.value.length;
@@ -70,6 +71,7 @@ public class initsem {
         return new ErrorExp();
     }
 
+    // Erasure: initializerSemantic<Initializer, Ptr, Type, int>
     public static Initializer initializerSemantic(Initializer init, Ptr<Scope> sc, Type t, int needInterpret) {
         Ref<Ptr<Scope>> sc_ref = ref(sc);
         Ref<Type> t_ref = ref(t);
@@ -560,6 +562,7 @@ public class initsem {
         }
     }
 
+    // Erasure: inferType<Initializer, Ptr>
     public static Initializer inferType(Initializer init, Ptr<Scope> sc) {
         Function1<VoidInitializer,Initializer> visitVoid = new Function1<VoidInitializer,Initializer>() {
             public Initializer invoke(VoidInitializer i) {
@@ -743,6 +746,7 @@ public class initsem {
         }
     }
 
+    // Erasure: initializerToExpression<Initializer, Type>
     public static Expression initializerToExpression(Initializer init, Type itype) {
         Function1<VoidInitializer,Expression> visitVoid = new Function1<VoidInitializer,Expression>() {
             public Expression invoke(VoidInitializer _param_0) {
@@ -978,7 +982,7 @@ public class initsem {
 
     // defaulted all parameters starting with #2
     public static Expression initializerToExpression(Initializer init) {
-        return initializerToExpression(init, null);
+        return initializerToExpression(init, (Type)null);
     }
 
 }

@@ -35,16 +35,19 @@ public class attrib {
     public static abstract class AttribDeclaration extends Dsymbol
     {
         public Ptr<DArray<Dsymbol>> decl = null;
+        // Erasure: __ctor<Ptr>
         public  AttribDeclaration(Ptr<DArray<Dsymbol>> decl) {
             super();
             this.decl = pcopy(decl);
         }
 
+        // Erasure: __ctor<Loc, Identifier, Ptr>
         public  AttribDeclaration(Loc loc, Identifier ident, Ptr<DArray<Dsymbol>> decl) {
             super(loc, ident);
             this.decl = pcopy(decl);
         }
 
+        // Erasure: include<Ptr>
         public  Ptr<DArray<Dsymbol>> include(Ptr<Scope> sc) {
             if (this.errors)
             {
@@ -53,6 +56,7 @@ public class attrib {
             return this.decl;
         }
 
+        // Erasure: apply<Ptr, Ptr>
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
             Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
@@ -64,6 +68,7 @@ public class attrib {
             return foreachDsymbol(this.include(this._scope), __lambda3);
         }
 
+        // Erasure: createNewScope<Ptr, long, int, int, Prot, int, AlignDeclaration, int>
         public static Ptr<Scope> createNewScope(Ptr<Scope> sc, long stc, int linkage, int cppmangle, Prot protection, int explicitProtection, AlignDeclaration aligndecl, int inlining) {
             Ptr<Scope> sc2 = sc;
             if ((stc != (sc.get()).stc) || (linkage != (sc.get()).linkage) || (cppmangle != (sc.get()).cppmangle) || !protection.isSubsetOf((sc.get()).protection) || (explicitProtection != (sc.get()).explicitProtection) || (aligndecl != (sc.get()).aligndecl) || (inlining != (sc.get()).inlining))
@@ -80,10 +85,12 @@ public class attrib {
             return sc2;
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             return sc;
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
@@ -105,6 +112,7 @@ public class attrib {
             }
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
@@ -126,6 +134,7 @@ public class attrib {
             }
         }
 
+        // Erasure: importAll<Ptr>
         public  void importAll(Ptr<Scope> sc) {
             Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
@@ -147,6 +156,7 @@ public class attrib {
             }
         }
 
+        // Erasure: addComment<Ptr>
         public  void addComment(BytePtr comment) {
             if (comment != null)
             {
@@ -162,15 +172,18 @@ public class attrib {
             }
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("attribute");
         }
 
+        // Erasure: oneMember<Ptr, Identifier>
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             Ptr<DArray<Dsymbol>> d = this.include(null);
             return Dsymbol.oneMembers(d, ps, ident);
         }
 
+        // Erasure: setFieldOffset<AggregateDeclaration, Ptr, boolean>
         public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
             Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>() {
                 public Void invoke(Dsymbol s) {
@@ -183,6 +196,7 @@ public class attrib {
             foreachDsymbol(this.include(null), __lambda4);
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
@@ -194,6 +208,7 @@ public class attrib {
             return foreachDsymbol(this.include(null), __lambda1) != 0;
         }
 
+        // Erasure: hasStaticCtorOrDtor<>
         public  boolean hasStaticCtorOrDtor() {
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
@@ -205,6 +220,7 @@ public class attrib {
             return foreachDsymbol(this.include(null), __lambda1) != 0;
         }
 
+        // Erasure: checkCtorConstInit<>
         public  void checkCtorConstInit() {
             Function1<Dsymbol,Void> __lambda1 = new Function1<Dsymbol,Void>() {
                 public Void invoke(Dsymbol s) {
@@ -217,6 +233,7 @@ public class attrib {
             foreachDsymbol(this.include(null), __lambda1);
         }
 
+        // Erasure: addLocalClass<Ptr>
         public  void addLocalClass(Ptr<DArray<ClassDeclaration>> aclasses) {
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
                 public Void invoke(Dsymbol s) {
@@ -229,14 +246,17 @@ public class attrib {
             foreachDsymbol(this.include(null), __lambda2);
         }
 
+        // Erasure: addObjcSymbols<Ptr, Ptr>
         public  void addObjcSymbols(Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
             objc().addSymbols(this, classes, categories);
         }
 
+        // Erasure: isAttribDeclaration<>
         public  AttribDeclaration isAttribDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -249,16 +269,19 @@ public class attrib {
     public static class StorageClassDeclaration extends AttribDeclaration
     {
         public long stc = 0L;
+        // Erasure: __ctor<long, Ptr>
         public  StorageClassDeclaration(long stc, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.stc = stc;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new StorageClassDeclaration(this.stc, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             long scstc = (sc.get()).stc;
             if ((this.stc & 8913155L) != 0)
@@ -285,6 +308,7 @@ public class attrib {
             return AttribDeclaration.createNewScope(sc, scstc, (sc.get()).linkage, (sc.get()).cppmangle, (sc.get()).protection, (sc.get()).explicitProtection, (sc.get()).aligndecl, (sc.get()).inlining);
         }
 
+        // Erasure: oneMember<Ptr, Identifier>
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             boolean t = Dsymbol.oneMembers(this.decl, ps, ident);
             if (t && (ps.get() != null))
@@ -298,6 +322,7 @@ public class attrib {
             return t;
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
@@ -333,10 +358,12 @@ public class attrib {
             }
         }
 
+        // Erasure: isStorageClassDeclaration<>
         public  StorageClassDeclaration isStorageClassDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -369,16 +396,19 @@ public class attrib {
     {
         public Expression msg = null;
         public BytePtr msgstr = null;
+        // Erasure: __ctor<Expression, Ptr>
         public  DeprecatedDeclaration(Expression msg, Ptr<DArray<Dsymbol>> decl) {
             super(1024L, decl);
             this.msg = msg;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new DeprecatedDeclaration(this.msg.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl));
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             Ptr<Scope> scx = super.newScope(sc);
             if ((scx == sc))
@@ -389,6 +419,7 @@ public class attrib {
             return scx;
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             if (this.decl != null)
             {
@@ -398,6 +429,7 @@ public class attrib {
             return ;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -431,32 +463,39 @@ public class attrib {
     public static class LinkDeclaration extends AttribDeclaration
     {
         public int linkage = 0;
+        // Erasure: __ctor<int, Ptr>
         public  LinkDeclaration(int linkage, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.linkage = (linkage == LINK.system) ? target.systemLinkage() : linkage;
         }
 
+        // Erasure: create<int, Ptr>
         public static LinkDeclaration create(int p, Ptr<DArray<Dsymbol>> decl) {
             return new LinkDeclaration(p, decl);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new LinkDeclaration(this.linkage, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             return AttribDeclaration.createNewScope(sc, (sc.get()).stc, this.linkage, (sc.get()).cppmangle, (sc.get()).protection, (sc.get()).explicitProtection, (sc.get()).aligndecl, (sc.get()).inlining);
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return toBytePtr(this.asString());
         }
 
+        // Erasure: asString<>
         public  ByteSlice asString() {
             return new ByteSlice("extern ()");
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -488,28 +527,34 @@ public class attrib {
     public static class CPPMangleDeclaration extends AttribDeclaration
     {
         public int cppmangle = 0;
+        // Erasure: __ctor<int, Ptr>
         public  CPPMangleDeclaration(int cppmangle, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.cppmangle = cppmangle;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new CPPMangleDeclaration(this.cppmangle, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             return AttribDeclaration.createNewScope(sc, (sc.get()).stc, LINK.cpp, this.cppmangle, (sc.get()).protection, (sc.get()).explicitProtection, (sc.get()).aligndecl, (sc.get()).inlining);
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return toBytePtr(this.asString());
         }
 
+        // Erasure: asString<>
         public  ByteSlice asString() {
             return new ByteSlice("extern ()");
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -541,16 +586,19 @@ public class attrib {
     public static class CPPNamespaceDeclaration extends AttribDeclaration
     {
         public Expression exp = null;
+        // Erasure: __ctor<Identifier, Ptr>
         public  CPPNamespaceDeclaration(Identifier ident, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.ident = ident;
         }
 
+        // Erasure: __ctor<Expression, Ptr>
         public  CPPNamespaceDeclaration(Expression exp, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.exp = exp;
         }
 
+        // Erasure: __ctor<Identifier, Expression, Ptr, CPPNamespaceDeclaration>
         public  CPPNamespaceDeclaration(Identifier ident, Expression exp, Ptr<DArray<Dsymbol>> decl, CPPNamespaceDeclaration parent) {
             super(decl);
             this.ident = ident;
@@ -558,11 +606,13 @@ public class attrib {
             this.namespace = parent;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new CPPNamespaceDeclaration(this.ident, this.exp, Dsymbol.arraySyntaxCopy(this.decl), this.namespace);
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             Ptr<Scope> scx = (sc.get()).copy();
             (scx.get()).linkage = LINK.cpp;
@@ -570,18 +620,22 @@ public class attrib {
             return scx;
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return toBytePtr(this.asString());
         }
 
+        // Erasure: asString<>
         public  ByteSlice asString() {
             return new ByteSlice("extern (C++, `namespace`)");
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: isCPPNamespaceDeclaration<>
         public  CPPNamespaceDeclaration isCPPNamespaceDeclaration() {
             return this;
         }
@@ -614,11 +668,13 @@ public class attrib {
     {
         public Prot protection = new Prot();
         public Ptr<DArray<Identifier>> pkg_identifiers = null;
+        // Erasure: __ctor<Loc, Prot, Ptr>
         public  ProtDeclaration(Loc loc, Prot protection, Ptr<DArray<Dsymbol>> decl) {
             super(loc, null, decl);
             this.protection.opAssign(protection.copy());
         }
 
+        // Erasure: __ctor<Loc, Ptr, Ptr>
         public  ProtDeclaration(Loc loc, Ptr<DArray<Identifier>> pkg_identifiers, Ptr<DArray<Dsymbol>> decl) {
             super(loc, null, decl);
             this.protection.kind = Prot.Kind.package_;
@@ -631,6 +687,7 @@ public class attrib {
             }
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             if ((this.protection.kind == Prot.Kind.package_))
@@ -643,6 +700,7 @@ public class attrib {
             }
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             if (this.pkg_identifiers != null)
             {
@@ -651,6 +709,7 @@ public class attrib {
             return AttribDeclaration.createNewScope(sc, (sc.get()).stc, (sc.get()).linkage, (sc.get()).cppmangle, this.protection, 1, (sc.get()).aligndecl, (sc.get()).inlining);
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             if (this.pkg_identifiers != null)
             {
@@ -672,10 +731,12 @@ public class attrib {
             return ;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("protection attribute");
         }
 
+        // Erasure: toPrettyChars<boolean>
         public  BytePtr toPrettyChars(boolean _param_0) {
             assert((this.protection.kind > Prot.Kind.undefined));
             Ref<OutBuffer> buf = ref(new OutBuffer());
@@ -687,10 +748,12 @@ public class attrib {
             }
         }
 
+        // Erasure: isProtDeclaration<>
         public  ProtDeclaration isProtDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -725,20 +788,24 @@ public class attrib {
         public Expression ealign = null;
         public int UNKNOWN = 0;
         public int salign = 0;
+        // Erasure: __ctor<Loc, Expression, Ptr>
         public  AlignDeclaration(Loc loc, Expression ealign, Ptr<DArray<Dsymbol>> decl) {
             super(loc, null, decl);
             this.ealign = ealign;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new AlignDeclaration(this.loc, this.ealign != null ? this.ealign.syntaxCopy() : null, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             return AttribDeclaration.createNewScope(sc, (sc.get()).stc, (sc.get()).linkage, (sc.get()).cppmangle, (sc.get()).protection, (sc.get()).explicitProtection, this, (sc.get()).inlining);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -776,16 +843,19 @@ public class attrib {
         public int anonoffset = 0;
         public int anonstructsize = 0;
         public int anonalignsize = 0;
+        // Erasure: __ctor<Loc, boolean, Ptr>
         public  AnonDeclaration(Loc loc, boolean isunion, Ptr<DArray<Dsymbol>> decl) {
             super(loc, null, decl);
             this.isunion = isunion;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new AnonDeclaration(this.loc, this.isunion, Dsymbol.arraySyntaxCopy(this.decl));
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             if (this.decl != null)
             {
@@ -795,6 +865,7 @@ public class attrib {
             return ;
         }
 
+        // Erasure: setFieldOffset<AggregateDeclaration, Ptr, boolean>
         public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
             if (this.decl != null)
             {
@@ -848,14 +919,17 @@ public class attrib {
             }
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return this.isunion ? new BytePtr("anonymous union") : new BytePtr("anonymous struct");
         }
 
+        // Erasure: isAnonDeclaration<>
         public  AnonDeclaration isAnonDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -891,16 +965,19 @@ public class attrib {
     public static class PragmaDeclaration extends AttribDeclaration
     {
         public Ptr<DArray<Expression>> args = null;
+        // Erasure: __ctor<Loc, Identifier, Ptr, Ptr>
         public  PragmaDeclaration(Loc loc, Identifier ident, Ptr<DArray<Expression>> args, Ptr<DArray<Dsymbol>> decl) {
             super(loc, ident, decl);
             this.args = pcopy(args);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new PragmaDeclaration(this.loc, this.ident, Expression.arraySyntaxCopy(this.args), Dsymbol.arraySyntaxCopy(this.decl));
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             if ((pequals(this.ident, Id.Pinline)))
             {
@@ -940,10 +1017,12 @@ public class attrib {
             return sc;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("pragma");
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -976,17 +1055,20 @@ public class attrib {
     {
         public Condition condition = null;
         public Ptr<DArray<Dsymbol>> elsedecl = null;
+        // Erasure: __ctor<Condition, Ptr, Ptr>
         public  ConditionalDeclaration(Condition condition, Ptr<DArray<Dsymbol>> decl, Ptr<DArray<Dsymbol>> elsedecl) {
             super(decl);
             this.condition = condition;
             this.elsedecl = pcopy(elsedecl);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new ConditionalDeclaration(this.condition.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl), Dsymbol.arraySyntaxCopy(this.elsedecl));
         }
 
+        // Erasure: oneMember<Ptr, Identifier>
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             if ((this.condition.inc != Include.notComputed))
             {
@@ -1001,6 +1083,7 @@ public class attrib {
             }
         }
 
+        // Erasure: include<Ptr>
         public  Ptr<DArray<Dsymbol>> include(Ptr<Scope> sc) {
             if (this.errors)
             {
@@ -1010,6 +1093,7 @@ public class attrib {
             return this.condition.include(this._scope != null ? this._scope : sc) != 0 ? this.decl : this.elsedecl;
         }
 
+        // Erasure: addComment<Ptr>
         public  void addComment(BytePtr comment) {
             if (comment != null)
             {
@@ -1034,6 +1118,7 @@ public class attrib {
             }
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
                 public Void invoke(Dsymbol s) {
@@ -1046,6 +1131,7 @@ public class attrib {
             foreachDsymbol(this.include(sc), __lambda2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1080,15 +1166,18 @@ public class attrib {
         public ScopeDsymbol scopesym = null;
         public boolean addisdone = false;
         public boolean onStack = false;
+        // Erasure: __ctor<Condition, Ptr, Ptr>
         public  StaticIfDeclaration(Condition condition, Ptr<DArray<Dsymbol>> decl, Ptr<DArray<Dsymbol>> elsedecl) {
             super(condition, decl, elsedecl);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new StaticIfDeclaration(this.condition.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl), Dsymbol.arraySyntaxCopy(this.elsedecl));
         }
 
+        // Erasure: include<Ptr>
         public  Ptr<DArray<Dsymbol>> include(Ptr<Scope> sc) {
             if (this.errors || this.onStack)
             {
@@ -1135,21 +1224,26 @@ public class attrib {
             }
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             this.scopesym = sds;
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             this.setScope(sc);
         }
 
+        // Erasure: importAll<Ptr>
         public  void importAll(Ptr<Scope> sc) {
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("static if");
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1189,16 +1283,19 @@ public class attrib {
         public boolean onStack = false;
         public boolean cached = false;
         public Ptr<DArray<Dsymbol>> cache = null;
+        // Erasure: __ctor<StaticForeach, Ptr>
         public  StaticForeachDeclaration(StaticForeach sfe, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.sfe = sfe;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new StaticForeachDeclaration(this.sfe.syntaxCopy(), Dsymbol.arraySyntaxCopy(this.decl));
         }
 
+        // Erasure: oneMember<Ptr, Identifier>
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             if (this.cached)
             {
@@ -1208,6 +1305,7 @@ public class attrib {
             return false;
         }
 
+        // Erasure: include<Ptr>
         public  Ptr<DArray<Dsymbol>> include(Ptr<Scope> sc) {
             if (this.errors || this.onStack)
             {
@@ -1259,24 +1357,30 @@ public class attrib {
             }
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             this.scopesym = sds;
         }
 
+        // Erasure: addComment<Ptr>
         public  void addComment(BytePtr comment) {
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             this.setScope(sc);
         }
 
+        // Erasure: importAll<Ptr>
         public  void importAll(Ptr<Scope> sc) {
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("static foreach");
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1312,22 +1416,26 @@ public class attrib {
     public static class ForwardingAttribDeclaration extends AttribDeclaration
     {
         public ForwardingScopeDsymbol sym = null;
+        // Erasure: __ctor<Ptr>
         public  ForwardingAttribDeclaration(Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.sym = new ForwardingScopeDsymbol(null);
             this.sym.symtab = new DsymbolTable();
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             return (sc.get()).push(this.sym);
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             this.parent.value = (this.sym.parent.value = (this.sym.forward = sds));
             super.addMember(sc, this.sym);
             return ;
         }
 
+        // Erasure: isForwardingAttribDeclaration<>
         public  ForwardingAttribDeclaration isForwardingAttribDeclaration() {
             return this;
         }
@@ -1361,31 +1469,38 @@ public class attrib {
         public Ptr<DArray<Expression>> exps = null;
         public ScopeDsymbol scopesym = null;
         public boolean compiled = false;
+        // Erasure: __ctor<Loc, Ptr>
         public  CompileDeclaration(Loc loc, Ptr<DArray<Expression>> exps) {
             super(loc, null, null);
             this.exps = pcopy(exps);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             return new CompileDeclaration(this.loc, Expression.arraySyntaxCopy(this.exps));
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
             this.scopesym = sds;
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             this.setScope(sc);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("mixin");
         }
 
+        // Erasure: isCompileDeclaration<>
         public  CompileDeclaration isCompileDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1419,16 +1534,19 @@ public class attrib {
     public static class UserAttributeDeclaration extends AttribDeclaration
     {
         public Ptr<DArray<Expression>> atts = null;
+        // Erasure: __ctor<Ptr, Ptr>
         public  UserAttributeDeclaration(Ptr<DArray<Expression>> atts, Ptr<DArray<Dsymbol>> decl) {
             super(decl);
             this.atts = pcopy(atts);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             return new UserAttributeDeclaration(Expression.arraySyntaxCopy(this.atts), Dsymbol.arraySyntaxCopy(this.decl));
         }
 
+        // Erasure: newScope<Ptr>
         public  Ptr<Scope> newScope(Ptr<Scope> sc) {
             Ptr<Scope> sc2 = sc;
             if ((this.atts != null) && ((this.atts.get()).length != 0))
@@ -1439,6 +1557,7 @@ public class attrib {
             return sc2;
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             if (this.decl != null)
             {
@@ -1448,6 +1567,7 @@ public class attrib {
             return ;
         }
 
+        // Erasure: concat<Ptr, Ptr>
         public static Ptr<DArray<Expression>> concat(Ptr<DArray<Expression>> udas1, Ptr<DArray<Expression>> udas2) {
             Ptr<DArray<Expression>> udas = null;
             if ((udas1 == null) || ((udas1.get()).length == 0))
@@ -1467,6 +1587,7 @@ public class attrib {
             return udas;
         }
 
+        // Erasure: getAttributes<>
         public  Ptr<DArray<Expression>> getAttributes() {
             {
                 Ptr<Scope> sc = this._scope;
@@ -1488,10 +1609,12 @@ public class attrib {
             return exps;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("UserAttribute");
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }

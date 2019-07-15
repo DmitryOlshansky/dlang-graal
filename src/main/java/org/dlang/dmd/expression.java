@@ -64,15 +64,18 @@ public class expression {
         private CondExp ce = null;
         private VarDeclaration vcond = null;
         private boolean isThen = false;
+        // Erasure: __ctor<Ptr, CondExp>
         public  DtorVisitor(Ptr<Scope> sc, CondExp ce) {
             super();
             this.sc = pcopy(sc);
             this.ce = ce;
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
         }
 
+        // Erasure: visit<DeclarationExp>
         public  void visit(DeclarationExp e) {
             VarDeclaration v = e.declaration.isVarDeclaration();
             if ((v != null) && !v.isDataseg())
@@ -253,6 +256,7 @@ public class expression {
         public static final int initialization = 2;
     }
 
+    // Erasure: firstComma<Expression>
     public static Expression firstComma(Expression e) {
         Expression ex = e;
         for (; ((ex.op & 0xFF) == 99);) {
@@ -261,6 +265,7 @@ public class expression {
         return ex;
     }
 
+    // Erasure: lastComma<Expression>
     public static Expression lastComma(Expression e) {
         Expression ex = e;
         for (; ((ex.op & 0xFF) == 99);) {
@@ -269,6 +274,7 @@ public class expression {
         return ex;
     }
 
+    // Erasure: hasThis<Ptr>
     public static FuncDeclaration hasThis(Ptr<Scope> sc) {
         Dsymbol p = (sc.get()).parent.value;
         for (; (p != null) && (p.isTemplateMixin() != null);) {
@@ -311,6 +317,7 @@ public class expression {
         return fd;
     }
 
+    // Erasure: isNeedThisScope<Ptr, Declaration>
     public static boolean isNeedThisScope(Ptr<Scope> sc, Declaration d) {
         if (((sc.get()).intypeof == 1))
         {
@@ -357,6 +364,7 @@ public class expression {
         return true;
     }
 
+    // Erasure: isDotOpDispatch<Expression>
     public static boolean isDotOpDispatch(Expression e) {
         {
             DotTemplateInstanceExp dtie = e.isDotTemplateInstanceExp();
@@ -368,6 +376,7 @@ public class expression {
         return false;
     }
 
+    // Erasure: expandTuples<Ptr>
     public static void expandTuples(Ptr<DArray<Expression>> exps) {
         if ((exps == null))
         {
@@ -418,6 +427,7 @@ public class expression {
         }
     }
 
+    // Erasure: isAliasThisTuple<Expression>
     public static TupleDeclaration isAliasThisTuple(Expression e) {
         if (e.type.value == null)
         {
@@ -458,6 +468,7 @@ public class expression {
         }
     }
 
+    // Erasure: expandAliasThisTuples<Ptr, int>
     public static int expandAliasThisTuples(Ptr<DArray<Expression>> exps, int starti) {
         if ((exps == null) || ((exps.get()).length == 0))
         {
@@ -498,6 +509,7 @@ public class expression {
         return expandAliasThisTuples(exps, 0);
     }
 
+    // Erasure: getFuncTemplateDecl<Dsymbol>
     public static TemplateDeclaration getFuncTemplateDecl(Dsymbol s) {
         FuncDeclaration f = s.isFuncDeclaration();
         if ((f != null) && (f.parent.value != null))
@@ -520,6 +532,7 @@ public class expression {
         return null;
     }
 
+    // Erasure: valueNoDtor<Expression>
     public static Expression valueNoDtor(Expression e) {
         Expression ex = lastComma(e);
         {
@@ -569,6 +582,7 @@ public class expression {
         return e;
     }
 
+    // Erasure: callCpCtor<Ptr, Expression, Type>
     public static Expression callCpCtor(Ptr<Scope> sc, Expression e, Type destinationType) {
         {
             TypeStruct ts = e.type.value.baseElemOf().isTypeStruct();
@@ -595,6 +609,7 @@ public class expression {
         return e;
     }
 
+    // Erasure: doCopyOrMove<Ptr, Expression, Type>
     public static Expression doCopyOrMove(Ptr<Scope> sc, Expression e, Type t) {
         {
             CondExp ce = e.isCondExp();
@@ -613,17 +628,20 @@ public class expression {
 
     // defaulted all parameters starting with #3
     public static Expression doCopyOrMove(Ptr<Scope> sc, Expression e) {
-        return doCopyOrMove(sc, e, null);
+        return doCopyOrMove(sc, e, (Type)null);
     }
 
+    // Erasure: RealIdentical<double, double>
     public static int RealIdentical(double x1, double x2) {
         return ((CTFloat.isNaN(x1) && CTFloat.isNaN(x2) || CTFloat.isIdentical(x1, x2)) ? 1 : 0);
     }
 
+    // Erasure: typeDotIdExp<Loc, Type, Identifier>
     public static DotIdExp typeDotIdExp(Loc loc, Type type, Identifier ident) {
         return new DotIdExp(loc, new TypeExp(loc, type), ident);
     }
 
+    // Erasure: expToVariable<Expression>
     public static VarDeclaration expToVariable(Expression e) {
         for (; 1 != 0;){
             switch ((e.op & 0xFF))
@@ -677,6 +695,7 @@ public class expression {
         public byte parens = 0;
         public Ref<Type> type = ref(null);
         public Loc loc = new Loc();
+        // Erasure: __ctor<Loc, byte, int>
         public  Expression(Loc loc, byte op, int size) {
             super();
             this.loc.opAssign(loc.copy());
@@ -684,6 +703,7 @@ public class expression {
             this.size = (byte)size;
         }
 
+        // Erasure: _init<>
         public static void _init() {
             CTFEExp.cantexp = new CTFEExp(TOK.cantExpression);
             CTFEExp.voidexp = new CTFEExp(TOK.voidExpression);
@@ -693,6 +713,7 @@ public class expression {
             CTFEExp.showcontext = new CTFEExp(TOK.showCtfeContext);
         }
 
+        // Erasure: deinitialize<>
         public static void deinitialize() {
             CTFEExp.cantexp = null;
             CTFEExp.voidexp = null;
@@ -702,14 +723,17 @@ public class expression {
             CTFEExp.showcontext = null;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return this.copy();
         }
 
+        // Erasure: dyncast<>
         public  int dyncast() {
             return DYNCAST.expression;
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -721,6 +745,7 @@ public class expression {
             }
         }
 
+        // Erasure: error<Ptr>
         public  void error(BytePtr format, Object... ap) {
             Ref<BytePtr> format_ref = ref(format);
             if ((!pequals(this.type.value, Type.terror)))
@@ -729,6 +754,7 @@ public class expression {
             }
         }
 
+        // Erasure: errorSupplemental<Ptr>
         public  void errorSupplemental(BytePtr format, Object... ap) {
             Ref<BytePtr> format_ref = ref(format);
             if ((pequals(this.type.value, Type.terror)))
@@ -738,6 +764,7 @@ public class expression {
             verrorSupplemental(this.loc, format_ref.value, new RawSlice<>(ap));
         }
 
+        // Erasure: warning<Ptr>
         public  void warning(BytePtr format, Object... ap) {
             Ref<BytePtr> format_ref = ref(format);
             if ((!pequals(this.type.value, Type.terror)))
@@ -746,6 +773,7 @@ public class expression {
             }
         }
 
+        // Erasure: deprecation<Ptr>
         public  void deprecation(BytePtr format, Object... ap) {
             Ref<BytePtr> format_ref = ref(format);
             if ((!pequals(this.type.value, Type.terror)))
@@ -754,6 +782,7 @@ public class expression {
             }
         }
 
+        // Erasure: combine<Expression, Expression>
         public static Expression combine(Expression e1, Expression e2) {
             if (e1 != null)
             {
@@ -770,14 +799,17 @@ public class expression {
             return e1;
         }
 
+        // Erasure: combine<Expression, Expression, Expression>
         public static Expression combine(Expression e1, Expression e2, Expression e3) {
             return combine(combine(e1, e2), e3);
         }
 
+        // Erasure: combine<Expression, Expression, Expression, Expression>
         public static Expression combine(Expression e1, Expression e2, Expression e3, Expression e4) {
             return combine(combine(e1, e2), combine(e3, e4));
         }
 
+        // Erasure: extractLast<Expression, Expression>
         public static Expression extractLast(Expression e, Ref<Expression> e0) {
             e0.value = null;
             if (((e.op & 0xFF) != 99))
@@ -804,6 +836,7 @@ public class expression {
             }
         }
 
+        // Erasure: arraySyntaxCopy<Ptr>
         public static Ptr<DArray<Expression>> arraySyntaxCopy(Ptr<DArray<Expression>> exps) {
             Ptr<DArray<Expression>> a = null;
             if (exps != null)
@@ -822,42 +855,51 @@ public class expression {
             return a;
         }
 
+        // Erasure: toInteger<>
         public  long toInteger() {
             this.error(new BytePtr("integer constant expression expected instead of `%s`"), this.toChars());
             return 0L;
         }
 
+        // Erasure: toUInteger<>
         public  long toUInteger() {
             return this.toInteger();
         }
 
+        // Erasure: toReal<>
         public  double toReal() {
             this.error(new BytePtr("floating point constant expression expected instead of `%s`"), this.toChars());
             return CTFloat.zero;
         }
 
+        // Erasure: toImaginary<>
         public  double toImaginary() {
             this.error(new BytePtr("floating point constant expression expected instead of `%s`"), this.toChars());
             return CTFloat.zero;
         }
 
+        // Erasure: toComplex<>
         public  complex_t toComplex() {
             this.error(new BytePtr("floating point constant expression expected instead of `%s`"), this.toChars());
             return new complex_t(CTFloat.zero);
         }
 
+        // Erasure: toStringExp<>
         public  StringExp toStringExp() {
             return null;
         }
 
+        // Erasure: toTupleExp<>
         public  TupleExp toTupleExp() {
             return null;
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return false;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (e == null)
             {
@@ -878,6 +920,7 @@ public class expression {
             return new ErrorExp();
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             if ((this.checkModifiable(sc, 0) == Modifiable.yes))
             {
@@ -918,27 +961,33 @@ public class expression {
             return this.toLvalue(sc, e);
         }
 
+        // Erasure: implicitCastTo<Ptr, Type>
         public  Expression implicitCastTo(Ptr<Scope> sc, Type t) {
             return implicitCastTo(this, sc, t);
         }
 
+        // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type t) {
             return implicitConvTo(this, t);
         }
 
+        // Erasure: castTo<Ptr, Type>
         public  Expression castTo(Ptr<Scope> sc, Type t) {
             return castTo(this, sc, t);
         }
 
+        // Erasure: resolveLoc<Loc, Ptr>
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
             this.loc.opAssign(loc.copy());
             return this;
         }
 
+        // Erasure: checkType<>
         public  boolean checkType() {
             return false;
         }
 
+        // Erasure: checkValue<>
         public  boolean checkValue() {
             if ((this.type.value != null) && ((this.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
             {
@@ -952,6 +1001,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: checkScalar<>
         public  boolean checkScalar() {
             if (((this.op & 0xFF) == 127))
             {
@@ -969,6 +1019,7 @@ public class expression {
             return this.checkValue();
         }
 
+        // Erasure: checkNoBool<>
         public  boolean checkNoBool() {
             if (((this.op & 0xFF) == 127))
             {
@@ -986,6 +1037,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: checkIntegral<>
         public  boolean checkIntegral() {
             if (((this.op & 0xFF) == 127))
             {
@@ -1003,6 +1055,7 @@ public class expression {
             return this.checkValue();
         }
 
+        // Erasure: checkArithmetic<>
         public  boolean checkArithmetic() {
             if (((this.op & 0xFF) == 127))
             {
@@ -1020,10 +1073,12 @@ public class expression {
             return this.checkValue();
         }
 
+        // Erasure: checkDeprecated<Ptr, Dsymbol>
         public  boolean checkDeprecated(Ptr<Scope> sc, Dsymbol s) {
             return s.checkDeprecated(this.loc, sc);
         }
 
+        // Erasure: checkDisabled<Ptr, Dsymbol>
         public  boolean checkDisabled(Ptr<Scope> sc, Dsymbol s) {
             {
                 Declaration d = s.isDeclaration();
@@ -1035,6 +1090,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: checkPurity<Ptr, FuncDeclaration>
         public  boolean checkPurity(Ptr<Scope> sc, FuncDeclaration f) {
             if ((sc.get()).func == null)
             {
@@ -1092,6 +1148,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: checkPurity<Ptr, VarDeclaration>
         public  boolean checkPurity(Ptr<Scope> sc, VarDeclaration v) {
             if ((sc.get()).func == null)
             {
@@ -1224,6 +1281,7 @@ public class expression {
             return err;
         }
 
+        // Erasure: checkSafety<Ptr, FuncDeclaration>
         public  boolean checkSafety(Ptr<Scope> sc, FuncDeclaration f) {
             if ((sc.get()).func == null)
             {
@@ -1258,6 +1316,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: checkNogc<Ptr, FuncDeclaration>
         public  boolean checkNogc(Ptr<Scope> sc, FuncDeclaration f) {
             if ((sc.get()).func == null)
             {
@@ -1290,6 +1349,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: checkPostblit<Ptr, Type>
         public  boolean checkPostblit(Ptr<Scope> sc, Type t) {
             {
                 TypeStruct ts = t.baseElemOf().isTypeStruct();
@@ -1316,6 +1376,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: checkRightThis<Ptr>
         public  boolean checkRightThis(Ptr<Scope> sc) {
             if (((this.op & 0xFF) == 127))
             {
@@ -1333,6 +1394,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: checkReadModifyWrite<byte, Expression>
         public  boolean checkReadModifyWrite(byte rmwOp, Expression ex) {
             if ((this.type.value == null) || !this.type.value.isShared())
             {
@@ -1357,9 +1419,10 @@ public class expression {
 
         // defaulted all parameters starting with #2
         public  boolean checkReadModifyWrite(byte rmwOp) {
-            return checkReadModifyWrite(rmwOp, null);
+            return checkReadModifyWrite(rmwOp, (Expression)null);
         }
 
+        // Erasure: checkModifiable<Ptr, int>
         public  int checkModifiable(Ptr<Scope> sc, int flag) {
             return this.type.value != null ? Modifiable.yes : Modifiable.no;
         }
@@ -1369,6 +1432,7 @@ public class expression {
             return checkModifiable(sc, 0);
         }
 
+        // Erasure: toBoolean<Ptr>
         public  Expression toBoolean(Ptr<Scope> sc) {
             Expression e = this;
             Type t = this.type.value;
@@ -1415,15 +1479,18 @@ public class expression {
             return e;
         }
 
+        // Erasure: addDtorHook<Ptr>
         public  Expression addDtorHook(Ptr<Scope> sc) {
             return this;
         }
 
+        // Erasure: addressOf<>
         public  Expression addressOf() {
             Expression e = new AddrExp(this.loc, this, this.type.value.pointerTo());
             return e;
         }
 
+        // Erasure: deref<>
         public  Expression deref() {
             if (this.type.value != null)
             {
@@ -1439,6 +1506,7 @@ public class expression {
             return this;
         }
 
+        // Erasure: optimize<int, boolean>
         public  Expression optimize(int result, boolean keepLvalue) {
             return Expression_optimize(this, result, keepLvalue);
         }
@@ -1448,442 +1516,552 @@ public class expression {
             return optimize(result, false);
         }
 
+        // Erasure: ctfeInterpret<>
         public  Expression ctfeInterpret() {
             return ctfeInterpret(this);
         }
 
+        // Erasure: isConst<>
         public  int isConst() {
             return isConst(this);
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             return false;
         }
 
+        // Erasure: hasCode<>
         public  boolean hasCode() {
             return true;
         }
 
+        // Erasure: isIntegerExp<>
         public  IntegerExp isIntegerExp() {
             return ((this.op & 0xFF) == 135) ? (IntegerExp)this : null;
         }
 
+        // Erasure: isErrorExp<>
         public  ErrorExp isErrorExp() {
             return ((this.op & 0xFF) == 127) ? (ErrorExp)this : null;
         }
 
+        // Erasure: isVoidInitExp<>
         public  VoidInitExp isVoidInitExp() {
             return ((this.op & 0xFF) == 128) ? (VoidInitExp)this : null;
         }
 
+        // Erasure: isRealExp<>
         public  RealExp isRealExp() {
             return ((this.op & 0xFF) == 140) ? (RealExp)this : null;
         }
 
+        // Erasure: isComplexExp<>
         public  ComplexExp isComplexExp() {
             return ((this.op & 0xFF) == 147) ? (ComplexExp)this : null;
         }
 
+        // Erasure: isIdentifierExp<>
         public  IdentifierExp isIdentifierExp() {
             return ((this.op & 0xFF) == 120) ? (IdentifierExp)this : null;
         }
 
+        // Erasure: isDollarExp<>
         public  DollarExp isDollarExp() {
             return ((this.op & 0xFF) == 35) ? (DollarExp)this : null;
         }
 
+        // Erasure: isDsymbolExp<>
         public  DsymbolExp isDsymbolExp() {
             return ((this.op & 0xFF) == 41) ? (DsymbolExp)this : null;
         }
 
+        // Erasure: isThisExp<>
         public  ThisExp isThisExp() {
             return ((this.op & 0xFF) == 123) ? (ThisExp)this : null;
         }
 
+        // Erasure: isSuperExp<>
         public  SuperExp isSuperExp() {
             return ((this.op & 0xFF) == 124) ? (SuperExp)this : null;
         }
 
+        // Erasure: isNullExp<>
         public  NullExp isNullExp() {
             return ((this.op & 0xFF) == 13) ? (NullExp)this : null;
         }
 
+        // Erasure: isStringExp<>
         public  StringExp isStringExp() {
             return ((this.op & 0xFF) == 121) ? (StringExp)this : null;
         }
 
+        // Erasure: isTupleExp<>
         public  TupleExp isTupleExp() {
             return ((this.op & 0xFF) == 126) ? (TupleExp)this : null;
         }
 
+        // Erasure: isArrayLiteralExp<>
         public  ArrayLiteralExp isArrayLiteralExp() {
             return ((this.op & 0xFF) == 47) ? (ArrayLiteralExp)this : null;
         }
 
+        // Erasure: isAssocArrayLiteralExp<>
         public  AssocArrayLiteralExp isAssocArrayLiteralExp() {
             return ((this.op & 0xFF) == 48) ? (AssocArrayLiteralExp)this : null;
         }
 
+        // Erasure: isStructLiteralExp<>
         public  StructLiteralExp isStructLiteralExp() {
             return ((this.op & 0xFF) == 49) ? (StructLiteralExp)this : null;
         }
 
+        // Erasure: isTypeExp<>
         public  TypeExp isTypeExp() {
             return ((this.op & 0xFF) == 20) ? (TypeExp)this : null;
         }
 
+        // Erasure: isScopeExp<>
         public  ScopeExp isScopeExp() {
             return ((this.op & 0xFF) == 203) ? (ScopeExp)this : null;
         }
 
+        // Erasure: isTemplateExp<>
         public  TemplateExp isTemplateExp() {
             return ((this.op & 0xFF) == 36) ? (TemplateExp)this : null;
         }
 
+        // Erasure: isNewExp<>
         public  NewExp isNewExp() {
             return ((this.op & 0xFF) == 22) ? (NewExp)this : null;
         }
 
+        // Erasure: isNewAnonClassExp<>
         public  NewAnonClassExp isNewAnonClassExp() {
             return ((this.op & 0xFF) == 45) ? (NewAnonClassExp)this : null;
         }
 
+        // Erasure: isSymOffExp<>
         public  SymOffExp isSymOffExp() {
             return ((this.op & 0xFF) == 25) ? (SymOffExp)this : null;
         }
 
+        // Erasure: isVarExp<>
         public  VarExp isVarExp() {
             return ((this.op & 0xFF) == 26) ? (VarExp)this : null;
         }
 
+        // Erasure: isOverExp<>
         public  OverExp isOverExp() {
             return ((this.op & 0xFF) == 214) ? (OverExp)this : null;
         }
 
+        // Erasure: isFuncExp<>
         public  FuncExp isFuncExp() {
             return ((this.op & 0xFF) == 161) ? (FuncExp)this : null;
         }
 
+        // Erasure: isDeclarationExp<>
         public  DeclarationExp isDeclarationExp() {
             return ((this.op & 0xFF) == 38) ? (DeclarationExp)this : null;
         }
 
+        // Erasure: isTypeidExp<>
         public  TypeidExp isTypeidExp() {
             return ((this.op & 0xFF) == 42) ? (TypeidExp)this : null;
         }
 
+        // Erasure: isTraitsExp<>
         public  TraitsExp isTraitsExp() {
             return ((this.op & 0xFF) == 213) ? (TraitsExp)this : null;
         }
 
+        // Erasure: isHaltExp<>
         public  HaltExp isHaltExp() {
             return ((this.op & 0xFF) == 125) ? (HaltExp)this : null;
         }
 
+        // Erasure: isExp<>
         public  IsExp isExp() {
             return ((this.op & 0xFF) == 63) ? (IsExp)this : null;
         }
 
+        // Erasure: isCompileExp<>
         public  CompileExp isCompileExp() {
             return ((this.op & 0xFF) == 162) ? (CompileExp)this : null;
         }
 
+        // Erasure: isImportExp<>
         public  ImportExp isImportExp() {
             return ((this.op & 0xFF) == 157) ? (ImportExp)this : null;
         }
 
+        // Erasure: isAssertExp<>
         public  AssertExp isAssertExp() {
             return ((this.op & 0xFF) == 14) ? (AssertExp)this : null;
         }
 
+        // Erasure: isDotIdExp<>
         public  DotIdExp isDotIdExp() {
             return ((this.op & 0xFF) == 28) ? (DotIdExp)this : null;
         }
 
+        // Erasure: isDotTemplateExp<>
         public  DotTemplateExp isDotTemplateExp() {
             return ((this.op & 0xFF) == 37) ? (DotTemplateExp)this : null;
         }
 
+        // Erasure: isDotVarExp<>
         public  DotVarExp isDotVarExp() {
             return ((this.op & 0xFF) == 27) ? (DotVarExp)this : null;
         }
 
+        // Erasure: isDotTemplateInstanceExp<>
         public  DotTemplateInstanceExp isDotTemplateInstanceExp() {
             return ((this.op & 0xFF) == 29) ? (DotTemplateInstanceExp)this : null;
         }
 
+        // Erasure: isDelegateExp<>
         public  DelegateExp isDelegateExp() {
             return ((this.op & 0xFF) == 160) ? (DelegateExp)this : null;
         }
 
+        // Erasure: isDotTypeExp<>
         public  DotTypeExp isDotTypeExp() {
             return ((this.op & 0xFF) == 30) ? (DotTypeExp)this : null;
         }
 
+        // Erasure: isCallExp<>
         public  CallExp isCallExp() {
             return ((this.op & 0xFF) == 18) ? (CallExp)this : null;
         }
 
+        // Erasure: isAddrExp<>
         public  AddrExp isAddrExp() {
             return ((this.op & 0xFF) == 19) ? (AddrExp)this : null;
         }
 
+        // Erasure: isPtrExp<>
         public  PtrExp isPtrExp() {
             return ((this.op & 0xFF) == 24) ? (PtrExp)this : null;
         }
 
+        // Erasure: isNegExp<>
         public  NegExp isNegExp() {
             return ((this.op & 0xFF) == 8) ? (NegExp)this : null;
         }
 
+        // Erasure: isUAddExp<>
         public  UAddExp isUAddExp() {
             return ((this.op & 0xFF) == 43) ? (UAddExp)this : null;
         }
 
+        // Erasure: isComExp<>
         public  ComExp isComExp() {
             return ((this.op & 0xFF) == 92) ? (ComExp)this : null;
         }
 
+        // Erasure: isNotExp<>
         public  NotExp isNotExp() {
             return ((this.op & 0xFF) == 91) ? (NotExp)this : null;
         }
 
+        // Erasure: isDeleteExp<>
         public  DeleteExp isDeleteExp() {
             return ((this.op & 0xFF) == 23) ? (DeleteExp)this : null;
         }
 
+        // Erasure: isCastExp<>
         public  CastExp isCastExp() {
             return ((this.op & 0xFF) == 12) ? (CastExp)this : null;
         }
 
+        // Erasure: isVectorExp<>
         public  VectorExp isVectorExp() {
             return ((this.op & 0xFF) == 229) ? (VectorExp)this : null;
         }
 
+        // Erasure: isVectorArrayExp<>
         public  VectorArrayExp isVectorArrayExp() {
             return ((this.op & 0xFF) == 236) ? (VectorArrayExp)this : null;
         }
 
+        // Erasure: isSliceExp<>
         public  SliceExp isSliceExp() {
             return ((this.op & 0xFF) == 31) ? (SliceExp)this : null;
         }
 
+        // Erasure: isArrayLengthExp<>
         public  ArrayLengthExp isArrayLengthExp() {
             return ((this.op & 0xFF) == 32) ? (ArrayLengthExp)this : null;
         }
 
+        // Erasure: isArrayExp<>
         public  ArrayExp isArrayExp() {
             return ((this.op & 0xFF) == 17) ? (ArrayExp)this : null;
         }
 
+        // Erasure: isDotExp<>
         public  DotExp isDotExp() {
             return ((this.op & 0xFF) == 97) ? (DotExp)this : null;
         }
 
+        // Erasure: isCommaExp<>
         public  CommaExp isCommaExp() {
             return ((this.op & 0xFF) == 99) ? (CommaExp)this : null;
         }
 
+        // Erasure: isIntervalExp<>
         public  IntervalExp isIntervalExp() {
             return ((this.op & 0xFF) == 231) ? (IntervalExp)this : null;
         }
 
+        // Erasure: isDelegatePtrExp<>
         public  DelegatePtrExp isDelegatePtrExp() {
             return ((this.op & 0xFF) == 52) ? (DelegatePtrExp)this : null;
         }
 
+        // Erasure: isDelegateFuncptrExp<>
         public  DelegateFuncptrExp isDelegateFuncptrExp() {
             return ((this.op & 0xFF) == 53) ? (DelegateFuncptrExp)this : null;
         }
 
+        // Erasure: isIndexExp<>
         public  IndexExp isIndexExp() {
             return ((this.op & 0xFF) == 62) ? (IndexExp)this : null;
         }
 
+        // Erasure: isPostExp<>
         public  PostExp isPostExp() {
             return ((this.op & 0xFF) == 93) || ((this.op & 0xFF) == 94) ? (PostExp)this : null;
         }
 
+        // Erasure: isPreExp<>
         public  PreExp isPreExp() {
             return ((this.op & 0xFF) == 103) || ((this.op & 0xFF) == 104) ? (PreExp)this : null;
         }
 
+        // Erasure: isAssignExp<>
         public  AssignExp isAssignExp() {
             return ((this.op & 0xFF) == 90) ? (AssignExp)this : null;
         }
 
+        // Erasure: isConstructExp<>
         public  ConstructExp isConstructExp() {
             return ((this.op & 0xFF) == 95) ? (ConstructExp)this : null;
         }
 
+        // Erasure: isBlitExp<>
         public  BlitExp isBlitExp() {
             return ((this.op & 0xFF) == 96) ? (BlitExp)this : null;
         }
 
+        // Erasure: isAddAssignExp<>
         public  AddAssignExp isAddAssignExp() {
             return ((this.op & 0xFF) == 76) ? (AddAssignExp)this : null;
         }
 
+        // Erasure: isMinAssignExp<>
         public  MinAssignExp isMinAssignExp() {
             return ((this.op & 0xFF) == 77) ? (MinAssignExp)this : null;
         }
 
+        // Erasure: isMulAssignExp<>
         public  MulAssignExp isMulAssignExp() {
             return ((this.op & 0xFF) == 81) ? (MulAssignExp)this : null;
         }
 
+        // Erasure: isDivAssignExp<>
         public  DivAssignExp isDivAssignExp() {
             return ((this.op & 0xFF) == 82) ? (DivAssignExp)this : null;
         }
 
+        // Erasure: isModAssignExp<>
         public  ModAssignExp isModAssignExp() {
             return ((this.op & 0xFF) == 83) ? (ModAssignExp)this : null;
         }
 
+        // Erasure: isAndAssignExp<>
         public  AndAssignExp isAndAssignExp() {
             return ((this.op & 0xFF) == 87) ? (AndAssignExp)this : null;
         }
 
+        // Erasure: isOrAssignExp<>
         public  OrAssignExp isOrAssignExp() {
             return ((this.op & 0xFF) == 88) ? (OrAssignExp)this : null;
         }
 
+        // Erasure: isXorAssignExp<>
         public  XorAssignExp isXorAssignExp() {
             return ((this.op & 0xFF) == 89) ? (XorAssignExp)this : null;
         }
 
+        // Erasure: isPowAssignExp<>
         public  PowAssignExp isPowAssignExp() {
             return ((this.op & 0xFF) == 227) ? (PowAssignExp)this : null;
         }
 
+        // Erasure: isShlAssignExp<>
         public  ShlAssignExp isShlAssignExp() {
             return ((this.op & 0xFF) == 66) ? (ShlAssignExp)this : null;
         }
 
+        // Erasure: isShrAssignExp<>
         public  ShrAssignExp isShrAssignExp() {
             return ((this.op & 0xFF) == 67) ? (ShrAssignExp)this : null;
         }
 
+        // Erasure: isUshrAssignExp<>
         public  UshrAssignExp isUshrAssignExp() {
             return ((this.op & 0xFF) == 69) ? (UshrAssignExp)this : null;
         }
 
+        // Erasure: isCatAssignExp<>
         public  CatAssignExp isCatAssignExp() {
             return ((this.op & 0xFF) == 71) ? (CatAssignExp)this : null;
         }
 
+        // Erasure: isCatElemAssignExp<>
         public  CatElemAssignExp isCatElemAssignExp() {
             return ((this.op & 0xFF) == 72) ? (CatElemAssignExp)this : null;
         }
 
+        // Erasure: isCatDcharAssignExp<>
         public  CatDcharAssignExp isCatDcharAssignExp() {
             return ((this.op & 0xFF) == 73) ? (CatDcharAssignExp)this : null;
         }
 
+        // Erasure: isAddExp<>
         public  AddExp isAddExp() {
             return ((this.op & 0xFF) == 74) ? (AddExp)this : null;
         }
 
+        // Erasure: isMinExp<>
         public  MinExp isMinExp() {
             return ((this.op & 0xFF) == 75) ? (MinExp)this : null;
         }
 
+        // Erasure: isCatExp<>
         public  CatExp isCatExp() {
             return ((this.op & 0xFF) == 70) ? (CatExp)this : null;
         }
 
+        // Erasure: isMulExp<>
         public  MulExp isMulExp() {
             return ((this.op & 0xFF) == 78) ? (MulExp)this : null;
         }
 
+        // Erasure: isDivExp<>
         public  DivExp isDivExp() {
             return ((this.op & 0xFF) == 79) ? (DivExp)this : null;
         }
 
+        // Erasure: isModExp<>
         public  ModExp isModExp() {
             return ((this.op & 0xFF) == 80) ? (ModExp)this : null;
         }
 
+        // Erasure: isPowExp<>
         public  PowExp isPowExp() {
             return ((this.op & 0xFF) == 226) ? (PowExp)this : null;
         }
 
+        // Erasure: isShlExp<>
         public  ShlExp isShlExp() {
             return ((this.op & 0xFF) == 64) ? (ShlExp)this : null;
         }
 
+        // Erasure: isShrExp<>
         public  ShrExp isShrExp() {
             return ((this.op & 0xFF) == 65) ? (ShrExp)this : null;
         }
 
+        // Erasure: isUshrExp<>
         public  UshrExp isUshrExp() {
             return ((this.op & 0xFF) == 68) ? (UshrExp)this : null;
         }
 
+        // Erasure: isAndExp<>
         public  AndExp isAndExp() {
             return ((this.op & 0xFF) == 84) ? (AndExp)this : null;
         }
 
+        // Erasure: isOrExp<>
         public  OrExp isOrExp() {
             return ((this.op & 0xFF) == 85) ? (OrExp)this : null;
         }
 
+        // Erasure: isXorExp<>
         public  XorExp isXorExp() {
             return ((this.op & 0xFF) == 86) ? (XorExp)this : null;
         }
 
+        // Erasure: isLogicalExp<>
         public  LogicalExp isLogicalExp() {
             return ((this.op & 0xFF) == 101) || ((this.op & 0xFF) == 102) ? (LogicalExp)this : null;
         }
 
+        // Erasure: isInExp<>
         public  InExp isInExp() {
             return ((this.op & 0xFF) == 175) ? (InExp)this : null;
         }
 
+        // Erasure: isRemoveExp<>
         public  RemoveExp isRemoveExp() {
             return ((this.op & 0xFF) == 44) ? (RemoveExp)this : null;
         }
 
+        // Erasure: isEqualExp<>
         public  EqualExp isEqualExp() {
             return ((this.op & 0xFF) == 58) || ((this.op & 0xFF) == 59) ? (EqualExp)this : null;
         }
 
+        // Erasure: isIdentityExp<>
         public  IdentityExp isIdentityExp() {
             return ((this.op & 0xFF) == 60) || ((this.op & 0xFF) == 61) ? (IdentityExp)this : null;
         }
 
+        // Erasure: isCondExp<>
         public  CondExp isCondExp() {
             return ((this.op & 0xFF) == 100) ? (CondExp)this : null;
         }
 
+        // Erasure: isDefaultInitExp<>
         public  DefaultInitExp isDefaultInitExp() {
             return ((this.op & 0xFF) == 190) ? (DefaultInitExp)this : null;
         }
 
+        // Erasure: isFileInitExp<>
         public  FileInitExp isFileInitExp() {
             return ((this.op & 0xFF) == 219) || ((this.op & 0xFF) == 220) ? (FileInitExp)this : null;
         }
 
+        // Erasure: isLineInitExp<>
         public  LineInitExp isLineInitExp() {
             return ((this.op & 0xFF) == 218) ? (LineInitExp)this : null;
         }
 
+        // Erasure: isModuleInitExp<>
         public  ModuleInitExp isModuleInitExp() {
             return ((this.op & 0xFF) == 221) ? (ModuleInitExp)this : null;
         }
 
+        // Erasure: isFuncInitExp<>
         public  FuncInitExp isFuncInitExp() {
             return ((this.op & 0xFF) == 222) ? (FuncInitExp)this : null;
         }
 
+        // Erasure: isPrettyFuncInitExp<>
         public  PrettyFuncInitExp isPrettyFuncInitExp() {
             return ((this.op & 0xFF) == 223) ? (PrettyFuncInitExp)this : null;
         }
 
+        // Erasure: isClassReferenceExp<>
         public  ClassReferenceExp isClassReferenceExp() {
             return ((this.op & 0xFF) == 50) ? (ClassReferenceExp)this : null;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -1896,6 +2074,7 @@ public class expression {
     public static class IntegerExp extends Expression
     {
         public long value = 0L;
+        // Erasure: __ctor<Loc, long, Type>
         public  IntegerExp(Loc loc, long value, Type type) {
             super(loc, TOK.int64, 32);
             assert(type != null);
@@ -1911,20 +2090,24 @@ public class expression {
             this.value = normalize(type.toBasetype().ty, value);
         }
 
+        // Erasure: __ctor<long>
         public  IntegerExp(long value) {
             super(Loc.initial, TOK.int64, 32);
             this.type.value = Type.tint32;
             this.value = (long)(int)value;
         }
 
+        // Erasure: create<Loc, long, Type>
         public static IntegerExp create(Loc loc, long value, Type type) {
             return new IntegerExp(loc, value, type);
         }
 
+        // Erasure: emplace<Ptr, Loc, long, Type>
         public static void emplace(Ptr<UnionExp> pue, Loc loc, long value, Type type) {
             (pue) = new UnionExp(new IntegerExp(loc, value, type));
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -1943,10 +2126,12 @@ public class expression {
             return false;
         }
 
+        // Erasure: toInteger<>
         public  long toInteger() {
             return this.value = normalize(this.type.value.toBasetype().ty, this.value);
         }
 
+        // Erasure: toReal<>
         public  double toReal() {
             byte ty = this.type.value.toBasetype().ty;
             long val = normalize(ty, this.value);
@@ -1954,19 +2139,23 @@ public class expression {
             return ((ty & 0xFF) == ENUMTY.Tuns64) ? (double)val : (double)(long)val;
         }
 
+        // Erasure: toImaginary<>
         public  double toImaginary() {
             return CTFloat.zero;
         }
 
+        // Erasure: toComplex<>
         public  complex_t toComplex() {
             return new complex_t(this.toReal());
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             boolean r = this.toInteger() != 0L;
             return result ? r : !r;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (e == null)
             {
@@ -1980,18 +2169,22 @@ public class expression {
             return new ErrorExp();
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: getInteger<>
         public  long getInteger() {
             return this.value;
         }
 
+        // Erasure: setInteger<long>
         public  void setInteger(long value) {
             this.value = normalize(this.type.value.toBasetype().ty, value);
         }
 
+        // Erasure: normalize<byte, long>
         public static long normalize(byte ty, long value) {
             long result = 0L;
             {
@@ -2055,11 +2248,13 @@ public class expression {
             return result;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return this;
         }
 
         // from template literal!(_356A192B7913B04C)
+        // Erasure: literal_356A192B7913B04C<>
         public static IntegerExp literal_356A192B7913B04C() {
             if (expression.literaltheConstant == null)
             {
@@ -2070,6 +2265,7 @@ public class expression {
 
 
         // from template literal!(_7984B0A0E139CABA)
+        // Erasure: literal_7984B0A0E139CABA<>
         public static IntegerExp literal_7984B0A0E139CABA() {
             if (expression.literaltheConstant == null)
             {
@@ -2080,6 +2276,7 @@ public class expression {
 
 
         // from template literal!(_B6589FC6AB0DC82C)
+        // Erasure: literal_B6589FC6AB0DC82C<>
         public static IntegerExp literal_B6589FC6AB0DC82C() {
             if (expression.literaltheConstant == null)
             {
@@ -2105,6 +2302,7 @@ public class expression {
     }
     public static class ErrorExp extends Expression
     {
+        // Erasure: __ctor<>
         public  ErrorExp() {
             if ((global.errors == 0) && (global.gaggedErrors == 0))
             {
@@ -2114,10 +2312,12 @@ public class expression {
             this.type.value = Type.terror;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2137,16 +2337,19 @@ public class expression {
     public static class VoidInitExp extends Expression
     {
         public VarDeclaration var = null;
+        // Erasure: __ctor<VarDeclaration>
         public  VoidInitExp(VarDeclaration var) {
             super(var.loc, TOK.void_, 28);
             this.var = var;
             this.type.value = var.type;
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return new BytePtr("void");
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2168,20 +2371,24 @@ public class expression {
     public static class RealExp extends Expression
     {
         public double value = 0.0;
+        // Erasure: __ctor<Loc, double, Type>
         public  RealExp(Loc loc, double value, Type type) {
             super(loc, TOK.float64, 40);
             this.value = value;
             this.type.value = type;
         }
 
+        // Erasure: create<Loc, double, Type>
         public static RealExp create(Loc loc, double value, Type type) {
             return new RealExp(loc, value, type);
         }
 
+        // Erasure: emplace<Ptr, Loc, double, Type>
         public static void emplace(Ptr<UnionExp> pue, Loc loc, double value, Type type) {
             (pue) = new UnionExp(new RealExp(loc, value, type));
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -2200,30 +2407,37 @@ public class expression {
             return false;
         }
 
+        // Erasure: toInteger<>
         public  long toInteger() {
             return (long)(long)this.toReal();
         }
 
+        // Erasure: toUInteger<>
         public  long toUInteger() {
             return (long)this.toReal();
         }
 
+        // Erasure: toReal<>
         public  double toReal() {
             return this.type.value.isreal() ? this.value : CTFloat.zero;
         }
 
+        // Erasure: toImaginary<>
         public  double toImaginary() {
             return this.type.value.isreal() ? CTFloat.zero : this.value;
         }
 
+        // Erasure: toComplex<>
         public  complex_t toComplex() {
             return new complex_t(this.toReal(), this.toImaginary());
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             return result ? (this.value != 0) : !(this.value != 0);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2245,20 +2459,24 @@ public class expression {
     public static class ComplexExp extends Expression
     {
         public complex_t value = new complex_t();
+        // Erasure: __ctor<Loc, complex_t, Type>
         public  ComplexExp(Loc loc, complex_t value, Type type) {
             super(loc, TOK.complex80, 56);
             this.value.opAssign(value.copy());
             this.type.value = type;
         }
 
+        // Erasure: create<Loc, complex_t, Type>
         public static ComplexExp create(Loc loc, complex_t value, Type type) {
             return new ComplexExp(loc, value, type);
         }
 
+        // Erasure: emplace<Ptr, Loc, complex_t, Type>
         public static void emplace(Ptr<UnionExp> pue, Loc loc, complex_t value, Type type) {
             (pue) = new UnionExp(new ComplexExp(loc, value, type));
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -2277,26 +2495,32 @@ public class expression {
             return false;
         }
 
+        // Erasure: toInteger<>
         public  long toInteger() {
             return (long)(long)this.toReal();
         }
 
+        // Erasure: toUInteger<>
         public  long toUInteger() {
             return (long)this.toReal();
         }
 
+        // Erasure: toReal<>
         public  double toReal() {
             return creall(this.value);
         }
 
+        // Erasure: toImaginary<>
         public  double toImaginary() {
             return cimagl(this.value);
         }
 
+        // Erasure: toComplex<>
         public  complex_t toComplex() {
             return this.value;
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             if (result)
             {
@@ -2308,6 +2532,7 @@ public class expression {
             }
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2329,23 +2554,28 @@ public class expression {
     public static class IdentifierExp extends Expression
     {
         public Identifier ident = null;
+        // Erasure: __ctor<Loc, Identifier>
         public  IdentifierExp(Loc loc, Identifier ident) {
             super(loc, TOK.identifier, 28);
             this.ident = ident;
         }
 
+        // Erasure: create<Loc, Identifier>
         public static IdentifierExp create(Loc loc, Identifier ident) {
             return new IdentifierExp(loc, ident);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return true;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2366,10 +2596,12 @@ public class expression {
     }
     public static class DollarExp extends IdentifierExp
     {
+        // Erasure: __ctor<Loc>
         public  DollarExp(Loc loc) {
             super(loc, Id.dollar);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2392,6 +2624,7 @@ public class expression {
     {
         public Dsymbol s = null;
         public boolean hasOverloads = false;
+        // Erasure: __ctor<Loc, Dsymbol, boolean>
         public  DsymbolExp(Loc loc, Dsymbol s, boolean hasOverloads) {
             super(loc, TOK.dSymbol, 29);
             this.s = s;
@@ -2403,14 +2636,17 @@ public class expression {
             this(loc, s, true);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return true;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2433,14 +2669,17 @@ public class expression {
     public static class ThisExp extends Expression
     {
         public VarDeclaration var = null;
+        // Erasure: __ctor<Loc>
         public  ThisExp(Loc loc) {
             super(loc, TOK.this_, 28);
         }
 
+        // Erasure: __ctor<Loc, byte>
         public  ThisExp(Loc loc, byte tok) {
             super(loc, tok, 28);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             ThisExp r = (ThisExp)super.syntaxCopy();
             r.type.value = null;
@@ -2448,14 +2687,17 @@ public class expression {
             return r;
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             return result;
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return (this.type.value.toBasetype().ty & 0xFF) != ENUMTY.Tclass;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (((this.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tclass))
             {
@@ -2464,6 +2706,7 @@ public class expression {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2484,10 +2727,12 @@ public class expression {
     }
     public static class SuperExp extends ThisExp
     {
+        // Erasure: __ctor<Loc>
         public  SuperExp(Loc loc) {
             super(loc, TOK.super_);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2509,6 +2754,7 @@ public class expression {
     public static class NullExp extends Expression
     {
         public byte committed = 0;
+        // Erasure: __ctor<Loc, Type>
         public  NullExp(Loc loc, Type type) {
             super(loc, TOK.null_, 25);
             this.type.value = type;
@@ -2516,9 +2762,10 @@ public class expression {
 
         // defaulted all parameters starting with #2
         public  NullExp(Loc loc) {
-            this(loc, null);
+            this(loc, (Type)null);
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             {
                 Expression e = isExpression(o);
@@ -2533,10 +2780,12 @@ public class expression {
             return false;
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             return result ? false : true;
         }
 
+        // Erasure: toStringExp<>
         public  StringExp toStringExp() {
             if (this.implicitConvTo(Type.tstring) != 0)
             {
@@ -2547,6 +2796,7 @@ public class expression {
             return null;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2575,6 +2825,7 @@ public class expression {
         public byte committed = 0;
         public byte postfix = (byte)0;
         public byte ownedByCtfe = OwnedBy.code;
+        // Erasure: __ctor<Loc, Ptr>
         public  StringExp(Loc loc, BytePtr string) {
             super(loc, TOK.string_, 36);
             this.string = pcopy(string);
@@ -2582,6 +2833,7 @@ public class expression {
             this.sz = (byte)1;
         }
 
+        // Erasure: __ctor<Loc, Ptr, int>
         public  StringExp(Loc loc, Object string, int len) {
             super(loc, TOK.string_, 36);
             this.string = pcopy((((BytePtr)string)));
@@ -2589,6 +2841,7 @@ public class expression {
             this.sz = (byte)1;
         }
 
+        // Erasure: __ctor<Loc, Ptr, int, byte>
         public  StringExp(Loc loc, Object string, int len, byte postfix) {
             super(loc, TOK.string_, 36);
             this.string = pcopy((((BytePtr)string)));
@@ -2597,22 +2850,27 @@ public class expression {
             this.sz = (byte)1;
         }
 
+        // Erasure: create<Loc, Ptr>
         public static StringExp create(Loc loc, BytePtr s) {
             return new StringExp(loc, s);
         }
 
+        // Erasure: create<Loc, Ptr, int>
         public static StringExp create(Loc loc, Object string, int len) {
             return new StringExp(loc, string, len);
         }
 
+        // Erasure: emplace<Ptr, Loc, Ptr>
         public static void emplace(Ptr<UnionExp> pue, Loc loc, BytePtr s) {
             (pue) = new UnionExp(new StringExp(loc, s));
         }
 
+        // Erasure: emplace<Ptr, Loc, Ptr, int>
         public static void emplace(Ptr<UnionExp> pue, Loc loc, Object string, int len) {
             (pue) = new UnionExp(new StringExp(loc, string, len));
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             {
                 Expression e = isExpression(o);
@@ -2630,6 +2888,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: numberOfCodeUnits<int>
         public  int numberOfCodeUnits(int tynto) {
             int encSize = 0;
             switch (tynto)
@@ -2709,6 +2968,7 @@ public class expression {
             return numberOfCodeUnits(0);
         }
 
+        // Erasure: writeTo<Ptr, boolean, int>
         public  void writeTo(Object dest, boolean zero, int tyto) {
             int encSize = 0;
             switch (tyto)
@@ -2747,6 +3007,7 @@ public class expression {
             writeTo(dest, zero, 0);
         }
 
+        // Erasure: getCodeUnit<int>
         public  int getCodeUnit(int i) {
             assert((i < this.len));
             switch ((this.sz & 0xFF))
@@ -2762,6 +3023,7 @@ public class expression {
             }
         }
 
+        // Erasure: setCodeUnit<int, int>
         public  void setCodeUnit(int i, int c) {
             assert((i < this.len));
             switch ((this.sz & 0xFF))
@@ -2780,14 +3042,17 @@ public class expression {
             }
         }
 
+        // Erasure: toPtr<>
         public  BytePtr toPtr() {
             return ((this.sz & 0xFF) == 1) ? this.string : null;
         }
 
+        // Erasure: toStringExp<>
         public  StringExp toStringExp() {
             return this;
         }
 
+        // Erasure: toUTF8<Ptr>
         public  StringExp toUTF8(Ptr<Scope> sc) {
             if (((this.sz & 0xFF) != 1))
             {
@@ -2801,6 +3066,7 @@ public class expression {
             return this;
         }
 
+        // Erasure: comparex<StringExp>
         public  int comparex(StringExp se2) {
             int len1 = this.len;
             int len2 = se2.len;
@@ -2851,23 +3117,28 @@ public class expression {
             return (len1 - len2);
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             return result;
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return (this.type.value != null) && ((this.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tsarray);
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             return (this.type.value != null) && ((this.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? this : this.toLvalue(sc, e);
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             this.error(new BytePtr("cannot modify string literal `%s`"), this.toChars());
             return new ErrorExp();
         }
 
+        // Erasure: charAt<long>
         public  int charAt(long i) {
             int value = 0;
             switch ((this.sz & 0xFF))
@@ -2887,6 +3158,7 @@ public class expression {
             return value;
         }
 
+        // Erasure: toStringz<>
         public  ByteSlice toStringz() {
             int nbytes = this.len * (this.sz & 0xFF);
             BytePtr s = pcopy(((BytePtr)Mem.xmalloc(nbytes + (this.sz & 0xFF))));
@@ -2894,11 +3166,13 @@ public class expression {
             return s.slice(0,nbytes);
         }
 
+        // Erasure: peekSlice<>
         public  ByteSlice peekSlice() {
             assert(((this.sz & 0xFF) == 1));
             return this.string.slice(0,this.len);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2928,17 +3202,20 @@ public class expression {
     {
         public Ref<Expression> e0 = ref(null);
         public Ptr<DArray<Expression>> exps = null;
+        // Erasure: __ctor<Loc, Expression, Ptr>
         public  TupleExp(Loc loc, Expression e0, Ptr<DArray<Expression>> exps) {
             super(loc, TOK.tuple, 32);
             this.e0.value = e0;
             this.exps = pcopy(exps);
         }
 
+        // Erasure: __ctor<Loc, Ptr>
         public  TupleExp(Loc loc, Ptr<DArray<Expression>> exps) {
             super(loc, TOK.tuple, 32);
             this.exps = pcopy(exps);
         }
 
+        // Erasure: __ctor<Loc, TupleDeclaration>
         public  TupleExp(Loc loc, TupleDeclaration tup) {
             super(loc, TOK.tuple, 32);
             this.exps = pcopy((refPtr(new DArray<Expression>())));
@@ -2981,18 +3258,22 @@ public class expression {
             }
         }
 
+        // Erasure: create<Loc, Ptr>
         public static TupleExp create(Loc loc, Ptr<DArray<Expression>> exps) {
             return new TupleExp(loc, exps);
         }
 
+        // Erasure: toTupleExp<>
         public  TupleExp toTupleExp() {
             return this;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new TupleExp(this.loc, this.e0.value != null ? this.e0.value.syntaxCopy() : null, Expression.arraySyntaxCopy(this.exps));
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -3035,6 +3316,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3059,12 +3341,14 @@ public class expression {
         public Ref<Expression> basis = ref(null);
         public Ptr<DArray<Expression>> elements = null;
         public byte ownedByCtfe = OwnedBy.code;
+        // Erasure: __ctor<Loc, Type, Ptr>
         public  ArrayLiteralExp(Loc loc, Type type, Ptr<DArray<Expression>> elements) {
             super(loc, TOK.arrayLiteral, 33);
             this.type.value = type;
             this.elements = pcopy(elements);
         }
 
+        // Erasure: __ctor<Loc, Type, Expression>
         public  ArrayLiteralExp(Loc loc, Type type, Expression e) {
             super(loc, TOK.arrayLiteral, 33);
             this.type.value = type;
@@ -3072,6 +3356,7 @@ public class expression {
             (this.elements.get()).push(e);
         }
 
+        // Erasure: __ctor<Loc, Type, Expression, Ptr>
         public  ArrayLiteralExp(Loc loc, Type type, Expression basis, Ptr<DArray<Expression>> elements) {
             super(loc, TOK.arrayLiteral, 33);
             this.type.value = type;
@@ -3079,18 +3364,22 @@ public class expression {
             this.elements = pcopy(elements);
         }
 
+        // Erasure: create<Loc, Ptr>
         public static ArrayLiteralExp create(Loc loc, Ptr<DArray<Expression>> elements) {
             return new ArrayLiteralExp(loc, null, elements);
         }
 
+        // Erasure: emplace<Ptr, Loc, Ptr>
         public static void emplace(Ptr<UnionExp> pue, Loc loc, Ptr<DArray<Expression>> elements) {
             (pue) = new UnionExp(new ArrayLiteralExp(loc, null, elements));
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new ArrayLiteralExp(this.loc, null, this.basis.value != null ? this.basis.value.syntaxCopy() : null, Expression.arraySyntaxCopy(this.elements));
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -3140,16 +3429,19 @@ public class expression {
             return false;
         }
 
+        // Erasure: getElement<int>
         public  Expression getElement(int i) {
             Expression el = (this.elements.get()).get(i);
             return el != null ? el : this.basis.value;
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             int dim = this.elements != null ? (this.elements.get()).length : 0;
             return result ? dim != 0 : dim == 0;
         }
 
+        // Erasure: toStringExp<>
         public  StringExp toStringExp() {
             byte telem = this.type.value.nextOf().toBasetype().ty;
             if (((telem & 0xFF) == ENUMTY.Tchar) || ((telem & 0xFF) == ENUMTY.Twchar) || ((telem & 0xFF) == ENUMTY.Tdchar) || ((telem & 0xFF) == ENUMTY.Tvoid) && (this.elements == null) || ((this.elements.get()).length == 0))
@@ -3220,6 +3512,7 @@ public class expression {
             return null;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3245,6 +3538,7 @@ public class expression {
         public Ptr<DArray<Expression>> keys = null;
         public Ptr<DArray<Expression>> values = null;
         public byte ownedByCtfe = OwnedBy.code;
+        // Erasure: __ctor<Loc, Ptr, Ptr>
         public  AssocArrayLiteralExp(Loc loc, Ptr<DArray<Expression>> keys, Ptr<DArray<Expression>> values) {
             super(loc, TOK.assocArrayLiteral, 33);
             assert(((keys.get()).length == (values.get()).length));
@@ -3252,6 +3546,7 @@ public class expression {
             this.values = pcopy(values);
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -3301,15 +3596,18 @@ public class expression {
             return false;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new AssocArrayLiteralExp(this.loc, Expression.arraySyntaxCopy(this.keys), Expression.arraySyntaxCopy(this.values));
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             int dim = (this.keys.get()).length;
             return result ? dim != 0 : dim == 0;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3347,6 +3645,7 @@ public class expression {
         public int stageflags = 0;
         public boolean useStaticInit = false;
         public byte ownedByCtfe = OwnedBy.code;
+        // Erasure: __ctor<Loc, StructDeclaration, Ptr, Type>
         public  StructLiteralExp(Loc loc, StructDeclaration sd, Ptr<DArray<Expression>> elements, Type stype) {
             super(loc, TOK.structLiteral, 54);
             this.sd = sd;
@@ -3361,18 +3660,20 @@ public class expression {
 
         // defaulted all parameters starting with #4
         public  StructLiteralExp(Loc loc, StructDeclaration sd, Ptr<DArray<Expression>> elements) {
-            this(loc, sd, elements, null);
+            this(loc, sd, elements, (Type)null);
         }
 
+        // Erasure: create<Loc, StructDeclaration, Ptr, Type>
         public static StructLiteralExp create(Loc loc, StructDeclaration sd, Object elements, Type stype) {
             return new StructLiteralExp(loc, sd, ((Ptr<DArray<Expression>>)elements), stype);
         }
 
         // defaulted all parameters starting with #4
         public static StructLiteralExp create(Loc loc, StructDeclaration sd, Object elements) {
-            return create(loc, sd, elements, null);
+            return create(loc, sd, elements, (Type)null);
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -3414,12 +3715,14 @@ public class expression {
             return false;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             StructLiteralExp exp = new StructLiteralExp(this.loc, this.sd, Expression.arraySyntaxCopy(this.elements), this.type.value != null ? this.type.value : this.stype);
             exp.origin = this;
             return exp;
         }
 
+        // Erasure: getField<Type, int>
         public  Expression getField(Type type, int offset) {
             Expression e = null;
             int i = this.getFieldIndex(type, offset);
@@ -3468,6 +3771,7 @@ public class expression {
             return e;
         }
 
+        // Erasure: getFieldIndex<Type, int>
         public  int getFieldIndex(Type type, int offset) {
             if ((this.elements.get()).length != 0)
             {
@@ -3498,6 +3802,7 @@ public class expression {
             return -1;
         }
 
+        // Erasure: addDtorHook<Ptr>
         public  Expression addDtorHook(Ptr<Scope> sc) {
             if ((this.sd.dtor != null) && ((sc.get()).func != null))
             {
@@ -3516,6 +3821,7 @@ public class expression {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3544,25 +3850,30 @@ public class expression {
     }
     public static class TypeExp extends Expression
     {
+        // Erasure: __ctor<Loc, Type>
         public  TypeExp(Loc loc, Type type) {
             super(loc, TOK.type, 24);
             this.type.value = type;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new TypeExp(this.loc, this.type.value.syntaxCopy());
         }
 
+        // Erasure: checkType<>
         public  boolean checkType() {
             this.error(new BytePtr("type `%s` is not an expression"), this.toChars());
             return true;
         }
 
+        // Erasure: checkValue<>
         public  boolean checkValue() {
             this.error(new BytePtr("type `%s` has no value"), this.toChars());
             return true;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3583,16 +3894,19 @@ public class expression {
     public static class ScopeExp extends Expression
     {
         public ScopeDsymbol sds = null;
+        // Erasure: __ctor<Loc, ScopeDsymbol>
         public  ScopeExp(Loc loc, ScopeDsymbol sds) {
             super(loc, TOK.scope_, 28);
             this.sds = sds;
             assert(sds.isTemplateDeclaration() == null);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new ScopeExp(this.loc, (ScopeDsymbol)this.sds.syntaxCopy(null));
         }
 
+        // Erasure: checkType<>
         public  boolean checkType() {
             if (this.sds.isPackage() != null)
             {
@@ -3613,11 +3927,13 @@ public class expression {
             return false;
         }
 
+        // Erasure: checkValue<>
         public  boolean checkValue() {
             this.error(new BytePtr("%s `%s` has no value"), this.sds.kind(), this.sds.toChars());
             return true;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3640,6 +3956,7 @@ public class expression {
     {
         public TemplateDeclaration td = null;
         public FuncDeclaration fd = null;
+        // Erasure: __ctor<Loc, TemplateDeclaration, FuncDeclaration>
         public  TemplateExp(Loc loc, TemplateDeclaration td, FuncDeclaration fd) {
             super(loc, TOK.template_, 32);
             this.td = td;
@@ -3648,13 +3965,15 @@ public class expression {
 
         // defaulted all parameters starting with #3
         public  TemplateExp(Loc loc, TemplateDeclaration td) {
-            this(loc, td, null);
+            this(loc, td, (FuncDeclaration)null);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return this.fd != null;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (this.fd == null)
             {
@@ -3664,16 +3983,19 @@ public class expression {
             return symbolToExp(this.fd, this.loc, sc, true);
         }
 
+        // Erasure: checkType<>
         public  boolean checkType() {
             this.error(new BytePtr("%s `%s` has no type"), this.td.kind(), this.toChars());
             return true;
         }
 
+        // Erasure: checkValue<>
         public  boolean checkValue() {
             this.error(new BytePtr("%s `%s` has no value"), this.td.kind(), this.toChars());
             return true;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3704,6 +4026,7 @@ public class expression {
         public NewDeclaration allocator = null;
         public boolean onstack = false;
         public boolean thrownew = false;
+        // Erasure: __ctor<Loc, Expression, Ptr, Type, Ptr>
         public  NewExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, Type newtype, Ptr<DArray<Expression>> arguments) {
             super(loc, TOK.new_, 54);
             this.thisexp.value = thisexp;
@@ -3712,14 +4035,17 @@ public class expression {
             this.arguments = pcopy(arguments);
         }
 
+        // Erasure: create<Loc, Expression, Ptr, Type, Ptr>
         public static NewExp create(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, Type newtype, Ptr<DArray<Expression>> arguments) {
             return new NewExp(loc, thisexp, newargs, newtype, arguments);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new NewExp(this.loc, this.thisexp.value != null ? this.thisexp.value.syntaxCopy() : null, Expression.arraySyntaxCopy(this.newargs), this.newtype.syntaxCopy(), Expression.arraySyntaxCopy(this.arguments));
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3752,6 +4078,7 @@ public class expression {
         public Ptr<DArray<Expression>> newargs = null;
         public ClassDeclaration cd = null;
         public Ptr<DArray<Expression>> arguments = null;
+        // Erasure: __ctor<Loc, Expression, Ptr, ClassDeclaration, Ptr>
         public  NewAnonClassExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, ClassDeclaration cd, Ptr<DArray<Expression>> arguments) {
             super(loc, TOK.newAnonymousClass, 40);
             this.thisexp = thisexp;
@@ -3760,10 +4087,12 @@ public class expression {
             this.arguments = pcopy(arguments);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new NewAnonClassExp(this.loc, this.thisexp != null ? this.thisexp.syntaxCopy() : null, Expression.arraySyntaxCopy(this.newargs), (ClassDeclaration)this.cd.syntaxCopy(null), Expression.arraySyntaxCopy(this.arguments));
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3790,6 +4119,7 @@ public class expression {
         public Declaration var = null;
         public boolean hasOverloads = false;
         public Dsymbol originalScope = null;
+        // Erasure: __ctor<Loc, byte, int, Declaration, boolean>
         public  SymbolExp(Loc loc, byte op, int size, Declaration var, boolean hasOverloads) {
             super(loc, op, size);
             assert(var != null);
@@ -3797,6 +4127,7 @@ public class expression {
             this.hasOverloads = hasOverloads;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3820,6 +4151,7 @@ public class expression {
     public static class SymOffExp extends SymbolExp
     {
         public long offset = 0L;
+        // Erasure: __ctor<Loc, Declaration, long, boolean>
         public  SymOffExp(Loc loc, Declaration var, long offset, boolean hasOverloads) {
             {
                 VarDeclaration v = var.isVarDeclaration();
@@ -3841,10 +4173,12 @@ public class expression {
             this(loc, var, offset, true);
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             return result ? true : false;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3868,6 +4202,7 @@ public class expression {
     }
     public static class VarExp extends SymbolExp
     {
+        // Erasure: __ctor<Loc, Declaration, boolean>
         public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
             if (var.isVarDeclaration() != null)
             {
@@ -3882,6 +4217,7 @@ public class expression {
             this(loc, var, true);
         }
 
+        // Erasure: create<Loc, Declaration, boolean>
         public static VarExp create(Loc loc, Declaration var, boolean hasOverloads) {
             return new VarExp(loc, var, hasOverloads);
         }
@@ -3891,6 +4227,7 @@ public class expression {
             return create(loc, var, true);
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -3909,11 +4246,13 @@ public class expression {
             return false;
         }
 
+        // Erasure: checkModifiable<Ptr, int>
         public  int checkModifiable(Ptr<Scope> sc, int flag) {
             assert(this.type.value != null);
             return this.var.checkModify(this.loc, sc, null, flag);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             if ((this.var.storage_class & 2199031652352L) != 0)
             {
@@ -3922,6 +4261,7 @@ public class expression {
             return true;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if ((this.var.storage_class & 8388608L) != 0)
             {
@@ -3946,6 +4286,7 @@ public class expression {
             return this;
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             if ((this.var.storage_class & 8388608L) != 0)
             {
@@ -3955,10 +4296,12 @@ public class expression {
             return this.modifiableLvalue(sc, e);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             Expression ret = super.syntaxCopy();
             return ret;
@@ -3983,20 +4326,24 @@ public class expression {
     public static class OverExp extends Expression
     {
         public OverloadSet vars = null;
+        // Erasure: __ctor<Loc, OverloadSet>
         public  OverExp(Loc loc, OverloadSet s) {
             super(loc, TOK.overloadSet, 28);
             this.vars = s;
             this.type.value = Type.tvoid;
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return true;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4020,6 +4367,7 @@ public class expression {
         public FuncLiteralDeclaration fd = null;
         public TemplateDeclaration td = null;
         public byte tok = 0;
+        // Erasure: __ctor<Loc, Dsymbol>
         public  FuncExp(Loc loc, Dsymbol s) {
             super(loc, TOK.function_, 33);
             this.td = s.isTemplateDeclaration();
@@ -4034,6 +4382,7 @@ public class expression {
             assert(this.fd.fbody.value != null);
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -4054,6 +4403,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: genIdent<Ptr>
         public  void genIdent(Ptr<Scope> sc) {
             if ((pequals(this.fd.ident, Id.empty)))
             {
@@ -4107,6 +4457,7 @@ public class expression {
             }
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             if (this.td != null)
             {
@@ -4122,6 +4473,7 @@ public class expression {
             }
         }
 
+        // Erasure: matchType<Type, Ptr, Ptr, int>
         public  int matchType(Type to, Ptr<Scope> sc, Ptr<FuncExp> presult, int flag) {
             Function3<Expression,Type,Integer,Integer> cannotInfer = new Function3<Expression,Type,Integer,Integer>() {
                 public Integer invoke(Expression e, Type to, Integer flag) {
@@ -4289,10 +4641,12 @@ public class expression {
             return matchType(to, sc, presult, 0);
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return this.fd.toChars();
         }
 
+        // Erasure: checkType<>
         public  boolean checkType() {
             if (this.td != null)
             {
@@ -4302,6 +4656,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: checkValue<>
         public  boolean checkValue() {
             if (this.td != null)
             {
@@ -4311,6 +4666,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4334,15 +4690,18 @@ public class expression {
     public static class DeclarationExp extends Expression
     {
         public Dsymbol declaration = null;
+        // Erasure: __ctor<Loc, Dsymbol>
         public  DeclarationExp(Loc loc, Dsymbol declaration) {
             super(loc, TOK.declaration, 28);
             this.declaration = declaration;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new DeclarationExp(this.loc, this.declaration.syntaxCopy(null));
         }
 
+        // Erasure: hasCode<>
         public  boolean hasCode() {
             {
                 VarDeclaration vd = this.declaration.isVarDeclaration();
@@ -4354,6 +4713,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4375,15 +4735,18 @@ public class expression {
     public static class TypeidExp extends Expression
     {
         public RootObject obj = null;
+        // Erasure: __ctor<Loc, RootObject>
         public  TypeidExp(Loc loc, RootObject o) {
             super(loc, TOK.typeid_, 28);
             this.obj = o;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new TypeidExp(this.loc, objectSyntaxCopy(this.obj));
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4406,16 +4769,19 @@ public class expression {
     {
         public Identifier ident = null;
         public Ptr<DArray<RootObject>> args = null;
+        // Erasure: __ctor<Loc, Identifier, Ptr>
         public  TraitsExp(Loc loc, Identifier ident, Ptr<DArray<RootObject>> args) {
             super(loc, TOK.traits, 32);
             this.ident = ident;
             this.args = pcopy(args);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new TraitsExp(this.loc, this.ident, TemplateInstance.arraySyntaxCopy(this.args));
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4437,10 +4803,12 @@ public class expression {
     }
     public static class HaltExp extends Expression
     {
+        // Erasure: __ctor<Loc>
         public  HaltExp(Loc loc) {
             super(loc, TOK.halt, 24);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4466,6 +4834,7 @@ public class expression {
         public Ptr<DArray<TemplateParameter>> parameters = null;
         public byte tok = 0;
         public byte tok2 = 0;
+        // Erasure: __ctor<Loc, Type, Identifier, byte, Type, byte, Ptr>
         public  IsExp(Loc loc, Type targ, Identifier id, byte tok, Type tspec, byte tok2, Ptr<DArray<TemplateParameter>> parameters) {
             super(loc, TOK.is_, 42);
             this.targ = targ;
@@ -4476,6 +4845,7 @@ public class expression {
             this.parameters = pcopy(parameters);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             Ptr<DArray<TemplateParameter>> p = null;
             if (this.parameters != null)
@@ -4494,6 +4864,7 @@ public class expression {
             return new IsExp(this.loc, this.targ.syntaxCopy(), this.id, this.tok, this.tspec != null ? this.tspec.syntaxCopy() : null, this.tok2, p);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4521,11 +4892,13 @@ public class expression {
     {
         public Ref<Expression> e1 = ref(null);
         public Type att1 = null;
+        // Erasure: __ctor<Loc, byte, int, Expression>
         public  UnaExp(Loc loc, byte op, int size, Expression e1) {
             super(loc, op, size);
             this.e1.value = e1;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             UnaExp e = (UnaExp)this.copy();
             e.type.value = null;
@@ -4533,6 +4906,7 @@ public class expression {
             return e;
         }
 
+        // Erasure: incompatibleTypes<>
         public  Expression incompatibleTypes() {
             if ((pequals(this.e1.value.type.value.toBasetype(), Type.terror)))
             {
@@ -4549,6 +4923,7 @@ public class expression {
             return new ErrorExp();
         }
 
+        // Erasure: setNoderefOperand<>
         public  void setNoderefOperand() {
             {
                 DotIdExp edi = this.e1.value.isDotIdExp();
@@ -4559,11 +4934,13 @@ public class expression {
             }
         }
 
+        // Erasure: resolveLoc<Loc, Ptr>
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
             this.e1.value = this.e1.value.resolveLoc(loc, sc);
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4579,12 +4956,14 @@ public class expression {
         public Ref<Expression> e2 = ref(null);
         public Type att1 = null;
         public Type att2 = null;
+        // Erasure: __ctor<Loc, byte, int, Expression, Expression>
         public  BinExp(Loc loc, byte op, int size, Expression e1, Expression e2) {
             super(loc, op, size);
             this.e1.value = e1;
             this.e2.value = e2;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             BinExp e = (BinExp)this.copy();
             e.type.value = null;
@@ -4593,6 +4972,7 @@ public class expression {
             return e;
         }
 
+        // Erasure: incompatibleTypes<>
         public  Expression incompatibleTypes() {
             if ((pequals(this.e1.value.type.value.toBasetype(), Type.terror)))
             {
@@ -4619,6 +4999,7 @@ public class expression {
             return new ErrorExp();
         }
 
+        // Erasure: checkOpAssignTypes<Ptr>
         public  Expression checkOpAssignTypes(Ptr<Scope> sc) {
             Type t1 = this.e1.value.type.value;
             Type t2 = this.e2.value.type.value;
@@ -4742,18 +5123,21 @@ public class expression {
             return this;
         }
 
+        // Erasure: checkIntegralBin<>
         public  boolean checkIntegralBin() {
             boolean r1 = this.e1.value.checkIntegral();
             boolean r2 = this.e2.value.checkIntegral();
             return r1 || r2;
         }
 
+        // Erasure: checkArithmeticBin<>
         public  boolean checkArithmeticBin() {
             boolean r1 = this.e1.value.checkArithmetic();
             boolean r2 = this.e2.value.checkArithmetic();
             return r1 || r2;
         }
 
+        // Erasure: setNoderefOperands<>
         public  void setNoderefOperands() {
             {
                 DotIdExp edi = this.e1.value.isDotIdExp();
@@ -4771,6 +5155,7 @@ public class expression {
             }
         }
 
+        // Erasure: reorderSettingAAElem<Ptr>
         public  Expression reorderSettingAAElem(Ptr<Scope> sc) {
             BinExp be = this;
             IndexExp ie = be.e1.value.isIndexExp();
@@ -4802,6 +5187,7 @@ public class expression {
             return Expression.combine(e0.value, (Expression)be);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4813,22 +5199,27 @@ public class expression {
     }
     public static class BinAssignExp extends BinExp
     {
+        // Erasure: __ctor<Loc, byte, int, Expression, Expression>
         public  BinAssignExp(Loc loc, byte op, int size, Expression e1, Expression e2) {
             super(loc, op, size, e1, e2);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return true;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression ex) {
             return this;
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             return this.toLvalue(sc, this);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4853,15 +5244,18 @@ public class expression {
     public static class CompileExp extends Expression
     {
         public Ptr<DArray<Expression>> exps = null;
+        // Erasure: __ctor<Loc, Ptr>
         public  CompileExp(Loc loc, Ptr<DArray<Expression>> exps) {
             super(loc, TOK.mixin_, 28);
             this.exps = pcopy(exps);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new CompileExp(this.loc, Expression.arraySyntaxCopy(this.exps));
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -4899,6 +5293,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4919,10 +5314,12 @@ public class expression {
     }
     public static class ImportExp extends UnaExp
     {
+        // Erasure: __ctor<Loc, Expression>
         public  ImportExp(Loc loc, Expression e) {
             super(loc, TOK.import_, 32, e);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4945,6 +5342,7 @@ public class expression {
     public static class AssertExp extends UnaExp
     {
         public Expression msg = null;
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  AssertExp(Loc loc, Expression e, Expression msg) {
             super(loc, TOK.assert_, 36, e);
             this.msg = msg;
@@ -4952,13 +5350,15 @@ public class expression {
 
         // defaulted all parameters starting with #3
         public  AssertExp(Loc loc, Expression e) {
-            this(loc, e, null);
+            this(loc, e, (Expression)null);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new AssertExp(this.loc, this.e1.value.syntaxCopy(), this.msg != null ? this.msg.syntaxCopy() : null);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4984,15 +5384,18 @@ public class expression {
         public Identifier ident = null;
         public boolean noderef = false;
         public boolean wantsym = false;
+        // Erasure: __ctor<Loc, Expression, Identifier>
         public  DotIdExp(Loc loc, Expression e, Identifier ident) {
             super(loc, TOK.dotIdentifier, 38, e);
             this.ident = ident;
         }
 
+        // Erasure: create<Loc, Expression, Identifier>
         public static DotIdExp create(Loc loc, Expression e, Identifier ident) {
             return new DotIdExp(loc, e, ident);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5018,11 +5421,13 @@ public class expression {
     public static class DotTemplateExp extends UnaExp
     {
         public TemplateDeclaration td = null;
+        // Erasure: __ctor<Loc, Expression, TemplateDeclaration>
         public  DotTemplateExp(Loc loc, Expression e, TemplateDeclaration td) {
             super(loc, TOK.dotTemplateDeclaration, 36, e);
             this.td = td;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5047,6 +5452,7 @@ public class expression {
     {
         public Declaration var = null;
         public boolean hasOverloads = false;
+        // Erasure: __ctor<Loc, Expression, Declaration, boolean>
         public  DotVarExp(Loc loc, Expression e, Declaration var, boolean hasOverloads) {
             if (var.isVarDeclaration() != null)
             {
@@ -5062,6 +5468,7 @@ public class expression {
             this(loc, e, var, true);
         }
 
+        // Erasure: checkModifiable<Ptr, int>
         public  int checkModifiable(Ptr<Scope> sc, int flag) {
             if (checkUnsafeAccess(sc, this, false, flag == 0))
             {
@@ -5106,10 +5513,12 @@ public class expression {
             return this.e1.value.checkModifiable(sc, flag);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return true;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (((this.e1.value.op & 0xFF) == 123) && ((sc.get()).ctorflow.fieldinit.getLength() != 0) && (((sc.get()).ctorflow.callSuper.value & 16) == 0))
             {
@@ -5143,10 +5552,12 @@ public class expression {
             return this;
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             return this.modifiableLvalue(sc, e);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5171,20 +5582,24 @@ public class expression {
     public static class DotTemplateInstanceExp extends UnaExp
     {
         public TemplateInstance ti = null;
+        // Erasure: __ctor<Loc, Expression, Identifier, Ptr>
         public  DotTemplateInstanceExp(Loc loc, Expression e, Identifier name, Ptr<DArray<RootObject>> tiargs) {
             super(loc, TOK.dotTemplateInstance, 36, e);
             this.ti = new TemplateInstance(loc, name, tiargs);
         }
 
+        // Erasure: __ctor<Loc, Expression, TemplateInstance>
         public  DotTemplateInstanceExp(Loc loc, Expression e, TemplateInstance ti) {
             super(loc, TOK.dotTemplateInstance, 36, e);
             this.ti = ti;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new DotTemplateInstanceExp(this.loc, this.e1.value.syntaxCopy(), this.ti.name, TemplateInstance.arraySyntaxCopy(this.ti.tiargs));
         }
 
+        // Erasure: findTempDecl<Ptr>
         public  boolean findTempDecl(Ptr<Scope> sc) {
             if (this.ti.tempdecl != null)
             {
@@ -5220,6 +5635,7 @@ public class expression {
             return this.ti.updateTempDecl(sc, s);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5245,6 +5661,7 @@ public class expression {
         public FuncDeclaration func = null;
         public boolean hasOverloads = false;
         public VarDeclaration vthis2 = null;
+        // Erasure: __ctor<Loc, Expression, FuncDeclaration, boolean, VarDeclaration>
         public  DelegateExp(Loc loc, Expression e, FuncDeclaration f, boolean hasOverloads, VarDeclaration vthis2) {
             super(loc, TOK.delegate_, 44, e);
             this.func = f;
@@ -5254,14 +5671,15 @@ public class expression {
 
         // defaulted all parameters starting with #5
         public  DelegateExp(Loc loc, Expression e, FuncDeclaration f, boolean hasOverloads) {
-            this(loc, e, f, hasOverloads, null);
+            this(loc, e, f, hasOverloads, (VarDeclaration)null);
         }
 
         // defaulted all parameters starting with #4
         public  DelegateExp(Loc loc, Expression e, FuncDeclaration f) {
-            this(loc, e, f, true, null);
+            this(loc, e, f, true, (VarDeclaration)null);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5287,11 +5705,13 @@ public class expression {
     public static class DotTypeExp extends UnaExp
     {
         public Dsymbol sym = null;
+        // Erasure: __ctor<Loc, Expression, Dsymbol>
         public  DotTypeExp(Loc loc, Expression e, Dsymbol s) {
             super(loc, TOK.dotType, 36, e);
             this.sym = s;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5318,15 +5738,18 @@ public class expression {
         public FuncDeclaration f = null;
         public boolean directcall = false;
         public VarDeclaration vthis2 = null;
+        // Erasure: __ctor<Loc, Expression, Ptr>
         public  CallExp(Loc loc, Expression e, Ptr<DArray<Expression>> exps) {
             super(loc, TOK.call, 48, e);
             this.arguments = pcopy(exps);
         }
 
+        // Erasure: __ctor<Loc, Expression>
         public  CallExp(Loc loc, Expression e) {
             super(loc, TOK.call, 48, e);
         }
 
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  CallExp(Loc loc, Expression e, Expression earg1) {
             super(loc, TOK.call, 48, e);
             this.arguments = pcopy((refPtr(new DArray<Expression>())));
@@ -5336,6 +5759,7 @@ public class expression {
             }
         }
 
+        // Erasure: __ctor<Loc, Expression, Expression, Expression>
         public  CallExp(Loc loc, Expression e, Expression earg1, Expression earg2) {
             super(loc, TOK.call, 48, e);
             Ptr<DArray<Expression>> arguments = refPtr(new DArray<Expression>(2));
@@ -5344,31 +5768,38 @@ public class expression {
             this.arguments = pcopy(arguments);
         }
 
+        // Erasure: __ctor<Loc, FuncDeclaration, Expression>
         public  CallExp(Loc loc, FuncDeclaration fd, Expression earg1) {
             this(loc, new VarExp(loc, fd, false), earg1);
             this.f = fd;
         }
 
+        // Erasure: create<Loc, Expression, Ptr>
         public static CallExp create(Loc loc, Expression e, Ptr<DArray<Expression>> exps) {
             return new CallExp(loc, e, exps);
         }
 
+        // Erasure: create<Loc, Expression>
         public static CallExp create(Loc loc, Expression e) {
             return new CallExp(loc, e);
         }
 
+        // Erasure: create<Loc, Expression, Expression>
         public static CallExp create(Loc loc, Expression e, Expression earg1) {
             return new CallExp(loc, e, earg1);
         }
 
+        // Erasure: create<Loc, FuncDeclaration, Expression>
         public static CallExp create(Loc loc, FuncDeclaration fd, Expression earg1) {
             return new CallExp(loc, fd, earg1);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new CallExp(this.loc, this.e1.value.syntaxCopy(), Expression.arraySyntaxCopy(this.arguments));
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             Type tb = this.e1.value.type.value.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tdelegate) || ((tb.ty & 0xFF) == ENUMTY.Tpointer))
@@ -5393,6 +5824,7 @@ public class expression {
             return false;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (this.isLvalue())
             {
@@ -5401,6 +5833,7 @@ public class expression {
             return this.toLvalue(sc, e);
         }
 
+        // Erasure: addDtorHook<Ptr>
         public  Expression addDtorHook(Ptr<Scope> sc) {
             {
                 TypeFunction tf = this.e1.value.type.value.isTypeFunction();
@@ -5432,6 +5865,7 @@ public class expression {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5455,6 +5889,7 @@ public class expression {
             return that;
         }
     }
+    // Erasure: isFuncAddress<Expression, Ptr>
     public static FuncDeclaration isFuncAddress(Expression e, Ptr<Boolean> hasOverloads) {
         {
             AddrExp ae = e.isAddrExp();
@@ -5515,20 +5950,23 @@ public class expression {
 
     // defaulted all parameters starting with #2
     public static FuncDeclaration isFuncAddress(Expression e) {
-        return isFuncAddress(e, null);
+        return isFuncAddress(e, (Ptr<Boolean>)null);
     }
 
     public static class AddrExp extends UnaExp
     {
+        // Erasure: __ctor<Loc, Expression>
         public  AddrExp(Loc loc, Expression e) {
             super(loc, TOK.address, 32, e);
         }
 
+        // Erasure: __ctor<Loc, Expression, Type>
         public  AddrExp(Loc loc, Expression e, Type t) {
             this(loc, e);
             this.type.value = t;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5550,15 +5988,18 @@ public class expression {
     }
     public static class PtrExp extends UnaExp
     {
+        // Erasure: __ctor<Loc, Expression>
         public  PtrExp(Loc loc, Expression e) {
             super(loc, TOK.star, 32, e);
         }
 
+        // Erasure: __ctor<Loc, Expression, Type>
         public  PtrExp(Loc loc, Expression e, Type t) {
             super(loc, TOK.star, 32, e);
             this.type.value = t;
         }
 
+        // Erasure: checkModifiable<Ptr, int>
         public  int checkModifiable(Ptr<Scope> sc, int flag) {
             {
                 SymOffExp se = this.e1.value.isSymOffExp();
@@ -5577,18 +6018,22 @@ public class expression {
             return Modifiable.yes;
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return true;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             return this;
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             return this.modifiableLvalue(sc, e);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5610,10 +6055,12 @@ public class expression {
     }
     public static class NegExp extends UnaExp
     {
+        // Erasure: __ctor<Loc, Expression>
         public  NegExp(Loc loc, Expression e) {
             super(loc, TOK.negate, 32, e);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5635,10 +6082,12 @@ public class expression {
     }
     public static class UAddExp extends UnaExp
     {
+        // Erasure: __ctor<Loc, Expression>
         public  UAddExp(Loc loc, Expression e) {
             super(loc, TOK.uadd, 32, e);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5660,10 +6109,12 @@ public class expression {
     }
     public static class ComExp extends UnaExp
     {
+        // Erasure: __ctor<Loc, Expression>
         public  ComExp(Loc loc, Expression e) {
             super(loc, TOK.tilde, 32, e);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5685,10 +6136,12 @@ public class expression {
     }
     public static class NotExp extends UnaExp
     {
+        // Erasure: __ctor<Loc, Expression>
         public  NotExp(Loc loc, Expression e) {
             super(loc, TOK.not, 32, e);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5711,16 +6164,19 @@ public class expression {
     public static class DeleteExp extends UnaExp
     {
         public boolean isRAII = false;
+        // Erasure: __ctor<Loc, Expression, boolean>
         public  DeleteExp(Loc loc, Expression e, boolean isRAII) {
             super(loc, TOK.delete_, 33, e);
             this.isRAII = isRAII;
         }
 
+        // Erasure: toBoolean<Ptr>
         public  Expression toBoolean(Ptr<Scope> sc) {
             this.error(new BytePtr("`delete` does not give a boolean result"));
             return new ErrorExp();
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5745,24 +6201,29 @@ public class expression {
     {
         public Type to = null;
         public byte mod = (byte)255;
+        // Erasure: __ctor<Loc, Expression, Type>
         public  CastExp(Loc loc, Expression e, Type t) {
             super(loc, TOK.cast_, 37, e);
             this.to = t;
         }
 
+        // Erasure: __ctor<Loc, Expression, byte>
         public  CastExp(Loc loc, Expression e, byte mod) {
             super(loc, TOK.cast_, 37, e);
             this.mod = mod;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return this.to != null ? new CastExp(this.loc, this.e1.value.syntaxCopy(), this.to.syntaxCopy()) : new CastExp(this.loc, this.e1.value.syntaxCopy(), this.mod);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return this.e1.value.isLvalue() && this.e1.value.type.value.mutableOf().unSharedOf().equals(this.to.mutableOf().unSharedOf());
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if (this.isLvalue())
             {
@@ -5771,6 +6232,7 @@ public class expression {
             return this.toLvalue(sc, e);
         }
 
+        // Erasure: addDtorHook<Ptr>
         public  Expression addDtorHook(Ptr<Scope> sc) {
             if (((this.to.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
             {
@@ -5779,6 +6241,7 @@ public class expression {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5805,24 +6268,29 @@ public class expression {
         public TypeVector to = null;
         public int dim = -1;
         public byte ownedByCtfe = OwnedBy.code;
+        // Erasure: __ctor<Loc, Expression, Type>
         public  VectorExp(Loc loc, Expression e, Type t) {
             super(loc, TOK.vector, 41, e);
             assert(((t.ty & 0xFF) == ENUMTY.Tvector));
             this.to = (TypeVector)t;
         }
 
+        // Erasure: create<Loc, Expression, Type>
         public static VectorExp create(Loc loc, Expression e, Type t) {
             return new VectorExp(loc, e, t);
         }
 
+        // Erasure: emplace<Ptr, Loc, Expression, Type>
         public static void emplace(Ptr<UnionExp> pue, Loc loc, Expression e, Type type) {
             (pue) = new UnionExp(new VectorExp(loc, e, type));
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new VectorExp(this.loc, this.e1.value.syntaxCopy(), this.to.syntaxCopy());
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5847,19 +6315,23 @@ public class expression {
     }
     public static class VectorArrayExp extends UnaExp
     {
+        // Erasure: __ctor<Loc, Expression>
         public  VectorArrayExp(Loc loc, Expression e1) {
             super(loc, TOK.vectorArray, 32, e1);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return this.e1.value.isLvalue();
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             this.e1.value = this.e1.value.toLvalue(sc, e);
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5887,24 +6359,28 @@ public class expression {
         public boolean upperIsInBounds = false;
         public boolean lowerIsLessThanUpper = false;
         public boolean arrayop = false;
+        // Erasure: __ctor<Loc, Expression, IntervalExp>
         public  SliceExp(Loc loc, Expression e1, IntervalExp ie) {
             super(loc, TOK.slice, 47, e1);
             this.upr.value = ie != null ? ie.upr.value : null;
             this.lwr.value = ie != null ? ie.lwr.value : null;
         }
 
+        // Erasure: __ctor<Loc, Expression, Expression, Expression>
         public  SliceExp(Loc loc, Expression e1, Expression lwr, Expression upr) {
             super(loc, TOK.slice, 47, e1);
             this.upr.value = upr;
             this.lwr.value = lwr;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             SliceExp se = new SliceExp(this.loc, this.e1.value.syntaxCopy(), this.lwr.value != null ? this.lwr.value.syntaxCopy() : null, this.upr.value != null ? this.upr.value.syntaxCopy() : null);
             se.lengthVar.value = this.lengthVar.value;
             return se;
         }
 
+        // Erasure: checkModifiable<Ptr, int>
         public  int checkModifiable(Ptr<Scope> sc, int flag) {
             if (((this.e1.value.type.value.ty & 0xFF) == ENUMTY.Tsarray) || ((this.e1.value.op & 0xFF) == 62) && ((this.e1.value.type.value.ty & 0xFF) != ENUMTY.Tarray) || ((this.e1.value.op & 0xFF) == 31))
             {
@@ -5913,23 +6389,28 @@ public class expression {
             return Modifiable.yes;
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return (this.type.value != null) && ((this.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tsarray);
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             return (this.type.value != null) && ((this.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? this : this.toLvalue(sc, e);
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             this.error(new BytePtr("slice expression `%s` is not a modifiable lvalue"), this.toChars());
             return this;
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             return this.e1.value.isBool(result);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5957,10 +6438,12 @@ public class expression {
     }
     public static class ArrayLengthExp extends UnaExp
     {
+        // Erasure: __ctor<Loc, Expression>
         public  ArrayLengthExp(Loc loc, Expression e1) {
             super(loc, TOK.arrayLength, 32, e1);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5985,6 +6468,7 @@ public class expression {
         public Ptr<DArray<Expression>> arguments = null;
         public int currentDimension = 0;
         public Ref<VarDeclaration> lengthVar = ref(null);
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  ArrayExp(Loc loc, Expression e1, Expression index) {
             super(loc, TOK.array, 44, e1);
             this.arguments = pcopy((refPtr(new DArray<Expression>())));
@@ -5996,20 +6480,23 @@ public class expression {
 
         // defaulted all parameters starting with #3
         public  ArrayExp(Loc loc, Expression e1) {
-            this(loc, e1, null);
+            this(loc, e1, (Expression)null);
         }
 
+        // Erasure: __ctor<Loc, Expression, Ptr>
         public  ArrayExp(Loc loc, Expression e1, Ptr<DArray<Expression>> args) {
             super(loc, TOK.array, 44, e1);
             this.arguments = pcopy(args);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             ArrayExp ae = new ArrayExp(this.loc, this.e1.value.syntaxCopy(), Expression.arraySyntaxCopy(this.arguments));
             ae.lengthVar.value = this.lengthVar.value;
             return ae;
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             if ((this.type.value != null) && ((this.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
             {
@@ -6018,6 +6505,7 @@ public class expression {
             return true;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             if ((this.type.value != null) && ((this.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tvoid))
             {
@@ -6026,6 +6514,7 @@ public class expression {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6050,10 +6539,12 @@ public class expression {
     }
     public static class DotExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  DotExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.dot, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6079,6 +6570,7 @@ public class expression {
     {
         public boolean isGenerated = false;
         public boolean allowCommaExp = false;
+        // Erasure: __ctor<Loc, Expression, Expression, boolean>
         public  CommaExp(Loc loc, Expression e1, Expression e2, boolean generated) {
             super(loc, TOK.comma, 42, e1, e2);
             this.allowCommaExp = (this.isGenerated = generated);
@@ -6089,28 +6581,34 @@ public class expression {
             this(loc, e1, e2, true);
         }
 
+        // Erasure: checkModifiable<Ptr, int>
         public  int checkModifiable(Ptr<Scope> sc, int flag) {
             return this.e2.value.checkModifiable(sc, flag);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return this.e2.value.isLvalue();
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             this.e2.value = this.e2.value.toLvalue(sc, null);
             return this;
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             this.e2.value = this.e2.value.modifiableLvalue(sc, e);
             return this;
         }
 
+        // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
             return this.e2.value.isBool(result);
         }
 
+        // Erasure: toBoolean<Ptr>
         public  Expression toBoolean(Ptr<Scope> sc) {
             Expression ex2 = this.e2.value.toBoolean(sc);
             if (((ex2.op & 0xFF) == 127))
@@ -6122,15 +6620,18 @@ public class expression {
             return this;
         }
 
+        // Erasure: addDtorHook<Ptr>
         public  Expression addDtorHook(Ptr<Scope> sc) {
             this.e2.value = this.e2.value.addDtorHook(sc);
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: allow<Expression>
         public static void allow(Expression exp) {
             if (exp != null)
             {
@@ -6167,16 +6668,19 @@ public class expression {
     {
         public Ref<Expression> lwr = ref(null);
         public Ref<Expression> upr = ref(null);
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  IntervalExp(Loc loc, Expression lwr, Expression upr) {
             super(loc, TOK.interval, 32);
             this.lwr.value = lwr;
             this.upr.value = upr;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new IntervalExp(this.loc, this.lwr.value.syntaxCopy(), this.upr.value.syntaxCopy());
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6198,19 +6702,23 @@ public class expression {
     }
     public static class DelegatePtrExp extends UnaExp
     {
+        // Erasure: __ctor<Loc, Expression>
         public  DelegatePtrExp(Loc loc, Expression e1) {
             super(loc, TOK.delegatePointer, 32, e1);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return this.e1.value.isLvalue();
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             this.e1.value = this.e1.value.toLvalue(sc, e);
             return this;
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             if ((sc.get()).func.setUnsafe())
             {
@@ -6220,6 +6728,7 @@ public class expression {
             return this.modifiableLvalue(sc, e);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6241,19 +6750,23 @@ public class expression {
     }
     public static class DelegateFuncptrExp extends UnaExp
     {
+        // Erasure: __ctor<Loc, Expression>
         public  DelegateFuncptrExp(Loc loc, Expression e1) {
             super(loc, TOK.delegateFunctionPointer, 32, e1);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return this.e1.value.isLvalue();
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             this.e1.value = this.e1.value.toLvalue(sc, e);
             return this;
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             if ((sc.get()).func.setUnsafe())
             {
@@ -6263,6 +6776,7 @@ public class expression {
             return this.modifiableLvalue(sc, e);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6287,16 +6801,19 @@ public class expression {
         public Ref<VarDeclaration> lengthVar = ref(null);
         public boolean modifiable = false;
         public boolean indexIsInBounds = false;
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  IndexExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.index, 46, e1, e2);
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             IndexExp ie = new IndexExp(this.loc, this.e1.value.syntaxCopy(), this.e2.value.syntaxCopy());
             ie.lengthVar.value = this.lengthVar.value;
             return ie;
         }
 
+        // Erasure: checkModifiable<Ptr, int>
         public  int checkModifiable(Ptr<Scope> sc, int flag) {
             if (((this.e1.value.type.value.ty & 0xFF) == ENUMTY.Tsarray) || ((this.e1.value.type.value.ty & 0xFF) == ENUMTY.Taarray) || ((this.e1.value.op & 0xFF) == 62) && ((this.e1.value.type.value.ty & 0xFF) != ENUMTY.Tarray) || ((this.e1.value.op & 0xFF) == 31))
             {
@@ -6305,14 +6822,17 @@ public class expression {
             return Modifiable.yes;
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return true;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression e) {
             return this;
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             Expression ex = this.markSettingAAElem();
             if (((ex.op & 0xFF) == 127))
@@ -6322,6 +6842,7 @@ public class expression {
             return this.modifiableLvalue(sc, e);
         }
 
+        // Erasure: markSettingAAElem<>
         public  Expression markSettingAAElem() {
             if (((this.e1.value.type.value.toBasetype().ty & 0xFF) == ENUMTY.Taarray))
             {
@@ -6348,6 +6869,7 @@ public class expression {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6374,11 +6896,13 @@ public class expression {
     }
     public static class PostExp extends BinExp
     {
+        // Erasure: __ctor<byte, Loc, Expression>
         public  PostExp(byte op, Loc loc, Expression e) {
             super(loc, op, 40, e, new IntegerExp(loc, 1L, Type.tint32));
             assert(((op & 0xFF) == 94) || ((op & 0xFF) == 93));
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6402,11 +6926,13 @@ public class expression {
     }
     public static class PreExp extends UnaExp
     {
+        // Erasure: __ctor<byte, Loc, Expression>
         public  PreExp(byte op, Loc loc, Expression e) {
             super(loc, op, 32, e);
             assert(((op & 0xFF) == 104) || ((op & 0xFF) == 103));
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6436,14 +6962,17 @@ public class expression {
     public static class AssignExp extends BinExp
     {
         public int memset = 0;
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  AssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.assign, 44, e1, e2);
         }
 
+        // Erasure: __ctor<Loc, byte, Expression, Expression>
         public  AssignExp(Loc loc, byte tok, Expression e1, Expression e2) {
             super(loc, tok, 44, e1, e2);
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             if (((this.e1.value.op & 0xFF) == 31) || ((this.e1.value.op & 0xFF) == 32))
             {
@@ -6452,6 +6981,7 @@ public class expression {
             return true;
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression ex) {
             if (((this.e1.value.op & 0xFF) == 31) || ((this.e1.value.op & 0xFF) == 32))
             {
@@ -6460,11 +6990,13 @@ public class expression {
             return this;
         }
 
+        // Erasure: toBoolean<Ptr>
         public  Expression toBoolean(Ptr<Scope> sc) {
             this.error(new BytePtr("assignment cannot be used as a condition, perhaps `==` was meant?"));
             return new ErrorExp();
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6489,10 +7021,12 @@ public class expression {
     }
     public static class ConstructExp extends AssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  ConstructExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.construct, e1, e2);
         }
 
+        // Erasure: __ctor<Loc, VarDeclaration, Expression>
         public  ConstructExp(Loc loc, VarDeclaration v, Expression e2) {
             VarExp ve = new VarExp(loc, v, true);
             assert((v.type != null) && (ve.type.value != null));
@@ -6503,6 +7037,7 @@ public class expression {
             }
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6527,10 +7062,12 @@ public class expression {
     }
     public static class BlitExp extends AssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  BlitExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.blit, e1, e2);
         }
 
+        // Erasure: __ctor<Loc, VarDeclaration, Expression>
         public  BlitExp(Loc loc, VarDeclaration v, Expression e2) {
             VarExp ve = new VarExp(loc, v, true);
             assert((v.type != null) && (ve.type.value != null));
@@ -6541,6 +7078,7 @@ public class expression {
             }
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6565,10 +7103,12 @@ public class expression {
     }
     public static class AddAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  AddAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.addAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6592,10 +7132,12 @@ public class expression {
     }
     public static class MinAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  MinAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.minAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6619,10 +7161,12 @@ public class expression {
     }
     public static class MulAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  MulAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.mulAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6646,10 +7190,12 @@ public class expression {
     }
     public static class DivAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  DivAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.divAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6673,10 +7219,12 @@ public class expression {
     }
     public static class ModAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  ModAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.modAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6700,10 +7248,12 @@ public class expression {
     }
     public static class AndAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  AndAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.andAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6727,10 +7277,12 @@ public class expression {
     }
     public static class OrAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  OrAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.orAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6754,10 +7306,12 @@ public class expression {
     }
     public static class XorAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  XorAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.xorAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6781,10 +7335,12 @@ public class expression {
     }
     public static class PowAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  PowAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.powAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6808,10 +7364,12 @@ public class expression {
     }
     public static class ShlAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  ShlAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.leftShiftAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6835,10 +7393,12 @@ public class expression {
     }
     public static class ShrAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  ShrAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.rightShiftAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6862,10 +7422,12 @@ public class expression {
     }
     public static class UshrAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  UshrAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.unsignedRightShiftAssign, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6889,14 +7451,17 @@ public class expression {
     }
     public static class CatAssignExp extends BinAssignExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  CatAssignExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.concatenateAssign, 40, e1, e2);
         }
 
+        // Erasure: __ctor<Loc, byte, Expression, Expression>
         public  CatAssignExp(Loc loc, byte tok, Expression e1, Expression e2) {
             super(loc, tok, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6920,11 +7485,13 @@ public class expression {
     }
     public static class CatElemAssignExp extends CatAssignExp
     {
+        // Erasure: __ctor<Loc, Type, Expression, Expression>
         public  CatElemAssignExp(Loc loc, Type type, Expression e1, Expression e2) {
             super(loc, TOK.concatenateElemAssign, e1, e2);
             this.type.value = type;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6948,11 +7515,13 @@ public class expression {
     }
     public static class CatDcharAssignExp extends CatAssignExp
     {
+        // Erasure: __ctor<Loc, Type, Expression, Expression>
         public  CatDcharAssignExp(Loc loc, Type type, Expression e1, Expression e2) {
             super(loc, TOK.concatenateDcharAssign, e1, e2);
             this.type.value = type;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -6976,10 +7545,12 @@ public class expression {
     }
     public static class AddExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  AddExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.add, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7003,10 +7574,12 @@ public class expression {
     }
     public static class MinExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  MinExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.min, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7030,16 +7603,19 @@ public class expression {
     }
     public static class CatExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  CatExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.concatenate, 40, e1, e2);
         }
 
+        // Erasure: resolveLoc<Loc, Ptr>
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
             this.e1.value = this.e1.value.resolveLoc(loc, sc);
             this.e2.value = this.e2.value.resolveLoc(loc, sc);
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7063,10 +7639,12 @@ public class expression {
     }
     public static class MulExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  MulExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.mul, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7090,10 +7668,12 @@ public class expression {
     }
     public static class DivExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  DivExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.div, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7117,10 +7697,12 @@ public class expression {
     }
     public static class ModExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  ModExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.mod, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7144,10 +7726,12 @@ public class expression {
     }
     public static class PowExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  PowExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.pow, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7171,10 +7755,12 @@ public class expression {
     }
     public static class ShlExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  ShlExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.leftShift, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7198,10 +7784,12 @@ public class expression {
     }
     public static class ShrExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  ShrExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.rightShift, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7225,10 +7813,12 @@ public class expression {
     }
     public static class UshrExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  UshrExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.unsignedRightShift, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7252,10 +7842,12 @@ public class expression {
     }
     public static class AndExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  AndExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.and, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7279,10 +7871,12 @@ public class expression {
     }
     public static class OrExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  OrExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.or, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7306,10 +7900,12 @@ public class expression {
     }
     public static class XorExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  XorExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.xor, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7333,11 +7929,13 @@ public class expression {
     }
     public static class LogicalExp extends BinExp
     {
+        // Erasure: __ctor<Loc, byte, Expression, Expression>
         public  LogicalExp(Loc loc, byte op, Expression e1, Expression e2) {
             super(loc, op, 40, e1, e2);
             assert(((op & 0xFF) == 101) || ((op & 0xFF) == 102));
         }
 
+        // Erasure: toBoolean<Ptr>
         public  Expression toBoolean(Ptr<Scope> sc) {
             Expression ex2 = this.e2.value.toBoolean(sc);
             if (((ex2.op & 0xFF) == 127))
@@ -7348,6 +7946,7 @@ public class expression {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7371,11 +7970,13 @@ public class expression {
     }
     public static class CmpExp extends BinExp
     {
+        // Erasure: __ctor<byte, Loc, Expression, Expression>
         public  CmpExp(byte op, Loc loc, Expression e1, Expression e2) {
             super(loc, op, 40, e1, e2);
             assert(((op & 0xFF) == 54) || ((op & 0xFF) == 56) || ((op & 0xFF) == 55) || ((op & 0xFF) == 57));
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7399,10 +8000,12 @@ public class expression {
     }
     public static class InExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  InExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.in_, 40, e1, e2);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7426,11 +8029,13 @@ public class expression {
     }
     public static class RemoveExp extends BinExp
     {
+        // Erasure: __ctor<Loc, Expression, Expression>
         public  RemoveExp(Loc loc, Expression e1, Expression e2) {
             super(loc, TOK.remove, 40, e1, e2);
             this.type.value = Type.tbool;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7454,11 +8059,13 @@ public class expression {
     }
     public static class EqualExp extends BinExp
     {
+        // Erasure: __ctor<byte, Loc, Expression, Expression>
         public  EqualExp(byte op, Loc loc, Expression e1, Expression e2) {
             super(loc, op, 40, e1, e2);
             assert(((op & 0xFF) == 58) || ((op & 0xFF) == 59));
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7482,11 +8089,13 @@ public class expression {
     }
     public static class IdentityExp extends BinExp
     {
+        // Erasure: __ctor<byte, Loc, Expression, Expression>
         public  IdentityExp(byte op, Loc loc, Expression e1, Expression e2) {
             super(loc, op, 40, e1, e2);
             assert(((op & 0xFF) == 60) || ((op & 0xFF) == 61));
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7511,15 +8120,18 @@ public class expression {
     public static class CondExp extends BinExp
     {
         public Ref<Expression> econd = ref(null);
+        // Erasure: __ctor<Loc, Expression, Expression, Expression>
         public  CondExp(Loc loc, Expression econd, Expression e1, Expression e2) {
             super(loc, TOK.question, 44, e1, e2);
             this.econd.value = econd;
         }
 
+        // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
             return new CondExp(this.loc, this.econd.value.syntaxCopy(), this.e1.value.syntaxCopy(), this.e2.value.syntaxCopy());
         }
 
+        // Erasure: checkModifiable<Ptr, int>
         public  int checkModifiable(Ptr<Scope> sc, int flag) {
             if ((this.e1.value.checkModifiable(sc, flag) != Modifiable.no) && (this.e2.value.checkModifiable(sc, flag) != Modifiable.no))
             {
@@ -7528,10 +8140,12 @@ public class expression {
             return Modifiable.no;
         }
 
+        // Erasure: isLvalue<>
         public  boolean isLvalue() {
             return this.e1.value.isLvalue() && this.e2.value.isLvalue();
         }
 
+        // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression ex) {
             CondExp e = (CondExp)this.copy();
             e.e1.value = this.e1.value.toLvalue(sc, null).addressOf();
@@ -7540,12 +8154,14 @@ public class expression {
             return new PtrExp(this.loc, e, this.type.value);
         }
 
+        // Erasure: modifiableLvalue<Ptr, Expression>
         public  Expression modifiableLvalue(Ptr<Scope> sc, Expression e) {
             this.e1.value = this.e1.value.modifiableLvalue(sc, this.e1.value);
             this.e2.value = this.e2.value.modifiableLvalue(sc, this.e2.value);
             return this.toLvalue(sc, this);
         }
 
+        // Erasure: toBoolean<Ptr>
         public  Expression toBoolean(Ptr<Scope> sc) {
             Expression ex1 = this.e1.value.toBoolean(sc);
             Expression ex2 = this.e2.value.toBoolean(sc);
@@ -7562,6 +8178,7 @@ public class expression {
             return this;
         }
 
+        // Erasure: hookDtors<Ptr>
         public  void hookDtors(Ptr<Scope> sc) {
             // skipping duplicate class DtorVisitor
             DtorVisitor v = new DtorVisitor(sc, this);
@@ -7571,6 +8188,7 @@ public class expression {
             walkPostorder(this.e2.value, v);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7596,11 +8214,13 @@ public class expression {
     public static class DefaultInitExp extends Expression
     {
         public byte subop = 0;
+        // Erasure: __ctor<Loc, byte, int>
         public  DefaultInitExp(Loc loc, byte subop, int size) {
             super(loc, TOK.default_, size);
             this.subop = subop;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7621,10 +8241,12 @@ public class expression {
     }
     public static class FileInitExp extends DefaultInitExp
     {
+        // Erasure: __ctor<Loc, byte>
         public  FileInitExp(Loc loc, byte tok) {
             super(loc, tok, 25);
         }
 
+        // Erasure: resolveLoc<Loc, Ptr>
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
             BytePtr s = null;
             if (((this.subop & 0xFF) == 220))
@@ -7641,6 +8263,7 @@ public class expression {
             return e;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7661,16 +8284,19 @@ public class expression {
     }
     public static class LineInitExp extends DefaultInitExp
     {
+        // Erasure: __ctor<Loc>
         public  LineInitExp(Loc loc) {
             super(loc, TOK.line, 25);
         }
 
+        // Erasure: resolveLoc<Loc, Ptr>
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
             Expression e = new IntegerExp(loc, (long)loc.linnum, Type.tint32);
             e = e.castTo(sc, this.type.value);
             return e;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7691,10 +8317,12 @@ public class expression {
     }
     public static class ModuleInitExp extends DefaultInitExp
     {
+        // Erasure: __ctor<Loc>
         public  ModuleInitExp(Loc loc) {
             super(loc, TOK.moduleString, 25);
         }
 
+        // Erasure: resolveLoc<Loc, Ptr>
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
             BytePtr s = pcopy((((sc.get()).callsc != null ? (sc.get()).callsc : sc).get())._module.toPrettyChars(false));
             Expression e = new StringExp(loc, s);
@@ -7703,6 +8331,7 @@ public class expression {
             return e;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7723,10 +8352,12 @@ public class expression {
     }
     public static class FuncInitExp extends DefaultInitExp
     {
+        // Erasure: __ctor<Loc>
         public  FuncInitExp(Loc loc) {
             super(loc, TOK.functionString, 25);
         }
 
+        // Erasure: resolveLoc<Loc, Ptr>
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
             BytePtr s = null;
             if (((sc.get()).callsc != null) && (((sc.get()).callsc.get()).func != null))
@@ -7747,6 +8378,7 @@ public class expression {
             return e;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7767,10 +8399,12 @@ public class expression {
     }
     public static class PrettyFuncInitExp extends DefaultInitExp
     {
+        // Erasure: __ctor<Loc>
         public  PrettyFuncInitExp(Loc loc) {
             super(loc, TOK.prettyFunction, 25);
         }
 
+        // Erasure: resolveLoc<Loc, Ptr>
         public  Expression resolveLoc(Loc loc, Ptr<Scope> sc) {
             FuncDeclaration fd = ((sc.get()).callsc != null) && (((sc.get()).callsc.get()).func != null) ? ((sc.get()).callsc.get()).func : (sc.get()).func;
             BytePtr s = null;
@@ -7795,6 +8429,7 @@ public class expression {
             return e;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7816,12 +8451,14 @@ public class expression {
     public static class ObjcClassReferenceExp extends Expression
     {
         public ClassDeclaration classDeclaration = null;
+        // Erasure: __ctor<Loc, ClassDeclaration>
         public  ObjcClassReferenceExp(Loc loc, ClassDeclaration classDeclaration) {
             super(loc, TOK.objcClassReference, 28);
             this.classDeclaration = classDeclaration;
             this.type.value = objc().getRuntimeMetaclass(classDeclaration).getType();
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }

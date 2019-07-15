@@ -89,6 +89,7 @@ public class dscope {
         public AA<Object,Integer> anchorCounts = new AA<Object,Integer>();
         public Identifier prevAnchor = null;
         public static Ptr<Scope> freelist = null;
+        // Erasure: alloc<>
         public static Ptr<Scope> alloc() {
             if (freelist != null)
             {
@@ -101,6 +102,7 @@ public class dscope {
             return refPtr(new Scope(null, null, null, null, null, null, null, null, null, null, null, null, null, null, false, false, 0, null, null, null, new CtorFlow(CSX.none, new Slice<FieldInit>()), null, null, LINK.d, CPPMANGLE.def, PINLINE.default_, new Prot(Prot.Kind.public_, null), 0, 0L, null, 0, null, null, null, null));
         }
 
+        // Erasure: createGlobal<Module>
         public static Ptr<Scope> createGlobal(dmodule.Module _module) {
             Ptr<Scope> sc = alloc();
             sc.set(0, new Scope(null, null, null, null, null, null, null, null, null, null, null, null, null, null, false, false, 0, null, null, null, new CtorFlow(CSX.none, new Slice<FieldInit>()), null, null, LINK.d, CPPMANGLE.def, PINLINE.default_, new Prot(Prot.Kind.public_, null), 0, 0L, null, 0, null, null, null, null));
@@ -119,6 +121,7 @@ public class dscope {
             return sc;
         }
 
+        // Erasure: push<>
         public  Ptr<Scope> push() {
             Ptr<Scope> s = this.copy();
             assert((this.flags & 32768) == 0);
@@ -133,12 +136,14 @@ public class dscope {
             return s;
         }
 
+        // Erasure: push<ScopeDsymbol>
         public  Ptr<Scope> push(ScopeDsymbol ss) {
             Ptr<Scope> s = this.push();
             (s.get()).scopesym = ss;
             return s;
         }
 
+        // Erasure: pop<>
         public  Ptr<Scope> pop() {
             if (this.enclosing != null)
             {
@@ -155,23 +160,27 @@ public class dscope {
             return enc;
         }
 
+        // Erasure: detach<>
         public  void detach() {
             this.ctorflow.freeFieldinit();
             this.enclosing = null;
             this.pop();
         }
 
+        // Erasure: startCTFE<>
         public  Ptr<Scope> startCTFE() {
             Ptr<Scope> sc = this.push();
             (sc.get()).flags = this.flags | 128;
             return sc;
         }
 
+        // Erasure: endCTFE<>
         public  Ptr<Scope> endCTFE() {
             assert((this.flags & 128) != 0);
             return this.pop();
         }
 
+        // Erasure: merge<Loc, CtorFlow>
         public  void merge(Loc loc, CtorFlow ctorflow) {
             if (!mergeCallSuper(callSuper, ctorflow.callSuper.value))
             {
@@ -209,10 +218,12 @@ public class dscope {
             }
         }
 
+        // Erasure: instantiatingModule<>
         public  dmodule.Module instantiatingModule() {
             return this.minst != null ? this.minst : this._module;
         }
 
+        // Erasure: search<Loc, Identifier, Ptr, int>
         public  Dsymbol search(Loc loc, Identifier ident, Ptr<Dsymbol> pscopesym, int flags) {
             assert((flags & 24) == 0);
             if ((pequals(ident, Id.empty)))
@@ -379,6 +390,7 @@ public class dscope {
             return search(loc, ident, pscopesym, 0);
         }
 
+        // Erasure: search_correct<Identifier>
         public  Dsymbol search_correct(Identifier ident) {
             if (global.gag != 0)
             {
@@ -435,6 +447,7 @@ public class dscope {
             return speller.invoke(ident.asString());
         }
 
+        // Erasure: search_correct_C<Identifier>
         public static BytePtr search_correct_C(Identifier ident) {
             byte tok = TOK.reserved;
             if ((pequals(ident, Id.NULL)))
@@ -464,6 +477,7 @@ public class dscope {
             return Token.toChars(tok);
         }
 
+        // Erasure: insert<Dsymbol>
         public  Dsymbol insert(Dsymbol s) {
             {
                 VarDeclaration vd = s.isVarDeclaration();
@@ -510,6 +524,7 @@ public class dscope {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: getClassScope<>
         public  ClassDeclaration getClassScope() {
             {
                 Ptr<Scope> sc = ptr(this);
@@ -528,6 +543,7 @@ public class dscope {
             return null;
         }
 
+        // Erasure: getStructClassScope<>
         public  AggregateDeclaration getStructClassScope() {
             {
                 Ptr<Scope> sc = ptr(this);
@@ -551,6 +567,7 @@ public class dscope {
             return null;
         }
 
+        // Erasure: setNoFree<>
         public  void setNoFree() {
             {
                 Ptr<Scope> sc = ptr(this);
@@ -561,6 +578,7 @@ public class dscope {
             }
         }
 
+        // Erasure: __ctor<Scope>
         public  Scope(Scope sc) {
             this._module = sc._module;
             this.scopesym = sc.scopesym;
@@ -598,6 +616,7 @@ public class dscope {
             this.userAttribDecl = sc.userAttribDecl;
         }
 
+        // Erasure: alignment<>
         public  int alignment() {
             if (this.aligndecl != null)
             {
@@ -609,6 +628,7 @@ public class dscope {
             }
         }
 
+        // Erasure: isDeprecated<>
         public  boolean isDeprecated() {
             {
                 Ptr<Dsymbol> sp = pcopy(ptr(this.parent));

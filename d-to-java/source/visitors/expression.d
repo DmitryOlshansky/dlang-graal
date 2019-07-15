@@ -40,12 +40,19 @@ import std.algorithm, std.math, std.format, std.stdio, std.string;
 
 import visitors.members, visitors.templates;
 
+struct Erasure {
+    string erasedSig;
+    int n; // number of function with same erasedSig
+}
+
 struct ExprOpts {
     bool rawArrayLiterals = false;
     EnumDeclaration inEnumDecl = null;
     Module currentMod;
     Stack!FuncDeclaration funcs; // chain of nested functions for current scope
     Stack!AggregateDeclaration aggregates; // chain of aggregates for current scope
+    IdentityMap!Erasure erasures; // computed erasures of functions
+    Stack!(int[string]) erasuresCount;
     Expression dollarValue = null; // expression that is referenced by dollar
     VarDeclaration vararg = null; // var decl of vararg parameter
     Stack!(IdentityMap!bool) refParams; //out and ref params, they must be boxed
@@ -1688,6 +1695,61 @@ private void typeToBuffer(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing =
 enum Boxing {
     no = 0,
     yes
+}
+
+string erasureOf(FuncDeclaration func, ExprOpts opts) {
+    scope buf = new TextBuffer();
+    buf.put(func.funcName);
+    if (auto tmpl = func in opts.templates)
+        buf.put(tmpl.str);
+    buf.put("<");
+    if (func.parameters)
+        foreach (i, p; *func.parameters) {
+            if (i) buf.put(", ");
+            typeErasureToBuffer(p.type, buf, opts);
+        }
+    buf.put(">");
+    return buf.data.idup;
+}
+
+private void typeErasureToBuffer(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing = Boxing.no)
+{
+    switch (t.ty)
+    {
+        default:
+        case Tenum:
+            return buf.put(t.toJava(opts));
+        case Terror:
+            return buf.put("__error__");
+        case Tsarray:
+        case Tarray:
+            return buf.put("Array");
+        case Taarray:
+            return buf.put("AA");
+        case Tpointer:
+            return buf.put("Ptr");
+        case Tfunction:
+            return buf.fmt("Function%d", t.isTypeFunction.parameterList ? t.isTypeFunction.parameterList.length : 0);
+        case Tdelegate:
+            auto params = t.isTypeDelegate.next.isTypeFunction.parameterList;
+            return buf.fmt("Function%d", params ? params.length : 0);
+        case Tstruct:
+            return buf.fmt("%s", t.isTypeStruct.sym.ident.symbol);
+        case Tclass:
+            return buf.fmt("%s", t.isTypeClass.sym.ident.symbol);
+        case Tinstance:        
+        case Ttypeof:
+        case Treturn:
+        case Ttuple:
+        case Tslice:
+        case Tnull:
+        case Tident:
+        case Ttraits:
+        case Tvector:
+        case Treference:
+            assert(0);
+    }
+
 }
 
 private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing = Boxing.no)

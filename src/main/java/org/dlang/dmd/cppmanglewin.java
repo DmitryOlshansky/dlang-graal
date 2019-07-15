@@ -28,15 +28,18 @@ import static org.dlang.dmd.visitor.*;
 
 public class cppmanglewin {
 
+    // Erasure: toCppMangleMSVC<Dsymbol>
     public static BytePtr toCppMangleMSVC(Dsymbol s) {
         VisualCPPMangler v = new VisualCPPMangler(!global.params.mscoff);
         return v.mangleOf(s);
     }
 
+    // Erasure: cppTypeInfoMangleMSVC<Dsymbol>
     public static BytePtr cppTypeInfoMangleMSVC(Dsymbol s) {
         throw new AssertionError("Unreachable code!");
     }
 
+    // Erasure: checkImmutableShared<Type>
     public static boolean checkImmutableShared(Type type) {
         if (type.isImmutable() || type.isShared())
         {
@@ -65,12 +68,14 @@ public class cppmanglewin {
 
         public int flags = 0;
         public OutBuffer buf = new OutBuffer();
+        // Erasure: __ctor<VisualCPPMangler>
         public  VisualCPPMangler(VisualCPPMangler rvl) {
             this.flags |= rvl.flags & Flags.IS_DMC;
             memcpy((BytePtr)(ptr(this.saved_idents)), (ptr(rvl.saved_idents)), 40);
             memcpy((BytePtr)(ptr(this.saved_types)), (ptr(rvl.saved_types)), 40);
         }
 
+        // Erasure: __ctor<boolean>
         public  VisualCPPMangler(boolean isdmc) {
             if (isdmc)
             {
@@ -80,6 +85,7 @@ public class cppmanglewin {
             memset(ptr(this.saved_types), 0, 40);
         }
 
+        // Erasure: visit<Type>
         public  void visit(Type type) {
             if (checkImmutableShared(type))
             {
@@ -89,6 +95,7 @@ public class cppmanglewin {
             fatal();
         }
 
+        // Erasure: visit<TypeNull>
         public  void visit(TypeNull type) {
             if (checkImmutableShared(type))
             {
@@ -103,6 +110,7 @@ public class cppmanglewin {
             this.flags &= -5;
         }
 
+        // Erasure: visit<TypeBasic>
         public  void visit(TypeBasic type) {
             if (checkImmutableShared(type))
             {
@@ -210,6 +218,7 @@ public class cppmanglewin {
             this.flags &= -5;
         }
 
+        // Erasure: visit<TypeVector>
         public  void visit(TypeVector type) {
             if (this.checkTypeSaved(type))
             {
@@ -220,6 +229,7 @@ public class cppmanglewin {
             this.flags &= -5;
         }
 
+        // Erasure: visit<TypeSArray>
         public  void visit(TypeSArray type) {
             if (this.checkTypeSaved(type))
             {
@@ -245,6 +255,7 @@ public class cppmanglewin {
             }
         }
 
+        // Erasure: visit<TypePointer>
         public  void visit(TypePointer type) {
             if (checkImmutableShared(type))
             {
@@ -319,6 +330,7 @@ public class cppmanglewin {
             }
         }
 
+        // Erasure: visit<TypeReference>
         public  void visit(TypeReference type) {
             if (this.checkTypeSaved(type))
             {
@@ -345,6 +357,7 @@ public class cppmanglewin {
             }
         }
 
+        // Erasure: visit<TypeFunction>
         public  void visit(TypeFunction type) {
             BytePtr arg = pcopy(this.mangleFunctionType(type, false, false));
             if ((this.flags & Flags.IS_DMC) != 0)
@@ -362,6 +375,7 @@ public class cppmanglewin {
             this.flags &= -6;
         }
 
+        // Erasure: visit<TypeStruct>
         public  void visit(TypeStruct type) {
             if (this.checkTypeSaved(type))
             {
@@ -381,6 +395,7 @@ public class cppmanglewin {
             this.flags &= -5;
         }
 
+        // Erasure: visit<TypeEnum>
         public  void visit(TypeEnum type) {
             Identifier id = type.sym.ident;
             ByteSlice c = new RawByteSlice().copy();
@@ -438,6 +453,7 @@ public class cppmanglewin {
             this.flags &= -5;
         }
 
+        // Erasure: visit<TypeClass>
         public  void visit(TypeClass type) {
             if (this.checkTypeSaved(type))
             {
@@ -467,6 +483,7 @@ public class cppmanglewin {
             this.flags &= -5;
         }
 
+        // Erasure: mangleOf<Dsymbol>
         public  BytePtr mangleOf(Dsymbol s) {
             VarDeclaration vd = s.isVarDeclaration();
             FuncDeclaration fd = s.isFuncDeclaration();
@@ -485,6 +502,7 @@ public class cppmanglewin {
             return this.buf.extractChars();
         }
 
+        // Erasure: mangleFunction<FuncDeclaration>
         public  void mangleFunction(FuncDeclaration d) {
             assert(d != null);
             this.buf.writeByte(63);
@@ -557,6 +575,7 @@ public class cppmanglewin {
             this.buf.writestring(args);
         }
 
+        // Erasure: mangleVariable<VarDeclaration>
         public  void mangleVariable(VarDeclaration d) {
             assert(d != null);
             if ((d.storage_class & 1073741890L) == 0)
@@ -616,6 +635,7 @@ public class cppmanglewin {
             this.buf.writeByte((cv_mod & 0xFF));
         }
 
+        // Erasure: mangleSpecialName<Dsymbol>
         public static ByteSlice mangleSpecialName(Dsymbol sym) {
             ByteSlice mangle = new RawByteSlice().copy();
             if (sym.isCtorDeclaration() != null)
@@ -657,6 +677,7 @@ public class cppmanglewin {
             return mangle;
         }
 
+        // Erasure: mangleOperator<TemplateInstance, Ptr, int>
         public  boolean mangleOperator(TemplateInstance ti, Ref<BytePtr> symName, Ref<Integer> firstTemplateArg) {
             int whichOp = isCppOperator(ti.name);
             try {
@@ -839,6 +860,7 @@ public class cppmanglewin {
             return false;
         }
 
+        // Erasure: manlgeTemplateValue<RootObject, TemplateValueParameter, Dsymbol, boolean>
         public  void manlgeTemplateValue(RootObject o, TemplateValueParameter tv, Dsymbol sym, boolean is_dmc_template) {
             if (!tv.valType.isintegral())
             {
@@ -870,6 +892,7 @@ public class cppmanglewin {
             }
         }
 
+        // Erasure: mangleTemplateAlias<RootObject, Dsymbol>
         public  void mangleTemplateAlias(RootObject o, Dsymbol sym) {
             Dsymbol d = isDsymbol(o);
             Expression e = isExpression(o);
@@ -928,6 +951,7 @@ public class cppmanglewin {
             }
         }
 
+        // Erasure: mangleTemplateType<RootObject>
         public  void mangleTemplateType(RootObject o) {
             this.flags |= Flags.ESCAPE;
             Type t = isType(o);
@@ -936,6 +960,7 @@ public class cppmanglewin {
             this.flags &= -17;
         }
 
+        // Erasure: mangleName<Dsymbol, boolean>
         public  void mangleName(Dsymbol sym, boolean dont_use_back_reference) {
             BytePtr name = null;
             boolean is_dmc_template = false;
@@ -1045,6 +1070,7 @@ public class cppmanglewin {
             this.buf.writeByte(64);
         }
 
+        // Erasure: checkAndSaveIdent<Ptr>
         public  boolean checkAndSaveIdent(BytePtr name) {
             {
                 int __key862 = 0;
@@ -1066,6 +1092,7 @@ public class cppmanglewin {
             return false;
         }
 
+        // Erasure: saveIdent<Ptr>
         public  void saveIdent(BytePtr name) {
             {
                 int __key864 = 0;
@@ -1085,6 +1112,7 @@ public class cppmanglewin {
             }
         }
 
+        // Erasure: mangleIdent<Dsymbol, boolean>
         public  void mangleIdent(Dsymbol sym, boolean dont_use_back_reference) {
             Dsymbol p = sym;
             if ((p.toParent() != null) && (p.toParent().isTemplateInstance() != null))
@@ -1116,6 +1144,7 @@ public class cppmanglewin {
             mangleIdent(sym, false);
         }
 
+        // Erasure: mangleNumber<long>
         public  void mangleNumber(long num) {
             if (num == 0)
             {
@@ -1140,6 +1169,7 @@ public class cppmanglewin {
             this.buf.writeByte(64);
         }
 
+        // Erasure: checkTypeSaved<Type>
         public  boolean checkTypeSaved(Type type) {
             if ((this.flags & Flags.IS_NOT_TOP_TYPE) != 0)
             {
@@ -1169,6 +1199,7 @@ public class cppmanglewin {
             return false;
         }
 
+        // Erasure: mangleModifier<Type>
         public  void mangleModifier(Type type) {
             if ((this.flags & Flags.IGNORE_CONST) != 0)
             {
@@ -1200,6 +1231,7 @@ public class cppmanglewin {
             this.flags &= -17;
         }
 
+        // Erasure: mangleArray<TypeSArray>
         public  void mangleArray(TypeSArray type) {
             this.mangleModifier(type);
             int i = 0;
@@ -1220,6 +1252,7 @@ public class cppmanglewin {
             cur.accept(this);
         }
 
+        // Erasure: mangleFunctionType<TypeFunction, boolean, boolean>
         public  BytePtr mangleFunctionType(TypeFunction type, boolean needthis, boolean noreturn) {
             VisualCPPMangler tmp = new VisualCPPMangler(this);
             if (global.params.is64bit)

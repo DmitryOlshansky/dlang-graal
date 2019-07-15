@@ -295,6 +295,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
         generatedClasses = null;
         if (gotos.length != 1) gotos.push(null);
+        if (opts.erasuresCount.length != 1) opts.erasuresCount.push(null);
 
         header.put("package org.dlang.dmd;\n");
         header.put("import kotlin.jvm.functions.*;\n");
@@ -1230,6 +1231,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto _ = pushed(opts.aggregates, d);
         auto gf = pushed(generatedFunctions, null);
         auto guard = handleTiAggregate(d);
+        auto eg = pushed(opts.erasuresCount, null);
 
         stderr.writefln("Struct %s", d);
         auto members = collectMembers(d);
@@ -1327,8 +1329,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         if (opts.funcs.length) return; // inner classes are done separately
         auto gf = pushed(generatedFunctions, null);
         auto agg = pushed(opts.aggregates, d);
-
         auto guard = handleTiAggregate(d);
+        auto eg = pushed(opts.erasuresCount, null);
 
         stderr.writefln("Class %s", d);
         auto members = collectMembers(d, true);
@@ -1475,6 +1477,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             buf.fmt("public %s %s %s%s(", storage, typeOf(func.type.nextOf()), 
                 func.funcName == "opIndex" ? "get" : func.funcName, tiArgs.str);
         VarDeclaration[] renamedVars = printParameters(func, Boxing.no, false, numArgs);
+        if (auto e = func in opts.erasures) {
+            if (e.n != 0) buf.fmt(", ETag%d __tag", e.n);
+        }
         buf.put(")");
         return renamedVars;
     }
@@ -1498,6 +1503,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         opts.vararg = null;
         if (func.fbody is null && !func.isAbstract) return;
         //stderr.writefln("\tFunction %s", func.ident.toString);
+        buf.fmt("// Erasure: %s\n", erasureOf(func, opts));
         VarDeclaration[] renamedVars = printGlobalFunctionHead(func);
         printFunctionBody(func, renamedVars);
         buf.put("\n\n");
@@ -1506,6 +1512,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 auto p = (*params)[j];
                 if (j) buf.put(", ");
                 if (j < split) buf.put(p.ident.symbol);
+                else if (p.defaultArg.isNullExp) buf.fmt("(%s)null", p.defaultArg.type.toJava(opts));
                 else buf.put(p.defaultArg.toJava(opts));
             }
         }
@@ -1588,6 +1595,16 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         auto unrolled = pushed(unrolledGotos, IdentityMap!Statement());
         generatedFunctions.top[sig] = true;
         auto lgn = pushed(labelGotoNums);
+        auto erasure = erasureOf(func, opts);
+        if (int* count = erasure in opts.erasuresCount.top) {
+            opts.erasures[func] = Erasure(erasure, *count);
+            ++*count;
+        }
+        else  {
+            opts.erasures[func] = Erasure(erasure, 0);
+            opts.erasuresCount.top[erasure] = 1;
+        }
+        
         // hoist nested structs/classes to top level, mark them private
         if (opts.funcs.length == 0) {
             hoistLocalAggregates(func);

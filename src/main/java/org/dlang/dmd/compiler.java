@@ -56,6 +56,7 @@ public class compiler {
     static DArray<dmodule.Module> compiledImports = new DArray<dmodule.Module>();
     public static class Compiler
     {
+        // Erasure: genCmain<Ptr>
         public static void genCmain(Ptr<Scope> sc) {
             if (entrypoint != null)
             {
@@ -91,6 +92,7 @@ public class compiler {
             }
         }
 
+        // Erasure: paintAsType<Ptr, Expression, Type>
         public static Expression paintAsType(Ptr<UnionExp> pue, Expression e, Type type) {
             U u = null;
             assert((e.type.value.size() == type.size()));
@@ -158,9 +160,11 @@ public class compiler {
             return (pue.get()).exp();
         }
 
+        // Erasure: loadModule<Module>
         public static void loadModule(dmodule.Module m) {
         }
 
+        // Erasure: onImport<Module>
         public static boolean onImport(dmodule.Module m) {
             if (includeImports)
             {
@@ -198,14 +202,17 @@ public class compiler {
         public Identifier name = null;
         public boolean isPackageFile = false;
         public int index = 0;
+        // Erasure: totalLength<>
         public  int totalLength() {
             return (this.packages.get()).length + 1 + (this.isPackageFile ? 1 : 0);
         }
 
+        // Erasure: empty<>
         public  boolean empty() {
             return this.index >= this.totalLength();
         }
 
+        // Erasure: front<>
         public  Identifier front() {
             if ((this.index < (this.packages.get()).length))
             {
@@ -221,6 +228,7 @@ public class compiler {
             }
         }
 
+        // Erasure: popFront<>
         public  void popFront() {
             this.index++;
         }
@@ -250,6 +258,7 @@ public class compiler {
             return this;
         }
     }
+    // Erasure: includeImportedModuleCheck<ModuleComponentRange>
     public static boolean includeImportedModuleCheck(ModuleComponentRange components) {
         {
             {
@@ -289,10 +298,12 @@ public class compiler {
         public int depth = 0;
         public boolean isExclude = false;
         public Identifier id = null;
+        // Erasure: __ctor<Identifier>
         public  MatcherNode(Identifier id) {
             this.id = id;
         }
 
+        // Erasure: __ctor<boolean, int>
         public  MatcherNode(boolean isExclude, int depth) {
             this.depth = depth;
             this.isExclude = isExclude;
@@ -316,6 +327,7 @@ public class compiler {
     }
     static boolean includeByDefault = true;
     static DArray<MatcherNode> matchNodes = new DArray<MatcherNode>();
+    // Erasure: createMatchNodes<>
     public static void createMatchNodes() {
         Function1<Integer,Integer> findSortedIndexToAddForDepth = new Function1<Integer,Integer>() {
             public Integer invoke(Integer depth) {
@@ -359,6 +371,7 @@ public class compiler {
         }
     }
 
+    // Erasure: parseModulePatternDepth<Ptr>
     public static int parseModulePatternDepth(BytePtr modulePattern) {
         if (((modulePattern.get(0) & 0xFF) == 45))
         {
@@ -382,6 +395,7 @@ public class compiler {
         }
     }
 
+    // Erasure: parseModulePattern<Ptr, Ptr, int>
     public static void parseModulePattern(BytePtr modulePattern, Ptr<MatcherNode> dst, int depth) {
         boolean isExclude = false;
         if (((modulePattern.get(0) & 0xFF) == 45))

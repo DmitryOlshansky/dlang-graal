@@ -46,22 +46,26 @@ public class identifier {
     {
         public int value = 0;
         public ByteSlice name = new ByteSlice();
+        // Erasure: __ctor<Ptr, int, int>
         public  Identifier(BytePtr name, int length, int value) {
             super();
             this.name = name.slice(0,length).copy();
             this.value = value;
         }
 
+        // Erasure: __ctor<Array, int>
         public  Identifier(ByteSlice name, int value) {
             super();
             this.name = name.copy();
             this.value = value;
         }
 
+        // Erasure: __ctor<Ptr>
         public  Identifier(BytePtr name) {
             this(name.slice(0,strlen(name)), 120);
         }
 
+        // Erasure: anonymous<>
         public static Identifier anonymous() {
             if (identifier.anonymousanonymous != null)
             {
@@ -70,22 +74,27 @@ public class identifier {
             return identifier.anonymousanonymous = new Identifier(new ByteSlice("__anonymous"), 120);
         }
 
+        // Erasure: create<Ptr>
         public static Identifier create(BytePtr name) {
             return new Identifier(name);
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return toBytePtr(this.name);
         }
 
+        // Erasure: asString<>
         public  ByteSlice asString() {
             return this.name;
         }
 
+        // Erasure: getValue<>
         public  int getValue() {
             return this.value;
         }
 
+        // Erasure: toHChars2<>
         public  BytePtr toHChars2() {
             BytePtr p = null;
             if ((pequals(this, Id.ctor)))
@@ -138,15 +147,18 @@ public class identifier {
             return p;
         }
 
+        // Erasure: dyncast<>
         public  int dyncast() {
             return DYNCAST.identifier;
         }
 
         public static StringTable stringtable = new StringTable();
+        // Erasure: generateId<Ptr>
         public static Identifier generateId(BytePtr prefix) {
             return generateId(prefix, identifier.generateIdi += 1);
         }
 
+        // Erasure: generateId<Ptr, int>
         public static Identifier generateId(BytePtr prefix, int i) {
             OutBuffer buf = new OutBuffer();
             try {
@@ -158,6 +170,7 @@ public class identifier {
             }
         }
 
+        // Erasure: generateIdWithLoc<Array, Loc>
         public static Identifier generateIdWithLoc(ByteSlice prefix, Loc loc) {
             OutBuffer idBuf = new OutBuffer();
             try {
@@ -189,10 +202,12 @@ public class identifier {
             }
         }
 
+        // Erasure: idPool<Ptr, int>
         public static Identifier idPool(BytePtr s, int len) {
             return idPool(s.slice(0,len));
         }
 
+        // Erasure: idPool<Array>
         public static Identifier idPool(ByteSlice s) {
             Ptr<StringValue> sv = stringtable.update(s);
             Identifier id = ((Identifier)(sv.get()).ptrvalue);
@@ -204,10 +219,12 @@ public class identifier {
             return id;
         }
 
+        // Erasure: idPool<Ptr, int, int>
         public static Identifier idPool(BytePtr s, int len, int value) {
             return idPool(s.slice(0,len), value);
         }
 
+        // Erasure: idPool<Array, int>
         public static Identifier idPool(ByteSlice s, int value) {
             Ptr<StringValue> sv = stringtable.insert(s, null);
             assert(sv != null);
@@ -216,10 +233,12 @@ public class identifier {
             return id;
         }
 
+        // Erasure: isValidIdentifier<Ptr>
         public static boolean isValidIdentifier(BytePtr str) {
             return (str != null) && isValidIdentifier(toDString(str));
         }
 
+        // Erasure: isValidIdentifier<Array>
         public static boolean isValidIdentifier(ByteSlice str) {
             if ((str.getLength() == 0) || ((str.get(0) & 0xFF) >= 48) && ((str.get(0) & 0xFF) <= 57))
             {
@@ -237,10 +256,12 @@ public class identifier {
             return true;
         }
 
+        // Erasure: lookup<Ptr, int>
         public static Identifier lookup(BytePtr s, int len) {
             return lookup(s.slice(0,len));
         }
 
+        // Erasure: lookup<Array>
         public static Identifier lookup(ByteSlice s) {
             Ptr<StringValue> sv = stringtable.lookup(s);
             if (sv == null)
@@ -250,6 +271,7 @@ public class identifier {
             return ((Identifier)(sv.get()).ptrvalue);
         }
 
+        // Erasure: initTable<>
         public static void initTable() {
             stringtable._init(28000);
         }

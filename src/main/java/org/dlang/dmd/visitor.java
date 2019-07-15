@@ -35,234 +35,292 @@ public class visitor {
 
     public static class Visitor extends ParseTimeVisitorASTCodegen
     {
+        // Erasure: visit<ErrorStatement>
         public  void visit(ErrorStatement s) {
             this.visit((Statement)s);
         }
 
+        // Erasure: visit<PeelStatement>
         public  void visit(PeelStatement s) {
             this.visit((Statement)s);
         }
 
+        // Erasure: visit<UnrolledLoopStatement>
         public  void visit(UnrolledLoopStatement s) {
             this.visit((Statement)s);
         }
 
+        // Erasure: visit<SwitchErrorStatement>
         public  void visit(SwitchErrorStatement s) {
             this.visit((Statement)s);
         }
 
+        // Erasure: visit<DebugStatement>
         public  void visit(DebugStatement s) {
             this.visit((Statement)s);
         }
 
+        // Erasure: visit<DtorExpStatement>
         public  void visit(DtorExpStatement s) {
             this.visit((ExpStatement)s);
         }
 
+        // Erasure: visit<ForwardingStatement>
         public  void visit(ForwardingStatement s) {
             this.visit((Statement)s);
         }
 
+        // Erasure: visit<OverloadSet>
         public  void visit(OverloadSet s) {
             this.visit((Dsymbol)s);
         }
 
+        // Erasure: visit<LabelDsymbol>
         public  void visit(LabelDsymbol s) {
             this.visit((Dsymbol)s);
         }
 
+        // Erasure: visit<WithScopeSymbol>
         public  void visit(WithScopeSymbol s) {
             this.visit((ScopeDsymbol)s);
         }
 
+        // Erasure: visit<ArrayScopeSymbol>
         public  void visit(ArrayScopeSymbol s) {
             this.visit((ScopeDsymbol)s);
         }
 
+        // Erasure: visit<OverDeclaration>
         public  void visit(OverDeclaration s) {
             this.visit((Declaration)s);
         }
 
+        // Erasure: visit<SymbolDeclaration>
         public  void visit(SymbolDeclaration s) {
             this.visit((Declaration)s);
         }
 
+        // Erasure: visit<ThisDeclaration>
         public  void visit(ThisDeclaration s) {
             this.visit((VarDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoDeclaration>
         public  void visit(TypeInfoDeclaration s) {
             this.visit((VarDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoStructDeclaration>
         public  void visit(TypeInfoStructDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoClassDeclaration>
         public  void visit(TypeInfoClassDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoInterfaceDeclaration>
         public  void visit(TypeInfoInterfaceDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoPointerDeclaration>
         public  void visit(TypeInfoPointerDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoArrayDeclaration>
         public  void visit(TypeInfoArrayDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoStaticArrayDeclaration>
         public  void visit(TypeInfoStaticArrayDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoAssociativeArrayDeclaration>
         public  void visit(TypeInfoAssociativeArrayDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoEnumDeclaration>
         public  void visit(TypeInfoEnumDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoFunctionDeclaration>
         public  void visit(TypeInfoFunctionDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoDelegateDeclaration>
         public  void visit(TypeInfoDelegateDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoTupleDeclaration>
         public  void visit(TypeInfoTupleDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoConstDeclaration>
         public  void visit(TypeInfoConstDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoInvariantDeclaration>
         public  void visit(TypeInfoInvariantDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoSharedDeclaration>
         public  void visit(TypeInfoSharedDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoWildDeclaration>
         public  void visit(TypeInfoWildDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<TypeInfoVectorDeclaration>
         public  void visit(TypeInfoVectorDeclaration s) {
             this.visit((TypeInfoDeclaration)s);
         }
 
+        // Erasure: visit<FuncAliasDeclaration>
         public  void visit(FuncAliasDeclaration s) {
             this.visit((FuncDeclaration)s);
         }
 
+        // Erasure: visit<ErrorInitializer>
         public  void visit(ErrorInitializer i) {
             this.visit((Initializer)i);
         }
 
+        // Erasure: visit<ErrorExp>
         public  void visit(ErrorExp e) {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<ComplexExp>
         public  void visit(ComplexExp e) {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<ObjcClassReferenceExp>
         public  void visit(ObjcClassReferenceExp e) {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<SymOffExp>
         public  void visit(SymOffExp e) {
             this.visit((SymbolExp)e);
         }
 
+        // Erasure: visit<OverExp>
         public  void visit(OverExp e) {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<HaltExp>
         public  void visit(HaltExp e) {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<DotTemplateExp>
         public  void visit(DotTemplateExp e) {
             this.visit((UnaExp)e);
         }
 
+        // Erasure: visit<DotVarExp>
         public  void visit(DotVarExp e) {
             this.visit((UnaExp)e);
         }
 
+        // Erasure: visit<DelegateExp>
         public  void visit(DelegateExp e) {
             this.visit((UnaExp)e);
         }
 
+        // Erasure: visit<DotTypeExp>
         public  void visit(DotTypeExp e) {
             this.visit((UnaExp)e);
         }
 
+        // Erasure: visit<VectorExp>
         public  void visit(VectorExp e) {
             this.visit((UnaExp)e);
         }
 
+        // Erasure: visit<VectorArrayExp>
         public  void visit(VectorArrayExp e) {
             this.visit((UnaExp)e);
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             this.visit((UnaExp)e);
         }
 
+        // Erasure: visit<ArrayLengthExp>
         public  void visit(ArrayLengthExp e) {
             this.visit((UnaExp)e);
         }
 
+        // Erasure: visit<DelegatePtrExp>
         public  void visit(DelegatePtrExp e) {
             this.visit((UnaExp)e);
         }
 
+        // Erasure: visit<DelegateFuncptrExp>
         public  void visit(DelegateFuncptrExp e) {
             this.visit((UnaExp)e);
         }
 
+        // Erasure: visit<DotExp>
         public  void visit(DotExp e) {
             this.visit((BinExp)e);
         }
 
+        // Erasure: visit<IndexExp>
         public  void visit(IndexExp e) {
             this.visit((BinExp)e);
         }
 
+        // Erasure: visit<ConstructExp>
         public  void visit(ConstructExp e) {
             this.visit((AssignExp)e);
         }
 
+        // Erasure: visit<BlitExp>
         public  void visit(BlitExp e) {
             this.visit((AssignExp)e);
         }
 
+        // Erasure: visit<RemoveExp>
         public  void visit(RemoveExp e) {
             this.visit((BinExp)e);
         }
 
+        // Erasure: visit<ClassReferenceExp>
         public  void visit(ClassReferenceExp e) {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<VoidInitExp>
         public  void visit(VoidInitExp e) {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<ThrownExceptionExp>
         public  void visit(ThrownExceptionExp e) {
             this.visit((Expression)e);
         }
@@ -277,27 +335,35 @@ public class visitor {
     }
     public static class SemanticTimePermissiveVisitor extends Visitor
     {
+        // Erasure: visit<Dsymbol>
         public  void visit(Dsymbol _param_0) {
         }
 
+        // Erasure: visit<Parameter>
         public  void visit(Parameter _param_0) {
         }
 
+        // Erasure: visit<Statement>
         public  void visit(Statement _param_0) {
         }
 
+        // Erasure: visit<Type>
         public  void visit(Type _param_0) {
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression _param_0) {
         }
 
+        // Erasure: visit<TemplateParameter>
         public  void visit(TemplateParameter _param_0) {
         }
 
+        // Erasure: visit<Condition>
         public  void visit(Condition _param_0) {
         }
 
+        // Erasure: visit<Initializer>
         public  void visit(Initializer _param_0) {
         }
 
@@ -313,6 +379,7 @@ public class visitor {
     {
         // from template mixin ParseVisitMethods!(ASTCodegen)
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ExpStatement>
         public  void visit(ExpStatement s) {
             if ((s.exp != null) && ((s.exp.op & 0xFF) == 38))
             {
@@ -327,12 +394,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<CompileStatement>
         public  void visit(CompileStatement s) {
             this.visitArgs(s.exps, null);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<CompoundStatement>
         public  void visit(CompoundStatement s) {
             {
                 Slice<Statement> __r1725 = (s.statements.get()).opSlice().copy();
@@ -349,6 +418,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitVarDecl<VarDeclaration>
         public  void visitVarDecl(VarDeclaration v) {
             if (v.type != null)
             {
@@ -370,6 +440,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<CompoundDeclarationStatement>
         public  void visit(CompoundDeclarationStatement s) {
             {
                 Slice<Statement> __r1727 = (s.statements.get()).opSlice().copy();
@@ -399,6 +470,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ScopeStatement>
         public  void visit(ScopeStatement s) {
             if (s.statement.value != null)
             {
@@ -408,6 +480,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<WhileStatement>
         public  void visit(WhileStatement s) {
             s.condition.accept(this);
             if (s._body.value != null)
@@ -418,6 +491,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<DoStatement>
         public  void visit(DoStatement s) {
             if (s._body.value != null)
             {
@@ -428,6 +502,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ForStatement>
         public  void visit(ForStatement s) {
             if (s._init.value != null)
             {
@@ -449,6 +524,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ForeachStatement>
         public  void visit(ForeachStatement s) {
             {
                 Slice<Parameter> __r1729 = (s.parameters.get()).opSlice().copy();
@@ -470,6 +546,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ForeachRangeStatement>
         public  void visit(ForeachRangeStatement s) {
             if (s.prm.type != null)
             {
@@ -485,6 +562,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<IfStatement>
         public  void visit(IfStatement s) {
             if ((s.prm != null) && (s.prm.type != null))
             {
@@ -500,6 +578,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ConditionalStatement>
         public  void visit(ConditionalStatement s) {
             s.condition.accept(this);
             if (s.ifbody != null)
@@ -514,6 +593,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitArgs<Ptr, Expression>
         public  void visitArgs(Ptr<DArray<Expression>> expressions, Expression basis) {
             if ((expressions == null) || ((expressions.get()).length == 0))
             {
@@ -538,11 +618,12 @@ public class visitor {
 
         // defaulted all parameters starting with #2
         public  void visitArgs(Ptr<DArray<Expression>> expressions) {
-            visitArgs(expressions, null);
+            visitArgs(expressions, (Expression)null);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<PragmaStatement>
         public  void visit(PragmaStatement s) {
             if ((s.args != null) && ((s.args.get()).length != 0))
             {
@@ -556,12 +637,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<StaticAssertStatement>
         public  void visit(StaticAssertStatement s) {
             s.sa.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<SwitchStatement>
         public  void visit(SwitchStatement s) {
             s.condition.accept(this);
             if (s._body.value != null)
@@ -572,6 +655,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<CaseStatement>
         public  void visit(CaseStatement s) {
             s.exp.accept(this);
             s.statement.value.accept(this);
@@ -579,6 +663,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<CaseRangeStatement>
         public  void visit(CaseRangeStatement s) {
             s.first.accept(this);
             s.last.accept(this);
@@ -587,12 +672,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<DefaultStatement>
         public  void visit(DefaultStatement s) {
             s.statement.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<GotoCaseStatement>
         public  void visit(GotoCaseStatement s) {
             if (s.exp != null)
             {
@@ -602,6 +689,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ReturnStatement>
         public  void visit(ReturnStatement s) {
             if (s.exp != null)
             {
@@ -611,6 +699,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<SynchronizedStatement>
         public  void visit(SynchronizedStatement s) {
             if (s.exp != null)
             {
@@ -624,6 +713,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<WithStatement>
         public  void visit(WithStatement s) {
             s.exp.accept(this);
             if (s._body.value != null)
@@ -634,6 +724,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TryCatchStatement>
         public  void visit(TryCatchStatement s) {
             if (s._body.value != null)
             {
@@ -651,6 +742,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TryFinallyStatement>
         public  void visit(TryFinallyStatement s) {
             s._body.value.accept(this);
             s.finalbody.value.accept(this);
@@ -658,18 +750,21 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ScopeGuardStatement>
         public  void visit(ScopeGuardStatement s) {
             s.statement.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ThrowStatement>
         public  void visit(ThrowStatement s) {
             s.exp.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<LabelStatement>
         public  void visit(LabelStatement s) {
             if (s.statement.value != null)
             {
@@ -679,6 +774,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ImportStatement>
         public  void visit(ImportStatement s) {
             {
                 Slice<Dsymbol> __r1733 = (s.imports.get()).opSlice().copy();
@@ -692,6 +788,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<Catch>
         public  void visit(Catch c) {
             if (c.type != null)
             {
@@ -705,6 +802,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitType<Type>
         public  void visitType(Type t) {
             if (t == null)
             {
@@ -723,6 +821,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitFunctionType<TypeFunction, TemplateDeclaration>
         public  void visitFunctionType(TypeFunction t, TemplateDeclaration td) {
             if (t.next.value != null)
             {
@@ -744,6 +843,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitParameters<Ptr>
         public  void visitParameters(Ptr<DArray<Parameter>> parameters) {
             if (parameters != null)
             {
@@ -762,6 +862,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeVector>
         public  void visit(TypeVector t) {
             if (t.basetype == null)
             {
@@ -772,18 +873,21 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeSArray>
         public  void visit(TypeSArray t) {
             t.next.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeDArray>
         public  void visit(TypeDArray t) {
             t.next.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeAArray>
         public  void visit(TypeAArray t) {
             t.next.value.accept(this);
             t.index.accept(this);
@@ -791,6 +895,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypePointer>
         public  void visit(TypePointer t) {
             if (((t.next.value.ty & 0xFF) == ENUMTY.Tfunction))
             {
@@ -804,24 +909,28 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeReference>
         public  void visit(TypeReference t) {
             t.next.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeFunction>
         public  void visit(TypeFunction t) {
             this.visitFunctionType(t, null);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeDelegate>
         public  void visit(TypeDelegate t) {
             this.visitFunctionType((TypeFunction)t.next.value, null);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitTypeQualified<TypeQualified>
         public  void visitTypeQualified(TypeQualified t) {
             {
                 Slice<RootObject> __r1735 = t.idents.opSlice().copy();
@@ -846,12 +955,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeIdentifier>
         public  void visit(TypeIdentifier t) {
             this.visitTypeQualified(t);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeInstance>
         public  void visit(TypeInstance t) {
             t.tempinst.accept(this);
             this.visitTypeQualified(t);
@@ -859,6 +970,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeTypeof>
         public  void visit(TypeTypeof t) {
             t.exp.accept(this);
             this.visitTypeQualified(t);
@@ -866,18 +978,21 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeReturn>
         public  void visit(TypeReturn t) {
             this.visitTypeQualified(t);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeTuple>
         public  void visit(TypeTuple t) {
             this.visitParameters(t.arguments);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeSlice>
         public  void visit(TypeSlice t) {
             t.next.value.accept(this);
             t.lwr.accept(this);
@@ -886,12 +1001,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeTraits>
         public  void visit(TypeTraits t) {
             t.exp.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<StaticAssert>
         public  void visit(StaticAssert s) {
             s.exp.accept(this);
             if (s.msg != null)
@@ -902,6 +1019,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<EnumMember>
         public  void visit(EnumMember em) {
             if (em.type != null)
             {
@@ -915,6 +1033,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitAttribDeclaration<AttribDeclaration>
         public  void visitAttribDeclaration(AttribDeclaration d) {
             if (d.decl != null)
             {
@@ -929,18 +1048,21 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<AttribDeclaration>
         public  void visit(AttribDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<StorageClassDeclaration>
         public  void visit(StorageClassDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<DeprecatedDeclaration>
         public  void visit(DeprecatedDeclaration d) {
             d.msg.accept(this);
             this.visitAttribDeclaration(d);
@@ -948,36 +1070,42 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<LinkDeclaration>
         public  void visit(LinkDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<CPPMangleDeclaration>
         public  void visit(CPPMangleDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ProtDeclaration>
         public  void visit(ProtDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<AlignDeclaration>
         public  void visit(AlignDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<AnonDeclaration>
         public  void visit(AnonDeclaration d) {
             this.visitAttribDeclaration(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<PragmaDeclaration>
         public  void visit(PragmaDeclaration d) {
             if ((d.args != null) && ((d.args.get()).length != 0))
             {
@@ -988,6 +1116,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ConditionalDeclaration>
         public  void visit(ConditionalDeclaration d) {
             d.condition.accept(this);
             if (d.decl != null)
@@ -1012,12 +1141,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<CompileDeclaration>
         public  void visit(CompileDeclaration d) {
             this.visitArgs(d.exps, null);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<UserAttributeDeclaration>
         public  void visit(UserAttributeDeclaration d) {
             this.visitArgs(d.atts, null);
             this.visitAttribDeclaration(d);
@@ -1025,6 +1156,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitFuncBody<FuncDeclaration>
         public  void visitFuncBody(FuncDeclaration f) {
             if (f.frequires != null)
             {
@@ -1056,6 +1188,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitBaseClasses<ClassDeclaration>
         public  void visitBaseClasses(ClassDeclaration d) {
             if ((d == null) || ((d.baseclasses.get()).length == 0))
             {
@@ -1073,6 +1206,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitEponymousMember<TemplateDeclaration>
         public  boolean visitEponymousMember(TemplateDeclaration d) {
             if ((d.members == null) || ((d.members.get()).length != 1))
             {
@@ -1152,6 +1286,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitTemplateParameters<Ptr>
         public  void visitTemplateParameters(Ptr<DArray<TemplateParameter>> parameters) {
             if ((parameters == null) || ((parameters.get()).length == 0))
             {
@@ -1169,6 +1304,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TemplateDeclaration>
         public  void visit(TemplateDeclaration d) {
             if (this.visitEponymousMember(d))
             {
@@ -1191,6 +1327,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitObject<RootObject>
         public  void visitObject(RootObject oarg) {
             {
                 Type t = isType(oarg);
@@ -1225,6 +1362,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visitTiargs<TemplateInstance>
         public  void visitTiargs(TemplateInstance ti) {
             if (ti.tiargs == null)
             {
@@ -1242,12 +1380,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TemplateInstance>
         public  void visit(TemplateInstance ti) {
             this.visitTiargs(ti);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TemplateMixin>
         public  void visit(TemplateMixin tm) {
             this.visitType(tm.tqual);
             this.visitTiargs(tm);
@@ -1255,6 +1395,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<EnumDeclaration>
         public  void visit(EnumDeclaration d) {
             if (d.memtype != null)
             {
@@ -1280,6 +1421,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<Nspace>
         public  void visit(Nspace d) {
             {
                 Slice<Dsymbol> __r1761 = (d.members.get()).opSlice().copy();
@@ -1293,6 +1435,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<StructDeclaration>
         public  void visit(StructDeclaration d) {
             if (d.members == null)
             {
@@ -1310,6 +1453,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ClassDeclaration>
         public  void visit(ClassDeclaration d) {
             this.visitBaseClasses(d);
             if (d.members != null)
@@ -1325,6 +1469,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<AliasDeclaration>
         public  void visit(AliasDeclaration d) {
             if (d.aliassym != null)
             {
@@ -1338,12 +1483,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<VarDeclaration>
         public  void visit(VarDeclaration d) {
             this.visitVarDecl(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<FuncDeclaration>
         public  void visit(FuncDeclaration f) {
             TypeFunction tf = (TypeFunction)f.type;
             this.visitType(tf);
@@ -1352,6 +1499,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<FuncLiteralDeclaration>
         public  void visit(FuncLiteralDeclaration f) {
             if (((f.type.ty & 0xFF) == ENUMTY.Terror))
             {
@@ -1378,42 +1526,49 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<PostBlitDeclaration>
         public  void visit(PostBlitDeclaration d) {
             this.visitFuncBody(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<DtorDeclaration>
         public  void visit(DtorDeclaration d) {
             this.visitFuncBody(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<StaticCtorDeclaration>
         public  void visit(StaticCtorDeclaration d) {
             this.visitFuncBody(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<StaticDtorDeclaration>
         public  void visit(StaticDtorDeclaration d) {
             this.visitFuncBody(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<InvariantDeclaration>
         public  void visit(InvariantDeclaration d) {
             this.visitFuncBody(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<UnitTestDeclaration>
         public  void visit(UnitTestDeclaration d) {
             this.visitFuncBody(d);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<NewDeclaration>
         public  void visit(NewDeclaration d) {
             this.visitParameters(d.parameters);
             this.visitFuncBody(d);
@@ -1421,6 +1576,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<DeleteDeclaration>
         public  void visit(DeleteDeclaration d) {
             this.visitParameters(d.parameters);
             this.visitFuncBody(d);
@@ -1428,6 +1584,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<StructInitializer>
         public  void visit(StructInitializer si) {
             {
                 Slice<Identifier> __r1768 = si.field.opSlice().copy();
@@ -1448,6 +1605,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ArrayInitializer>
         public  void visit(ArrayInitializer ai) {
             {
                 Slice<Expression> __r1770 = ai.index.opSlice().copy();
@@ -1472,18 +1630,21 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ExpInitializer>
         public  void visit(ExpInitializer ei) {
             ei.exp.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             this.visitArgs(e.elements, e.basis.value);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
             {
                 Slice<Expression> __r1772 = (e.keys.get()).opSlice().copy();
@@ -1499,12 +1660,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeExp>
         public  void visit(TypeExp e) {
             this.visitType(e.type.value);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ScopeExp>
         public  void visit(ScopeExp e) {
             if (e.sds.isTemplateInstance() != null)
             {
@@ -1514,6 +1677,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<NewExp>
         public  void visit(NewExp e) {
             if (e.thisexp.value != null)
             {
@@ -1532,6 +1696,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<NewAnonClassExp>
         public  void visit(NewAnonClassExp e) {
             if (e.thisexp != null)
             {
@@ -1553,6 +1718,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TupleExp>
         public  void visit(TupleExp e) {
             if (e.e0.value != null)
             {
@@ -1563,12 +1729,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp e) {
             e.fd.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<DeclarationExp>
         public  void visit(DeclarationExp e) {
             {
                 VarDeclaration v = e.declaration.isVarDeclaration();
@@ -1585,12 +1753,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TypeidExp>
         public  void visit(TypeidExp e) {
             this.visitObject(e.obj);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TraitsExp>
         public  void visit(TraitsExp e) {
             if (e.args != null)
             {
@@ -1605,6 +1775,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<IsExp>
         public  void visit(IsExp e) {
             this.visitType(e.targ);
             if (e.tspec != null)
@@ -1619,12 +1790,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<UnaExp>
         public  void visit(UnaExp e) {
             e.e1.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<BinExp>
         public  void visit(BinExp e) {
             e.e1.value.accept(this);
             e.e2.value.accept(this);
@@ -1632,18 +1805,21 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<CompileExp>
         public  void visit(CompileExp e) {
             this.visitArgs(e.exps, null);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ImportExp>
         public  void visit(ImportExp e) {
             e.e1.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<AssertExp>
         public  void visit(AssertExp e) {
             e.e1.value.accept(this);
             if (e.msg != null)
@@ -1654,12 +1830,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<DotIdExp>
         public  void visit(DotIdExp e) {
             e.e1.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<DotTemplateInstanceExp>
         public  void visit(DotTemplateInstanceExp e) {
             e.e1.value.accept(this);
             e.ti.accept(this);
@@ -1667,6 +1845,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<CallExp>
         public  void visit(CallExp e) {
             e.e1.value.accept(this);
             this.visitArgs(e.arguments, null);
@@ -1674,18 +1853,21 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<PtrExp>
         public  void visit(PtrExp e) {
             e.e1.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<DeleteExp>
         public  void visit(DeleteExp e) {
             e.e1.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<CastExp>
         public  void visit(CastExp e) {
             if (e.to != null)
             {
@@ -1696,6 +1878,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<IntervalExp>
         public  void visit(IntervalExp e) {
             e.lwr.value.accept(this);
             e.upr.value.accept(this);
@@ -1703,6 +1886,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<ArrayExp>
         public  void visit(ArrayExp e) {
             e.e1.value.accept(this);
             this.visitArgs(e.arguments, null);
@@ -1710,12 +1894,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<PostExp>
         public  void visit(PostExp e) {
             e.e1.value.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<CondExp>
         public  void visit(CondExp e) {
             e.econd.value.accept(this);
             e.e1.value.accept(this);
@@ -1724,6 +1910,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TemplateTypeParameter>
         public  void visit(TemplateTypeParameter tp) {
             if (tp.specType != null)
             {
@@ -1737,12 +1924,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TemplateThisParameter>
         public  void visit(TemplateThisParameter tp) {
             this.visit((TemplateTypeParameter)tp);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TemplateAliasParameter>
         public  void visit(TemplateAliasParameter tp) {
             if (tp.specType != null)
             {
@@ -1760,6 +1949,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<TemplateValueParameter>
         public  void visit(TemplateValueParameter tp) {
             this.visitType(tp.valType);
             if (tp.specValue != null)
@@ -1774,12 +1964,14 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<StaticIfCondition>
         public  void visit(StaticIfCondition c) {
             c.exp.accept(this);
         }
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<Parameter>
         public  void visit(Parameter p) {
             this.visitType(p.type);
             if (p.defaultArg != null)
@@ -1790,6 +1982,7 @@ public class visitor {
 
 
         // from template ParseVisitMethods!(ASTCodegen)
+        // Erasure: visit<Module>
         public  void visit(dmodule.Module m) {
             {
                 Slice<Dsymbol> __r1775 = (m.members.get()).opSlice().copy();
@@ -1802,6 +1995,7 @@ public class visitor {
         }
 
 
+        // Erasure: visit<PeelStatement>
         public  void visit(PeelStatement s) {
             if (s.s.value != null)
             {
@@ -1809,6 +2003,7 @@ public class visitor {
             }
         }
 
+        // Erasure: visit<UnrolledLoopStatement>
         public  void visit(UnrolledLoopStatement s) {
             {
                 Slice<Statement> __r1777 = (s.statements.get()).opSlice().copy();
@@ -1823,6 +2018,7 @@ public class visitor {
             }
         }
 
+        // Erasure: visit<DebugStatement>
         public  void visit(DebugStatement s) {
             if (s.statement.value != null)
             {
@@ -1830,6 +2026,7 @@ public class visitor {
             }
         }
 
+        // Erasure: visit<ForwardingStatement>
         public  void visit(ForwardingStatement s) {
             if (s.statement != null)
             {
@@ -1837,6 +2034,7 @@ public class visitor {
             }
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             if ((e.stageflags & 32) == 0)
             {
@@ -1857,14 +2055,17 @@ public class visitor {
             }
         }
 
+        // Erasure: visit<DotTemplateExp>
         public  void visit(DotTemplateExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<DotVarExp>
         public  void visit(DotVarExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<DelegateExp>
         public  void visit(DelegateExp e) {
             if (!e.func.isNested() || e.func.needThis())
             {
@@ -1872,19 +2073,23 @@ public class visitor {
             }
         }
 
+        // Erasure: visit<DotTypeExp>
         public  void visit(DotTypeExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<VectorExp>
         public  void visit(VectorExp e) {
             this.visitType(e.to);
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<VectorArrayExp>
         public  void visit(VectorArrayExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             e.e1.value.accept(this);
             if (e.upr.value != null)
@@ -1897,28 +2102,34 @@ public class visitor {
             }
         }
 
+        // Erasure: visit<ArrayLengthExp>
         public  void visit(ArrayLengthExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<DelegatePtrExp>
         public  void visit(DelegatePtrExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<DelegateFuncptrExp>
         public  void visit(DelegateFuncptrExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<DotExp>
         public  void visit(DotExp e) {
             e.e1.value.accept(this);
             e.e2.value.accept(this);
         }
 
+        // Erasure: visit<IndexExp>
         public  void visit(IndexExp e) {
             e.e1.value.accept(this);
             e.e2.value.accept(this);
         }
 
+        // Erasure: visit<RemoveExp>
         public  void visit(RemoveExp e) {
             e.e1.value.accept(this);
             e.e2.value.accept(this);
@@ -1935,6 +2146,7 @@ public class visitor {
     public static class StoppableVisitor extends Visitor
     {
         public boolean stop = false;
+        // Erasure: __ctor<>
         public  StoppableVisitor() {
         }
 

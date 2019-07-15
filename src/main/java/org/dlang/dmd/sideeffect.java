@@ -23,10 +23,12 @@ import static org.dlang.dmd.visitor.*;
 public class sideeffect {
     private static class IsTrivialExp extends StoppableVisitor
     {
+        // Erasure: __ctor<>
         public  IsTrivialExp() {
             super();
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             if (((e.op & 0xFF) == 18))
             {
@@ -39,28 +41,33 @@ public class sideeffect {
     }
     private static class LambdaHasSideEffect extends StoppableVisitor
     {
+        // Erasure: __ctor<>
         public  LambdaHasSideEffect() {
             super();
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             this.stop = lambdaHasSideEffect(e);
         }
 
     }
 
+    // Erasure: isTrivialExp<Expression>
     public static boolean isTrivialExp(Expression e) {
         // skipping duplicate class IsTrivialExp
         IsTrivialExp v = new IsTrivialExp();
         return (walkPostorder(e, v) ? 1 : 0) == 0;
     }
 
+    // Erasure: hasSideEffect<Expression>
     public static boolean hasSideEffect(Expression e) {
         // skipping duplicate class LambdaHasSideEffect
         LambdaHasSideEffect v = new LambdaHasSideEffect();
         return walkPostorder(e, v);
     }
 
+    // Erasure: callSideEffectLevel<FuncDeclaration>
     public static int callSideEffectLevel(FuncDeclaration f) {
         if (f.isCtorDeclaration() != null)
         {
@@ -83,6 +90,7 @@ public class sideeffect {
         return 0;
     }
 
+    // Erasure: callSideEffectLevel<Type>
     public static int callSideEffectLevel(Type t) {
         t = t.toBasetype();
         TypeFunction tf = null;
@@ -123,6 +131,7 @@ public class sideeffect {
         return 0;
     }
 
+    // Erasure: lambdaHasSideEffect<Expression>
     public static boolean lambdaHasSideEffect(Expression e) {
         switch ((e.op & 0xFF))
         {
@@ -186,6 +195,7 @@ public class sideeffect {
         return false;
     }
 
+    // Erasure: discardValue<Expression>
     public static boolean discardValue(Expression e) {
         if (lambdaHasSideEffect(e))
         {
@@ -275,6 +285,7 @@ public class sideeffect {
         return true;
     }
 
+    // Erasure: copyToTemp<long, Ptr, Expression>
     public static VarDeclaration copyToTemp(long stc, BytePtr name, Expression e) {
         assert(((name.get(0) & 0xFF) == 95) && ((name.get(1) & 0xFF) == 95));
         VarDeclaration vd = new VarDeclaration(e.loc, e.type.value, Identifier.generateId(name), new ExpInitializer(e.loc, e), 0L);
@@ -282,6 +293,7 @@ public class sideeffect {
         return vd;
     }
 
+    // Erasure: extractSideEffect<Ptr, Ptr, Expression, Expression, boolean>
     public static Expression extractSideEffect(Ptr<Scope> sc, BytePtr name, Ref<Expression> e0, Expression e, boolean alwaysCopy) {
         if (!alwaysCopy && isTrivialExp(e))
         {

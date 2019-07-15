@@ -25,11 +25,13 @@ public class nogc {
     {
         public FuncDeclaration f = null;
         public boolean err = false;
+        // Erasure: __ctor<FuncDeclaration>
         public  NOGCVisitor(FuncDeclaration f) {
             super();
             this.f = f;
         }
 
+        // Erasure: doCond<Expression>
         public  void doCond(Expression exp) {
             if (exp != null)
             {
@@ -37,9 +39,11 @@ public class nogc {
             }
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
         }
 
+        // Erasure: visit<DeclarationExp>
         public  void visit(DeclarationExp e) {
             VarDeclaration v = e.declaration.isVarDeclaration();
             if ((v != null) && ((v.storage_class & 8388608L) == 0) && !v.isDataseg() && (v._init != null))
@@ -54,9 +58,11 @@ public class nogc {
             }
         }
 
+        // Erasure: visit<CallExp>
         public  void visit(CallExp e) {
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             if (((e.type.value.ty & 0xFF) != ENUMTY.Tarray) || (e.elements == null) || ((e.elements.get()).length == 0))
             {
@@ -71,6 +77,7 @@ public class nogc {
             this.f.printGCUsage(e.loc, new BytePtr("array literal may cause a GC allocation"));
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
             if ((e.keys.get()).length == 0)
             {
@@ -85,6 +92,7 @@ public class nogc {
             this.f.printGCUsage(e.loc, new BytePtr("associative array literal may cause a GC allocation"));
         }
 
+        // Erasure: visit<NewExp>
         public  void visit(NewExp e) {
             if ((e.member != null) && !e.member.isNogc() && this.f.setGC())
             {
@@ -111,6 +119,7 @@ public class nogc {
             this.f.printGCUsage(e.loc, new BytePtr("`new` causes a GC allocation"));
         }
 
+        // Erasure: visit<DeleteExp>
         public  void visit(DeleteExp e) {
             if (((e.e1.value.op & 0xFF) == 26))
             {
@@ -150,6 +159,7 @@ public class nogc {
             this.f.printGCUsage(e.loc, new BytePtr("`delete` requires the GC"));
         }
 
+        // Erasure: visit<IndexExp>
         public  void visit(IndexExp e) {
             Type t1b = e.e1.value.type.value.toBasetype();
             if (((t1b.ty & 0xFF) == ENUMTY.Taarray))
@@ -164,6 +174,7 @@ public class nogc {
             }
         }
 
+        // Erasure: visit<AssignExp>
         public  void visit(AssignExp e) {
             if (((e.e1.value.op & 0xFF) == 32))
             {
@@ -177,6 +188,7 @@ public class nogc {
             }
         }
 
+        // Erasure: visit<CatAssignExp>
         public  void visit(CatAssignExp e) {
             if (this.f.setGC())
             {
@@ -187,6 +199,7 @@ public class nogc {
             this.f.printGCUsage(e.loc, new BytePtr("operator `~=` may cause a GC allocation"));
         }
 
+        // Erasure: visit<CatExp>
         public  void visit(CatExp e) {
             if (this.f.setGC())
             {
@@ -208,6 +221,7 @@ public class nogc {
             return that;
         }
     }
+    // Erasure: checkGC<Ptr, Expression>
     public static Expression checkGC(Ptr<Scope> sc, Expression e) {
         FuncDeclaration f = (sc.get()).func;
         if ((e != null) && ((e.op & 0xFF) != 127) && (f != null) && ((sc.get()).intypeof != 1) && (((sc.get()).flags & 128) == 0) && ((f.type.ty & 0xFF) == ENUMTY.Tfunction) && ((TypeFunction)f.type).isnogc || ((f.flags & FUNCFLAG.nogcInprocess) != 0) || global.params.vgc && (((sc.get()).flags & 8) == 0))

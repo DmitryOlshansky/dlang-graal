@@ -116,6 +116,7 @@ public class func {
         private Ptr<Scope> sc = null;
         private Type tret = null;
         private FuncLiteralDeclaration fld = null;
+        // Erasure: visit<ReturnStatement>
         public  void visit(ReturnStatement s) {
             Expression exp = s.exp;
             if ((exp != null) && !exp.type.value.equals(this.tret))
@@ -148,6 +149,7 @@ public class func {
     {
         public FuncDeclaration fd = null;
         public Ptr<Scope> sc = null;
+        // Erasure: visit<ReturnStatement>
         public  void visit(ReturnStatement s) {
             if (this.fd.returnLabel != null)
             {
@@ -162,6 +164,7 @@ public class func {
             }
         }
 
+        // Erasure: visit<TryFinallyStatement>
         public  void visit(TryFinallyStatement s) {
             DtorExpStatement des = null;
             if (this.fd.nrvo_can && (s.finalbody.value != null) && ((des = s.finalbody.value.isDtorExpStatement()) != null) && (pequals(this.fd.nrvo_var, des.var)))
@@ -226,10 +229,12 @@ public class func {
     {
         public Identifier id = null;
         public Statement ensure = null;
+        // Erasure: syntaxCopy<>
         public  Ensure syntaxCopy() {
             return new Ensure(this.id, this.ensure.syntaxCopy());
         }
 
+        // Erasure: arraySyntaxCopy<Ptr>
         public static Ptr<DArray<Ensure>> arraySyntaxCopy(Ptr<DArray<Ensure>> a) {
             Ptr<DArray<Ensure>> b = null;
             if (a != null)
@@ -352,6 +357,7 @@ public class func {
         public DArray<FuncDeclaration> siblingCallers = new DArray<FuncDeclaration>();
         public Ptr<DArray<FuncDeclaration>> inlinedNestedCallees = null;
         public int flags = 0;
+        // Erasure: __ctor<Loc, Loc, Identifier, long, Type>
         public  FuncDeclaration(Loc loc, Loc endloc, Identifier ident, long storage_class, Type type) {
             super(loc, ident);
             this.storage_class = storage_class;
@@ -364,10 +370,12 @@ public class func {
             this.inferRetType = (type != null) && (type.nextOf() == null);
         }
 
+        // Erasure: create<Loc, Loc, Identifier, long, Type>
         public static FuncDeclaration create(Loc loc, Loc endloc, Identifier id, long storage_class, Type type) {
             return new FuncDeclaration(loc, endloc, id, storage_class, type);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             FuncDeclaration f = s != null ? (FuncDeclaration)s : new FuncDeclaration(this.loc, this.endloc, this.ident, this.storage_class, this.type.syntaxCopy());
             f.frequires = pcopy((this.frequires != null ? Statement.arraySyntaxCopy(this.frequires) : null));
@@ -376,6 +384,7 @@ public class func {
             return f;
         }
 
+        // Erasure: functionSemantic<>
         public  boolean functionSemantic() {
             if (this._scope == null)
             {
@@ -425,6 +434,7 @@ public class func {
             return !this.errors;
         }
 
+        // Erasure: functionSemantic3<>
         public  boolean functionSemantic3() {
             if ((this.semanticRun < PASS.semantic3) && (this._scope != null))
             {
@@ -449,6 +459,7 @@ public class func {
             return !this.errors && !this.semantic3Errors;
         }
 
+        // Erasure: checkForwardRef<Loc>
         public  boolean checkForwardRef(Loc loc) {
             if (!this.functionSemantic())
             {
@@ -463,6 +474,7 @@ public class func {
             return false;
         }
 
+        // Erasure: declareThis<Ptr, AggregateDeclaration>
         public  HiddenParameters declareThis(Ptr<Scope> sc, AggregateDeclaration ad) {
             if ((!pequals(this.toParent2(), this.toParentLocal())))
             {
@@ -569,6 +581,7 @@ public class func {
             return new HiddenParameters(null, false, null);
         }
 
+        // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
             if ((pequals(this, o)))
             {
@@ -612,6 +625,7 @@ public class func {
             return false;
         }
 
+        // Erasure: overrides<FuncDeclaration>
         public  int overrides(FuncDeclaration fd) {
             int result = 0;
             if ((pequals(fd.ident, this.ident)))
@@ -630,6 +644,7 @@ public class func {
             return result;
         }
 
+        // Erasure: findVtblIndex<Ptr, int, boolean>
         public  int findVtblIndex(Ptr<DArray<Dsymbol>> vtbl, int dim, boolean fix17349) {
             FuncDeclaration mismatch = null;
             long mismatchstc = 0L;
@@ -700,6 +715,7 @@ public class func {
             return findVtblIndex(vtbl, dim, true);
         }
 
+        // Erasure: overrideInterface<>
         public  Ptr<BaseClass> overrideInterface() {
             {
                 ClassDeclaration cd = this.toParent2().isClassDeclaration();
@@ -722,6 +738,7 @@ public class func {
             return null;
         }
 
+        // Erasure: overloadInsert<Dsymbol>
         public  boolean overloadInsert(Dsymbol s) {
             assert((!pequals(s, this)));
             AliasDeclaration ad = s.isAliasDeclaration();
@@ -773,6 +790,7 @@ public class func {
             return true;
         }
 
+        // Erasure: overloadExactMatch<Type>
         public  FuncDeclaration overloadExactMatch(Type t) {
             FuncDeclaration fd = null;
             Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>() {
@@ -805,6 +823,7 @@ public class func {
             return fd;
         }
 
+        // Erasure: overloadModMatch<Loc, Type, boolean>
         public  FuncDeclaration overloadModMatch(Loc loc, Type tthis, Ref<Boolean> hasOverloads) {
             MatchAccumulator m = new MatchAccumulator();
             Function1<Dsymbol,Integer> __lambda4 = new Function1<Dsymbol,Integer>() {
@@ -918,6 +937,7 @@ public class func {
             return m.lastf;
         }
 
+        // Erasure: findTemplateDeclRoot<>
         public  TemplateDeclaration findTemplateDeclRoot() {
             FuncDeclaration f = this;
             for (; (f != null) && (f.overnext != null);){
@@ -931,6 +951,7 @@ public class func {
             return null;
         }
 
+        // Erasure: inUnittest<>
         public  boolean inUnittest() {
             Dsymbol f = this;
             do {
@@ -945,6 +966,7 @@ public class func {
             return false;
         }
 
+        // Erasure: leastAsSpecialized<FuncDeclaration>
         public  int leastAsSpecialized(FuncDeclaration g) {
             int LOG_LEASTAS = 0;
             TypeFunction tf = this.type.toTypeFunction();
@@ -1005,6 +1027,7 @@ public class func {
             }
         }
 
+        // Erasure: searchLabel<Identifier>
         public  LabelDsymbol searchLabel(Identifier ident) {
             Dsymbol s = null;
             if (this.labtab == null)
@@ -1020,6 +1043,7 @@ public class func {
             return (LabelDsymbol)s;
         }
 
+        // Erasure: getLevel<FuncDeclaration, int>
         public  int getLevel(FuncDeclaration fd, int intypeof) {
             Dsymbol fdparent = fd.toParent2();
             if ((pequals(fdparent, this)))
@@ -1063,6 +1087,7 @@ public class func {
             return level;
         }
 
+        // Erasure: getLevelAndCheck<Loc, Ptr, FuncDeclaration>
         public  int getLevelAndCheck(Loc loc, Ptr<Scope> sc, FuncDeclaration fd) {
             int level = this.getLevel(fd, (sc.get()).intypeof);
             if ((level != -2))
@@ -1079,6 +1104,7 @@ public class func {
         }
 
         public int LevelError = -2;
+        // Erasure: toPrettyChars<boolean>
         public  BytePtr toPrettyChars(boolean QualifyTypes) {
             if (this.isMain())
             {
@@ -1095,6 +1121,7 @@ public class func {
             return toPrettyChars(false);
         }
 
+        // Erasure: toFullSignature<>
         public  BytePtr toFullSignature() {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -1105,42 +1132,52 @@ public class func {
             }
         }
 
+        // Erasure: isMain<>
         public  boolean isMain() {
             return (pequals(this.ident, Id.main)) && (this.linkage != LINK.c) && (this.isMember() == null) && !this.isNested();
         }
 
+        // Erasure: isCMain<>
         public  boolean isCMain() {
             return (pequals(this.ident, Id.main)) && (this.linkage == LINK.c) && (this.isMember() == null) && !this.isNested();
         }
 
+        // Erasure: isWinMain<>
         public  boolean isWinMain() {
             return (pequals(this.ident, Id.WinMain)) && (this.linkage != LINK.c) && (this.isMember() == null);
         }
 
+        // Erasure: isDllMain<>
         public  boolean isDllMain() {
             return (pequals(this.ident, Id.DllMain)) && (this.linkage != LINK.c) && (this.isMember() == null);
         }
 
+        // Erasure: isRtInit<>
         public  boolean isRtInit() {
             return (pequals(this.ident, Id.rt_init)) && (this.linkage == LINK.c) && (this.isMember() == null) && !this.isNested();
         }
 
+        // Erasure: isExport<>
         public  boolean isExport() {
             return this.protection.kind == Prot.Kind.export_;
         }
 
+        // Erasure: isImportedSymbol<>
         public  boolean isImportedSymbol() {
             return (this.protection.kind == Prot.Kind.export_) && (this.fbody.value == null);
         }
 
+        // Erasure: isCodeseg<>
         public  boolean isCodeseg() {
             return true;
         }
 
+        // Erasure: isOverloadable<>
         public  boolean isOverloadable() {
             return true;
         }
 
+        // Erasure: isAbstract<>
         public  boolean isAbstract() {
             if ((this.storage_class & 16L) != 0)
             {
@@ -1166,6 +1203,7 @@ public class func {
             return false;
         }
 
+        // Erasure: canInferAttributes<Ptr>
         public  boolean canInferAttributes(Ptr<Scope> sc) {
             if (this.fbody.value == null)
             {
@@ -1194,6 +1232,7 @@ public class func {
             return false;
         }
 
+        // Erasure: initInferAttributes<>
         public  void initInferAttributes() {
             TypeFunction tf = this.type.toTypeFunction();
             if ((tf.purity == PURE.impure))
@@ -1222,6 +1261,7 @@ public class func {
             }
         }
 
+        // Erasure: isPure<>
         public  int isPure() {
             TypeFunction tf = this.type.toTypeFunction();
             if ((this.flags & FUNCFLAG.purityInprocess) != 0)
@@ -1255,6 +1295,7 @@ public class func {
             return purity;
         }
 
+        // Erasure: isPureBypassingInference<>
         public  int isPureBypassingInference() {
             if ((this.flags & FUNCFLAG.purityInprocess) != 0)
             {
@@ -1266,6 +1307,7 @@ public class func {
             }
         }
 
+        // Erasure: setImpure<>
         public  boolean setImpure() {
             if ((this.flags & FUNCFLAG.purityInprocess) != 0)
             {
@@ -1282,6 +1324,7 @@ public class func {
             return false;
         }
 
+        // Erasure: isSafe<>
         public  boolean isSafe() {
             if ((this.flags & FUNCFLAG.safetyInprocess) != 0)
             {
@@ -1290,10 +1333,12 @@ public class func {
             return this.type.toTypeFunction().trust == TRUST.safe;
         }
 
+        // Erasure: isSafeBypassingInference<>
         public  boolean isSafeBypassingInference() {
             return ((this.flags & FUNCFLAG.safetyInprocess) == 0) && this.isSafe();
         }
 
+        // Erasure: isTrusted<>
         public  boolean isTrusted() {
             if ((this.flags & FUNCFLAG.safetyInprocess) != 0)
             {
@@ -1302,6 +1347,7 @@ public class func {
             return this.type.toTypeFunction().trust == TRUST.trusted;
         }
 
+        // Erasure: setUnsafe<>
         public  boolean setUnsafe() {
             if ((this.flags & FUNCFLAG.safetyInprocess) != 0)
             {
@@ -1319,6 +1365,7 @@ public class func {
             return false;
         }
 
+        // Erasure: isNogc<>
         public  boolean isNogc() {
             if ((this.flags & FUNCFLAG.nogcInprocess) != 0)
             {
@@ -1327,10 +1374,12 @@ public class func {
             return this.type.toTypeFunction().isnogc;
         }
 
+        // Erasure: isNogcBypassingInference<>
         public  boolean isNogcBypassingInference() {
             return ((this.flags & FUNCFLAG.nogcInprocess) == 0) && this.isNogc();
         }
 
+        // Erasure: setGC<>
         public  boolean setGC() {
             if (((this.flags & FUNCFLAG.nogcInprocess) != 0) && (this.semanticRun < PASS.semantic3) && (this._scope != null))
             {
@@ -1353,6 +1402,7 @@ public class func {
             return false;
         }
 
+        // Erasure: printGCUsage<Loc, Ptr>
         public  void printGCUsage(Loc loc, BytePtr warn) {
             if (!global.params.vgc)
             {
@@ -1365,6 +1415,7 @@ public class func {
             }
         }
 
+        // Erasure: isReturnIsolated<>
         public  boolean isReturnIsolated() {
             TypeFunction tf = this.type.toTypeFunction();
             assert(tf.next.value != null);
@@ -1376,6 +1427,7 @@ public class func {
             return this.isTypeIsolated(treti);
         }
 
+        // Erasure: isTypeIsolated<Type>
         public  boolean isTypeIsolated(Type t) {
             t = t.baseElemOf();
             switch ((t.ty & 0xFF))
@@ -1406,6 +1458,7 @@ public class func {
             }
         }
 
+        // Erasure: isTypeIsolatedIndirect<Type>
         public  boolean isTypeIsolatedIndirect(Type t) {
             assert(t != null);
             if ((this.isPureBypassingInference() == 0) || this.isNested())
@@ -1485,20 +1538,24 @@ public class func {
             return true;
         }
 
+        // Erasure: isNested<>
         public  boolean isNested() {
             FuncDeclaration f = this.toAliasFunc();
             return ((f.storage_class & 1L) == 0L) && (f.linkage == LINK.d) && (f.toParent2().isFuncDeclaration() != null) || (f.toParent2() != f.toParentLocal());
         }
 
+        // Erasure: isThis<>
         public  AggregateDeclaration isThis() {
             AggregateDeclaration ad = (this.storage_class & 1L) != 0 ? objc().isThis(this) : this.isMemberLocal();
             return ad;
         }
 
+        // Erasure: needThis<>
         public  boolean needThis() {
             return this.toAliasFunc().isThis() != null;
         }
 
+        // Erasure: isVirtualMethod<>
         public  boolean isVirtualMethod() {
             if ((!pequals(this.toAliasFunc(), this)))
             {
@@ -1515,6 +1572,7 @@ public class func {
             return true;
         }
 
+        // Erasure: isVirtual<>
         public  boolean isVirtual() {
             if ((!pequals(this.toAliasFunc(), this)))
             {
@@ -1532,6 +1590,7 @@ public class func {
             return !(this.isStatic() || (this.protection.kind == Prot.Kind.private_) || (this.protection.kind == Prot.Kind.package_)) && !((p.isInterfaceDeclaration() != null) && this.isFinalFunc());
         }
 
+        // Erasure: isFinalFunc<>
         public  boolean isFinalFunc() {
             if ((!pequals(this.toAliasFunc(), this)))
             {
@@ -1549,22 +1608,26 @@ public class func {
             return (cd != null) && ((cd.storage_class & 8L) != 0);
         }
 
+        // Erasure: addPreInvariant<>
         public  boolean addPreInvariant() {
             AggregateDeclaration ad = this.isThis();
             ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
             return (ad != null) && !((cd != null) && cd.isCPPclass()) && ((global.params.useInvariants & 0xFF) == 2) && (this.protection.kind == Prot.Kind.protected_) || (this.protection.kind == Prot.Kind.public_) || (this.protection.kind == Prot.Kind.export_) && !this.naked;
         }
 
+        // Erasure: addPostInvariant<>
         public  boolean addPostInvariant() {
             AggregateDeclaration ad = this.isThis();
             ClassDeclaration cd = ad != null ? ad.isClassDeclaration() : null;
             return (ad != null) && !((cd != null) && cd.isCPPclass()) && (ad.inv != null) && ((global.params.useInvariants & 0xFF) == 2) && (this.protection.kind == Prot.Kind.protected_) || (this.protection.kind == Prot.Kind.public_) || (this.protection.kind == Prot.Kind.export_) && !this.naked;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return this.generated ? new BytePtr("generated function") : new BytePtr("function");
         }
 
+        // Erasure: isUnique<>
         public  boolean isUnique() {
             boolean result = false;
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
@@ -1592,6 +1655,7 @@ public class func {
             return result;
         }
 
+        // Erasure: checkNestedReference<Ptr, Loc>
         public  boolean checkNestedReference(Ptr<Scope> sc, Loc loc) {
             {
                 FuncLiteralDeclaration fld = this.isFuncLiteralDeclaration();
@@ -1690,6 +1754,7 @@ public class func {
             return false;
         }
 
+        // Erasure: needsClosure<>
         public  boolean needsClosure() {
             try {
                 if (this.requiresClosure)
@@ -1739,6 +1804,7 @@ public class func {
             return true;
         }
 
+        // Erasure: checkClosure<>
         public  boolean checkClosure() {
             if (!this.needsClosure())
             {
@@ -1808,6 +1874,7 @@ public class func {
             }
         }
 
+        // Erasure: hasNestedFrameRefs<>
         public  boolean hasNestedFrameRefs() {
             if (this.closureVars.length != 0)
             {
@@ -1833,11 +1900,13 @@ public class func {
             return false;
         }
 
+        // Erasure: canBuildResultVar<>
         public  boolean canBuildResultVar() {
             TypeFunction f = (TypeFunction)this.type;
             return (f != null) && (f.nextOf() != null) && ((f.nextOf().toBasetype().ty & 0xFF) != ENUMTY.Tvoid);
         }
 
+        // Erasure: buildResultVar<Ptr, Type>
         public  void buildResultVar(Ptr<Scope> sc, Type tret) {
             if (this.vresult == null)
             {
@@ -1868,6 +1937,7 @@ public class func {
             }
         }
 
+        // Erasure: mergeFrequire<Statement, Ptr>
         public  Statement mergeFrequire(Statement sf, Ptr<DArray<Expression>> params) {
             {
                 Slice<FuncDeclaration> __r1417 = this.foverrides.opSlice().copy();
@@ -1903,6 +1973,7 @@ public class func {
             return sf;
         }
 
+        // Erasure: needsFensure<FuncDeclaration>
         public static boolean needsFensure(FuncDeclaration fd) {
             if (fd.fensures != null)
             {
@@ -1922,6 +1993,7 @@ public class func {
             return false;
         }
 
+        // Erasure: buildEnsureRequire<>
         public  void buildEnsureRequire() {
             if (this.frequires != null)
             {
@@ -2067,6 +2139,7 @@ public class func {
             }
         }
 
+        // Erasure: mergeFensure<Statement, Identifier, Ptr>
         public  Statement mergeFensure(Statement sf, Identifier oid, Ptr<DArray<Expression>> params) {
             {
                 Slice<FuncDeclaration> __r1429 = this.foverrides.opSlice().copy();
@@ -2116,6 +2189,7 @@ public class func {
             return sf;
         }
 
+        // Erasure: getParameterList<>
         public  ParameterList getParameterList() {
             if (this.type != null)
             {
@@ -2125,6 +2199,7 @@ public class func {
             return new ParameterList(null, VarArg.none);
         }
 
+        // Erasure: genCfunc<Ptr, Type, Ptr, long>
         public static FuncDeclaration genCfunc(Ptr<DArray<Parameter>> fparams, Type treturn, BytePtr name, long stc) {
             return genCfunc(fparams, treturn, Identifier.idPool(name, strlen(name)), stc);
         }
@@ -2134,6 +2209,7 @@ public class func {
             return genCfunc(fparams, treturn, name, 0L);
         }
 
+        // Erasure: genCfunc<Ptr, Type, Identifier, long>
         public static FuncDeclaration genCfunc(Ptr<DArray<Parameter>> fparams, Type treturn, Identifier id, long stc) {
             FuncDeclaration fd = null;
             TypeFunction tf = null;
@@ -2165,6 +2241,7 @@ public class func {
             return genCfunc(fparams, treturn, id, 0L);
         }
 
+        // Erasure: checkDmain<>
         public  void checkDmain() {
             TypeFunction tf = this.type.toTypeFunction();
             int nparams = tf.parameterList.length();
@@ -2192,14 +2269,17 @@ public class func {
             }
         }
 
+        // Erasure: isFuncDeclaration<>
         public  FuncDeclaration isFuncDeclaration() {
             return this;
         }
 
+        // Erasure: toAliasFunc<>
         public  FuncDeclaration toAliasFunc() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -2290,6 +2370,7 @@ public class func {
             return that;
         }
     }
+    // Erasure: addInvariant<Loc, Ptr, AggregateDeclaration, VarDeclaration>
     public static Expression addInvariant(Loc loc, Ptr<Scope> sc, AggregateDeclaration ad, VarDeclaration vthis) {
         Expression e = null;
         FuncDeclaration inv = ad.inv;
@@ -2315,6 +2396,7 @@ public class func {
         return e;
     }
 
+    // Erasure: overloadApply<Dsymbol, Function1, Ptr>
     public static int overloadApply(Dsymbol fstart, Function1<Dsymbol,Integer> dg, Ptr<Scope> sc) {
         Dsymbol next = null;
         {
@@ -2460,9 +2542,10 @@ public class func {
 
     // defaulted all parameters starting with #3
     public static int overloadApply(Dsymbol fstart, Function1<Dsymbol,Integer> dg) {
-        return overloadApply(fstart, dg, null);
+        return overloadApply(fstart, dg, (Ptr<Scope>)null);
     }
 
+    // Erasure: MODMatchToBuffer<Ptr, byte, byte>
     public static Mismatches MODMatchToBuffer(Ptr<OutBuffer> buf, byte lhsMod, byte rhsMod) {
         Mismatches mismatches = new Mismatches();
         boolean bothMutable = ((lhsMod & 0xFF) & (rhsMod & 0xFF)) == 0;
@@ -2500,6 +2583,7 @@ public class func {
         return mismatches;
     }
 
+    // Erasure: prependSpace<Ptr>
     public static BytePtr prependSpace(BytePtr str) {
         if ((str == null) || (str.get() == 0))
         {
@@ -2516,6 +2600,7 @@ public class func {
         public static final byte overloadOnly = (byte)2;
     }
 
+    // Erasure: resolveFuncCall<Loc, Ptr, Dsymbol, Ptr, Type, Ptr, byte>
     public static FuncDeclaration resolveFuncCall(Loc loc, Ptr<Scope> sc, Dsymbol s, Ptr<DArray<RootObject>> tiargs, Type tthis, Ptr<DArray<Expression>> fargs, byte flags) {
         if (s == null)
         {
@@ -2682,6 +2767,7 @@ public class func {
     }
 
     // from template printCandidates!(FuncDeclaration)
+    // Erasure: printCandidatesFuncDeclaration<Loc, FuncDeclaration>
     public static void printCandidatesFuncDeclaration(Loc loc, FuncDeclaration declaration) {
         int numToDisplay = 5;
         Function1<Dsymbol,Integer> __lambda3FuncDeclaration = new Function1<Dsymbol,Integer>() {
@@ -2736,6 +2822,7 @@ public class func {
 
 
     // from template printCandidates!(TemplateDeclaration)
+    // Erasure: printCandidatesTemplateDeclaration<Loc, TemplateDeclaration>
     public static void printCandidatesTemplateDeclaration(Loc loc, TemplateDeclaration declaration) {
         int numToDisplay = 5;
         Function1<Dsymbol,Integer> __lambda3TemplateDeclaration = new Function1<Dsymbol,Integer>() {
@@ -2789,6 +2876,7 @@ public class func {
     }
 
 
+    // Erasure: getIndirection<Type>
     public static Type getIndirection(Type t) {
         t = t.baseElemOf();
         if (((t.ty & 0xFF) == ENUMTY.Tarray) || ((t.ty & 0xFF) == ENUMTY.Tpointer))
@@ -2806,6 +2894,7 @@ public class func {
         return null;
     }
 
+    // Erasure: traverseIndirections<Type, Type>
     public static boolean traverseIndirections(Type ta, Type tb) {
         Function4<Type,Type,Ptr<Ctxt>,Boolean,Boolean> traverse = new Function4<Type,Type,Ptr<Ctxt>,Boolean,Boolean>() {
             public Boolean invoke(Type ta, Type tb, Ptr<Ctxt> ctxt, Boolean reversePass) {
@@ -2881,6 +2970,7 @@ public class func {
         return result;
     }
 
+    // Erasure: markAsNeedingClosure<Dsymbol, FuncDeclaration>
     public static void markAsNeedingClosure(Dsymbol f, FuncDeclaration outerFunc) {
         {
             Dsymbol sx = f;
@@ -2894,6 +2984,7 @@ public class func {
         }
     }
 
+    // Erasure: checkEscapingSiblings<FuncDeclaration, FuncDeclaration, Ptr>
     public static boolean checkEscapingSiblings(FuncDeclaration f, FuncDeclaration outerFunc, Object p) {
         Ref<PrevSibling> ps = ref(new PrevSibling());
         ps.value.p = pcopy((((Ptr<PrevSibling>)p)));
@@ -2939,10 +3030,11 @@ public class func {
 
     // defaulted all parameters starting with #3
     public static boolean checkEscapingSiblings(FuncDeclaration f, FuncDeclaration outerFunc) {
-        return checkEscapingSiblings(f, outerFunc, null);
+        return checkEscapingSiblings(f, outerFunc, (Object)null);
     }
 
     // from template followInstantiationContext!(AggregateDeclaration)
+    // Erasure: followInstantiationContextAggregateDeclaration<Dsymbol, AggregateDeclaration>
     public static boolean followInstantiationContextAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
         Function1<Dsymbol,Boolean> has2ThisAggregateDeclaration = new Function1<Dsymbol,Boolean>() {
             public Boolean invoke(Dsymbol s) {
@@ -3009,6 +3101,7 @@ public class func {
 
 
     // from template followInstantiationContext!(Dsymbol)
+    // Erasure: followInstantiationContextDsymbol<Dsymbol, Dsymbol>
     public static boolean followInstantiationContextDsymbol(Dsymbol s, Dsymbol _param_1) {
         Function1<Dsymbol,Boolean> has2ThisDsymbol = new Function1<Dsymbol,Boolean>() {
             public Boolean invoke(Dsymbol s) {
@@ -3075,6 +3168,7 @@ public class func {
 
 
     // from template followInstantiationContext!(FuncDeclaration)
+    // Erasure: followInstantiationContextFuncDeclaration<Dsymbol, FuncDeclaration>
     public static boolean followInstantiationContextFuncDeclaration(Dsymbol s, FuncDeclaration _param_1) {
         Function1<Dsymbol,Boolean> has2ThisFuncDeclaration = new Function1<Dsymbol,Boolean>() {
             public Boolean invoke(Dsymbol s) {
@@ -3141,18 +3235,21 @@ public class func {
 
 
     // from template toParentP!(AggregateDeclaration)
+    // Erasure: toParentPAggregateDeclaration<Dsymbol, AggregateDeclaration>
     public static Dsymbol toParentPAggregateDeclaration(Dsymbol s, AggregateDeclaration _param_1) {
         return followInstantiationContextAggregateDeclaration(s, _param_1) ? s.toParent2() : s.toParentLocal();
     }
 
 
     // from template toParentP!(Dsymbol)
+    // Erasure: toParentPDsymbol<Dsymbol, Dsymbol>
     public static Dsymbol toParentPDsymbol(Dsymbol s, Dsymbol _param_1) {
         return followInstantiationContextDsymbol(s, _param_1) ? s.toParent2() : s.toParentLocal();
     }
 
 
     // from template toParentP!(FuncDeclaration)
+    // Erasure: toParentPFuncDeclaration<Dsymbol, FuncDeclaration>
     public static Dsymbol toParentPFuncDeclaration(Dsymbol s, FuncDeclaration _param_1) {
         return followInstantiationContextFuncDeclaration(s, _param_1) ? s.toParent2() : s.toParentLocal();
     }
@@ -3162,6 +3259,7 @@ public class func {
     {
         public FuncDeclaration funcalias = null;
         public boolean hasOverloads = false;
+        // Erasure: __ctor<Identifier, FuncDeclaration, boolean>
         public  FuncAliasDeclaration(Identifier ident, FuncDeclaration funcalias, boolean hasOverloads) {
             super(funcalias.loc, funcalias.endloc, ident, funcalias.storage_class, funcalias.type);
             assert((!pequals(funcalias, this)));
@@ -3190,18 +3288,22 @@ public class func {
             this(ident, funcalias, true);
         }
 
+        // Erasure: isFuncAliasDeclaration<>
         public  FuncAliasDeclaration isFuncAliasDeclaration() {
             return this;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("function alias");
         }
 
+        // Erasure: toAliasFunc<>
         public  FuncDeclaration toAliasFunc() {
             return this.funcalias.toAliasFunc();
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3299,6 +3401,7 @@ public class func {
         public byte tok = 0;
         public Type treq = null;
         public boolean deferToObj = false;
+        // Erasure: __ctor<Loc, Loc, Type, byte, ForeachStatement, Identifier>
         public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes, Identifier id) {
             super(loc, endloc, null, 0L, type);
             this.ident = id != null ? id : Id.empty;
@@ -3308,9 +3411,10 @@ public class func {
 
         // defaulted all parameters starting with #6
         public  FuncLiteralDeclaration(Loc loc, Loc endloc, Type type, byte tok, ForeachStatement fes) {
-            this(loc, endloc, type, tok, fes, null);
+            this(loc, endloc, type, tok, fes, (Identifier)null);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             FuncLiteralDeclaration f = new FuncLiteralDeclaration(this.loc, this.endloc, this.type.syntaxCopy(), this.tok, this.fes, this.ident);
@@ -3318,26 +3422,32 @@ public class func {
             return this.syntaxCopy(f);
         }
 
+        // Erasure: isNested<>
         public  boolean isNested() {
             return ((this.tok & 0xFF) != 161) && (this.isThis() == null);
         }
 
+        // Erasure: isThis<>
         public  AggregateDeclaration isThis() {
             return ((this.tok & 0xFF) == 160) ? super.isThis() : null;
         }
 
+        // Erasure: isVirtual<>
         public  boolean isVirtual() {
             return false;
         }
 
+        // Erasure: addPreInvariant<>
         public  boolean addPreInvariant() {
             return false;
         }
 
+        // Erasure: addPostInvariant<>
         public  boolean addPostInvariant() {
             return false;
         }
 
+        // Erasure: modifyReturns<Ptr, Type>
         public  void modifyReturns(Ptr<Scope> sc, Type tret) {
             // skipping duplicate class RetWalker
             if ((this.semanticRun < PASS.semantic3done))
@@ -3359,14 +3469,17 @@ public class func {
             }
         }
 
+        // Erasure: isFuncLiteralDeclaration<>
         public  FuncLiteralDeclaration isFuncLiteralDeclaration() {
             return this;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return ((this.tok & 0xFF) != 161) ? new BytePtr("delegate") : new BytePtr("function");
         }
 
+        // Erasure: toPrettyChars<boolean>
         public  BytePtr toPrettyChars(boolean QualifyTypes) {
             if (this.parent.value != null)
             {
@@ -3384,6 +3497,7 @@ public class func {
             return toPrettyChars(false);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3480,6 +3594,7 @@ public class func {
     public static class CtorDeclaration extends FuncDeclaration
     {
         public boolean isCpCtor = false;
+        // Erasure: __ctor<Loc, Loc, long, Type, boolean>
         public  CtorDeclaration(Loc loc, Loc endloc, long stc, Type type, boolean isCpCtor) {
             super(loc, endloc, Id.ctor, stc, type);
             this.isCpCtor = isCpCtor;
@@ -3490,36 +3605,44 @@ public class func {
             this(loc, endloc, stc, type, false);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             CtorDeclaration f = new CtorDeclaration(this.loc, this.endloc, this.storage_class, this.type.syntaxCopy(), false);
             return this.syntaxCopy(f);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return this.isCpCtor ? new BytePtr("copy constructor") : new BytePtr("constructor");
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return new BytePtr("this");
         }
 
+        // Erasure: isVirtual<>
         public  boolean isVirtual() {
             return false;
         }
 
+        // Erasure: addPreInvariant<>
         public  boolean addPreInvariant() {
             return false;
         }
 
+        // Erasure: addPostInvariant<>
         public  boolean addPostInvariant() {
             return (this.isThis() != null) && (this.vthis != null) && ((global.params.useInvariants & 0xFF) == 2);
         }
 
+        // Erasure: isCtorDeclaration<>
         public  CtorDeclaration isCtorDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3613,36 +3736,44 @@ public class func {
     }
     public static class PostBlitDeclaration extends FuncDeclaration
     {
+        // Erasure: __ctor<Loc, Loc, long, Identifier>
         public  PostBlitDeclaration(Loc loc, Loc endloc, long stc, Identifier id) {
             super(loc, endloc, id, stc, null);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             PostBlitDeclaration dd = new PostBlitDeclaration(this.loc, this.endloc, this.storage_class, this.ident);
             return this.syntaxCopy(dd);
         }
 
+        // Erasure: isVirtual<>
         public  boolean isVirtual() {
             return false;
         }
 
+        // Erasure: addPreInvariant<>
         public  boolean addPreInvariant() {
             return false;
         }
 
+        // Erasure: addPostInvariant<>
         public  boolean addPostInvariant() {
             return (this.isThis() != null) && (this.vthis != null) && ((global.params.useInvariants & 0xFF) == 2);
         }
 
+        // Erasure: overloadInsert<Dsymbol>
         public  boolean overloadInsert(Dsymbol s) {
             return false;
         }
 
+        // Erasure: isPostBlitDeclaration<>
         public  PostBlitDeclaration isPostBlitDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3735,48 +3866,59 @@ public class func {
     }
     public static class DtorDeclaration extends FuncDeclaration
     {
+        // Erasure: __ctor<Loc, Loc>
         public  DtorDeclaration(Loc loc, Loc endloc) {
             super(loc, endloc, Id.dtor, 0L, null);
         }
 
+        // Erasure: __ctor<Loc, Loc, long, Identifier>
         public  DtorDeclaration(Loc loc, Loc endloc, long stc, Identifier id) {
             super(loc, endloc, id, stc, null);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             DtorDeclaration dd = new DtorDeclaration(this.loc, this.endloc, this.storage_class, this.ident);
             return this.syntaxCopy(dd);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("destructor");
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return new BytePtr("~this");
         }
 
+        // Erasure: isVirtual<>
         public  boolean isVirtual() {
             return this.vtblIndex != -1;
         }
 
+        // Erasure: addPreInvariant<>
         public  boolean addPreInvariant() {
             return (this.isThis() != null) && (this.vthis != null) && ((global.params.useInvariants & 0xFF) == 2);
         }
 
+        // Erasure: addPostInvariant<>
         public  boolean addPostInvariant() {
             return false;
         }
 
+        // Erasure: overloadInsert<Dsymbol>
         public  boolean overloadInsert(Dsymbol s) {
             return false;
         }
 
+        // Erasure: isDtorDeclaration<>
         public  DtorDeclaration isDtorDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3869,44 +4011,54 @@ public class func {
     }
     public static class StaticCtorDeclaration extends FuncDeclaration
     {
+        // Erasure: __ctor<Loc, Loc, long>
         public  StaticCtorDeclaration(Loc loc, Loc endloc, long stc) {
             super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("_staticCtor"), loc), 1L | stc, null);
         }
 
+        // Erasure: __ctor<Loc, Loc, Array, long>
         public  StaticCtorDeclaration(Loc loc, Loc endloc, ByteSlice name, long stc) {
             super(loc, endloc, Identifier.generateIdWithLoc(name, loc), 1L | stc, null);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             StaticCtorDeclaration scd = new StaticCtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(scd);
         }
 
+        // Erasure: isThis<>
         public  AggregateDeclaration isThis() {
             return null;
         }
 
+        // Erasure: isVirtual<>
         public  boolean isVirtual() {
             return false;
         }
 
+        // Erasure: addPreInvariant<>
         public  boolean addPreInvariant() {
             return false;
         }
 
+        // Erasure: addPostInvariant<>
         public  boolean addPostInvariant() {
             return false;
         }
 
+        // Erasure: hasStaticCtorOrDtor<>
         public  boolean hasStaticCtorOrDtor() {
             return true;
         }
 
+        // Erasure: isStaticCtorDeclaration<>
         public  StaticCtorDeclaration isStaticCtorDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3999,20 +4151,24 @@ public class func {
     }
     public static class SharedStaticCtorDeclaration extends StaticCtorDeclaration
     {
+        // Erasure: __ctor<Loc, Loc, long>
         public  SharedStaticCtorDeclaration(Loc loc, Loc endloc, long stc) {
             super(loc, endloc, new ByteSlice("_sharedStaticCtor"), stc);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             SharedStaticCtorDeclaration scd = new SharedStaticCtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(scd);
         }
 
+        // Erasure: isSharedStaticCtorDeclaration<>
         public  SharedStaticCtorDeclaration isSharedStaticCtorDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4106,44 +4262,54 @@ public class func {
     public static class StaticDtorDeclaration extends FuncDeclaration
     {
         public VarDeclaration vgate = null;
+        // Erasure: __ctor<Loc, Loc, long>
         public  StaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
             super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("_staticDtor"), loc), 1L | stc, null);
         }
 
+        // Erasure: __ctor<Loc, Loc, Array, long>
         public  StaticDtorDeclaration(Loc loc, Loc endloc, ByteSlice name, long stc) {
             super(loc, endloc, Identifier.generateIdWithLoc(name, loc), 1L | stc, null);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             StaticDtorDeclaration sdd = new StaticDtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(sdd);
         }
 
+        // Erasure: isThis<>
         public  AggregateDeclaration isThis() {
             return null;
         }
 
+        // Erasure: isVirtual<>
         public  boolean isVirtual() {
             return false;
         }
 
+        // Erasure: hasStaticCtorOrDtor<>
         public  boolean hasStaticCtorOrDtor() {
             return true;
         }
 
+        // Erasure: addPreInvariant<>
         public  boolean addPreInvariant() {
             return false;
         }
 
+        // Erasure: addPostInvariant<>
         public  boolean addPostInvariant() {
             return false;
         }
 
+        // Erasure: isStaticDtorDeclaration<>
         public  StaticDtorDeclaration isStaticDtorDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4237,20 +4403,24 @@ public class func {
     }
     public static class SharedStaticDtorDeclaration extends StaticDtorDeclaration
     {
+        // Erasure: __ctor<Loc, Loc, long>
         public  SharedStaticDtorDeclaration(Loc loc, Loc endloc, long stc) {
             super(loc, endloc, new ByteSlice("_sharedStaticDtor"), stc);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             SharedStaticDtorDeclaration sdd = new SharedStaticDtorDeclaration(this.loc, this.endloc, this.storage_class);
             return this.syntaxCopy(sdd);
         }
 
+        // Erasure: isSharedStaticDtorDeclaration<>
         public  SharedStaticDtorDeclaration isSharedStaticDtorDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4344,33 +4514,40 @@ public class func {
     }
     public static class InvariantDeclaration extends FuncDeclaration
     {
+        // Erasure: __ctor<Loc, Loc, long, Identifier, Statement>
         public  InvariantDeclaration(Loc loc, Loc endloc, long stc, Identifier id, Statement fbody) {
             super(loc, endloc, id != null ? id : Identifier.generateId(new BytePtr("__invariant")), stc, null);
             this.fbody.value = fbody;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             InvariantDeclaration id = new InvariantDeclaration(this.loc, this.endloc, this.storage_class, null, null);
             return this.syntaxCopy(id);
         }
 
+        // Erasure: isVirtual<>
         public  boolean isVirtual() {
             return false;
         }
 
+        // Erasure: addPreInvariant<>
         public  boolean addPreInvariant() {
             return false;
         }
 
+        // Erasure: addPostInvariant<>
         public  boolean addPostInvariant() {
             return false;
         }
 
+        // Erasure: isInvariantDeclaration<>
         public  InvariantDeclaration isInvariantDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4465,37 +4642,45 @@ public class func {
     {
         public BytePtr codedoc = null;
         public DArray<FuncDeclaration> deferredNested = new DArray<FuncDeclaration>();
+        // Erasure: __ctor<Loc, Loc, long, Ptr>
         public  UnitTestDeclaration(Loc loc, Loc endloc, long stc, BytePtr codedoc) {
             super(loc, endloc, Identifier.generateIdWithLoc(new ByteSlice("__unittest"), loc), stc, null);
             this.codedoc = pcopy(codedoc);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             UnitTestDeclaration utd = new UnitTestDeclaration(this.loc, this.endloc, this.storage_class, this.codedoc);
             return this.syntaxCopy(utd);
         }
 
+        // Erasure: isThis<>
         public  AggregateDeclaration isThis() {
             return null;
         }
 
+        // Erasure: isVirtual<>
         public  boolean isVirtual() {
             return false;
         }
 
+        // Erasure: addPreInvariant<>
         public  boolean addPreInvariant() {
             return false;
         }
 
+        // Erasure: addPostInvariant<>
         public  boolean addPostInvariant() {
             return false;
         }
 
+        // Erasure: isUnitTestDeclaration<>
         public  UnitTestDeclaration isUnitTestDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4592,38 +4777,46 @@ public class func {
     {
         public Ptr<DArray<Parameter>> parameters = null;
         public int varargs = 0;
+        // Erasure: __ctor<Loc, Loc, long, Ptr, int>
         public  NewDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams, int varargs) {
             super(loc, endloc, Id.classNew, 1L | stc, null);
             this.parameters = pcopy(fparams);
             this.varargs = varargs;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             NewDeclaration f = new NewDeclaration(this.loc, this.endloc, this.storage_class, Parameter.arraySyntaxCopy(this.parameters), this.varargs);
             return this.syntaxCopy(f);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("allocator");
         }
 
+        // Erasure: isVirtual<>
         public  boolean isVirtual() {
             return false;
         }
 
+        // Erasure: addPreInvariant<>
         public  boolean addPreInvariant() {
             return false;
         }
 
+        // Erasure: addPostInvariant<>
         public  boolean addPostInvariant() {
             return false;
         }
 
+        // Erasure: isNewDeclaration<>
         public  NewDeclaration isNewDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4719,41 +4912,50 @@ public class func {
     public static class DeleteDeclaration extends FuncDeclaration
     {
         public Ptr<DArray<Parameter>> parameters = null;
+        // Erasure: __ctor<Loc, Loc, long, Ptr>
         public  DeleteDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams) {
             super(loc, endloc, Id.classDelete, 1L | stc, null);
             this.parameters = pcopy(fparams);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             DeleteDeclaration f = new DeleteDeclaration(this.loc, this.endloc, this.storage_class, Parameter.arraySyntaxCopy(this.parameters));
             return this.syntaxCopy(f);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("deallocator");
         }
 
+        // Erasure: isDelete<>
         public  boolean isDelete() {
             return true;
         }
 
+        // Erasure: isVirtual<>
         public  boolean isVirtual() {
             return false;
         }
 
+        // Erasure: addPreInvariant<>
         public  boolean addPreInvariant() {
             return false;
         }
 
+        // Erasure: addPostInvariant<>
         public  boolean addPostInvariant() {
             return false;
         }
 
+        // Erasure: isDeleteDeclaration<>
         public  DeleteDeclaration isDeleteDeclaration() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }

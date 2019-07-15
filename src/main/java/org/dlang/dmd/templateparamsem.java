@@ -20,6 +20,7 @@ import static org.dlang.dmd.visitor.*;
 
 public class templateparamsem {
 
+    // Erasure: tpsemantic<TemplateParameter, Ptr, Ptr>
     public static boolean tpsemantic(TemplateParameter tp, Ptr<Scope> sc, Ptr<DArray<TemplateParameter>> parameters) {
         TemplateParameterSemanticVisitor v = new TemplateParameterSemanticVisitor(sc, parameters);
         tp.accept(v);
@@ -31,11 +32,13 @@ public class templateparamsem {
         public Ptr<Scope> sc = null;
         public Ptr<DArray<TemplateParameter>> parameters = null;
         public boolean result = false;
+        // Erasure: __ctor<Ptr, Ptr>
         public  TemplateParameterSemanticVisitor(Ptr<Scope> sc, Ptr<DArray<TemplateParameter>> parameters) {
             this.sc = pcopy(sc);
             this.parameters = pcopy(parameters);
         }
 
+        // Erasure: visit<TemplateTypeParameter>
         public  void visit(TemplateTypeParameter ttp) {
             if ((ttp.specType != null) && !reliesOnTident(ttp.specType, this.parameters, 0))
             {
@@ -44,11 +47,13 @@ public class templateparamsem {
             this.result = !((ttp.specType != null) && isError(ttp.specType));
         }
 
+        // Erasure: visit<TemplateValueParameter>
         public  void visit(TemplateValueParameter tvp) {
             tvp.valType = typeSemantic(tvp.valType, tvp.loc, this.sc);
             this.result = !isError(tvp.valType);
         }
 
+        // Erasure: visit<TemplateAliasParameter>
         public  void visit(TemplateAliasParameter tap) {
             if ((tap.specType != null) && !reliesOnTident(tap.specType, this.parameters, 0))
             {
@@ -58,6 +63,7 @@ public class templateparamsem {
             this.result = !((tap.specType != null) && isError(tap.specType)) && !((tap.specAlias != null) && isError(tap.specAlias));
         }
 
+        // Erasure: visit<TemplateTupleParameter>
         public  void visit(TemplateTupleParameter ttp) {
             this.result = true;
         }
@@ -73,6 +79,7 @@ public class templateparamsem {
             return that;
         }
     }
+    // Erasure: aliasParameterSemantic<Loc, Ptr, RootObject, Ptr>
     public static RootObject aliasParameterSemantic(Loc loc, Ptr<Scope> sc, RootObject o, Ptr<DArray<TemplateParameter>> parameters) {
         if (o != null)
         {

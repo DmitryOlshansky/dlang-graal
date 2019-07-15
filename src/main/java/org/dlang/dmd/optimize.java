@@ -29,16 +29,19 @@ public class optimize {
         private Expression ret = null;
         private int result = 0;
         private boolean keepLvalue = false;
+        // Erasure: __ctor<Expression, int, boolean>
         public  OptimizeVisitor(Expression e, int result, boolean keepLvalue) {
             this.ret = e;
             this.result = result;
             this.keepLvalue = keepLvalue;
         }
 
+        // Erasure: error<>
         public  void error() {
             this.ret = new ErrorExp();
         }
 
+        // Erasure: expOptimize<Expression, int, boolean>
         public  boolean expOptimize(Ref<Expression> e, int flags, boolean keepLvalue) {
             if (e.value == null)
             {
@@ -62,19 +65,23 @@ public class optimize {
             return expOptimize(e, flags, false);
         }
 
+        // Erasure: unaOptimize<UnaExp, int>
         public  boolean unaOptimize(UnaExp e, int flags) {
             return this.expOptimize(e1, flags, false);
         }
 
+        // Erasure: binOptimize<BinExp, int>
         public  boolean binOptimize(BinExp e, int flags) {
             this.expOptimize(e1, flags, false);
             this.expOptimize(e2, flags, false);
             return (this.ret.op & 0xFF) == 127;
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
         }
 
+        // Erasure: visit<VarExp>
         public  void visit(VarExp e) {
             if (this.keepLvalue)
             {
@@ -87,6 +94,7 @@ public class optimize {
             this.ret = fromConstInitializer(this.result, e);
         }
 
+        // Erasure: visit<TupleExp>
         public  void visit(TupleExp e) {
             this.expOptimize(e0, 0, false);
             {
@@ -97,6 +105,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             if (e.elements != null)
             {
@@ -110,6 +119,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
             assert(((e.keys.get()).length == (e.values.get()).length));
             {
@@ -121,6 +131,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             if ((e.stageflags & 4) != 0)
             {
@@ -140,6 +151,7 @@ public class optimize {
             e.stageflags = old;
         }
 
+        // Erasure: visit<UnaExp>
         public  void visit(UnaExp e) {
             if (this.unaOptimize(e, this.result))
             {
@@ -147,6 +159,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<NegExp>
         public  void visit(NegExp e) {
             if (this.unaOptimize(e, this.result))
             {
@@ -158,6 +171,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<ComExp>
         public  void visit(ComExp e) {
             if (this.unaOptimize(e, this.result))
             {
@@ -169,6 +183,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<NotExp>
         public  void visit(NotExp e) {
             if (this.unaOptimize(e, this.result))
             {
@@ -180,10 +195,12 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<SymOffExp>
         public  void visit(SymOffExp e) {
             assert(e.var != null);
         }
 
+        // Erasure: visit<AddrExp>
         public  void visit(AddrExp e) {
             if (((e.e1.value.op & 0xFF) == 99))
             {
@@ -254,6 +271,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<PtrExp>
         public  void visit(PtrExp e) {
             if (this.expOptimize(e1, this.result, false))
             {
@@ -303,6 +321,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<DotVarExp>
         public  void visit(DotVarExp e) {
             if (this.expOptimize(e1, this.result, false))
             {
@@ -335,6 +354,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<NewExp>
         public  void visit(NewExp e) {
             this.expOptimize(thisexp, 0, false);
             if (e.newargs != null)
@@ -357,6 +377,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<CallExp>
         public  void visit(CallExp e) {
             if (this.expOptimize(e1, this.result, false))
             {
@@ -382,6 +403,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<CastExp>
         public  void visit(CastExp e) {
             assert(e.type.value != null);
             byte op1 = e.e1.value.op;
@@ -485,6 +507,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<BinExp>
         public  void visit(BinExp e) {
             boolean e2only = ((e.op & 0xFF) == 95) || ((e.op & 0xFF) == 96);
             if (e2only ? this.expOptimize(e2, this.result, false) : this.binOptimize(e, this.result))
@@ -509,6 +532,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<AddExp>
         public  void visit(AddExp e) {
             if (this.binOptimize(e, this.result))
             {
@@ -524,6 +548,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<MinExp>
         public  void visit(MinExp e) {
             if (this.binOptimize(e, this.result))
             {
@@ -539,6 +564,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<MulExp>
         public  void visit(MulExp e) {
             if (this.binOptimize(e, this.result))
             {
@@ -550,6 +576,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<DivExp>
         public  void visit(DivExp e) {
             if (this.binOptimize(e, this.result))
             {
@@ -561,6 +588,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<ModExp>
         public  void visit(ModExp e) {
             if (this.binOptimize(e, this.result))
             {
@@ -572,6 +600,7 @@ public class optimize {
             }
         }
 
+        // Erasure: shift_optimize<BinExp, Ptr>
         public  void shift_optimize(BinExp e, Function4<Ref<Loc>,Type,Expression,Expression,UnionExp> shift) {
             if (this.binOptimize(e, this.result))
             {
@@ -596,18 +625,22 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<ShlExp>
         public  void visit(ShlExp e) {
             this.shift_optimize(e, optimize::Shl);
         }
 
+        // Erasure: visit<ShrExp>
         public  void visit(ShrExp e) {
             this.shift_optimize(e, optimize::Shr);
         }
 
+        // Erasure: visit<UshrExp>
         public  void visit(UshrExp e) {
             this.shift_optimize(e, optimize::Ushr);
         }
 
+        // Erasure: visit<AndExp>
         public  void visit(AndExp e) {
             if (this.binOptimize(e, this.result))
             {
@@ -619,6 +652,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<OrExp>
         public  void visit(OrExp e) {
             if (this.binOptimize(e, this.result))
             {
@@ -630,6 +664,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<XorExp>
         public  void visit(XorExp e) {
             if (this.binOptimize(e, this.result))
             {
@@ -641,6 +676,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<PowExp>
         public  void visit(PowExp e) {
             if (this.binOptimize(e, this.result))
             {
@@ -723,6 +759,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<CommaExp>
         public  void visit(CommaExp e) {
             this.expOptimize(e1, 0, false);
             this.expOptimize(e2, this.result, this.keepLvalue);
@@ -740,6 +777,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<ArrayLengthExp>
         public  void visit(ArrayLengthExp e) {
             if (this.unaOptimize(e, 1))
             {
@@ -765,6 +803,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<EqualExp>
         public  void visit(EqualExp e) {
             if (this.binOptimize(e, 0))
             {
@@ -789,6 +828,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<IdentityExp>
         public  void visit(IdentityExp e) {
             if (this.binOptimize(e, 0))
             {
@@ -804,6 +844,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<IndexExp>
         public  void visit(IndexExp e) {
             if (this.expOptimize(e1, this.result & 1, false))
             {
@@ -826,6 +867,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             if (this.expOptimize(e1, this.result & 1, false))
             {
@@ -870,6 +912,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<LogicalExp>
         public  void visit(LogicalExp e) {
             if (this.expOptimize(e1, 0, false))
             {
@@ -915,6 +958,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<CmpExp>
         public  void visit(CmpExp e) {
             if (this.binOptimize(e, 0))
             {
@@ -929,6 +973,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<CatExp>
         public  void visit(CatExp e) {
             if (this.binOptimize(e, this.result))
             {
@@ -969,6 +1014,7 @@ public class optimize {
             }
         }
 
+        // Erasure: visit<CondExp>
         public  void visit(CondExp e) {
             if (this.expOptimize(econd, 0, false))
             {
@@ -993,6 +1039,7 @@ public class optimize {
         public OptimizeVisitor() {}
     }
 
+    // Erasure: expandVar<int, VarDeclaration>
     public static Expression expandVar(int result, VarDeclaration v) {
         Function1<Expression,Expression> initializerReturn = new Function1<Expression,Expression>() {
             public Expression invoke(Expression e) {
@@ -1111,6 +1158,7 @@ public class optimize {
         return nullReturn.invoke();
     }
 
+    // Erasure: fromConstInitializer<int, Expression>
     public static Expression fromConstInitializer(int result, Expression e1) {
         Expression e = e1;
         if (((e1.op & 0xFF) == 26))
@@ -1139,6 +1187,7 @@ public class optimize {
         return e;
     }
 
+    // Erasure: setLengthVarIfKnown<VarDeclaration, Expression>
     public static void setLengthVarIfKnown(VarDeclaration lengthVar, Expression arr) {
         if (lengthVar == null)
         {
@@ -1174,6 +1223,7 @@ public class optimize {
         lengthVar.storage_class |= 5L;
     }
 
+    // Erasure: setLengthVarIfKnown<VarDeclaration, Type>
     public static void setLengthVarIfKnown(VarDeclaration lengthVar, Type type) {
         if (lengthVar == null)
         {
@@ -1198,6 +1248,7 @@ public class optimize {
         lengthVar.storage_class |= 5L;
     }
 
+    // Erasure: Expression_optimize<Expression, int, boolean>
     public static Expression Expression_optimize(Expression e, int result, boolean keepLvalue) {
         // skipping duplicate class OptimizeVisitor
         OptimizeVisitor v = new OptimizeVisitor(e, result, keepLvalue);

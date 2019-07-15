@@ -214,6 +214,10 @@ fun expr(arg: Boolean) {}
 @Suppress("UNUSED_PARAMETER")
 fun expr(arg: Void) {}
 
+// Erasure tag - used to disambiguate overloadset with same erasures
+object ETag1
+object ETag2
+object ETag3
 
 fun assertMsg(cond: Boolean, msg: ByteSlice) {
     require(cond){ msg }

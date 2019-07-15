@@ -34,6 +34,7 @@ public class dimport {
         public dmodule.Module mod = null;
         public Ref<dmodule.Package> pkg = ref(null);
         public DArray<AliasDeclaration> aliasdecls = new DArray<AliasDeclaration>();
+        // Erasure: __ctor<Loc, Ptr, Identifier, Identifier, int>
         public  Import(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Identifier aliasId, int isstatic) {
             Function0<Identifier> selectIdent = new Function0<Identifier>() {
                 public Identifier invoke() {
@@ -62,6 +63,7 @@ public class dimport {
             this.protection = new Prot(Prot.Kind.private_);
         }
 
+        // Erasure: addAlias<Identifier, Identifier>
         public  void addAlias(Identifier name, Identifier _alias) {
             if (this.isstatic != 0)
             {
@@ -75,14 +77,17 @@ public class dimport {
             this.aliases.push(_alias);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return this.isstatic != 0 ? new BytePtr("static import") : new BytePtr("import");
         }
 
+        // Erasure: prot<>
         public  Prot prot() {
             return this.protection;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
             Import si = new Import(this.loc, this.packages, this.id, this.aliasId, this.isstatic);
@@ -95,6 +100,7 @@ public class dimport {
             return si;
         }
 
+        // Erasure: load<Ptr>
         public  boolean load(Ptr<Scope> sc) {
             int errors = global.errors;
             DsymbolTable dst = dmodule.Package.resolve(this.packages, null, ptr(this.pkg));
@@ -170,6 +176,7 @@ public class dimport {
             return global.errors != errors;
         }
 
+        // Erasure: importAll<Ptr>
         public  void importAll(Ptr<Scope> sc) {
             if (this.mod != null)
             {
@@ -206,6 +213,7 @@ public class dimport {
             }
         }
 
+        // Erasure: toAlias<>
         public  Dsymbol toAlias() {
             if (this.aliasId != null)
             {
@@ -214,6 +222,7 @@ public class dimport {
             return this;
         }
 
+        // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sd) {
             if ((this.names.length == 0))
             {
@@ -242,6 +251,7 @@ public class dimport {
             }
         }
 
+        // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
             this.setScope(sc);
             if (this.aliasdecls.length != 0)
@@ -264,6 +274,7 @@ public class dimport {
             }
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if (this.pkg.value == null)
             {
@@ -279,6 +290,7 @@ public class dimport {
             return search(loc, ident, 8);
         }
 
+        // Erasure: overloadInsert<Dsymbol>
         public  boolean overloadInsert(Dsymbol s) {
             assert((this.ident != null) && (pequals(this.ident, s.ident)));
             Import imp = null;
@@ -292,10 +304,12 @@ public class dimport {
             }
         }
 
+        // Erasure: isImport<>
         public  Import isImport() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }

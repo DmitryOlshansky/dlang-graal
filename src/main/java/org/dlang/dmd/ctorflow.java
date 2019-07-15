@@ -52,10 +52,12 @@ public class ctorflow {
     {
         public Ref<Integer> callSuper = ref(0);
         public Slice<FieldInit> fieldinit = new Slice<FieldInit>();
+        // Erasure: allocFieldinit<int>
         public  void allocFieldinit(int dim) {
             this.fieldinit = (ptr(new FieldInit[dim])).slice(0,dim).copy();
         }
 
+        // Erasure: freeFieldinit<>
         public  void freeFieldinit() {
             if ((Ptr<FieldInit>)this.fieldinit != null)
             {
@@ -64,10 +66,12 @@ public class ctorflow {
             this.fieldinit = new Slice<FieldInit>().copy();
         }
 
+        // Erasure: clone<>
         public  CtorFlow clone() {
             return new CtorFlow(this.callSuper.value, arraydup(this.fieldinit));
         }
 
+        // Erasure: orCSX<int>
         public  void orCSX(int csx) {
             this.callSuper.value |= csx;
             {
@@ -80,6 +84,7 @@ public class ctorflow {
             }
         }
 
+        // Erasure: OR<CtorFlow>
         public  void OR(CtorFlow ctorflow) {
             this.callSuper.value |= ctorflow.callSuper.value;
             if ((this.fieldinit.getLength() != 0) && (ctorflow.fieldinit.getLength() != 0))
@@ -121,6 +126,7 @@ public class ctorflow {
             return this;
         }
     }
+    // Erasure: mergeCallSuper<int, int>
     public static boolean mergeCallSuper(Ref<Integer> a, int b) {
         if ((b == a.value))
         {
@@ -165,6 +171,7 @@ public class ctorflow {
         return true;
     }
 
+    // Erasure: mergeFieldInit<int, int>
     public static boolean mergeFieldInit(Ref<Integer> a, int b) {
         if ((b == a.value))
         {

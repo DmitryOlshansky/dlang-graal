@@ -4,9 +4,9 @@ data class StringValue(@JvmField var str: ByteSlice, @JvmField var hash: Int, @J
     override fun toChars(): BytePtr = str.ptr()
 }
 
-class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
+class StringTable(private val table : HashMap<ByteSlice, Ptr<StringValue?>>) {
 
-    constructor(): this(HashMap<ByteSlice, StringValue?>()) {}
+    constructor(): this(HashMap<ByteSlice, Ptr<StringValue?>>()) {}
 
     // shim
     @Suppress("UNUSED_PARAMETER")
@@ -32,7 +32,7 @@ class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
         Returns: the string's associated value, or `null` if the string doesn't
         exist in the string table
      */
-    fun lookup(str: ByteSlice): Ptr<StringValue?> = refPtr(table[str])
+    fun lookup(str: ByteSlice): Ptr<StringValue?>? = table[str]
 
     /// ditto
     fun lookup(s: BytePtr, length: Int) = lookup(s.slice(0, length))
@@ -51,10 +51,10 @@ class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
         Returns: the newly inserted value, or `null` if the string table already
         contains the string
     */
-    fun insert(str: ByteSlice, ptrvalue: Any?): StringValue? {
+    fun insert(str: ByteSlice, ptrvalue: Any?): Ptr<StringValue?>? {
         if (table[str] !== null) return null
         else {
-            val value = StringValue(str, str.hashCode(), ptrvalue)
+            val value = refPtr(StringValue(str, str.hashCode(), ptrvalue) as StringValue?)
             table[str] = value
             return value
         }
@@ -63,14 +63,14 @@ class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
     /// ditto
     fun insert(s: BytePtr, length: Int, value: Any?) = insert(s.slice(0, length), value)
 
-    fun update(str: ByteSlice): Ptr<StringValue> {
+    fun update(str: ByteSlice): Ptr<StringValue?>? {
         val v = table[str]
-        if (v !== null) return refPtr(v)
+        if (v !== null) return v
         else {
-            val value = StringValue(str, str.hashCode(), null)
+            val value = refPtr(StringValue(str, str.hashCode(), null) as StringValue?)
             table[str] = value
             // printf("update %.*s %p\n", cast(int)str.length, str.ptr, table[i].value ?: NULL);
-            return refPtr(value)
+            return value
         }
     }
 
@@ -84,17 +84,17 @@ class StringTable(private val table : HashMap<ByteSlice, StringValue?>) {
      * Returns:
      *      last return value of fp call
      */
-    fun apply(func: (StringValue) -> Int): Int
+    fun apply(func: (Ptr<StringValue?>) -> Int): Int
     {
         for (se in table.values)
         {
-            if (se?.ptrvalue === null)  continue
+            if (se.get()?.ptrvalue === null)  continue
             val r = func(se)
             if (r != 0) return r
         }
         return 0
     }
 
-    fun opApply(dg: (StringValue) -> Int): Int = apply(dg)
+    fun opApply(dg: (Ptr<StringValue?>) -> Int): Int = apply(dg)
 
 }

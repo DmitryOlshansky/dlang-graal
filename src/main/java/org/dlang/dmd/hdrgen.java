@@ -123,6 +123,7 @@ public class hdrgen {
         }
     }
     static int TEST_EMIT_ALL = 0;
+    // Erasure: genhdrfile<Module>
     public static void genhdrfile(dmodule.Module m) {
         Ref<OutBuffer> buf = ref(new OutBuffer());
         try {
@@ -138,12 +139,14 @@ public class hdrgen {
         }
     }
 
+    // Erasure: moduleToBuffer<Ptr, Module>
     public static void moduleToBuffer(Ptr<OutBuffer> buf, dmodule.Module m) {
         Ref<HdrGenState> hgs = ref(new HdrGenState());
         hgs.value.fullDump = true;
         toCBuffer((Dsymbol)m, buf, ptr(hgs));
     }
 
+    // Erasure: moduleToBuffer2<Module, Ptr, Ptr>
     public static void moduleToBuffer2(dmodule.Module m, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         if (m.md != null)
         {
@@ -182,6 +185,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: statementToBuffer<Statement, Ptr, Ptr>
     public static void statementToBuffer(Statement s, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         StatementPrettyPrintVisitor v = new StatementPrettyPrintVisitor(buf, hgs);
         s.accept(v);
@@ -191,22 +195,26 @@ public class hdrgen {
     {
         public Ptr<OutBuffer> buf = null;
         public Ptr<HdrGenState> hgs = null;
+        // Erasure: __ctor<Ptr, Ptr>
         public  StatementPrettyPrintVisitor(Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
             this.buf = pcopy(buf);
             this.hgs = pcopy(hgs);
         }
 
+        // Erasure: visit<Statement>
         public  void visit(Statement s) {
             (this.buf.get()).writestring(new ByteSlice("Statement::toCBuffer()"));
             (this.buf.get()).writenl();
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<ErrorStatement>
         public  void visit(ErrorStatement s) {
             (this.buf.get()).writestring(new ByteSlice("__error__"));
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<ExpStatement>
         public  void visit(ExpStatement s) {
             if ((s.exp != null) && ((s.exp.op & 0xFF) == 38) && (((DeclarationExp)s.exp).declaration != null))
             {
@@ -224,6 +232,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<CompileStatement>
         public  void visit(CompileStatement s) {
             (this.buf.get()).writestring(new ByteSlice("mixin("));
             argsToBuffer(s.exps, this.buf, this.hgs, null);
@@ -234,6 +243,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<CompoundStatement>
         public  void visit(CompoundStatement s) {
             {
                 Slice<Statement> __r1435 = (s.statements.get()).opSlice().copy();
@@ -248,6 +258,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<CompoundDeclarationStatement>
         public  void visit(CompoundDeclarationStatement s) {
             boolean anywritten = false;
             {
@@ -283,6 +294,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<UnrolledLoopStatement>
         public  void visit(UnrolledLoopStatement s) {
             (this.buf.get()).writestring(new ByteSlice("/*unrolled*/ {"));
             (this.buf.get()).writenl();
@@ -303,6 +315,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<ScopeStatement>
         public  void visit(ScopeStatement s) {
             (this.buf.get()).writeByte(123);
             (this.buf.get()).writenl();
@@ -316,6 +329,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<WhileStatement>
         public  void visit(WhileStatement s) {
             (this.buf.get()).writestring(new ByteSlice("while ("));
             expressionToBuffer(s.condition, this.buf, this.hgs);
@@ -327,6 +341,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<DoStatement>
         public  void visit(DoStatement s) {
             (this.buf.get()).writestring(new ByteSlice("do"));
             (this.buf.get()).writenl();
@@ -340,6 +355,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<ForStatement>
         public  void visit(ForStatement s) {
             (this.buf.get()).writestring(new ByteSlice("for ("));
             if (s._init.value != null)
@@ -377,6 +393,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: foreachWithoutBody<ForeachStatement>
         public  void foreachWithoutBody(ForeachStatement s) {
             (this.buf.get()).writestring(Token.asString(s.op));
             (this.buf.get()).writestring(new ByteSlice(" ("));
@@ -410,6 +427,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<ForeachStatement>
         public  void visit(ForeachStatement s) {
             this.foreachWithoutBody(s);
             (this.buf.get()).writeByte(123);
@@ -424,6 +442,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: foreachRangeWithoutBody<ForeachRangeStatement>
         public  void foreachRangeWithoutBody(ForeachRangeStatement s) {
             (this.buf.get()).writestring(Token.asString(s.op));
             (this.buf.get()).writestring(new ByteSlice(" ("));
@@ -443,6 +462,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<ForeachRangeStatement>
         public  void visit(ForeachRangeStatement s) {
             this.foreachRangeWithoutBody(s);
             (this.buf.get()).writeByte(123);
@@ -457,6 +477,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<StaticForeachStatement>
         public  void visit(StaticForeachStatement s) {
             (this.buf.get()).writestring(new ByteSlice("static "));
             if (s.sfe.aggrfe != null)
@@ -470,6 +491,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<IfStatement>
         public  void visit(IfStatement s) {
             (this.buf.get()).writestring(new ByteSlice("if ("));
             {
@@ -533,6 +555,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<ConditionalStatement>
         public  void visit(ConditionalStatement s) {
             conditionToBuffer(s.condition, this.buf, this.hgs);
             (this.buf.get()).writenl();
@@ -560,6 +583,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<PragmaStatement>
         public  void visit(PragmaStatement s) {
             (this.buf.get()).writestring(new ByteSlice("pragma ("));
             (this.buf.get()).writestring(s.ident.asString());
@@ -587,10 +611,12 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<StaticAssertStatement>
         public  void visit(StaticAssertStatement s) {
             dsymbolToBuffer(s.sa, this.buf, this.hgs);
         }
 
+        // Erasure: visit<SwitchStatement>
         public  void visit(SwitchStatement s) {
             (this.buf.get()).writestring(s.isFinal ? new ByteSlice("final switch (") : new ByteSlice("switch ("));
             expressionToBuffer(s.condition, this.buf, this.hgs);
@@ -615,6 +641,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<CaseStatement>
         public  void visit(CaseStatement s) {
             (this.buf.get()).writestring(new ByteSlice("case "));
             expressionToBuffer(s.exp, this.buf, this.hgs);
@@ -623,6 +650,7 @@ public class hdrgen {
             s.statement.value.accept(this);
         }
 
+        // Erasure: visit<CaseRangeStatement>
         public  void visit(CaseRangeStatement s) {
             (this.buf.get()).writestring(new ByteSlice("case "));
             expressionToBuffer(s.first, this.buf, this.hgs);
@@ -633,17 +661,20 @@ public class hdrgen {
             s.statement.value.accept(this);
         }
 
+        // Erasure: visit<DefaultStatement>
         public  void visit(DefaultStatement s) {
             (this.buf.get()).writestring(new ByteSlice("default:"));
             (this.buf.get()).writenl();
             s.statement.value.accept(this);
         }
 
+        // Erasure: visit<GotoDefaultStatement>
         public  void visit(GotoDefaultStatement s) {
             (this.buf.get()).writestring(new ByteSlice("goto default;"));
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<GotoCaseStatement>
         public  void visit(GotoCaseStatement s) {
             (this.buf.get()).writestring(new ByteSlice("goto case"));
             if (s.exp != null)
@@ -655,11 +686,13 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<SwitchErrorStatement>
         public  void visit(SwitchErrorStatement s) {
             (this.buf.get()).writestring(new ByteSlice("SwitchErrorStatement::toCBuffer()"));
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<ReturnStatement>
         public  void visit(ReturnStatement s) {
             (this.buf.get()).writestring(new ByteSlice("return "));
             if (s.exp != null)
@@ -670,6 +703,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<BreakStatement>
         public  void visit(BreakStatement s) {
             (this.buf.get()).writestring(new ByteSlice("break"));
             if (s.ident != null)
@@ -681,6 +715,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<ContinueStatement>
         public  void visit(ContinueStatement s) {
             (this.buf.get()).writestring(new ByteSlice("continue"));
             if (s.ident != null)
@@ -692,6 +727,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<SynchronizedStatement>
         public  void visit(SynchronizedStatement s) {
             (this.buf.get()).writestring(new ByteSlice("synchronized"));
             if (s.exp != null)
@@ -707,6 +743,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<WithStatement>
         public  void visit(WithStatement s) {
             (this.buf.get()).writestring(new ByteSlice("with ("));
             expressionToBuffer(s.exp, this.buf, this.hgs);
@@ -718,6 +755,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<TryCatchStatement>
         public  void visit(TryCatchStatement s) {
             (this.buf.get()).writestring(new ByteSlice("try"));
             (this.buf.get()).writenl();
@@ -744,6 +782,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<TryFinallyStatement>
         public  void visit(TryFinallyStatement s) {
             (this.buf.get()).writestring(new ByteSlice("try"));
             (this.buf.get()).writenl();
@@ -768,6 +807,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<ScopeGuardStatement>
         public  void visit(ScopeGuardStatement s) {
             (this.buf.get()).writestring(Token.asString(s.tok));
             (this.buf.get()).writeByte(32);
@@ -777,6 +817,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<ThrowStatement>
         public  void visit(ThrowStatement s) {
             (this.buf.get()).writestring(new ByteSlice("throw "));
             expressionToBuffer(s.exp, this.buf, this.hgs);
@@ -784,6 +825,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<DebugStatement>
         public  void visit(DebugStatement s) {
             if (s.statement.value != null)
             {
@@ -791,6 +833,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<GotoStatement>
         public  void visit(GotoStatement s) {
             (this.buf.get()).writestring(new ByteSlice("goto "));
             (this.buf.get()).writestring(s.ident.asString());
@@ -798,6 +841,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<LabelStatement>
         public  void visit(LabelStatement s) {
             (this.buf.get()).writestring(s.ident.asString());
             (this.buf.get()).writeByte(58);
@@ -808,6 +852,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<AsmStatement>
         public  void visit(AsmStatement s) {
             (this.buf.get()).writestring(new ByteSlice("asm { "));
             Ptr<Token> t = s.tokens;
@@ -825,6 +870,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<ImportStatement>
         public  void visit(ImportStatement s) {
             {
                 Slice<Dsymbol> __r1445 = (s.imports.get()).opSlice().copy();
@@ -836,6 +882,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<Catch>
         public  void visit(Catch c) {
             (this.buf.get()).writestring(new ByteSlice("catch"));
             if (c.type != null)
@@ -867,6 +914,7 @@ public class hdrgen {
             return that;
         }
     }
+    // Erasure: dsymbolToBuffer<Dsymbol, Ptr, Ptr>
     public static void dsymbolToBuffer(Dsymbol s, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         DsymbolPrettyPrintVisitor v = new DsymbolPrettyPrintVisitor(buf, hgs);
         s.accept(v);
@@ -876,15 +924,18 @@ public class hdrgen {
     {
         public Ptr<OutBuffer> buf = null;
         public Ptr<HdrGenState> hgs = null;
+        // Erasure: __ctor<Ptr, Ptr>
         public  DsymbolPrettyPrintVisitor(Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
             this.buf = pcopy(buf);
             this.hgs = pcopy(hgs);
         }
 
+        // Erasure: visit<Dsymbol>
         public  void visit(Dsymbol s) {
             (this.buf.get()).writestring(s.toChars());
         }
 
+        // Erasure: visit<StaticAssert>
         public  void visit(StaticAssert s) {
             (this.buf.get()).writestring(s.kind());
             (this.buf.get()).writeByte(40);
@@ -898,6 +949,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<DebugSymbol>
         public  void visit(DebugSymbol s) {
             (this.buf.get()).writestring(new ByteSlice("debug = "));
             if (s.ident != null)
@@ -912,6 +964,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<VersionSymbol>
         public  void visit(VersionSymbol s) {
             (this.buf.get()).writestring(new ByteSlice("version = "));
             if (s.ident != null)
@@ -926,6 +979,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<EnumMember>
         public  void visit(EnumMember em) {
             if (em.type != null)
             {
@@ -942,6 +996,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<Import>
         public  void visit(Import imp) {
             if ((this.hgs.get()).hdrgen && (pequals(imp.id, Id.object)))
             {
@@ -997,12 +1052,14 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<AliasThis>
         public  void visit(AliasThis d) {
             (this.buf.get()).writestring(new ByteSlice("alias "));
             (this.buf.get()).writestring(d.ident.asString());
             (this.buf.get()).writestring(new ByteSlice(" this;\n"));
         }
 
+        // Erasure: visit<AttribDeclaration>
         public  void visit(AttribDeclaration d) {
             if (d.decl == null)
             {
@@ -1043,6 +1100,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<StorageClassDeclaration>
         public  void visit(StorageClassDeclaration d) {
             if (stcToBuffer(this.buf, d.stc))
             {
@@ -1051,6 +1109,7 @@ public class hdrgen {
             this.visit((AttribDeclaration)d);
         }
 
+        // Erasure: visit<DeprecatedDeclaration>
         public  void visit(DeprecatedDeclaration d) {
             (this.buf.get()).writestring(new ByteSlice("deprecated("));
             expressionToBuffer(d.msg, this.buf, this.hgs);
@@ -1058,6 +1117,7 @@ public class hdrgen {
             this.visit((AttribDeclaration)d);
         }
 
+        // Erasure: visit<LinkDeclaration>
         public  void visit(LinkDeclaration d) {
             (this.buf.get()).writestring(new ByteSlice("extern ("));
             (this.buf.get()).writestring(linkageToString(d.linkage));
@@ -1065,6 +1125,7 @@ public class hdrgen {
             this.visit((AttribDeclaration)d);
         }
 
+        // Erasure: visit<CPPMangleDeclaration>
         public  void visit(CPPMangleDeclaration d) {
             ByteSlice s = new RawByteSlice().copy();
             switch (d.cppmangle)
@@ -1086,6 +1147,7 @@ public class hdrgen {
             this.visit((AttribDeclaration)d);
         }
 
+        // Erasure: visit<ProtDeclaration>
         public  void visit(ProtDeclaration d) {
             protectionToBuffer(this.buf, d.protection);
             (this.buf.get()).writeByte(32);
@@ -1100,6 +1162,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<AlignDeclaration>
         public  void visit(AlignDeclaration d) {
             (this.buf.get()).writestring(new ByteSlice("align "));
             if (d.ealign != null)
@@ -1109,6 +1172,7 @@ public class hdrgen {
             this.visit((AttribDeclaration)d);
         }
 
+        // Erasure: visit<AnonDeclaration>
         public  void visit(AnonDeclaration d) {
             (this.buf.get()).writestring(d.isunion ? new ByteSlice("union") : new ByteSlice("struct"));
             (this.buf.get()).writenl();
@@ -1131,6 +1195,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<PragmaDeclaration>
         public  void visit(PragmaDeclaration d) {
             (this.buf.get()).writestring(new ByteSlice("pragma ("));
             (this.buf.get()).writestring(d.ident.asString());
@@ -1143,6 +1208,7 @@ public class hdrgen {
             this.visit((AttribDeclaration)d);
         }
 
+        // Erasure: visit<ConditionalDeclaration>
         public  void visit(ConditionalDeclaration d) {
             conditionToBuffer(d.condition, this.buf, this.hgs);
             if ((d.decl != null) || (d.elsedecl != null))
@@ -1191,6 +1257,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<StaticForeachDeclaration>
         public  void visit(StaticForeachDeclaration s) {
             Function1<ForeachStatement,Void> foreachWithoutBody = new Function1<ForeachStatement,Void>() {
                 public Void invoke(ForeachStatement s) {
@@ -1271,6 +1338,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<CompileDeclaration>
         public  void visit(CompileDeclaration d) {
             (this.buf.get()).writestring(new ByteSlice("mixin("));
             argsToBuffer(d.exps, this.buf, this.hgs, null);
@@ -1278,6 +1346,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<UserAttributeDeclaration>
         public  void visit(UserAttributeDeclaration d) {
             (this.buf.get()).writestring(new ByteSlice("@("));
             argsToBuffer(d.atts, this.buf, this.hgs, null);
@@ -1285,6 +1354,7 @@ public class hdrgen {
             this.visit((AttribDeclaration)d);
         }
 
+        // Erasure: visit<TemplateDeclaration>
         public  void visit(TemplateDeclaration d) {
             if ((this.hgs.get()).hdrgen || (this.hgs.get()).fullDump && this.visitEponymousMember(d))
             {
@@ -1326,6 +1396,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visitEponymousMember<TemplateDeclaration>
         public  boolean visitEponymousMember(TemplateDeclaration d) {
             if ((d.members == null) || ((d.members.get()).length != 1))
             {
@@ -1436,6 +1507,7 @@ public class hdrgen {
             return false;
         }
 
+        // Erasure: visitTemplateParameters<Ptr>
         public  void visitTemplateParameters(Ptr<DArray<TemplateParameter>> parameters) {
             if ((parameters == null) || ((parameters.get()).length == 0))
             {
@@ -1456,6 +1528,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visitTemplateConstraint<Expression>
         public  void visitTemplateConstraint(Expression constraint) {
             if (constraint == null)
             {
@@ -1466,6 +1539,7 @@ public class hdrgen {
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<TemplateInstance>
         public  void visit(TemplateInstance ti) {
             (this.buf.get()).writestring(ti.name.toChars());
             tiargsToBuffer(ti, this.buf, this.hgs);
@@ -1476,6 +1550,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<TemplateMixin>
         public  void visit(TemplateMixin tm) {
             (this.buf.get()).writestring(new ByteSlice("mixin "));
             typeToBuffer(tm.tqual, null, this.buf, this.hgs);
@@ -1493,6 +1568,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<EnumDeclaration>
         public  void visit(EnumDeclaration d) {
             EnumDeclaration oldInEnumDecl = (this.hgs.get()).inEnumDecl;
             try {
@@ -1541,6 +1617,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<Nspace>
         public  void visit(Nspace d) {
             (this.buf.get()).writestring(new ByteSlice("extern (C++, "));
             (this.buf.get()).writestring(d.ident.asString());
@@ -1562,6 +1639,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<StructDeclaration>
         public  void visit(StructDeclaration d) {
             (this.buf.get()).writestring(d.kind());
             (this.buf.get()).writeByte(32);
@@ -1592,6 +1670,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<ClassDeclaration>
         public  void visit(ClassDeclaration d) {
             if (!d.isAnonymous())
             {
@@ -1624,6 +1703,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visitBaseClasses<ClassDeclaration>
         public  void visitBaseClasses(ClassDeclaration d) {
             if ((d == null) || ((d.baseclasses.get()).length == 0))
             {
@@ -1648,6 +1728,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<AliasDeclaration>
         public  void visit(AliasDeclaration d) {
             if ((d.storage_class & 2251799813685248L) != 0)
             {
@@ -1688,6 +1769,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visit<VarDeclaration>
         public  void visit(VarDeclaration d) {
             if ((d.storage_class & 2251799813685248L) != 0)
             {
@@ -1698,6 +1780,7 @@ public class hdrgen {
             (this.buf.get()).writenl();
         }
 
+        // Erasure: visitVarDecl<VarDeclaration, boolean>
         public  void visitVarDecl(VarDeclaration v, boolean anywritten) {
             if (anywritten)
             {
@@ -1734,6 +1817,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<FuncDeclaration>
         public  void visit(FuncDeclaration f) {
             if (stcToBuffer(this.buf, f.storage_class))
             {
@@ -1765,6 +1849,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: bodyToBuffer<FuncDeclaration>
         public  void bodyToBuffer(FuncDeclaration f) {
             if ((f.fbody.value == null) || (this.hgs.get()).hdrgen && global.params.hdrStripPlainFunctions && ((this.hgs.get()).autoMember == 0) && ((this.hgs.get()).tpltMember == 0))
             {
@@ -1863,6 +1948,7 @@ public class hdrgen {
             (this.hgs.get()).autoMember = saveauto;
         }
 
+        // Erasure: visit<FuncLiteralDeclaration>
         public  void visit(FuncLiteralDeclaration f) {
             if (((f.type.ty & 0xFF) == ENUMTY.Terror))
             {
@@ -1904,6 +1990,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<PostBlitDeclaration>
         public  void visit(PostBlitDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class))
             {
@@ -1913,6 +2000,7 @@ public class hdrgen {
             this.bodyToBuffer(d);
         }
 
+        // Erasure: visit<DtorDeclaration>
         public  void visit(DtorDeclaration d) {
             if ((d.storage_class & 17179869184L) != 0)
             {
@@ -1934,6 +2022,7 @@ public class hdrgen {
             this.bodyToBuffer(d);
         }
 
+        // Erasure: visit<StaticCtorDeclaration>
         public  void visit(StaticCtorDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
             {
@@ -1955,6 +2044,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<StaticDtorDeclaration>
         public  void visit(StaticDtorDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
             {
@@ -1976,6 +2066,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<InvariantDeclaration>
         public  void visit(InvariantDeclaration d) {
             if ((this.hgs.get()).hdrgen)
             {
@@ -2003,6 +2094,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<UnitTestDeclaration>
         public  void visit(UnitTestDeclaration d) {
             if ((this.hgs.get()).hdrgen)
             {
@@ -2016,6 +2108,7 @@ public class hdrgen {
             this.bodyToBuffer(d);
         }
 
+        // Erasure: visit<NewDeclaration>
         public  void visit(NewDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
             {
@@ -2026,6 +2119,7 @@ public class hdrgen {
             this.bodyToBuffer(d);
         }
 
+        // Erasure: visit<DeleteDeclaration>
         public  void visit(DeleteDeclaration d) {
             if (stcToBuffer(this.buf, d.storage_class & -2L))
             {
@@ -2036,6 +2130,7 @@ public class hdrgen {
             this.bodyToBuffer(d);
         }
 
+        // Erasure: visit<Module>
         public  void visit(dmodule.Module m) {
             moduleToBuffer2(m, this.buf, this.hgs);
         }
@@ -2054,15 +2149,18 @@ public class hdrgen {
     {
         public Ptr<OutBuffer> buf = null;
         public Ptr<HdrGenState> hgs = null;
+        // Erasure: __ctor<Ptr, Ptr>
         public  ExpressionPrettyPrintVisitor(Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
             this.buf = pcopy(buf);
             this.hgs = pcopy(hgs);
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             (this.buf.get()).writestring(Token.asString(e.op));
         }
 
+        // Erasure: visit<IntegerExp>
         public  void visit(IntegerExp e) {
             long v = e.toInteger();
             if (e.type.value != null)
@@ -2188,14 +2286,17 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<ErrorExp>
         public  void visit(ErrorExp e) {
             (this.buf.get()).writestring(new ByteSlice("__error"));
         }
 
+        // Erasure: visit<VoidInitExp>
         public  void visit(VoidInitExp e) {
             (this.buf.get()).writestring(new ByteSlice("__void"));
         }
 
+        // Erasure: floatToBuffer<Type, double>
         public  void floatToBuffer(Type type, double value) {
             int BUFFER_LEN = 58;
             ByteSlice buffer = (byte)255;
@@ -2235,10 +2336,12 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<RealExp>
         public  void visit(RealExp e) {
             this.floatToBuffer(e.type.value, e.value);
         }
 
+        // Erasure: visit<ComplexExp>
         public  void visit(ComplexExp e) {
             (this.buf.get()).writeByte(40);
             this.floatToBuffer(e.type.value, creall(e.value));
@@ -2247,6 +2350,7 @@ public class hdrgen {
             (this.buf.get()).writestring(new ByteSlice("i)"));
         }
 
+        // Erasure: visit<IdentifierExp>
         public  void visit(IdentifierExp e) {
             if ((this.hgs.get()).hdrgen || (this.hgs.get()).ddoc)
             {
@@ -2258,22 +2362,27 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<DsymbolExp>
         public  void visit(DsymbolExp e) {
             (this.buf.get()).writestring(e.s.toChars());
         }
 
+        // Erasure: visit<ThisExp>
         public  void visit(ThisExp e) {
             (this.buf.get()).writestring(new ByteSlice("this"));
         }
 
+        // Erasure: visit<SuperExp>
         public  void visit(SuperExp e) {
             (this.buf.get()).writestring(new ByteSlice("super"));
         }
 
+        // Erasure: visit<NullExp>
         public  void visit(NullExp e) {
             (this.buf.get()).writestring(new ByteSlice("null"));
         }
 
+        // Erasure: visit<StringExp>
         public  void visit(StringExp e) {
             (this.buf.get()).writeByte(34);
             int o = (this.buf.get()).offset;
@@ -2330,12 +2439,14 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             (this.buf.get()).writeByte(91);
             argsToBuffer(e.elements, this.buf, this.hgs, e.basis.value);
             (this.buf.get()).writeByte(93);
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
             (this.buf.get()).writeByte(91);
             {
@@ -2357,6 +2468,7 @@ public class hdrgen {
             (this.buf.get()).writeByte(93);
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             (this.buf.get()).writestring(e.sd.toChars());
             (this.buf.get()).writeByte(40);
@@ -2374,10 +2486,12 @@ public class hdrgen {
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<TypeExp>
         public  void visit(TypeExp e) {
             typeToBuffer(e.type.value, null, this.buf, this.hgs);
         }
 
+        // Erasure: visit<ScopeExp>
         public  void visit(ScopeExp e) {
             if (e.sds.isTemplateInstance() != null)
             {
@@ -2405,10 +2519,12 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<TemplateExp>
         public  void visit(TemplateExp e) {
             (this.buf.get()).writestring(e.td.toChars());
         }
 
+        // Erasure: visit<NewExp>
         public  void visit(NewExp e) {
             if (e.thisexp.value != null)
             {
@@ -2431,6 +2547,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<NewAnonClassExp>
         public  void visit(NewAnonClassExp e) {
             if (e.thisexp != null)
             {
@@ -2457,6 +2574,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<SymOffExp>
         public  void visit(SymOffExp e) {
             if (e.offset != 0)
             {
@@ -2472,14 +2590,17 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<VarExp>
         public  void visit(VarExp e) {
             (this.buf.get()).writestring(e.var.toChars());
         }
 
+        // Erasure: visit<OverExp>
         public  void visit(OverExp e) {
             (this.buf.get()).writestring(e.vars.ident.asString());
         }
 
+        // Erasure: visit<TupleExp>
         public  void visit(TupleExp e) {
             if (e.e0.value != null)
             {
@@ -2497,10 +2618,12 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp e) {
             dsymbolToBuffer(e.fd, this.buf, this.hgs);
         }
 
+        // Erasure: visit<DeclarationExp>
         public  void visit(DeclarationExp e) {
             if (e.declaration != null)
             {
@@ -2522,12 +2645,14 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<TypeidExp>
         public  void visit(TypeidExp e) {
             (this.buf.get()).writestring(new ByteSlice("typeid("));
             objectToBuffer(e.obj, this.buf, this.hgs);
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<TraitsExp>
         public  void visit(TraitsExp e) {
             (this.buf.get()).writestring(new ByteSlice("__traits("));
             if (e.ident != null)
@@ -2549,10 +2674,12 @@ public class hdrgen {
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<HaltExp>
         public  void visit(HaltExp e) {
             (this.buf.get()).writestring(new ByteSlice("halt"));
         }
 
+        // Erasure: visit<IsExp>
         public  void visit(IsExp e) {
             (this.buf.get()).writestring(new ByteSlice("is("));
             typeToBuffer(e.targ, e.id, this.buf, this.hgs);
@@ -2581,11 +2708,13 @@ public class hdrgen {
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<UnaExp>
         public  void visit(UnaExp e) {
             (this.buf.get()).writestring(Token.asString(e.op));
             expToBuffer(e.e1.value, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
 
+        // Erasure: visit<BinExp>
         public  void visit(BinExp e) {
             expToBuffer(e.e1.value, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
             (this.buf.get()).writeByte(32);
@@ -2594,18 +2723,21 @@ public class hdrgen {
             expToBuffer(e.e2.value, precedence.get((e.op & 0xFF)) + 1, this.buf, this.hgs);
         }
 
+        // Erasure: visit<CompileExp>
         public  void visit(CompileExp e) {
             (this.buf.get()).writestring(new ByteSlice("mixin("));
             argsToBuffer(e.exps, this.buf, this.hgs, null);
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<ImportExp>
         public  void visit(ImportExp e) {
             (this.buf.get()).writestring(new ByteSlice("import("));
             expToBuffer(e.e1.value, PREC.assign, this.buf, this.hgs);
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<AssertExp>
         public  void visit(AssertExp e) {
             (this.buf.get()).writestring(new ByteSlice("assert("));
             expToBuffer(e.e1.value, PREC.assign, this.buf, this.hgs);
@@ -2617,30 +2749,35 @@ public class hdrgen {
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<DotIdExp>
         public  void visit(DotIdExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writeByte(46);
             (this.buf.get()).writestring(e.ident.asString());
         }
 
+        // Erasure: visit<DotTemplateExp>
         public  void visit(DotTemplateExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writeByte(46);
             (this.buf.get()).writestring(e.td.toChars());
         }
 
+        // Erasure: visit<DotVarExp>
         public  void visit(DotVarExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writeByte(46);
             (this.buf.get()).writestring(e.var.toChars());
         }
 
+        // Erasure: visit<DotTemplateInstanceExp>
         public  void visit(DotTemplateInstanceExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writeByte(46);
             dsymbolToBuffer(e.ti, this.buf, this.hgs);
         }
 
+        // Erasure: visit<DelegateExp>
         public  void visit(DelegateExp e) {
             (this.buf.get()).writeByte(38);
             if (!e.func.isNested() || e.func.needThis())
@@ -2651,12 +2788,14 @@ public class hdrgen {
             (this.buf.get()).writestring(e.func.toChars());
         }
 
+        // Erasure: visit<DotTypeExp>
         public  void visit(DotTypeExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writeByte(46);
             (this.buf.get()).writestring(e.sym.toChars());
         }
 
+        // Erasure: visit<CallExp>
         public  void visit(CallExp e) {
             if (((e.e1.value.op & 0xFF) == 20))
             {
@@ -2671,16 +2810,19 @@ public class hdrgen {
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<PtrExp>
         public  void visit(PtrExp e) {
             (this.buf.get()).writeByte(42);
             expToBuffer(e.e1.value, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
 
+        // Erasure: visit<DeleteExp>
         public  void visit(DeleteExp e) {
             (this.buf.get()).writestring(new ByteSlice("delete "));
             expToBuffer(e.e1.value, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
 
+        // Erasure: visit<CastExp>
         public  void visit(CastExp e) {
             (this.buf.get()).writestring(new ByteSlice("cast("));
             if (e.to != null)
@@ -2695,6 +2837,7 @@ public class hdrgen {
             expToBuffer(e.e1.value, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
 
+        // Erasure: visit<VectorExp>
         public  void visit(VectorExp e) {
             (this.buf.get()).writestring(new ByteSlice("cast("));
             typeToBuffer(e.to, null, this.buf, this.hgs);
@@ -2702,11 +2845,13 @@ public class hdrgen {
             expToBuffer(e.e1.value, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
 
+        // Erasure: visit<VectorArrayExp>
         public  void visit(VectorArrayExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writestring(new ByteSlice(".array"));
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             expToBuffer(e.e1.value, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
             (this.buf.get()).writeByte(91);
@@ -2733,27 +2878,32 @@ public class hdrgen {
             (this.buf.get()).writeByte(93);
         }
 
+        // Erasure: visit<ArrayLengthExp>
         public  void visit(ArrayLengthExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writestring(new ByteSlice(".length"));
         }
 
+        // Erasure: visit<IntervalExp>
         public  void visit(IntervalExp e) {
             expToBuffer(e.lwr.value, PREC.assign, this.buf, this.hgs);
             (this.buf.get()).writestring(new ByteSlice(".."));
             expToBuffer(e.upr.value, PREC.assign, this.buf, this.hgs);
         }
 
+        // Erasure: visit<DelegatePtrExp>
         public  void visit(DelegatePtrExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writestring(new ByteSlice(".ptr"));
         }
 
+        // Erasure: visit<DelegateFuncptrExp>
         public  void visit(DelegateFuncptrExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writestring(new ByteSlice(".funcptr"));
         }
 
+        // Erasure: visit<ArrayExp>
         public  void visit(ArrayExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writeByte(91);
@@ -2761,12 +2911,14 @@ public class hdrgen {
             (this.buf.get()).writeByte(93);
         }
 
+        // Erasure: visit<DotExp>
         public  void visit(DotExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writeByte(46);
             expToBuffer(e.e2.value, PREC.primary, this.buf, this.hgs);
         }
 
+        // Erasure: visit<IndexExp>
         public  void visit(IndexExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writeByte(91);
@@ -2774,16 +2926,19 @@ public class hdrgen {
             (this.buf.get()).writeByte(93);
         }
 
+        // Erasure: visit<PostExp>
         public  void visit(PostExp e) {
             expToBuffer(e.e1.value, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
             (this.buf.get()).writestring(Token.asString(e.op));
         }
 
+        // Erasure: visit<PreExp>
         public  void visit(PreExp e) {
             (this.buf.get()).writestring(Token.asString(e.op));
             expToBuffer(e.e1.value, precedence.get((e.op & 0xFF)), this.buf, this.hgs);
         }
 
+        // Erasure: visit<RemoveExp>
         public  void visit(RemoveExp e) {
             expToBuffer(e.e1.value, PREC.primary, this.buf, this.hgs);
             (this.buf.get()).writestring(new ByteSlice(".remove("));
@@ -2791,6 +2946,7 @@ public class hdrgen {
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<CondExp>
         public  void visit(CondExp e) {
             expToBuffer(e.econd.value, PREC.oror, this.buf, this.hgs);
             (this.buf.get()).writestring(new ByteSlice(" ? "));
@@ -2799,10 +2955,12 @@ public class hdrgen {
             expToBuffer(e.e2.value, PREC.cond, this.buf, this.hgs);
         }
 
+        // Erasure: visit<DefaultInitExp>
         public  void visit(DefaultInitExp e) {
             (this.buf.get()).writestring(Token.asString(e.subop));
         }
 
+        // Erasure: visit<ClassReferenceExp>
         public  void visit(ClassReferenceExp e) {
             (this.buf.get()).writestring(e.value.toChars());
         }
@@ -2817,6 +2975,7 @@ public class hdrgen {
             return that;
         }
     }
+    // Erasure: templateParameterToBuffer<TemplateParameter, Ptr, Ptr>
     public static void templateParameterToBuffer(TemplateParameter tp, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         TemplateParameterPrettyPrintVisitor v = new TemplateParameterPrettyPrintVisitor(buf, hgs);
         tp.accept(v);
@@ -2826,11 +2985,13 @@ public class hdrgen {
     {
         public Ptr<OutBuffer> buf = null;
         public Ptr<HdrGenState> hgs = null;
+        // Erasure: __ctor<Ptr, Ptr>
         public  TemplateParameterPrettyPrintVisitor(Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
             this.buf = pcopy(buf);
             this.hgs = pcopy(hgs);
         }
 
+        // Erasure: visit<TemplateTypeParameter>
         public  void visit(TemplateTypeParameter tp) {
             (this.buf.get()).writestring(tp.ident.asString());
             if (tp.specType != null)
@@ -2845,11 +3006,13 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<TemplateThisParameter>
         public  void visit(TemplateThisParameter tp) {
             (this.buf.get()).writestring(new ByteSlice("this "));
             this.visit((TemplateTypeParameter)tp);
         }
 
+        // Erasure: visit<TemplateAliasParameter>
         public  void visit(TemplateAliasParameter tp) {
             (this.buf.get()).writestring(new ByteSlice("alias "));
             if (tp.specType != null)
@@ -2872,6 +3035,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<TemplateValueParameter>
         public  void visit(TemplateValueParameter tp) {
             typeToBuffer(tp.valType, tp.ident, this.buf, this.hgs);
             if (tp.specValue != null)
@@ -2886,6 +3050,7 @@ public class hdrgen {
             }
         }
 
+        // Erasure: visit<TemplateTupleParameter>
         public  void visit(TemplateTupleParameter tp) {
             (this.buf.get()).writestring(tp.ident.asString());
             (this.buf.get()).writestring(new ByteSlice("..."));
@@ -2901,6 +3066,7 @@ public class hdrgen {
             return that;
         }
     }
+    // Erasure: conditionToBuffer<Condition, Ptr, Ptr>
     public static void conditionToBuffer(Condition c, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         ConditionPrettyPrintVisitor v = new ConditionPrettyPrintVisitor(buf, hgs);
         c.accept(v);
@@ -2910,11 +3076,13 @@ public class hdrgen {
     {
         public Ptr<OutBuffer> buf = null;
         public Ptr<HdrGenState> hgs = null;
+        // Erasure: __ctor<Ptr, Ptr>
         public  ConditionPrettyPrintVisitor(Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
             this.buf = pcopy(buf);
             this.hgs = pcopy(hgs);
         }
 
+        // Erasure: visit<DebugCondition>
         public  void visit(DebugCondition c) {
             (this.buf.get()).writestring(new ByteSlice("debug ("));
             if (c.ident != null)
@@ -2928,6 +3096,7 @@ public class hdrgen {
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<VersionCondition>
         public  void visit(VersionCondition c) {
             (this.buf.get()).writestring(new ByteSlice("version ("));
             if (c.ident != null)
@@ -2941,6 +3110,7 @@ public class hdrgen {
             (this.buf.get()).writeByte(41);
         }
 
+        // Erasure: visit<StaticIfCondition>
         public  void visit(StaticIfCondition c) {
             (this.buf.get()).writestring(new ByteSlice("static if ("));
             expressionToBuffer(c.exp, this.buf, this.hgs);
@@ -2957,20 +3127,24 @@ public class hdrgen {
             return that;
         }
     }
+    // Erasure: toCBuffer<Statement, Ptr, Ptr>
     public static void toCBuffer(Statement s, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         StatementPrettyPrintVisitor v = new StatementPrettyPrintVisitor(buf, hgs);
         s.accept(v);
     }
 
+    // Erasure: toCBuffer<Type, Ptr, Identifier, Ptr>
     public static void toCBuffer(Type t, Ptr<OutBuffer> buf, Identifier ident, Ptr<HdrGenState> hgs) {
         typeToBuffer(t, ident, buf, hgs);
     }
 
+    // Erasure: toCBuffer<Dsymbol, Ptr, Ptr>
     public static void toCBuffer(Dsymbol s, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         DsymbolPrettyPrintVisitor v = new DsymbolPrettyPrintVisitor(buf, hgs);
         s.accept(v);
     }
 
+    // Erasure: toCBufferInstance<TemplateInstance, Ptr, boolean>
     public static void toCBufferInstance(TemplateInstance ti, Ptr<OutBuffer> buf, boolean qualifyTypes) {
         Ref<HdrGenState> hgs = ref(new HdrGenState());
         hgs.value.fullQual = qualifyTypes;
@@ -2983,10 +3157,12 @@ public class hdrgen {
         toCBufferInstance(ti, buf, false);
     }
 
+    // Erasure: toCBuffer<Initializer, Ptr, Ptr>
     public static void toCBuffer(Initializer iz, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         initializerToBuffer(iz, buf, hgs);
     }
 
+    // Erasure: stcToBuffer<Ptr, long>
     public static boolean stcToBuffer(Ptr<OutBuffer> buf, long stc) {
         Ref<Long> stc_ref = ref(stc);
         boolean result = false;
@@ -3014,6 +3190,7 @@ public class hdrgen {
         return result;
     }
 
+    // Erasure: stcToString<long>
     public static ByteSlice stcToString(Ref<Long> stc) {
         {
             int i = 0;
@@ -3039,19 +3216,23 @@ public class hdrgen {
         return new ByteSlice();
     }
 
+    // Erasure: stcToChars<long>
     public static BytePtr stcToChars(Ref<Long> stc) {
         ByteSlice s = stcToString(stc).copy();
         return ptr(s.get(0));
     }
 
+    // Erasure: trustToBuffer<Ptr, int>
     public static void trustToBuffer(Ptr<OutBuffer> buf, int trust) {
         (buf.get()).writestring(trustToString(trust));
     }
 
+    // Erasure: trustToChars<int>
     public static BytePtr trustToChars(int trust) {
         return toBytePtr(trustToString(trust));
     }
 
+    // Erasure: trustToString<int>
     public static ByteSlice trustToString(int trust) {
         switch (trust)
         {
@@ -3068,6 +3249,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: linkageToBuffer<Ptr, int>
     public static void linkageToBuffer(Ptr<OutBuffer> buf, int linkage) {
         ByteSlice s = linkageToString(linkage).copy();
         if (s.getLength() != 0)
@@ -3078,10 +3260,12 @@ public class hdrgen {
         }
     }
 
+    // Erasure: linkageToChars<int>
     public static BytePtr linkageToChars(int linkage) {
         return toBytePtr(linkageToString(linkage));
     }
 
+    // Erasure: linkageToString<int>
     public static ByteSlice linkageToString(int linkage) {
         switch (linkage)
         {
@@ -3106,6 +3290,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: protectionToBuffer<Ptr, Prot>
     public static void protectionToBuffer(Ptr<OutBuffer> buf, Prot prot) {
         (buf.get()).writestring(protectionToString(prot.kind));
         if ((prot.kind == Prot.Kind.package_) && (prot.pkg != null))
@@ -3116,10 +3301,12 @@ public class hdrgen {
         }
     }
 
+    // Erasure: protectionToChars<int>
     public static BytePtr protectionToChars(int kind) {
         return toBytePtr(protectionToString(kind));
     }
 
+    // Erasure: protectionToString<int>
     public static ByteSlice protectionToString(int kind) {
         switch (kind)
         {
@@ -3142,20 +3329,24 @@ public class hdrgen {
         }
     }
 
+    // Erasure: functionToBufferFull<TypeFunction, Ptr, Identifier, Ptr, TemplateDeclaration>
     public static void functionToBufferFull(TypeFunction tf, Ptr<OutBuffer> buf, Identifier ident, Ptr<HdrGenState> hgs, TemplateDeclaration td) {
         visitFuncIdentWithPrefix(tf, ident, td, buf, hgs);
     }
 
+    // Erasure: functionToBufferWithIdent<TypeFunction, Ptr, Ptr>
     public static void functionToBufferWithIdent(TypeFunction tf, Ptr<OutBuffer> buf, BytePtr ident) {
         Ref<HdrGenState> hgs = ref(new HdrGenState());
         visitFuncIdentWithPostfix(tf, toDString(ident), buf, ptr(hgs));
     }
 
+    // Erasure: toCBuffer<Expression, Ptr, Ptr>
     public static void toCBuffer(Expression e, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         ExpressionPrettyPrintVisitor v = new ExpressionPrettyPrintVisitor(buf, hgs);
         e.accept(v);
     }
 
+    // Erasure: argExpTypesToCBuffer<Ptr, Ptr>
     public static void argExpTypesToCBuffer(Ptr<OutBuffer> buf, Ptr<DArray<Expression>> arguments) {
         if ((arguments == null) || ((arguments.get()).length == 0))
         {
@@ -3177,11 +3368,13 @@ public class hdrgen {
         }
     }
 
+    // Erasure: toCBuffer<TemplateParameter, Ptr, Ptr>
     public static void toCBuffer(TemplateParameter tp, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         TemplateParameterPrettyPrintVisitor v = new TemplateParameterPrettyPrintVisitor(buf, hgs);
         tp.accept(v);
     }
 
+    // Erasure: arrayObjectsToBuffer<Ptr, Ptr>
     public static void arrayObjectsToBuffer(Ptr<OutBuffer> buf, Ptr<DArray<RootObject>> objects) {
         if ((objects == null) || ((objects.get()).length == 0))
         {
@@ -3203,6 +3396,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: parametersTypeToChars<ParameterList>
     public static BytePtr parametersTypeToChars(ParameterList pl) {
         Ref<OutBuffer> buf = ref(new OutBuffer());
         try {
@@ -3214,6 +3408,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: parameterToChars<Parameter, TypeFunction, boolean>
     public static BytePtr parameterToChars(Parameter parameter, TypeFunction tf, boolean fullQual) {
         Ref<OutBuffer> buf = ref(new OutBuffer());
         try {
@@ -3230,6 +3425,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: parametersToBuffer<ParameterList, Ptr, Ptr>
     public static void parametersToBuffer(ParameterList pl, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         (buf.get()).writeByte(40);
         {
@@ -3271,6 +3467,7 @@ public class hdrgen {
         (buf.get()).writeByte(41);
     }
 
+    // Erasure: parameterToBuffer<Parameter, Ptr, Ptr>
     public static void parameterToBuffer(Parameter p, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         if (p.userAttribDecl != null)
         {
@@ -3346,6 +3543,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: argsToBuffer<Ptr, Ptr, Ptr, Expression>
     public static void argsToBuffer(Ptr<DArray<Expression>> expressions, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs, Expression basis) {
         if ((expressions == null) || ((expressions.get()).length == 0))
         {
@@ -3375,9 +3573,10 @@ public class hdrgen {
 
     // defaulted all parameters starting with #4
     public static void argsToBuffer(Ptr<DArray<Expression>> expressions, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-        argsToBuffer(expressions, buf, hgs, null);
+        argsToBuffer(expressions, buf, hgs, (Expression)null);
     }
 
+    // Erasure: sizeToBuffer<Expression, Ptr, Ptr>
     public static void sizeToBuffer(Expression e, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         if ((pequals(e.type.value, Type.tsize_t)))
         {
@@ -3413,11 +3612,13 @@ public class hdrgen {
         expToBuffer(e, PREC.assign, buf, hgs);
     }
 
+    // Erasure: expressionToBuffer<Expression, Ptr, Ptr>
     public static void expressionToBuffer(Expression e, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         ExpressionPrettyPrintVisitor v = new ExpressionPrettyPrintVisitor(buf, hgs);
         e.accept(v);
     }
 
+    // Erasure: expToBuffer<Expression, int, Ptr, Ptr>
     public static void expToBuffer(Expression e, int pr, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         assert((precedence.get((e.op & 0xFF)) != PREC.zero));
         assert((pr != PREC.zero));
@@ -3433,6 +3634,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: typeToBuffer<Type, Identifier, Ptr, Ptr>
     public static void typeToBuffer(Type t, Identifier ident, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         {
             TypeFunction tf = t.isTypeFunction();
@@ -3450,6 +3652,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: visitWithMask<Type, byte, Ptr, Ptr>
     public static void visitWithMask(Type t, byte modMask, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         if (((modMask & 0xFF) == (t.mod & 0xFF)) || ((t.ty & 0xFF) == ENUMTY.Tfunction) || ((t.ty & 0xFF) == ENUMTY.Ttuple))
         {
@@ -3489,6 +3692,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: dumpTemplateInstance<TemplateInstance, Ptr, Ptr>
     public static void dumpTemplateInstance(TemplateInstance ti, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         (buf.get()).writeByte(123);
         (buf.get()).writenl();
@@ -3514,6 +3718,7 @@ public class hdrgen {
         (buf.get()).writenl();
     }
 
+    // Erasure: tiargsToBuffer<TemplateInstance, Ptr, Ptr>
     public static void tiargsToBuffer(TemplateInstance ti, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         (buf.get()).writeByte(33);
         if (ti.nest != 0)
@@ -3571,6 +3776,7 @@ public class hdrgen {
         (buf.get()).writeByte(41);
     }
 
+    // Erasure: objectToBuffer<RootObject, Ptr, Ptr>
     public static void objectToBuffer(RootObject oarg, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         {
             Type t = isType(oarg);
@@ -3628,6 +3834,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: visitFuncIdentWithPostfix<TypeFunction, Array, Ptr, Ptr>
     public static void visitFuncIdentWithPostfix(TypeFunction t, ByteSlice ident, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         if (t.inuse != 0)
         {
@@ -3675,6 +3882,7 @@ public class hdrgen {
         t.inuse--;
     }
 
+    // Erasure: visitFuncIdentWithPrefix<TypeFunction, Identifier, TemplateDeclaration, Ptr, Ptr>
     public static void visitFuncIdentWithPrefix(TypeFunction t, Identifier ident, TemplateDeclaration td, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         if (t.inuse != 0)
         {
@@ -3754,6 +3962,7 @@ public class hdrgen {
         t.inuse--;
     }
 
+    // Erasure: initializerToBuffer<Initializer, Ptr, Ptr>
     public static void initializerToBuffer(Initializer inx, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         Function1<ErrorInitializer,Void> visitError = new Function1<ErrorInitializer,Void>() {
             public Void invoke(ErrorInitializer iz) {
@@ -3867,6 +4076,7 @@ public class hdrgen {
         }
     }
 
+    // Erasure: typeToBufferx<Type, Ptr, Ptr>
     public static void typeToBufferx(Type t, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
         Function1<Type,Void> visitType = new Function1<Type,Void>() {
             public Void invoke(Type t) {

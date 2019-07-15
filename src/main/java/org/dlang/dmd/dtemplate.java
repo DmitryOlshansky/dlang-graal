@@ -51,6 +51,7 @@ public class dtemplate {
         private int inferStart = 0;
         private boolean ignoreAliasThis = false;
         private int result = 0;
+        // Erasure: __ctor<Ptr, Type, Ptr, Ptr, Ptr, int, boolean>
         public  DeduceType(Ptr<Scope> sc, Type tparam, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Integer> wm, int inferStart, boolean ignoreAliasThis) {
             this.sc = pcopy(sc);
             this.tparam = tparam;
@@ -62,6 +63,7 @@ public class dtemplate {
             this.result = MATCH.nomatch;
         }
 
+        // Erasure: visit<Type>
         public  void visit(Type t) {
             try {
                 try {
@@ -350,6 +352,7 @@ public class dtemplate {
             this.result = MATCH.constant;
         }
 
+        // Erasure: visit<TypeVector>
         public  void visit(TypeVector t) {
             if (((this.tparam.ty & 0xFF) == ENUMTY.Tvector))
             {
@@ -360,10 +363,12 @@ public class dtemplate {
             this.visit((Type)t);
         }
 
+        // Erasure: visit<TypeDArray>
         public  void visit(TypeDArray t) {
             this.visit((Type)t);
         }
 
+        // Erasure: visit<TypeSArray>
         public  void visit(TypeSArray t) {
             if (this.tparam != null)
             {
@@ -417,6 +422,7 @@ public class dtemplate {
             this.visit((Type)t);
         }
 
+        // Erasure: visit<TypeAArray>
         public  void visit(TypeAArray t) {
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Taarray))
             {
@@ -430,6 +436,7 @@ public class dtemplate {
             this.visit((Type)t);
         }
 
+        // Erasure: visit<TypeFunction>
         public  void visit(TypeFunction t) {
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tfunction))
             {
@@ -554,6 +561,7 @@ public class dtemplate {
             this.visit((Type)t);
         }
 
+        // Erasure: visit<TypeIdentifier>
         public  void visit(TypeIdentifier t) {
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tident))
             {
@@ -574,6 +582,7 @@ public class dtemplate {
             this.visit((Type)t);
         }
 
+        // Erasure: visit<TypeInstance>
         public  void visit(TypeInstance t) {
             try {
                 if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tinstance) && (t.tempinst.tempdecl != null))
@@ -830,6 +839,7 @@ public class dtemplate {
             this.result = MATCH.nomatch;
         }
 
+        // Erasure: visit<TypeStruct>
         public  void visit(TypeStruct t) {
             TemplateInstance ti = t.sym.parent.value.isTemplateInstance();
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tinstance))
@@ -871,6 +881,7 @@ public class dtemplate {
             this.visit((Type)t);
         }
 
+        // Erasure: visit<TypeEnum>
         public  void visit(TypeEnum t) {
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tenum))
             {
@@ -894,6 +905,7 @@ public class dtemplate {
             this.visit((Type)t);
         }
 
+        // Erasure: deduceBaseClassParameters<BaseClass, Ptr, Type, Ptr, Ptr, Ptr, int>
         public static void deduceBaseClassParameters(BaseClass b, Ptr<Scope> sc, Type tparam, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<DArray<RootObject>> best, Ref<Integer> numBaseClassMatches) {
             TemplateInstance parti = b.sym != null ? b.sym.parent.value.isTemplateInstance() : null;
             if (parti != null)
@@ -931,6 +943,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<TypeClass>
         public  void visit(TypeClass t) {
             TemplateInstance ti = t.sym.parent.value.isTemplateInstance();
             if ((this.tparam != null) && ((this.tparam.ty & 0xFF) == ENUMTY.Tinstance))
@@ -1004,6 +1017,7 @@ public class dtemplate {
             this.visit((Type)t);
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             int i = templateParameterLookup(this.tparam, this.parameters);
             if ((i == 305419896) || (((TypeIdentifier)this.tparam).idents.length > 0))
@@ -1178,6 +1192,7 @@ public class dtemplate {
             this.result = MATCH.nomatch;
         }
 
+        // Erasure: deduceEmptyArrayElement<>
         public  int deduceEmptyArrayElement() {
             if (emptyArrayElement == null)
             {
@@ -1189,6 +1204,7 @@ public class dtemplate {
             return deduceType(emptyArrayElement, this.sc, tn, this.parameters, this.dedtypes, this.wm, 0, false);
         }
 
+        // Erasure: visit<NullExp>
         public  void visit(NullExp e) {
             if (((this.tparam.ty & 0xFF) == ENUMTY.Tarray) && ((e.type.value.ty & 0xFF) == ENUMTY.Tnull))
             {
@@ -1198,6 +1214,7 @@ public class dtemplate {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<StringExp>
         public  void visit(StringExp e) {
             Type taai = null;
             if (((e.type.value.ty & 0xFF) == ENUMTY.Tarray) && ((this.tparam.ty & 0xFF) == ENUMTY.Tsarray) || ((this.tparam.ty & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)this.tparam).index).ty & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length == 0))
@@ -1208,6 +1225,7 @@ public class dtemplate {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             if ((e.elements == null) || ((e.elements.get()).length == 0) && ((e.type.value.toBasetype().nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((this.tparam.ty & 0xFF) == ENUMTY.Tarray))
             {
@@ -1256,6 +1274,7 @@ public class dtemplate {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
             if (((this.tparam.ty & 0xFF) == ENUMTY.Taarray) && (e.keys != null) && ((e.keys.get()).length != 0))
             {
@@ -1289,6 +1308,7 @@ public class dtemplate {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp e) {
             if (e.td != null)
             {
@@ -1369,6 +1389,7 @@ public class dtemplate {
             this.visit(t);
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             Type taai = null;
             if (((e.type.value.ty & 0xFF) == ENUMTY.Tarray) && ((this.tparam.ty & 0xFF) == ENUMTY.Tsarray) || ((this.tparam.ty & 0xFF) == ENUMTY.Taarray) && (((taai = ((TypeAArray)this.tparam).index).ty & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)taai).idents.length == 0))
@@ -1385,6 +1406,7 @@ public class dtemplate {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<CommaExp>
         public  void visit(CommaExp e) {
             e.e2.value.accept(this);
         }
@@ -1396,13 +1418,16 @@ public class dtemplate {
     {
         private Slice<TemplateParameter> tparams = new Slice<TemplateParameter>();
         private boolean result = false;
+        // Erasure: __ctor<Array>
         public  ReliesOnTemplateParameters(Slice<TemplateParameter> tparams) {
             this.tparams = tparams.copy();
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
         }
 
+        // Erasure: visit<IdentifierExp>
         public  void visit(IdentifierExp e) {
             {
                 Slice<TemplateParameter> __r1233 = this.tparams.copy();
@@ -1418,6 +1443,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<TupleExp>
         public  void visit(TupleExp e) {
             if (e.exps != null)
             {
@@ -1436,6 +1462,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             if (e.elements != null)
             {
@@ -1454,6 +1481,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
             {
                 Slice<Expression> __r1239 = (e.keys.get()).opSlice().copy();
@@ -1481,6 +1509,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             if (e.elements != null)
             {
@@ -1499,10 +1528,12 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<TypeExp>
         public  void visit(TypeExp e) {
             this.result = reliesOnTemplateParameters(e.type.value, this.tparams);
         }
 
+        // Erasure: visit<NewExp>
         public  void visit(NewExp e) {
             if (e.thisexp.value != null)
             {
@@ -1541,14 +1572,17 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<NewAnonClassExp>
         public  void visit(NewAnonClassExp e) {
             this.result = true;
         }
 
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp e) {
             this.result = true;
         }
 
+        // Erasure: visit<TypeidExp>
         public  void visit(TypeidExp e) {
             {
                 Expression ea = isExpression(e.obj);
@@ -1566,6 +1600,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<TraitsExp>
         public  void visit(TraitsExp e) {
             if (e.args != null)
             {
@@ -1597,14 +1632,17 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<IsExp>
         public  void visit(IsExp e) {
             this.result = reliesOnTemplateParameters(e.targ, this.tparams);
         }
 
+        // Erasure: visit<UnaExp>
         public  void visit(UnaExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<DotTemplateInstanceExp>
         public  void visit(DotTemplateInstanceExp e) {
             this.visit((UnaExp)e);
             if (!this.result && (e.ti.tiargs != null))
@@ -1637,6 +1675,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<CallExp>
         public  void visit(CallExp e) {
             this.visit((UnaExp)e);
             if (!this.result && (e.arguments != null))
@@ -1656,6 +1695,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<CastExp>
         public  void visit(CastExp e) {
             this.visit((UnaExp)e);
             if (!this.result && (e.to != null))
@@ -1664,6 +1704,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             this.visit((UnaExp)e);
             if (!this.result && (e.lwr.value != null))
@@ -1676,6 +1717,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<IntervalExp>
         public  void visit(IntervalExp e) {
             e.lwr.value.accept(this);
             if (!this.result)
@@ -1684,6 +1726,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<ArrayExp>
         public  void visit(ArrayExp e) {
             this.visit((UnaExp)e);
             if (!this.result && (e.arguments != null))
@@ -1699,6 +1742,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<BinExp>
         public  void visit(BinExp e) {
             e.e1.value.accept(this);
             if (!this.result)
@@ -1707,6 +1751,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: visit<CondExp>
         public  void visit(CondExp e) {
             e.econd.value.accept(this);
             if (!this.result)
@@ -1723,6 +1768,7 @@ public class dtemplate {
 
     static boolean LOG = false;
     static int IDX_NOTFOUND = 305419896;
+    // Erasure: isExpression<RootObject>
     public static Expression isExpression(RootObject o) {
         if ((o == null) || (o.dyncast() != DYNCAST.expression))
         {
@@ -1731,6 +1777,7 @@ public class dtemplate {
         return (Expression)o;
     }
 
+    // Erasure: isDsymbol<RootObject>
     public static Dsymbol isDsymbol(RootObject o) {
         if ((o == null) || (o.dyncast() != DYNCAST.dsymbol))
         {
@@ -1739,6 +1786,7 @@ public class dtemplate {
         return (Dsymbol)o;
     }
 
+    // Erasure: isType<RootObject>
     public static Type isType(RootObject o) {
         if ((o == null) || (o.dyncast() != DYNCAST.type))
         {
@@ -1747,6 +1795,7 @@ public class dtemplate {
         return (Type)o;
     }
 
+    // Erasure: isTuple<RootObject>
     public static Tuple isTuple(RootObject o) {
         if ((o == null) || (o.dyncast() != DYNCAST.tuple))
         {
@@ -1755,6 +1804,7 @@ public class dtemplate {
         return (Tuple)o;
     }
 
+    // Erasure: isParameter<RootObject>
     public static Parameter isParameter(RootObject o) {
         if ((o == null) || (o.dyncast() != DYNCAST.parameter))
         {
@@ -1763,6 +1813,7 @@ public class dtemplate {
         return (Parameter)o;
     }
 
+    // Erasure: isTemplateParameter<RootObject>
     public static TemplateParameter isTemplateParameter(RootObject o) {
         if ((o == null) || (o.dyncast() != DYNCAST.templateparameter))
         {
@@ -1771,6 +1822,7 @@ public class dtemplate {
         return (TemplateParameter)o;
     }
 
+    // Erasure: isError<RootObject>
     public static boolean isError(RootObject o) {
         {
             Type t = isType(o);
@@ -1802,6 +1854,7 @@ public class dtemplate {
         return s.parent.value != null ? isError(s.parent.value) : false;
     }
 
+    // Erasure: arrayObjectIsError<Ptr>
     public static boolean arrayObjectIsError(Ptr<DArray<RootObject>> args) {
         {
             Slice<RootObject> __r1200 = (args.get()).opSlice().copy();
@@ -1817,6 +1870,7 @@ public class dtemplate {
         return false;
     }
 
+    // Erasure: getType<RootObject>
     public static Type getType(RootObject o) {
         Type t = isType(o);
         if (t == null)
@@ -1832,6 +1886,7 @@ public class dtemplate {
         return t;
     }
 
+    // Erasure: getDsymbol<RootObject>
     public static Dsymbol getDsymbol(RootObject oarg) {
         {
             Expression ea = isExpression(oarg);
@@ -1880,6 +1935,7 @@ public class dtemplate {
         }
     }
 
+    // Erasure: getValue<Dsymbol>
     public static Expression getValue(Ref<Dsymbol> s) {
         if (s.value != null)
         {
@@ -1897,6 +1953,7 @@ public class dtemplate {
         return null;
     }
 
+    // Erasure: getValue<Expression>
     public static Expression getValue(Expression e) {
         if ((e != null) && ((e.op & 0xFF) == 26))
         {
@@ -1909,11 +1966,13 @@ public class dtemplate {
         return e;
     }
 
+    // Erasure: getExpression<RootObject>
     public static Expression getExpression(RootObject o) {
         Ref<Dsymbol> s = ref(isDsymbol(o));
         return s.value != null ? getValue(s) : getValue(isExpression(o));
     }
 
+    // Erasure: match<RootObject, RootObject>
     public static boolean match(RootObject o1, RootObject o2) {
         boolean log = false;
         try {
@@ -1996,6 +2055,7 @@ public class dtemplate {
         return false;
     }
 
+    // Erasure: arrayObjectMatch<Ptr, Ptr>
     public static boolean arrayObjectMatch(Ptr<DArray<RootObject>> oa1, Ptr<DArray<RootObject>> oa2) {
         if ((oa1 == oa2))
         {
@@ -2024,6 +2084,7 @@ public class dtemplate {
         return true;
     }
 
+    // Erasure: arrayObjectHash<Ptr>
     public static int arrayObjectHash(Ptr<DArray<RootObject>> oa1) {
         int hash = 0;
         {
@@ -2069,6 +2130,7 @@ public class dtemplate {
         return hash;
     }
 
+    // Erasure: expressionHash<Expression>
     public static int expressionHash(Expression e) {
         switch ((e.op & 0xFF))
         {
@@ -2145,6 +2207,7 @@ public class dtemplate {
         }
     }
 
+    // Erasure: objectSyntaxCopy<RootObject>
     public static RootObject objectSyntaxCopy(RootObject o) {
         if (o == null)
         {
@@ -2170,19 +2233,23 @@ public class dtemplate {
     public static class Tuple extends RootObject
     {
         public Ref<DArray<RootObject>> objects = ref(new DArray<RootObject>());
+        // Erasure: __ctor<>
         public  Tuple() {
             super();
         }
 
+        // Erasure: __ctor<int>
         public  Tuple(int numObjects) {
             super();
             this.objects.value.setDim(numObjects);
         }
 
+        // Erasure: dyncast<>
         public  int dyncast() {
             return DYNCAST.tuple;
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return this.objects.value.toChars();
         }
@@ -2237,6 +2304,7 @@ public class dtemplate {
         public Prot protection = new Prot();
         public int inuse = 0;
         public Ptr<TemplatePrevious> previous = null;
+        // Erasure: __ctor<Loc, Identifier, Ptr, Expression, Ptr, boolean, boolean>
         public  TemplateDeclaration(Loc loc, Identifier ident, Ptr<DArray<TemplateParameter>> parameters, Expression constraint, Ptr<DArray<Dsymbol>> decldefs, boolean ismixin, boolean literal) {
             super(loc, ident);
             this.parameters = pcopy(parameters);
@@ -2268,6 +2336,7 @@ public class dtemplate {
             this(loc, ident, parameters, constraint, decldefs, false, false);
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol _param_0) {
             Ptr<DArray<TemplateParameter>> p = null;
             if (this.parameters != null)
@@ -2283,6 +2352,7 @@ public class dtemplate {
             return new TemplateDeclaration(this.loc, this.ident, p, this.constraint != null ? this.constraint.syntaxCopy() : null, Dsymbol.arraySyntaxCopy(this.members), this.ismixin, this.literal);
         }
 
+        // Erasure: overloadInsert<Dsymbol>
         public  boolean overloadInsert(Dsymbol s) {
             FuncDeclaration fd = s.isFuncDeclaration();
             if (fd != null)
@@ -2311,14 +2381,17 @@ public class dtemplate {
             return true;
         }
 
+        // Erasure: hasStaticCtorOrDtor<>
         public  boolean hasStaticCtorOrDtor() {
             return false;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return (this.onemember != null) && (this.onemember.isAggregateDeclaration() != null) ? this.onemember.kind() : new BytePtr("template");
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             if (this.literal)
             {
@@ -2362,10 +2435,12 @@ public class dtemplate {
             }
         }
 
+        // Erasure: prot<>
         public  Prot prot() {
             return this.protection;
         }
 
+        // Erasure: evaluateConstraint<TemplateInstance, Ptr, Ptr, Ptr, FuncDeclaration>
         public  boolean evaluateConstraint(TemplateInstance ti, Ptr<Scope> sc, Ptr<Scope> paramscope, Ptr<DArray<RootObject>> dedargs, FuncDeclaration fd) {
             {
                 Ptr<TemplatePrevious> p = this.previous;
@@ -2464,6 +2539,7 @@ public class dtemplate {
             return result;
         }
 
+        // Erasure: scopeForTemplateParameters<TemplateInstance, Ptr>
         public  Ptr<Scope> scopeForTemplateParameters(TemplateInstance ti, Ptr<Scope> sc) {
             ScopeDsymbol paramsym = new ScopeDsymbol();
             paramsym.parent.value = (this._scope.get()).parent.value;
@@ -2475,6 +2551,7 @@ public class dtemplate {
             return paramscope;
         }
 
+        // Erasure: matchWithInstance<Ptr, TemplateInstance, Ptr, Ptr, int>
         public  int matchWithInstance(Ptr<Scope> sc, TemplateInstance ti, Ptr<DArray<RootObject>> dedtypes, Ptr<DArray<Expression>> fargs, int flag) {
             int LOGM = 0;
             int m = MATCH.nomatch;
@@ -2592,6 +2669,7 @@ public class dtemplate {
             return m;
         }
 
+        // Erasure: leastAsSpecialized<Ptr, TemplateDeclaration, Ptr>
         public  int leastAsSpecialized(Ptr<Scope> sc, TemplateDeclaration td2, Ptr<DArray<Expression>> fargs) {
             int LOG_LEASTAS = 0;
             Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
@@ -2635,6 +2713,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: deduceFunctionTemplateMatch<TemplateInstance, Ptr, FuncDeclaration, Type, Ptr>
         public  int deduceFunctionTemplateMatch(TemplateInstance ti, Ptr<Scope> sc, Ref<FuncDeclaration> fd, Type tthis, Ptr<DArray<Expression>> fargs) {
             int nfparams = 0;
             int nfargs = 0;
@@ -3497,6 +3576,7 @@ public class dtemplate {
             return MATCH.nomatch;
         }
 
+        // Erasure: declareParameter<Ptr, TemplateParameter, RootObject>
         public  RootObject declareParameter(Ptr<Scope> sc, TemplateParameter tp, RootObject o) {
             Type ta = isType(o);
             Expression ea = isExpression(o);
@@ -3593,6 +3673,7 @@ public class dtemplate {
             return o;
         }
 
+        // Erasure: doHeaderInstantiation<TemplateInstance, Ptr, FuncDeclaration, Type, Ptr>
         public  FuncDeclaration doHeaderInstantiation(TemplateInstance ti, Ptr<Scope> sc2, FuncDeclaration fd, Type tthis, Ptr<DArray<Expression>> fargs) {
             assert(fd != null);
             if (fd.isCtorDeclaration() != null)
@@ -3674,6 +3755,7 @@ public class dtemplate {
             return fd;
         }
 
+        // Erasure: findExistingInstance<TemplateInstance, Ptr>
         public  TemplateInstance findExistingInstance(TemplateInstance tithis, Ptr<DArray<Expression>> fargs) {
             tithis.fargs = pcopy(fargs);
             TemplateInstanceBox tibox = tibox = new TemplateInstanceBox(tithis);
@@ -3681,21 +3763,25 @@ public class dtemplate {
             return p != null ? p.get() : null;
         }
 
+        // Erasure: addInstance<TemplateInstance>
         public  TemplateInstance addInstance(TemplateInstance ti) {
             TemplateInstanceBox tibox = tibox = new TemplateInstanceBox(ti);
             this.instances.set(tibox, __aaval1215);
             return ti;
         }
 
+        // Erasure: removeInstance<TemplateInstance>
         public  void removeInstance(TemplateInstance ti) {
             TemplateInstanceBox tibox = tibox = new TemplateInstanceBox(ti);
             this.instances.remove(tibox);
         }
 
+        // Erasure: isTemplateDeclaration<>
         public  TemplateDeclaration isTemplateDeclaration() {
             return this;
         }
 
+        // Erasure: isVariadic<>
         public  TemplateTupleParameter isVariadic() {
             int dim = (this.parameters.get()).length;
             if ((dim == 0))
@@ -3705,10 +3791,12 @@ public class dtemplate {
             return (this.parameters.get()).get(dim - 1).isTemplateTupleParameter();
         }
 
+        // Erasure: isOverloadable<>
         public  boolean isOverloadable() {
             return true;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -3761,6 +3849,7 @@ public class dtemplate {
         public Type tded = null;
         public DArray<Expression> argexps = new DArray<Expression>();
         public DArray<Type> tparams = new DArray<Type>();
+        // Erasure: __ctor<Type, Expression, Type>
         public  TypeDeduced(Type tt, Expression e, Type tparam) {
             super((byte)11);
             this.tded = tt;
@@ -3768,17 +3857,20 @@ public class dtemplate {
             this.tparams.push(tparam);
         }
 
+        // Erasure: update<Expression, Type>
         public  void update(Expression e, Type tparam) {
             this.argexps.push(e);
             this.tparams.push(tparam);
         }
 
+        // Erasure: update<Type, Expression, Type>
         public  void update(Type tt, Expression e, Type tparam) {
             this.tded = tt;
             this.argexps.push(e);
             this.tparams.push(tparam);
         }
 
+        // Erasure: matchAll<Type>
         public  int matchAll(Type tt) {
             int match = MATCH.exact;
             {
@@ -3832,6 +3924,7 @@ public class dtemplate {
             return that;
         }
     }
+    // Erasure: functionResolve<MatchAccumulator, Dsymbol, Loc, Ptr, Ptr, Type, Ptr, Ptr>
     public static void functionResolve(MatchAccumulator m, Dsymbol dstart, Loc loc, Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, Type tthis, Ptr<DArray<Expression>> fargs, Ptr<BytePtr> pMessage) {
         Ref<Ptr<Scope>> sc_ref = ref(sc);
         Ref<Ptr<DArray<RootObject>>> tiargs_ref = ref(tiargs);
@@ -4391,9 +4484,10 @@ public class dtemplate {
 
     // defaulted all parameters starting with #8
     public static void functionResolve(MatchAccumulator m, Dsymbol dstart, Loc loc, Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, Type tthis, Ptr<DArray<Expression>> fargs) {
-        functionResolve(m, dstart, loc, sc, tiargs, tthis, fargs, null);
+        functionResolve(m, dstart, loc, sc, tiargs, tthis, fargs, (Ptr<BytePtr>)null);
     }
 
+    // Erasure: templateIdentifierLookup<Identifier, Ptr>
     public static int templateIdentifierLookup(Identifier id, Ptr<DArray<TemplateParameter>> parameters) {
         {
             int i = 0;
@@ -4408,6 +4502,7 @@ public class dtemplate {
         return 305419896;
     }
 
+    // Erasure: templateParameterLookup<Type, Ptr>
     public static int templateParameterLookup(Type tparam, Ptr<DArray<TemplateParameter>> parameters) {
         if (((tparam.ty & 0xFF) == ENUMTY.Tident))
         {
@@ -4417,6 +4512,7 @@ public class dtemplate {
         return 305419896;
     }
 
+    // Erasure: deduceWildHelper<Type, Ptr, Type>
     public static byte deduceWildHelper(Type t, Ptr<Type> at, Type tparam) {
         if ((((tparam.mod & 0xFF) & MODFlags.wild) == 0))
         {
@@ -4489,6 +4585,7 @@ public class dtemplate {
         }
     }
 
+    // Erasure: rawTypeMerge<Type, Type>
     public static Type rawTypeMerge(Type t1, Type t2) {
         if (t1.equals(t2))
         {
@@ -4516,6 +4613,7 @@ public class dtemplate {
         return null;
     }
 
+    // Erasure: deduceTypeHelper<Type, Ptr, Type>
     public static int deduceTypeHelper(Type t, Ptr<Type> at, Type tparam) {
         // from template X!(ByteByte)
         Function2<Byte,Byte,Integer> XByteByte = new Function2<Byte,Byte,Integer>() {
@@ -4648,6 +4746,7 @@ public class dtemplate {
     }
 
     static Expression emptyArrayElement = null;
+    // Erasure: deduceType<RootObject, Ptr, Type, Ptr, Ptr, Ptr, int, boolean>
     public static int deduceType(RootObject o, Ptr<Scope> sc, Type tparam, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Integer> wm, int inferStart, boolean ignoreAliasThis) {
         // skipping duplicate class DeduceType
         DeduceType v = new DeduceType(sc, tparam, parameters, dedtypes, wm, inferStart, ignoreAliasThis);
@@ -4685,9 +4784,10 @@ public class dtemplate {
 
     // defaulted all parameters starting with #6
     public static int deduceType(RootObject o, Ptr<Scope> sc, Type tparam, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes) {
-        return deduceType(o, sc, tparam, parameters, dedtypes, null, 0, false);
+        return deduceType(o, sc, tparam, parameters, dedtypes, (Ptr<Integer>)null, 0, false);
     }
 
+    // Erasure: reliesOnTident<Type, Ptr, int>
     public static boolean reliesOnTident(Type t, Ptr<DArray<TemplateParameter>> tparams, int iStart) {
         return reliesOnTemplateParameters(t, (tparams.get()).opSlice(0, (tparams.get()).length));
     }
@@ -4697,6 +4797,7 @@ public class dtemplate {
         return reliesOnTident(t, tparams, 0);
     }
 
+    // Erasure: reliesOnTemplateParameters<Type, Array>
     public static boolean reliesOnTemplateParameters(Type t, Slice<TemplateParameter> tparams) {
         Function1<TypeVector,Boolean> visitVector = new Function1<TypeVector,Boolean>() {
             public Boolean invoke(TypeVector t) {
@@ -4839,6 +4940,7 @@ public class dtemplate {
         }
     }
 
+    // Erasure: reliesOnTemplateParameters<Expression, Array>
     public static boolean reliesOnTemplateParameters(Expression e, Slice<TemplateParameter> tparams) {
         // skipping duplicate class ReliesOnTemplateParameters
         ReliesOnTemplateParameters v = new ReliesOnTemplateParameters(tparams);
@@ -4851,58 +4953,73 @@ public class dtemplate {
         public Loc loc = new Loc();
         public Identifier ident = null;
         public boolean dependent = false;
+        // Erasure: __ctor<Loc, Identifier>
         public  TemplateParameter(Loc loc, Identifier ident) {
             super();
             this.loc.opAssign(loc.copy());
             this.ident = ident;
         }
 
+        // Erasure: isTemplateTypeParameter<>
         public  TemplateTypeParameter isTemplateTypeParameter() {
             return null;
         }
 
+        // Erasure: isTemplateValueParameter<>
         public  TemplateValueParameter isTemplateValueParameter() {
             return null;
         }
 
+        // Erasure: isTemplateAliasParameter<>
         public  TemplateAliasParameter isTemplateAliasParameter() {
             return null;
         }
 
+        // Erasure: isTemplateThisParameter<>
         public  TemplateThisParameter isTemplateThisParameter() {
             return null;
         }
 
+        // Erasure: isTemplateTupleParameter<>
         public  TemplateTupleParameter isTemplateTupleParameter() {
             return null;
         }
 
+        // Erasure: syntaxCopy<>
         public abstract TemplateParameter syntaxCopy();
 
 
+        // Erasure: declareParameter<>
         public abstract boolean declareParameter(Ptr<Scope> sc);
 
 
+        // Erasure: print<>
         public abstract void print(RootObject oarg, RootObject oded);
 
 
+        // Erasure: specialization<>
         public abstract RootObject specialization();
 
 
+        // Erasure: defaultArg<>
         public abstract RootObject defaultArg(Loc instLoc, Ptr<Scope> sc);
 
 
+        // Erasure: hasDefaultArg<>
         public abstract boolean hasDefaultArg();
 
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             return this.ident.toChars();
         }
 
+        // Erasure: dyncast<>
         public  int dyncast() {
             return DYNCAST.templateparameter;
         }
 
+        // Erasure: matchArg<Loc, Ptr, Ptr, int, Ptr, Ptr, Ptr>
         public  int matchArg(Loc instLoc, Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, int i, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Declaration> psparam) {
             RootObject oarg = null;
             try {
@@ -4934,12 +5051,15 @@ public class dtemplate {
             return MATCH.nomatch;
         }
 
+        // Erasure: matchArg<>
         public abstract int matchArg(Ptr<Scope> sc, RootObject oarg, int i, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Declaration> psparam);
 
 
+        // Erasure: dummyArg<>
         public abstract Object dummyArg();
 
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -4954,26 +5074,31 @@ public class dtemplate {
         public Type specType = null;
         public Type defaultType = null;
         public static Type tdummy = null;
+        // Erasure: __ctor<Loc, Identifier, Type, Type>
         public  TemplateTypeParameter(Loc loc, Identifier ident, Type specType, Type defaultType) {
             super(loc, ident);
             this.specType = specType;
             this.defaultType = defaultType;
         }
 
+        // Erasure: isTemplateTypeParameter<>
         public  TemplateTypeParameter isTemplateTypeParameter() {
             return this;
         }
 
+        // Erasure: syntaxCopy<>
         public  TemplateParameter syntaxCopy() {
             return new TemplateTypeParameter(this.loc, this.ident, this.specType != null ? this.specType.syntaxCopy() : null, this.defaultType != null ? this.defaultType.syntaxCopy() : null);
         }
 
+        // Erasure: declareParameter<Ptr>
         public  boolean declareParameter(Ptr<Scope> sc) {
             TypeIdentifier ti = new TypeIdentifier(this.loc, this.ident);
             Declaration ad = new AliasDeclaration(this.loc, this.ident, ti);
             return (sc.get()).insert(ad) != null;
         }
 
+        // Erasure: print<RootObject, RootObject>
         public  void print(RootObject oarg, RootObject oded) {
             printf(new BytePtr(" %s\n"), this.ident.toChars());
             Type t = isType(oarg);
@@ -4991,10 +5116,12 @@ public class dtemplate {
             printf(new BytePtr("\u0009Deduced Type:   %s\n"), ta.toChars());
         }
 
+        // Erasure: specialization<>
         public  RootObject specialization() {
             return this.specType;
         }
 
+        // Erasure: defaultArg<Loc, Ptr>
         public  RootObject defaultArg(Loc instLoc, Ptr<Scope> sc) {
             Type t = this.defaultType;
             if (t != null)
@@ -5005,10 +5132,12 @@ public class dtemplate {
             return t;
         }
 
+        // Erasure: hasDefaultArg<>
         public  boolean hasDefaultArg() {
             return this.defaultType != null;
         }
 
+        // Erasure: matchArg<Ptr, RootObject, int, Ptr, Ptr, Ptr>
         public  int matchArg(Ptr<Scope> sc, RootObject oarg, int i, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Declaration> psparam) {
             int m = MATCH.exact;
             Type ta = isType(oarg);
@@ -5073,6 +5202,7 @@ public class dtemplate {
             return MATCH.nomatch;
         }
 
+        // Erasure: dummyArg<>
         public  Object dummyArg() {
             Type t = this.specType;
             if (t == null)
@@ -5086,6 +5216,7 @@ public class dtemplate {
             return t;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5105,18 +5236,22 @@ public class dtemplate {
     }
     public static class TemplateThisParameter extends TemplateTypeParameter
     {
+        // Erasure: __ctor<Loc, Identifier, Type, Type>
         public  TemplateThisParameter(Loc loc, Identifier ident, Type specType, Type defaultType) {
             super(loc, ident, specType, defaultType);
         }
 
+        // Erasure: isTemplateThisParameter<>
         public  TemplateThisParameter isTemplateThisParameter() {
             return this;
         }
 
+        // Erasure: syntaxCopy<>
         public  TemplateParameter syntaxCopy() {
             return new TemplateThisParameter(this.loc, this.ident, this.specType != null ? this.specType.syntaxCopy() : null, this.defaultType != null ? this.defaultType.syntaxCopy() : null);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5140,6 +5275,7 @@ public class dtemplate {
         public Expression specValue = null;
         public Expression defaultValue = null;
         public static AA<Object,Expression> edummies = new AA<Object,Expression>();
+        // Erasure: __ctor<Loc, Identifier, Type, Expression, Expression>
         public  TemplateValueParameter(Loc loc, Identifier ident, Type valType, Expression specValue, Expression defaultValue) {
             super(loc, ident);
             this.valType = valType;
@@ -5147,20 +5283,24 @@ public class dtemplate {
             this.defaultValue = defaultValue;
         }
 
+        // Erasure: isTemplateValueParameter<>
         public  TemplateValueParameter isTemplateValueParameter() {
             return this;
         }
 
+        // Erasure: syntaxCopy<>
         public  TemplateParameter syntaxCopy() {
             return new TemplateValueParameter(this.loc, this.ident, this.valType.syntaxCopy(), this.specValue != null ? this.specValue.syntaxCopy() : null, this.defaultValue != null ? this.defaultValue.syntaxCopy() : null);
         }
 
+        // Erasure: declareParameter<Ptr>
         public  boolean declareParameter(Ptr<Scope> sc) {
             VarDeclaration v = new VarDeclaration(this.loc, this.valType, this.ident, null, 0L);
             v.storage_class = 262144L;
             return (sc.get()).insert(v) != null;
         }
 
+        // Erasure: print<RootObject, RootObject>
         public  void print(RootObject oarg, RootObject oded) {
             printf(new BytePtr(" %s\n"), this.ident.toChars());
             Expression ea = isExpression(oded);
@@ -5171,10 +5311,12 @@ public class dtemplate {
             printf(new BytePtr("\u0009Parameter Value: %s\n"), ea != null ? ea.toChars() : new BytePtr("NULL"));
         }
 
+        // Erasure: specialization<>
         public  RootObject specialization() {
             return this.specValue;
         }
 
+        // Erasure: defaultArg<Loc, Ptr>
         public  RootObject defaultArg(Loc instLoc, Ptr<Scope> sc) {
             Expression e = this.defaultValue;
             if (e != null)
@@ -5199,10 +5341,12 @@ public class dtemplate {
             return e;
         }
 
+        // Erasure: hasDefaultArg<>
         public  boolean hasDefaultArg() {
             return this.defaultValue != null;
         }
 
+        // Erasure: matchArg<Ptr, RootObject, int, Ptr, Ptr, Ptr>
         public  int matchArg(Ptr<Scope> sc, RootObject oarg, int i, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Declaration> psparam) {
             int m = MATCH.exact;
             Expression ei = isExpression(oarg);
@@ -5300,6 +5444,7 @@ public class dtemplate {
             return MATCH.nomatch;
         }
 
+        // Erasure: dummyArg<>
         public  Object dummyArg() {
             Expression e = this.specValue;
             if (e == null)
@@ -5318,6 +5463,7 @@ public class dtemplate {
             return e;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5342,6 +5488,7 @@ public class dtemplate {
         public RootObject specAlias = null;
         public RootObject defaultAlias = null;
         public static Dsymbol sdummy = null;
+        // Erasure: __ctor<Loc, Identifier, Type, RootObject, RootObject>
         public  TemplateAliasParameter(Loc loc, Identifier ident, Type specType, RootObject specAlias, RootObject defaultAlias) {
             super(loc, ident);
             this.specType = specType;
@@ -5349,20 +5496,24 @@ public class dtemplate {
             this.defaultAlias = defaultAlias;
         }
 
+        // Erasure: isTemplateAliasParameter<>
         public  TemplateAliasParameter isTemplateAliasParameter() {
             return this;
         }
 
+        // Erasure: syntaxCopy<>
         public  TemplateParameter syntaxCopy() {
             return new TemplateAliasParameter(this.loc, this.ident, this.specType != null ? this.specType.syntaxCopy() : null, objectSyntaxCopy(this.specAlias), objectSyntaxCopy(this.defaultAlias));
         }
 
+        // Erasure: declareParameter<Ptr>
         public  boolean declareParameter(Ptr<Scope> sc) {
             TypeIdentifier ti = new TypeIdentifier(this.loc, this.ident);
             Declaration ad = new AliasDeclaration(this.loc, this.ident, ti);
             return (sc.get()).insert(ad) != null;
         }
 
+        // Erasure: print<RootObject, RootObject>
         public  void print(RootObject oarg, RootObject oded) {
             printf(new BytePtr(" %s\n"), this.ident.toChars());
             Dsymbol sa = isDsymbol(oded);
@@ -5370,10 +5521,12 @@ public class dtemplate {
             printf(new BytePtr("\u0009Parameter alias: %s\n"), sa.toChars());
         }
 
+        // Erasure: specialization<>
         public  RootObject specialization() {
             return this.specAlias;
         }
 
+        // Erasure: defaultArg<Loc, Ptr>
         public  RootObject defaultArg(Loc instLoc, Ptr<Scope> sc) {
             RootObject da = this.defaultAlias;
             Type ta = isType(this.defaultAlias);
@@ -5388,10 +5541,12 @@ public class dtemplate {
             return o;
         }
 
+        // Erasure: hasDefaultArg<>
         public  boolean hasDefaultArg() {
             return this.defaultAlias != null;
         }
 
+        // Erasure: matchArg<Ptr, RootObject, int, Ptr, Ptr, Ptr>
         public  int matchArg(Ptr<Scope> sc, RootObject oarg, int i, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Declaration> psparam) {
             int m = MATCH.exact;
             Type ta = isType(oarg);
@@ -5534,6 +5689,7 @@ public class dtemplate {
             return MATCH.nomatch;
         }
 
+        // Erasure: dummyArg<>
         public  Object dummyArg() {
             RootObject s = this.specAlias;
             if (s == null)
@@ -5547,6 +5703,7 @@ public class dtemplate {
             return s;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5567,24 +5724,29 @@ public class dtemplate {
     }
     public static class TemplateTupleParameter extends TemplateParameter
     {
+        // Erasure: __ctor<Loc, Identifier>
         public  TemplateTupleParameter(Loc loc, Identifier ident) {
             super(loc, ident);
         }
 
+        // Erasure: isTemplateTupleParameter<>
         public  TemplateTupleParameter isTemplateTupleParameter() {
             return this;
         }
 
+        // Erasure: syntaxCopy<>
         public  TemplateParameter syntaxCopy() {
             return new TemplateTupleParameter(this.loc, this.ident);
         }
 
+        // Erasure: declareParameter<Ptr>
         public  boolean declareParameter(Ptr<Scope> sc) {
             TypeIdentifier ti = new TypeIdentifier(this.loc, this.ident);
             Declaration ad = new AliasDeclaration(this.loc, this.ident, ti);
             return (sc.get()).insert(ad) != null;
         }
 
+        // Erasure: print<RootObject, RootObject>
         public  void print(RootObject oarg, RootObject oded) {
             printf(new BytePtr(" %s... ["), this.ident.toChars());
             Tuple v = isTuple(oded);
@@ -5618,18 +5780,22 @@ public class dtemplate {
             printf(new BytePtr("]\n"));
         }
 
+        // Erasure: specialization<>
         public  RootObject specialization() {
             return null;
         }
 
+        // Erasure: defaultArg<Loc, Ptr>
         public  RootObject defaultArg(Loc instLoc, Ptr<Scope> sc) {
             return null;
         }
 
+        // Erasure: hasDefaultArg<>
         public  boolean hasDefaultArg() {
             return false;
         }
 
+        // Erasure: matchArg<Loc, Ptr, Ptr, int, Ptr, Ptr, Ptr>
         public  int matchArg(Loc instLoc, Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, int i, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Declaration> psparam) {
             assert((i + 1 == (dedtypes.get()).length));
             Tuple ovar = null;
@@ -5661,6 +5827,7 @@ public class dtemplate {
             return this.matchArg(sc, ovar, i, parameters, dedtypes, psparam);
         }
 
+        // Erasure: matchArg<Ptr, RootObject, int, Ptr, Ptr, Ptr>
         public  int matchArg(Ptr<Scope> sc, RootObject oarg, int i, Ptr<DArray<TemplateParameter>> parameters, Ptr<DArray<RootObject>> dedtypes, Ptr<Declaration> psparam) {
             Tuple ovar = isTuple(oarg);
             if (ovar == null)
@@ -5687,10 +5854,12 @@ public class dtemplate {
             return this.dependent ? MATCH.exact : MATCH.convert;
         }
 
+        // Erasure: dummyArg<>
         public  Object dummyArg() {
             return null;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -5729,12 +5898,14 @@ public class dtemplate {
         public TemplateInstance tinst = null;
         public TemplateInstance tnext = null;
         public dmodule.Module minst = null;
+        // Erasure: __ctor<Loc, Identifier, Ptr>
         public  TemplateInstance(Loc loc, Identifier ident, Ptr<DArray<RootObject>> tiargs) {
             super(loc, null);
             this.name = ident;
             this.tiargs = pcopy(tiargs);
         }
 
+        // Erasure: __ctor<Loc, TemplateDeclaration, Ptr>
         public  TemplateInstance(Loc loc, TemplateDeclaration td, Ptr<DArray<RootObject>> tiargs) {
             super(loc, null);
             this.name = td.ident;
@@ -5745,6 +5916,7 @@ public class dtemplate {
             assert(this.tempdecl._scope != null);
         }
 
+        // Erasure: arraySyntaxCopy<Ptr>
         public static Ptr<DArray<RootObject>> arraySyntaxCopy(Ptr<DArray<RootObject>> objs) {
             Ptr<DArray<RootObject>> a = null;
             if (objs != null)
@@ -5760,6 +5932,7 @@ public class dtemplate {
             return a;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             TemplateInstance ti = s != null ? (TemplateInstance)s : new TemplateInstance(this.loc, this.name, null);
             ti.tiargs = pcopy(arraySyntaxCopy(this.tiargs));
@@ -5775,6 +5948,7 @@ public class dtemplate {
             return ti;
         }
 
+        // Erasure: toAlias<>
         public  Dsymbol toAlias() {
             if (this.inst == null)
             {
@@ -5800,15 +5974,18 @@ public class dtemplate {
             return this.inst;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("template instance");
         }
 
+        // Erasure: oneMember<Ptr, Identifier>
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             ps.set(0, null);
             return true;
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -5819,6 +5996,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: toPrettyCharsHelper<>
         public  BytePtr toPrettyCharsHelper() {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -5829,6 +6007,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: printInstantiationTrace<>
         public  void printInstantiationTrace() {
             if (global.gag != 0)
             {
@@ -5905,6 +6084,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: getIdent<>
         public  Identifier getIdent() {
             if ((this.ident == null) && (this.inst != null) && !this.errors)
             {
@@ -5913,6 +6093,7 @@ public class dtemplate {
             return this.ident;
         }
 
+        // Erasure: equalsx<TemplateInstance>
         public  boolean equalsx(TemplateInstance ti) {
             assert((this.tdtypes.value.length == ti.tdtypes.value.length));
             try {
@@ -5971,6 +6152,7 @@ public class dtemplate {
             return false;
         }
 
+        // Erasure: toHash<>
         public  int toHash() {
             if (this.hash == 0)
             {
@@ -5981,6 +6163,7 @@ public class dtemplate {
             return this.hash;
         }
 
+        // Erasure: needsCodegen<>
         public  boolean needsCodegen() {
             if (global.params.allInst)
             {
@@ -6086,6 +6269,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: findTempDecl<Ptr, Ptr>
         public  boolean findTempDecl(Ptr<Scope> sc, Ptr<WithScopeSymbol> pwithsym) {
             if (pwithsym != null)
             {
@@ -6183,6 +6367,7 @@ public class dtemplate {
             return true;
         }
 
+        // Erasure: updateTempDecl<Ptr, Dsymbol>
         public  boolean updateTempDecl(Ptr<Scope> sc, Dsymbol s) {
             if (s != null)
             {
@@ -6278,6 +6463,7 @@ public class dtemplate {
             return this.tempdecl != null;
         }
 
+        // Erasure: semanticTiargs<Loc, Ptr, Ptr, int>
         public static boolean semanticTiargs(Loc loc, Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, int flags) {
             if (tiargs == null)
             {
@@ -6904,6 +7090,7 @@ public class dtemplate {
             return !err;
         }
 
+        // Erasure: semanticTiargs<Ptr>
         public  boolean semanticTiargs(Ptr<Scope> sc) {
             if (this.semantictiargsdone)
             {
@@ -6917,6 +7104,7 @@ public class dtemplate {
             return false;
         }
 
+        // Erasure: findBestMatch<Ptr, Ptr>
         public  boolean findBestMatch(Ptr<Scope> sc, Ptr<DArray<Expression>> fargs) {
             if (this.havetempdecl)
             {
@@ -7094,6 +7282,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: needsTypeInference<Ptr, int>
         public  boolean needsTypeInference(Ptr<Scope> sc, int flag) {
             if ((this.semanticRun != PASS.init))
             {
@@ -7254,6 +7443,7 @@ public class dtemplate {
             return needsTypeInference(sc, 0);
         }
 
+        // Erasure: hasNestedArgs<Ptr, boolean>
         public  boolean hasNestedArgs(Ptr<DArray<RootObject>> args, boolean isstatic) {
             int nested = 0;
             if (this.enclosing == null)
@@ -7540,6 +7730,7 @@ public class dtemplate {
             return nested != 0;
         }
 
+        // Erasure: appendToModuleMember<>
         public  Ptr<DArray<Dsymbol>> appendToModuleMember() {
             dmodule.Module mi = this.minst;
             if (global.params.useUnitTests || (global.params.debuglevel != 0))
@@ -7597,6 +7788,7 @@ public class dtemplate {
             return a;
         }
 
+        // Erasure: declareParameters<Ptr>
         public  void declareParameters(Ptr<Scope> sc) {
             TemplateDeclaration tempdecl = this.tempdecl.isTemplateDeclaration();
             assert(tempdecl != null);
@@ -7610,6 +7802,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: genIdent<Ptr>
         public  Identifier genIdent(Ptr<DArray<RootObject>> args) {
             assert((args == this.tiargs));
             Ref<OutBuffer> buf = ref(new OutBuffer());
@@ -7621,6 +7814,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: expandMembers<Ptr>
         public  void expandMembers(Ptr<Scope> sc2) {
             Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
                 public Void invoke(Dsymbol s) {
@@ -7652,6 +7846,7 @@ public class dtemplate {
             foreachDsymbol(this.members, symbolDg);
         }
 
+        // Erasure: tryExpandMembers<Ptr>
         public  void tryExpandMembers(Ptr<Scope> sc2) {
             if (((dtemplate.tryExpandMembersnest += 1) > 500))
             {
@@ -7663,6 +7858,7 @@ public class dtemplate {
             dtemplate.tryExpandMembersnest--;
         }
 
+        // Erasure: trySemantic3<Ptr>
         public  void trySemantic3(Ptr<Scope> sc2) {
             if (((dtemplate.trySemantic3nest += 1) > 300))
             {
@@ -7674,10 +7870,12 @@ public class dtemplate {
             dtemplate.trySemantic3nest -= 1;
         }
 
+        // Erasure: isTemplateInstance<>
         public  TemplateInstance isTemplateInstance() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -7732,6 +7930,7 @@ public class dtemplate {
             return that;
         }
     }
+    // Erasure: unSpeculative<Ptr, RootObject>
     public static void unSpeculative(Ptr<Scope> sc, RootObject o) {
         if (o == null)
         {
@@ -7813,6 +8012,7 @@ public class dtemplate {
         }
     }
 
+    // Erasure: definitelyValueParameter<Expression>
     public static boolean definitelyValueParameter(Expression e) {
         if (((e.op & 0xFF) == 126) || ((e.op & 0xFF) == 203) || ((e.op & 0xFF) == 20) || ((e.op & 0xFF) == 30) || ((e.op & 0xFF) == 36) || ((e.op & 0xFF) == 37) || ((e.op & 0xFF) == 161) || ((e.op & 0xFF) == 127) || ((e.op & 0xFF) == 123) || ((e.op & 0xFF) == 124))
         {
@@ -7857,25 +8057,30 @@ public class dtemplate {
     public static class TemplateMixin extends TemplateInstance
     {
         public TypeQualified tqual = null;
+        // Erasure: __ctor<Loc, Identifier, TypeQualified, Ptr>
         public  TemplateMixin(Loc loc, Identifier ident, TypeQualified tqual, Ptr<DArray<RootObject>> tiargs) {
             super(loc, tqual.idents.length != 0 ? (Identifier)tqual.idents.get(tqual.idents.length - 1) : ((TypeIdentifier)tqual).ident, tiargs != null ? tiargs : refPtr(new DArray<RootObject>()));
             this.ident = ident;
             this.tqual = tqual;
         }
 
+        // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             TemplateMixin tm = new TemplateMixin(this.loc, this.ident, (TypeQualified)this.tqual.syntaxCopy(), this.tiargs);
             return this.syntaxCopy(tm);
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("mixin");
         }
 
+        // Erasure: oneMember<Ptr, Identifier>
         public  boolean oneMember(Ptr<Dsymbol> ps, Identifier ident) {
             return this.oneMember(ps, ident);
         }
 
+        // Erasure: apply<Ptr, Ptr>
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
             if (this._scope != null)
             {
@@ -7891,6 +8096,7 @@ public class dtemplate {
             return foreachDsymbol(this.members, __lambda3);
         }
 
+        // Erasure: hasPointers<>
         public  boolean hasPointers() {
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
@@ -7902,6 +8108,7 @@ public class dtemplate {
             return foreachDsymbol(this.members, __lambda1) != 0;
         }
 
+        // Erasure: setFieldOffset<AggregateDeclaration, Ptr, boolean>
         public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
             if (this._scope != null)
             {
@@ -7918,6 +8125,7 @@ public class dtemplate {
             foreachDsymbol(this.members, __lambda4);
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -7928,6 +8136,7 @@ public class dtemplate {
             }
         }
 
+        // Erasure: findTempDecl<Ptr>
         public  boolean findTempDecl(Ptr<Scope> sc) {
             if (this.tempdecl == null)
             {
@@ -8010,10 +8219,12 @@ public class dtemplate {
             return true;
         }
 
+        // Erasure: isTemplateMixin<>
         public  TemplateMixin isTemplateMixin() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -8072,17 +8283,20 @@ public class dtemplate {
     public static class TemplateInstanceBox
     {
         public TemplateInstance ti = null;
+        // Erasure: __ctor<TemplateInstance>
         public  TemplateInstanceBox(TemplateInstance ti) {
             this.ti = ti;
             this.ti.toHash();
             assert(this.ti.hash != 0);
         }
 
+        // Erasure: toHash<>
         public  int toHash() {
             assert(this.ti.hash != 0);
             return this.ti.hash;
         }
 
+        // Erasure: opEquals<TemplateInstanceBox>
         public  boolean opEquals(TemplateInstanceBox s) {
             boolean res = null;
             if ((this.ti.inst != null) && (s.ti.inst != null))

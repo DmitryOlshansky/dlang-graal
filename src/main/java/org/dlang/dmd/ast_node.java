@@ -13,9 +13,11 @@ public class ast_node {
 
     public static abstract class ASTNode extends RootObject
     {
+        // Erasure: accept<>
         public abstract void accept(Visitor v);
 
 
+        // Erasure: __ctor<>
         public  ASTNode() {
             super();
         }

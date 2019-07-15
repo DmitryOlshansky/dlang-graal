@@ -27,13 +27,16 @@ public class escape {
     private static class EscapeVisitor extends Visitor
     {
         private Ptr<EscapeByResults> er = null;
+        // Erasure: __ctor<Ptr>
         public  EscapeVisitor(Ptr<EscapeByResults> er) {
             this.er = pcopy(er);
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
         }
 
+        // Erasure: visit<AddrExp>
         public  void visit(AddrExp e) {
             if (((e.e1.value.op & 0xFF) != 49))
             {
@@ -41,6 +44,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<SymOffExp>
         public  void visit(SymOffExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
@@ -49,6 +53,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<VarExp>
         public  void visit(VarExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
@@ -57,6 +62,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<ThisExp>
         public  void visit(ThisExp e) {
             if (e.var != null)
             {
@@ -64,6 +70,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<DotVarExp>
         public  void visit(DotVarExp e) {
             Type t = e.e1.value.type.value.toBasetype();
             if (((t.ty & 0xFF) == ENUMTY.Tstruct))
@@ -72,6 +79,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<DelegateExp>
         public  void visit(DelegateExp e) {
             Type t = e.e1.value.type.value.toBasetype();
             if (((t.ty & 0xFF) == ENUMTY.Tclass) || ((t.ty & 0xFF) == ENUMTY.Tpointer))
@@ -85,6 +93,7 @@ public class escape {
             (this.er.get()).byfunc.push(e.func);
         }
 
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp e) {
             if (((e.fd.tok & 0xFF) == 160))
             {
@@ -92,10 +101,12 @@ public class escape {
             }
         }
 
+        // Erasure: visit<TupleExp>
         public  void visit(TupleExp e) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             Type tb = e.type.value.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tsarray) || ((tb.ty & 0xFF) == ENUMTY.Tarray))
@@ -118,6 +129,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             if (e.elements != null)
             {
@@ -135,6 +147,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<NewExp>
         public  void visit(NewExp e) {
             Type tb = e.newtype.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tstruct) && (e.member == null) && (e.arguments != null))
@@ -153,6 +166,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<CastExp>
         public  void visit(CastExp e) {
             Type tb = e.type.value.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tarray) && ((e.e1.value.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
@@ -165,6 +179,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             if (((e.e1.value.op & 0xFF) == 26))
             {
@@ -198,6 +213,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<IndexExp>
         public  void visit(IndexExp e) {
             if (((e.e1.value.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tsarray))
             {
@@ -205,6 +221,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<BinExp>
         public  void visit(BinExp e) {
             Type tb = e.type.value.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tpointer))
@@ -214,23 +231,28 @@ public class escape {
             }
         }
 
+        // Erasure: visit<BinAssignExp>
         public  void visit(BinAssignExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<AssignExp>
         public  void visit(AssignExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<CommaExp>
         public  void visit(CommaExp e) {
             e.e2.value.accept(this);
         }
 
+        // Erasure: visit<CondExp>
         public  void visit(CondExp e) {
             e.e1.value.accept(this);
             e.e2.value.accept(this);
         }
 
+        // Erasure: visit<CallExp>
         public  void visit(CallExp e) {
             Type t1 = e.e1.value.type.value.toBasetype();
             TypeFunction tf = null;
@@ -334,13 +356,16 @@ public class escape {
     private static class EscapeRefVisitor extends Visitor
     {
         private Ptr<EscapeByResults> er = null;
+        // Erasure: __ctor<Ptr>
         public  EscapeRefVisitor(Ptr<EscapeByResults> er) {
             this.er = pcopy(er);
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
         }
 
+        // Erasure: visit<VarExp>
         public  void visit(VarExp e) {
             VarDeclaration v = e.var.isVarDeclaration();
             if (v != null)
@@ -364,6 +389,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<ThisExp>
         public  void visit(ThisExp e) {
             if ((e.var != null) && e.var.toParent2().isFuncDeclaration().isThis2)
             {
@@ -375,10 +401,12 @@ public class escape {
             }
         }
 
+        // Erasure: visit<PtrExp>
         public  void visit(PtrExp e) {
             escapeByValue(e.e1.value, this.er);
         }
 
+        // Erasure: visit<IndexExp>
         public  void visit(IndexExp e) {
             Type tb = e.e1.value.type.value.toBasetype();
             if (((e.e1.value.op & 0xFF) == 26))
@@ -403,6 +431,7 @@ public class escape {
             }
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             if (e.elements != null)
             {
@@ -421,6 +450,7 @@ public class escape {
             (this.er.get()).byexp.push(e);
         }
 
+        // Erasure: visit<DotVarExp>
         public  void visit(DotVarExp e) {
             Type t1b = e.e1.value.type.value.toBasetype();
             if (((t1b.ty & 0xFF) == ENUMTY.Tclass))
@@ -433,23 +463,28 @@ public class escape {
             }
         }
 
+        // Erasure: visit<BinAssignExp>
         public  void visit(BinAssignExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<AssignExp>
         public  void visit(AssignExp e) {
             e.e1.value.accept(this);
         }
 
+        // Erasure: visit<CommaExp>
         public  void visit(CommaExp e) {
             e.e2.value.accept(this);
         }
 
+        // Erasure: visit<CondExp>
         public  void visit(CondExp e) {
             e.e1.value.accept(this);
             e.e2.value.accept(this);
         }
 
+        // Erasure: visit<CallExp>
         public  void visit(CallExp e) {
             Type t1 = e.e1.value.type.value.toBasetype();
             TypeFunction tf = null;
@@ -552,6 +587,7 @@ public class escape {
         public EscapeRefVisitor() {}
     }
 
+    // Erasure: checkArrayLiteralEscape<Ptr, ArrayLiteralExp, boolean>
     public static boolean checkArrayLiteralEscape(Ptr<Scope> sc, ArrayLiteralExp ae, boolean gag) {
         boolean errors = false;
         if (ae.basis.value != null)
@@ -572,6 +608,7 @@ public class escape {
         return errors;
     }
 
+    // Erasure: checkAssocArrayLiteralEscape<Ptr, AssocArrayLiteralExp, boolean>
     public static boolean checkAssocArrayLiteralEscape(Ptr<Scope> sc, AssocArrayLiteralExp ae, boolean gag) {
         boolean errors = false;
         {
@@ -599,6 +636,7 @@ public class escape {
         return errors;
     }
 
+    // Erasure: checkParamArgumentEscape<Ptr, FuncDeclaration, Parameter, Expression, boolean>
     public static boolean checkParamArgumentEscape(Ptr<Scope> sc, FuncDeclaration fdc, Parameter par, Expression arg, boolean gag) {
         boolean log = false;
         if (false)
@@ -744,6 +782,7 @@ public class escape {
         }
     }
 
+    // Erasure: checkParamArgumentReturn<Ptr, Expression, Expression, boolean>
     public static boolean checkParamArgumentReturn(Ptr<Scope> sc, Expression firstArg, Expression arg, boolean gag) {
         boolean log = false;
         if (false)
@@ -758,6 +797,7 @@ public class escape {
         return checkAssignEscape(sc, e, gag);
     }
 
+    // Erasure: checkConstructorEscape<Ptr, CallExp, boolean>
     public static boolean checkConstructorEscape(Ptr<Scope> sc, CallExp ce, boolean gag) {
         boolean log = false;
         if (false)
@@ -810,6 +850,7 @@ public class escape {
         return false;
     }
 
+    // Erasure: checkAssignEscape<Ptr, Expression, boolean>
     public static boolean checkAssignEscape(Ptr<Scope> sc, Expression e, boolean gag) {
         boolean log = false;
         if (false)
@@ -1201,6 +1242,7 @@ public class escape {
         }
     }
 
+    // Erasure: checkThrowEscape<Ptr, Expression, boolean>
     public static boolean checkThrowEscape(Ptr<Scope> sc, Expression e, boolean gag) {
         Ref<EscapeByResults> er = ref(new EscapeByResults());
         try {
@@ -1246,6 +1288,7 @@ public class escape {
         }
     }
 
+    // Erasure: checkNewEscape<Ptr, Expression, boolean>
     public static boolean checkNewEscape(Ptr<Scope> sc, Expression e, boolean gag) {
         boolean log = false;
         if (false)
@@ -1391,14 +1434,17 @@ public class escape {
         }
     }
 
+    // Erasure: checkReturnEscape<Ptr, Expression, boolean>
     public static boolean checkReturnEscape(Ptr<Scope> sc, Expression e, boolean gag) {
         return checkReturnEscapeImpl(sc, e, false, gag);
     }
 
+    // Erasure: checkReturnEscapeRef<Ptr, Expression, boolean>
     public static boolean checkReturnEscapeRef(Ptr<Scope> sc, Expression e, boolean gag) {
         return checkReturnEscapeImpl(sc, e, true, gag);
     }
 
+    // Erasure: checkReturnEscapeImpl<Ptr, Expression, boolean, boolean>
     public static boolean checkReturnEscapeImpl(Ptr<Scope> sc, Expression e, boolean refs, boolean gag) {
         boolean log = false;
         if (false)
@@ -1580,6 +1626,7 @@ public class escape {
         }
     }
 
+    // Erasure: inferReturn<FuncDeclaration, VarDeclaration>
     public static void inferReturn(FuncDeclaration fd, VarDeclaration v) {
         v.storage_class |= 4521191813414912L;
         TypeFunction tf = (TypeFunction)fd.type;
@@ -1614,12 +1661,14 @@ public class escape {
         }
     }
 
+    // Erasure: escapeByValue<Expression, Ptr>
     public static void escapeByValue(Expression e, Ptr<EscapeByResults> er) {
         // skipping duplicate class EscapeVisitor
         EscapeVisitor v = new EscapeVisitor(er);
         e.accept(v);
     }
 
+    // Erasure: escapeByRef<Expression, Ptr>
     public static void escapeByRef(Expression e, Ptr<EscapeByResults> er) {
         // skipping duplicate class EscapeRefVisitor
         EscapeRefVisitor v = new EscapeRefVisitor(er);
@@ -1661,6 +1710,7 @@ public class escape {
             return this;
         }
     }
+    // Erasure: findAllOuterAccessedVariables<FuncDeclaration, Ptr>
     public static void findAllOuterAccessedVariables(FuncDeclaration fd, Ptr<DArray<VarDeclaration>> vars) {
         {
             Dsymbol p = fd.parent.value;
@@ -1691,10 +1741,12 @@ public class escape {
         }
     }
 
+    // Erasure: notMaybeScope<VarDeclaration>
     public static void notMaybeScope(VarDeclaration v) {
         v.storage_class &= -281474976710657L;
     }
 
+    // Erasure: eliminateMaybeScopes<Array>
     public static void eliminateMaybeScopes(Slice<VarDeclaration> array) {
         boolean log = false;
         if (false)

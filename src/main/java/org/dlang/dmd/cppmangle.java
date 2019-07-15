@@ -43,6 +43,7 @@ public class cppmangle {
         public static final int Unknown = 8;
     }
 
+    // Erasure: isCppOperator<Identifier>
     public static int isCppOperator(Identifier id) {
         if (cppmangle.isCppOperatoroperators.getLength() == 0)
         {
@@ -63,6 +64,7 @@ public class cppmangle {
         return CppOperator.Unknown;
     }
 
+    // Erasure: toCppMangleItanium<Dsymbol>
     public static BytePtr toCppMangleItanium(Dsymbol s) {
         Ref<OutBuffer> buf = ref(new OutBuffer());
         try {
@@ -74,6 +76,7 @@ public class cppmangle {
         }
     }
 
+    // Erasure: cppTypeInfoMangleItanium<Dsymbol>
     public static BytePtr cppTypeInfoMangleItanium(Dsymbol s) {
         Ref<OutBuffer> buf = ref(new OutBuffer());
         try {
@@ -86,6 +89,7 @@ public class cppmangle {
         }
     }
 
+    // Erasure: isPrimaryDtor<Dsymbol>
     public static boolean isPrimaryDtor(Dsymbol sym) {
         DtorDeclaration dtor = sym.isDtorDeclaration();
         if (dtor == null)
@@ -102,6 +106,7 @@ public class cppmangle {
         public TemplateInstance ti = null;
         public FuncDeclaration fd = null;
         public RootObject res = null;
+        // Erasure: push<RootObject>
         public  Context push(RootObject next) {
             RootObject r = this.res;
             if ((r != null))
@@ -111,6 +116,7 @@ public class cppmangle {
             return new Context(this.ti, this.fd, r);
         }
 
+        // Erasure: pop<Context>
         public  void pop(Context prev) {
             this.res = prev.res;
         }
@@ -143,11 +149,13 @@ public class cppmangle {
         public DArray<RootObject> components = new DArray<RootObject>();
         public Ptr<OutBuffer> buf = null;
         public Loc loc = new Loc();
+        // Erasure: __ctor<Ptr, Loc>
         public  CppMangleVisitor(Ptr<OutBuffer> buf, Loc loc) {
             this.buf = pcopy(buf);
             this.loc.opAssign(loc.copy());
         }
 
+        // Erasure: mangleOf<Dsymbol>
         public  void mangleOf(Dsymbol s) {
             {
                 VarDeclaration vd = s.isVarDeclaration();
@@ -169,6 +177,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: mangleReturnType<TypeFunction>
         public  void mangleReturnType(TypeFunction preSemantic) {
             TypeFunction tf = (TypeFunction)asFuncDecl(this.context.res).type;
             Type rt = preSemantic.nextOf();
@@ -192,6 +201,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: writeSequenceFromIndex<int>
         public  void writeSequenceFromIndex(int idx) {
             if (idx != 0)
             {
@@ -214,6 +224,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: substitute<RootObject>
         public  boolean substitute(RootObject p) {
             int i = this.find(p);
             if ((i >= 0))
@@ -226,6 +237,7 @@ public class cppmangle {
             return false;
         }
 
+        // Erasure: find<RootObject>
         public  int find(RootObject p) {
             ComponentVisitor v = new ComponentVisitor(p);
             {
@@ -247,16 +259,19 @@ public class cppmangle {
             return -1;
         }
 
+        // Erasure: append<RootObject>
         public  void append(RootObject p) {
             this.components.push(p);
         }
 
+        // Erasure: writeIdentifier<Identifier>
         public  void writeIdentifier(Identifier ident) {
             ByteSlice name = ident.asString().copy();
             (this.buf.get()).print((long)name.getLength());
             (this.buf.get()).writestring(name);
         }
 
+        // Erasure: isStd<Dsymbol>
         public static boolean isStd(Dsymbol s) {
             if (s == null)
             {
@@ -272,10 +287,12 @@ public class cppmangle {
             return (pequals(s.ident, Id.std)) && (s.isNspace() != null) && (getQualifier(s) == null);
         }
 
+        // Erasure: isStd<CPPNamespaceDeclaration>
         public static boolean isStd(CPPNamespaceDeclaration s) {
             return (s != null) && (s.namespace == null) && (pequals(s.ident, Id.std));
         }
 
+        // Erasure: isFundamentalType<Type>
         public static boolean isFundamentalType(Type t) {
             Ref<Boolean> isFundamental = ref(null);
             if (target.cppFundamentalType(t, isFundamental))
@@ -306,6 +323,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: template_arg<TemplateInstance, int>
         public  void template_arg(TemplateInstance ti, int arg) {
             TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
             assert(td != null);
@@ -414,6 +432,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: template_args<TemplateInstance, int>
         public  boolean template_args(TemplateInstance ti, int firstArg) {
             if ((ti == null) || ((ti.tiargs.get()).length <= firstArg))
             {
@@ -459,6 +478,7 @@ public class cppmangle {
             return template_args(ti, 0);
         }
 
+        // Erasure: writeChained<Dsymbol, Function0>
         public  void writeChained(Dsymbol p, Function0<Void> dg) {
             if ((p != null) && (p.isModule() == null))
             {
@@ -473,6 +493,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: source_name<Dsymbol, boolean>
         public  void source_name(Dsymbol s, boolean haveNE) {
             {
                 TemplateInstance ti = s.isTemplateInstance();
@@ -525,6 +546,7 @@ public class cppmangle {
             source_name(s, false);
         }
 
+        // Erasure: getInstance<Dsymbol>
         public static Dsymbol getInstance(Dsymbol s) {
             Dsymbol p = s.toParent();
             if (p != null)
@@ -540,28 +562,34 @@ public class cppmangle {
             return s;
         }
 
+        // Erasure: getTiNamespace<TemplateInstance>
         public  CPPNamespaceDeclaration getTiNamespace(TemplateInstance ti) {
             return ti.tempdecl != null ? ti.namespace : asType(this.context.res).toDsymbol(null).namespace;
         }
 
+        // Erasure: getQualifier<Dsymbol>
         public static Dsymbol getQualifier(Dsymbol s) {
             Dsymbol p = s.toParent();
             return (p != null) && (p.isModule() == null) ? p : null;
         }
 
+        // Erasure: isChar<RootObject>
         public static boolean isChar(RootObject o) {
             Type t = isType(o);
             return (t != null) && t.equals(Type.tchar);
         }
 
+        // Erasure: isChar_traits_char<RootObject>
         public  boolean isChar_traits_char(RootObject o) {
             return this.isIdent_char(Id.char_traits, o);
         }
 
+        // Erasure: isAllocator_char<RootObject>
         public  boolean isAllocator_char(RootObject o) {
             return this.isIdent_char(Id.allocator, o);
         }
 
+        // Erasure: isIdent_char<Identifier, RootObject>
         public  boolean isIdent_char(Identifier ident, RootObject o) {
             Type t = isType(o);
             if ((t == null) || ((t.ty & 0xFF) != ENUMTY.Tstruct))
@@ -588,6 +616,7 @@ public class cppmangle {
             return inStd && ((ti.tiargs.get()).length == 1) && isChar((ti.tiargs.get()).get(0));
         }
 
+        // Erasure: char_std_char_traits_char<TemplateInstance, Array>
         public  boolean char_std_char_traits_char(TemplateInstance ti, ByteSlice st) {
             if (((ti.tiargs.get()).length == 2) && isChar((ti.tiargs.get()).get(0)) && this.isChar_traits_char((ti.tiargs.get()).get(1)))
             {
@@ -597,6 +626,7 @@ public class cppmangle {
             return false;
         }
 
+        // Erasure: prefix_name<Dsymbol>
         public  void prefix_name(Dsymbol s) {
             if (this.substitute(s))
             {
@@ -638,6 +668,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: writeStdSubstitution<TemplateInstance, boolean>
         public  boolean writeStdSubstitution(TemplateInstance ti, Ref<Boolean> needsTa) {
             needsTa.value = false;
             if (ti == null)
@@ -680,6 +711,7 @@ public class cppmangle {
             return false;
         }
 
+        // Erasure: cpp_mangle_name<Dsymbol, boolean>
         public  void cpp_mangle_name(Dsymbol s, boolean qualified) {
             Dsymbol p = s.toParent();
             Dsymbol se = s;
@@ -765,6 +797,7 @@ public class cppmangle {
             this.append(s);
         }
 
+        // Erasure: CV_qualifiers<Type>
         public  void CV_qualifiers(Type t) {
             if (t.isConst())
             {
@@ -772,6 +805,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: mangle_variable<VarDeclaration, boolean>
         public  void mangle_variable(VarDeclaration d, boolean isNested) {
             if ((d.storage_class & 1073741890L) == 0)
             {
@@ -800,6 +834,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: mangle_function<FuncDeclaration>
         public  void mangle_function(FuncDeclaration d) {
             TypeFunction tf = (TypeFunction)d.type;
             (this.buf.get()).writestring(new ByteSlice("_Z"));
@@ -862,6 +897,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: writeNamespace<CPPNamespaceDeclaration, Function0, boolean>
         public  void writeNamespace(CPPNamespaceDeclaration ns, Function0<Void> dg, boolean haveNE) {
             Function0<Void> runDg = new Function0<Void>() {
                 public Void invoke() {
@@ -918,6 +954,7 @@ public class cppmangle {
             writeNamespace(ns, dg, false);
         }
 
+        // Erasure: mangleTemplatedFunction<FuncDeclaration, TypeFunction, TemplateDeclaration, TemplateInstance>
         public  void mangleTemplatedFunction(FuncDeclaration d, TypeFunction tf, TemplateDeclaration ftd, TemplateInstance ti) {
             Dsymbol p = ti.toParent();
             if ((p == null) || (p.isModule() != null) || (tf.linkage != LINK.cpp))
@@ -1164,6 +1201,7 @@ public class cppmangle {
             this.mangleFunctionParameters(tf.parameterList.parameters, tf.parameterList.varargs);
         }
 
+        // Erasure: mangleFunctionParameters<Ptr, int>
         public  void mangleFunctionParameters(Ptr<DArray<Parameter>> parameters, int varargs) {
             Ref<Integer> numparams = ref(0);
             Function0<RootObject> __dgliteral4 = new Function0<RootObject>() {
@@ -1225,6 +1263,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: error<Type>
         public  void error(Type t) {
             BytePtr p = null;
             if (t.isImmutable())
@@ -1243,6 +1282,7 @@ public class cppmangle {
             fatal();
         }
 
+        // Erasure: headOfType<Type>
         public  void headOfType(Type t) {
             if (((t.ty & 0xFF) == ENUMTY.Tclass))
             {
@@ -1267,6 +1307,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: writeBasicType<Type, byte, byte>
         public  void writeBasicType(Type t, byte p, byte c) {
             if (!isFundamentalType(t) || t.isConst())
             {
@@ -1287,6 +1328,7 @@ public class cppmangle {
             (this.buf.get()).writeByte((c & 0xFF));
         }
 
+        // Erasure: doSymbol<Type>
         public  void doSymbol(Type t) {
             if (this.substitute(t))
             {
@@ -1322,6 +1364,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: mangleTypeClass<TypeClass, boolean>
         public  void mangleTypeClass(TypeClass t, boolean head) {
             if (t.isImmutable() || t.isShared())
             {
@@ -1360,12 +1403,14 @@ public class cppmangle {
             this.append(t);
         }
 
+        // Erasure: mangleNestedFuncPrefix<TypeFunction, Dsymbol>
         public  void mangleNestedFuncPrefix(TypeFunction tf, Dsymbol parent) {
             (this.buf.get()).writeByte(78);
             this.CV_qualifiers(tf);
             this.prefix_name(parent);
         }
 
+        // Erasure: writeTemplateArgIndex<int, TemplateParameter>
         public  void writeTemplateArgIndex(int idx, TemplateParameter param) {
             if (param.isTemplateValueParameter() != null)
             {
@@ -1380,6 +1425,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: templateParamIndex<Identifier, Ptr>
         public static int templateParamIndex(Identifier ident, Ptr<DArray<TemplateParameter>> params) {
             {
                 Slice<TemplateParameter> __r857 = (params.get()).opSlice().copy();
@@ -1396,6 +1442,7 @@ public class cppmangle {
             return (params.get()).length;
         }
 
+        // Erasure: writeQualified<TemplateInstance, Function0>
         public  void writeQualified(TemplateInstance t, Function0<Void> dg) {
             Type type = isType(this.context.res);
             if (type == null)
@@ -1453,6 +1500,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: visit<TypeNull>
         public  void visit(TypeNull t) {
             if (t.isImmutable() || t.isShared())
             {
@@ -1462,6 +1510,7 @@ public class cppmangle {
             this.writeBasicType(t, (byte)68, (byte)110);
         }
 
+        // Erasure: visit<TypeBasic>
         public  void visit(TypeBasic t) {
             if (t.isImmutable() || t.isShared())
             {
@@ -1579,6 +1628,7 @@ public class cppmangle {
             this.writeBasicType(t, p, c);
         }
 
+        // Erasure: visit<TypeVector>
         public  void visit(TypeVector t) {
             if (t.isImmutable() || t.isShared())
             {
@@ -1607,6 +1657,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: visit<TypeSArray>
         public  void visit(TypeSArray t) {
             if (t.isImmutable() || t.isShared())
             {
@@ -1624,6 +1675,7 @@ public class cppmangle {
             t.next.value.accept(this);
         }
 
+        // Erasure: visit<TypePointer>
         public  void visit(TypePointer t) {
             if (t.isImmutable() || t.isShared())
             {
@@ -1653,6 +1705,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: visit<TypeReference>
         public  void visit(TypeReference t) {
             if (this.substitute(t))
             {
@@ -1676,6 +1729,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: visit<TypeFunction>
         public  void visit(TypeFunction t) {
             if (this.substitute(t))
             {
@@ -1697,6 +1751,7 @@ public class cppmangle {
             this.append(t);
         }
 
+        // Erasure: visit<TypeStruct>
         public  void visit(TypeStruct t) {
             if (t.isImmutable() || t.isShared())
             {
@@ -1706,6 +1761,7 @@ public class cppmangle {
             this.doSymbol(t);
         }
 
+        // Erasure: visit<TypeEnum>
         public  void visit(TypeEnum t) {
             if (t.isImmutable() || t.isShared())
             {
@@ -1741,10 +1797,12 @@ public class cppmangle {
             this.doSymbol(t);
         }
 
+        // Erasure: visit<TypeClass>
         public  void visit(TypeClass t) {
             this.mangleTypeClass(t, false);
         }
 
+        // Erasure: visit<TypeIdentifier>
         public  void visit(TypeIdentifier t) {
             TemplateDeclaration decl = (TemplateDeclaration)this.context.ti.tempdecl;
             assert((decl.parameters != null));
@@ -1770,11 +1828,13 @@ public class cppmangle {
             this.append(param);
         }
 
+        // Erasure: visit<TypeInstance>
         public  void visit(TypeInstance t) {
             assert((t.tempinst != null));
             t.tempinst.accept(this);
         }
 
+        // Erasure: visit<TemplateInstance>
         public  void visit(TemplateInstance t) {
             Function0<Void> writeArgs = new Function0<Void>() {
                 public Void invoke() {
@@ -1882,6 +1942,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: visit<IntegerExp>
         public  void visit(IntegerExp t) {
             (this.buf.get()).writeByte(76);
             t.type.value.accept(this);
@@ -1889,6 +1950,7 @@ public class cppmangle {
             (this.buf.get()).writeByte(69);
         }
 
+        // Erasure: visit<Nspace>
         public  void visit(Nspace t) {
             {
                 Dsymbol p = getQualifier(t);
@@ -1908,10 +1970,12 @@ public class cppmangle {
             }
         }
 
+        // Erasure: visit<Type>
         public  void visit(Type t) {
             this.error(t);
         }
 
+        // Erasure: visit<Tuple>
         public  void visit(Tuple t) {
             throw new AssertionError("Unreachable code!");
         }
@@ -1929,6 +1993,7 @@ public class cppmangle {
         }
     }
     // from template visitObject!(ComponentVisitor)
+    // Erasure: visitObjectComponentVisitor<RootObject, ComponentVisitor>
     public static void visitObjectComponentVisitor(RootObject o, ComponentVisitor this_) {
         assert((o != null));
         {
@@ -1974,6 +2039,7 @@ public class cppmangle {
 
 
     // from template visitObject!(CppMangleVisitor)
+    // Erasure: visitObjectCppMangleVisitor<RootObject, CppMangleVisitor>
     public static void visitObjectCppMangleVisitor(RootObject o, CppMangleVisitor this_) {
         assert((o != null));
         {
@@ -2018,12 +2084,14 @@ public class cppmangle {
     }
 
 
+    // Erasure: asType<RootObject>
     public static Type asType(RootObject o) {
         Type ta = isType(o);
         assertMsg((ta != null), o.asString());
         return ta;
     }
 
+    // Erasure: asFuncDecl<RootObject>
     public static FuncDeclaration asFuncDecl(RootObject o) {
         Dsymbol d = isDsymbol(o);
         assert((d != null));
@@ -2041,6 +2109,7 @@ public class cppmangle {
         public TypeIdentifier tident = null;
         public RootObject object = null;
         public boolean result = false;
+        // Erasure: __ctor<RootObject>
         public  ComponentVisitor(RootObject base) {
             {
                 int __dispatch6 = 0;
@@ -2095,26 +2164,32 @@ public class cppmangle {
             }
         }
 
+        // Erasure: visit<Dsymbol>
         public  void visit(Dsymbol o) {
             this.result = (this.object != null) && (pequals(this.object, o));
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression o) {
             this.result = (this.object != null) && (pequals(this.object, o));
         }
 
+        // Erasure: visit<Tuple>
         public  void visit(Tuple o) {
             this.result = (this.object != null) && (pequals(this.object, o));
         }
 
+        // Erasure: visit<Type>
         public  void visit(Type o) {
             this.result = (this.object != null) && (pequals(this.object, o));
         }
 
+        // Erasure: visit<TemplateParameter>
         public  void visit(TemplateParameter o) {
             this.result = (this.object != null) && (pequals(this.object, o));
         }
 
+        // Erasure: visit<TypeReference>
         public  void visit(TypeReference o) {
             if (this.tref == null)
             {
@@ -2132,6 +2207,7 @@ public class cppmangle {
             }
         }
 
+        // Erasure: visit<TypePointer>
         public  void visit(TypePointer o) {
             if (this.tpointer == null)
             {
@@ -2149,14 +2225,17 @@ public class cppmangle {
             }
         }
 
+        // Erasure: visit<TypeIdentifier>
         public  void visit(TypeIdentifier o) {
             this.result = (this.tident != null) && (pequals(this.tident.ident, o.ident));
         }
 
+        // Erasure: visit<Nspace>
         public  void visit(Nspace ns) {
             this.result = isNamespaceEqual(this.namespace, ns) || isNamespaceEqual(this.namespace2, ns, 0);
         }
 
+        // Erasure: visit<CPPNamespaceDeclaration>
         public  void visit(CPPNamespaceDeclaration ns) {
             this.result = isNamespaceEqual(this.namespace, ns) || isNamespaceEqual(this.namespace2, ns);
         }
@@ -2176,6 +2255,7 @@ public class cppmangle {
             return that;
         }
     }
+    // Erasure: isNamespaceEqual<Nspace, Nspace>
     public static boolean isNamespaceEqual(Nspace a, Nspace b) {
         if ((a == null) || (b == null))
         {
@@ -2184,10 +2264,12 @@ public class cppmangle {
         return a.equals(b);
     }
 
+    // Erasure: isNamespaceEqual<Nspace, CPPNamespaceDeclaration>
     public static boolean isNamespaceEqual(Nspace a, CPPNamespaceDeclaration b) {
         return isNamespaceEqual(b, a, 0);
     }
 
+    // Erasure: isNamespaceEqual<CPPNamespaceDeclaration, Nspace, int>
     public static boolean isNamespaceEqual(CPPNamespaceDeclaration a, Nspace b, int idx) {
         if ((((a == null) ? 1 : 0) != ((b == null) ? 1 : 0)))
         {
@@ -2215,6 +2297,7 @@ public class cppmangle {
         return isNamespaceEqual(a, b, 0);
     }
 
+    // Erasure: isNamespaceEqual<CPPNamespaceDeclaration, CPPNamespaceDeclaration>
     public static boolean isNamespaceEqual(CPPNamespaceDeclaration a, CPPNamespaceDeclaration b) {
         if ((a == null) || (b == null))
         {

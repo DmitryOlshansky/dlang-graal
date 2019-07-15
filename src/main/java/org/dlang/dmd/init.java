@@ -41,12 +41,14 @@ public class init {
     {
         public Loc loc = new Loc();
         public byte kind = 0;
+        // Erasure: __ctor<Loc, byte>
         public  Initializer(Loc loc, byte kind) {
             super();
             this.loc.opAssign(loc.copy());
             this.kind = kind;
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
@@ -58,26 +60,32 @@ public class init {
             }
         }
 
+        // Erasure: isErrorInitializer<>
         public  ErrorInitializer isErrorInitializer() {
             return ((this.kind & 0xFF) == 1) ? ((ErrorInitializer)this) : null;
         }
 
+        // Erasure: isVoidInitializer<>
         public  VoidInitializer isVoidInitializer() {
             return ((this.kind & 0xFF) == 0) ? ((VoidInitializer)this) : null;
         }
 
+        // Erasure: isStructInitializer<>
         public  StructInitializer isStructInitializer() {
             return ((this.kind & 0xFF) == 2) ? ((StructInitializer)this) : null;
         }
 
+        // Erasure: isArrayInitializer<>
         public  ArrayInitializer isArrayInitializer() {
             return ((this.kind & 0xFF) == 3) ? ((ArrayInitializer)this) : null;
         }
 
+        // Erasure: isExpInitializer<>
         public  ExpInitializer isExpInitializer() {
             return ((this.kind & 0xFF) == 4) ? ((ExpInitializer)this) : null;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -95,10 +103,12 @@ public class init {
     public static class VoidInitializer extends Initializer
     {
         public Type type = null;
+        // Erasure: __ctor<Loc>
         public  VoidInitializer(Loc loc) {
             super(loc, InitKind.void_);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -116,10 +126,12 @@ public class init {
     }
     public static class ErrorInitializer extends Initializer
     {
+        // Erasure: __ctor<>
         public  ErrorInitializer() {
             super(Loc.initial, InitKind.error);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -136,15 +148,18 @@ public class init {
     {
         public DArray<Identifier> field = new DArray<Identifier>();
         public DArray<Initializer> value = new DArray<Initializer>();
+        // Erasure: __ctor<Loc>
         public  StructInitializer(Loc loc) {
             super(loc, InitKind.struct_);
         }
 
+        // Erasure: addInit<Identifier, Initializer>
         public  void addInit(Identifier field, Initializer value) {
             this.field.push(field);
             this.value.push(value);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -168,10 +183,12 @@ public class init {
         public int dim = 0;
         public Type type = null;
         public boolean sem = false;
+        // Erasure: __ctor<Loc>
         public  ArrayInitializer(Loc loc) {
             super(loc, InitKind.array);
         }
 
+        // Erasure: addInit<Expression, Initializer>
         public  void addInit(Expression index, Initializer value) {
             this.index.push(index);
             this.value.push(value);
@@ -179,6 +196,7 @@ public class init {
             this.type = null;
         }
 
+        // Erasure: isAssociativeArray<>
         public  boolean isAssociativeArray() {
             {
                 Slice<Expression> __r1509 = this.index.opSlice().copy();
@@ -194,6 +212,7 @@ public class init {
             return false;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -217,11 +236,13 @@ public class init {
     {
         public boolean expandTuples = false;
         public Expression exp = null;
+        // Erasure: __ctor<Loc, Expression>
         public  ExpInitializer(Loc loc, Expression exp) {
             super(loc, InitKind.exp);
             this.exp = exp;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
@@ -239,6 +260,7 @@ public class init {
         }
     }
 
+    // Erasure: hasNonConstPointers<Expression>
     public static boolean hasNonConstPointers(Expression e) {
         Function1<Ptr<DArray<Expression>>,Boolean> checkArray = new Function1<Ptr<DArray<Expression>>,Boolean>() {
             public Boolean invoke(Ptr<DArray<Expression>> elems) {
@@ -343,6 +365,7 @@ public class init {
         return false;
     }
 
+    // Erasure: syntaxCopy<Initializer>
     public static Initializer syntaxCopy(Initializer inx) {
         Function1<StructInitializer,Initializer> copyStruct = new Function1<StructInitializer,Initializer>() {
             public Initializer invoke(StructInitializer vi) {

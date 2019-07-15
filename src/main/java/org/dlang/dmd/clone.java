@@ -34,6 +34,7 @@ import static org.dlang.dmd.typesem.*;
 public class clone {
     static TypeFunction buildXtoHashtftohash = null;
 
+    // Erasure: mergeFuncAttrs<long, FuncDeclaration>
     public static long mergeFuncAttrs(long s1, FuncDeclaration f) {
         if (f == null)
         {
@@ -87,6 +88,7 @@ public class clone {
         return stc;
     }
 
+    // Erasure: hasIdentityOpAssign<AggregateDeclaration, Ptr>
     public static FuncDeclaration hasIdentityOpAssign(AggregateDeclaration ad, Ptr<Scope> sc) {
         Dsymbol assign = search_function(ad, Id.assign);
         if (assign != null)
@@ -134,6 +136,7 @@ public class clone {
         return null;
     }
 
+    // Erasure: needOpAssign<StructDeclaration>
     public static boolean needOpAssign(StructDeclaration sd) {
         Function0<Boolean> isNeeded = new Function0<Boolean>() {
             public Boolean invoke() {
@@ -181,6 +184,7 @@ public class clone {
         return !isNeeded.invoke();
     }
 
+    // Erasure: buildOpAssign<StructDeclaration, Ptr>
     public static FuncDeclaration buildOpAssign(StructDeclaration sd, Ptr<Scope> sc) {
         {
             FuncDeclaration f = hasIdentityOpAssign(sd, sc);
@@ -302,6 +306,7 @@ public class clone {
         return fop;
     }
 
+    // Erasure: needOpEquals<StructDeclaration>
     public static boolean needOpEquals(StructDeclaration sd) {
         try {
             try {
@@ -372,6 +377,7 @@ public class clone {
         return true;
     }
 
+    // Erasure: hasIdentityOpEquals<AggregateDeclaration, Ptr>
     public static FuncDeclaration hasIdentityOpEquals(AggregateDeclaration ad, Ptr<Scope> sc) {
         Dsymbol eq = search_function(ad, Id.eq);
         if (eq != null)
@@ -445,6 +451,7 @@ public class clone {
         return null;
     }
 
+    // Erasure: buildOpEquals<StructDeclaration, Ptr>
     public static FuncDeclaration buildOpEquals(StructDeclaration sd, Ptr<Scope> sc) {
         if (hasIdentityOpEquals(sd, sc) != null)
         {
@@ -453,6 +460,7 @@ public class clone {
         return null;
     }
 
+    // Erasure: buildXopEquals<StructDeclaration, Ptr>
     public static FuncDeclaration buildXopEquals(StructDeclaration sd, Ptr<Scope> sc) {
         if (!needOpEquals(sd))
         {
@@ -521,6 +529,7 @@ public class clone {
         return fop;
     }
 
+    // Erasure: buildXopCmp<StructDeclaration, Ptr>
     public static FuncDeclaration buildXopCmp(StructDeclaration sd, Ptr<Scope> sc) {
         {
             Dsymbol cmp = search_function(sd, Id.cmp);
@@ -590,6 +599,7 @@ public class clone {
         return fop;
     }
 
+    // Erasure: needToHash<StructDeclaration>
     public static boolean needToHash(StructDeclaration sd) {
         try {
             try {
@@ -660,6 +670,7 @@ public class clone {
         return true;
     }
 
+    // Erasure: buildXtoHash<StructDeclaration, Ptr>
     public static FuncDeclaration buildXtoHash(StructDeclaration sd, Ptr<Scope> sc) {
         {
             Dsymbol s = search_function(sd, Id.tohash);
@@ -707,6 +718,7 @@ public class clone {
         return fop;
     }
 
+    // Erasure: buildDtor<AggregateDeclaration, Ptr>
     public static DtorDeclaration buildDtor(AggregateDeclaration ad, Ptr<Scope> sc) {
         if (ad.isUnionDeclaration() != null)
         {
@@ -868,6 +880,7 @@ public class clone {
         return xdtor;
     }
 
+    // Erasure: buildWindowsCppDtor<AggregateDeclaration, DtorDeclaration, Ptr>
     public static DtorDeclaration buildWindowsCppDtor(AggregateDeclaration ad, DtorDeclaration dtor, Ptr<Scope> sc) {
         ClassDeclaration cldec = ad.isClassDeclaration();
         if ((cldec == null) || (cldec.cppDtorVtblIndex == -1))
@@ -901,6 +914,7 @@ public class clone {
         return func;
     }
 
+    // Erasure: buildExternDDtor<AggregateDeclaration, Ptr>
     public static DtorDeclaration buildExternDDtor(AggregateDeclaration ad, Ptr<Scope> sc) {
         DtorDeclaration dtor = ad.primaryDtor;
         if (dtor == null)
@@ -930,6 +944,7 @@ public class clone {
         return func;
     }
 
+    // Erasure: buildInv<AggregateDeclaration, Ptr>
     public static FuncDeclaration buildInv(AggregateDeclaration ad, Ptr<Scope> sc) {
         {
             int __dispatch2 = 0;

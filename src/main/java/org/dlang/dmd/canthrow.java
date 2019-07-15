@@ -28,19 +28,23 @@ public class canthrow {
     {
         private FuncDeclaration func = null;
         private boolean mustNotThrow = false;
+        // Erasure: __ctor<FuncDeclaration, boolean>
         public  CanThrow(FuncDeclaration func, boolean mustNotThrow) {
             super();
             this.func = func;
             this.mustNotThrow = mustNotThrow;
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression _param_0) {
         }
 
+        // Erasure: visit<DeclarationExp>
         public  void visit(DeclarationExp de) {
             this.stop = Dsymbol_canThrow(de.declaration, this.func, this.mustNotThrow);
         }
 
+        // Erasure: visit<CallExp>
         public  void visit(CallExp ce) {
             if ((global.errors != 0) && (ce.e1.value.type.value == null))
             {
@@ -86,6 +90,7 @@ public class canthrow {
             this.stop = true;
         }
 
+        // Erasure: visit<NewExp>
         public  void visit(NewExp ne) {
             if (ne.member != null)
             {
@@ -113,6 +118,7 @@ public class canthrow {
             }
         }
 
+        // Erasure: visit<DeleteExp>
         public  void visit(DeleteExp de) {
             Type tb = de.e1.value.type.value.toBasetype();
             AggregateDeclaration ad = null;
@@ -159,6 +165,7 @@ public class canthrow {
             }
         }
 
+        // Erasure: visit<AssignExp>
         public  void visit(AssignExp ae) {
             if (((ae.op & 0xFF) == 96))
             {
@@ -208,6 +215,7 @@ public class canthrow {
             }
         }
 
+        // Erasure: visit<NewAnonClassExp>
         public  void visit(NewAnonClassExp _param_0) {
             throw new AssertionError("Unreachable code!");
         }
@@ -216,12 +224,14 @@ public class canthrow {
         public CanThrow() {}
     }
 
+    // Erasure: canThrow<Expression, FuncDeclaration, boolean>
     public static boolean canThrow(Expression e, FuncDeclaration func, boolean mustNotThrow) {
         // skipping duplicate class CanThrow
         CanThrow ct = new CanThrow(func, mustNotThrow);
         return walkPostorder(e, ct);
     }
 
+    // Erasure: Dsymbol_canThrow<Dsymbol, FuncDeclaration, boolean>
     public static boolean Dsymbol_canThrow(Dsymbol s, FuncDeclaration func, boolean mustNotThrow) {
         Function1<Dsymbol,Integer> symbolDg = new Function1<Dsymbol,Integer>() {
             public Integer invoke(Dsymbol s) {

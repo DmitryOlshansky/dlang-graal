@@ -21,11 +21,13 @@ public class dmacro {
         public ByteSlice name = new ByteSlice();
         public ByteSlice text = new ByteSlice();
         public int inuse = 0;
+        // Erasure: __ctor<Array, Array>
         public  Macro(ByteSlice name, ByteSlice text) {
             this.name = name.copy();
             this.text = text.copy();
         }
 
+        // Erasure: search<Array>
         public  Ptr<Macro> search(ByteSlice name) {
             Ptr<Macro> table = null;
             {
@@ -40,6 +42,7 @@ public class dmacro {
             return table;
         }
 
+        // Erasure: define<Ptr, Array, Array>
         public static Ptr<Macro> define(Ptr<Ptr<Macro>> ptable, ByteSlice name, ByteSlice text) {
             Ptr<Macro> table = null;
             {
@@ -58,6 +61,7 @@ public class dmacro {
             return table;
         }
 
+        // Erasure: expand<Ptr, int, Ptr, Array>
         public  void expand(Ptr<OutBuffer> buf, int start, Ptr<Integer> pend, ByteSlice arg) {
             if ((dmacro.expandnest > 1000))
             {
@@ -244,11 +248,13 @@ public class dmacro {
             return this;
         }
     }
+    // Erasure: memdup<Array>
     public static ByteSlice memdup(ByteSlice p) {
         int len = p.getLength();
         return (((BytePtr)memcpy((BytePtr)Mem.xmalloc(len), (toBytePtr(p)), len))).slice(0,len);
     }
 
+    // Erasure: extractArgN<Array, Array, int>
     public static int extractArgN(ByteSlice buf, ByteSlice marg, int n) {
         marg = new ByteSlice().copy();
         int parens = 1;

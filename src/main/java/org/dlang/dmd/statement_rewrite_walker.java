@@ -15,15 +15,18 @@ public class statement_rewrite_walker {
     public static class StatementRewriteWalker extends SemanticTimePermissiveVisitor
     {
         public Ptr<Statement> ps = null;
+        // Erasure: visitStmt<Statement>
         public  void visitStmt(Ref<Statement> s) {
             this.ps = pcopy((ptr(s)));
             s.value.accept(this);
         }
 
+        // Erasure: replaceCurrent<Statement>
         public  void replaceCurrent(Statement s) {
             this.ps.set(0, s);
         }
 
+        // Erasure: visit<PeelStatement>
         public  void visit(PeelStatement s) {
             if (s.s.value != null)
             {
@@ -31,6 +34,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<CompoundStatement>
         public  void visit(CompoundStatement s) {
             if ((s.statements != null) && ((s.statements.get()).length != 0))
             {
@@ -46,10 +50,12 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<CompoundDeclarationStatement>
         public  void visit(CompoundDeclarationStatement s) {
             this.visit((CompoundStatement)s);
         }
 
+        // Erasure: visit<UnrolledLoopStatement>
         public  void visit(UnrolledLoopStatement s) {
             if ((s.statements != null) && ((s.statements.get()).length != 0))
             {
@@ -65,6 +71,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<ScopeStatement>
         public  void visit(ScopeStatement s) {
             if (s.statement.value != null)
             {
@@ -72,6 +79,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<WhileStatement>
         public  void visit(WhileStatement s) {
             if (s._body.value != null)
             {
@@ -79,6 +87,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<DoStatement>
         public  void visit(DoStatement s) {
             if (s._body.value != null)
             {
@@ -86,6 +95,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<ForStatement>
         public  void visit(ForStatement s) {
             if (s._init.value != null)
             {
@@ -97,6 +107,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<ForeachStatement>
         public  void visit(ForeachStatement s) {
             if (s._body.value != null)
             {
@@ -104,6 +115,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<ForeachRangeStatement>
         public  void visit(ForeachRangeStatement s) {
             if (s._body.value != null)
             {
@@ -111,6 +123,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<IfStatement>
         public  void visit(IfStatement s) {
             if (s.ifbody.value != null)
             {
@@ -122,6 +135,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<SwitchStatement>
         public  void visit(SwitchStatement s) {
             if (s._body.value != null)
             {
@@ -129,6 +143,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<CaseStatement>
         public  void visit(CaseStatement s) {
             if (s.statement.value != null)
             {
@@ -136,6 +151,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<CaseRangeStatement>
         public  void visit(CaseRangeStatement s) {
             if (s.statement.value != null)
             {
@@ -143,6 +159,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<DefaultStatement>
         public  void visit(DefaultStatement s) {
             if (s.statement.value != null)
             {
@@ -150,6 +167,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<SynchronizedStatement>
         public  void visit(SynchronizedStatement s) {
             if (s._body.value != null)
             {
@@ -157,6 +175,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<WithStatement>
         public  void visit(WithStatement s) {
             if (s._body.value != null)
             {
@@ -164,6 +183,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<TryCatchStatement>
         public  void visit(TryCatchStatement s) {
             if (s._body.value != null)
             {
@@ -184,6 +204,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<TryFinallyStatement>
         public  void visit(TryFinallyStatement s) {
             if (s._body.value != null)
             {
@@ -195,6 +216,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<DebugStatement>
         public  void visit(DebugStatement s) {
             if (s.statement.value != null)
             {
@@ -202,6 +224,7 @@ public class statement_rewrite_walker {
             }
         }
 
+        // Erasure: visit<LabelStatement>
         public  void visit(LabelStatement s) {
             if (s.statement.value != null)
             {

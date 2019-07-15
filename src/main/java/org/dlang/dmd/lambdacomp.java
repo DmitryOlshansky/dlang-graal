@@ -31,6 +31,7 @@ public class lambdacomp {
         public static final int Arg = 2;
     }
 
+    // Erasure: isSameFuncLiteral<FuncLiteralDeclaration, FuncLiteralDeclaration, Ptr>
     public static boolean isSameFuncLiteral(FuncLiteralDeclaration l1, FuncLiteralDeclaration l2, Ptr<Scope> sc) {
         {
             ByteSlice ser1 = getSerialization(l1, sc).copy();
@@ -51,6 +52,7 @@ public class lambdacomp {
         return false;
     }
 
+    // Erasure: getSerialization<FuncLiteralDeclaration, Ptr>
     public static ByteSlice getSerialization(FuncLiteralDeclaration fld, Ptr<Scope> sc) {
         SerializeVisitor serVisitor = new SerializeVisitor(fld.parent.value._scope);
         fld.accept(serVisitor);
@@ -69,10 +71,12 @@ public class lambdacomp {
         public int et = 0;
         public Dsymbol d = null;
         public OutBuffer buf = new OutBuffer();
+        // Erasure: __ctor<Ptr>
         public  SerializeVisitor(Ptr<Scope> sc) {
             this.sc = pcopy(sc);
         }
 
+        // Erasure: visit<FuncLiteralDeclaration>
         public  void visit(FuncLiteralDeclaration fld) {
             assert(((fld.type.ty & 0xFF) != ENUMTY.Terror));
             TypeFunction tf = (TypeFunction)fld.type;
@@ -111,6 +115,7 @@ public class lambdacomp {
             }
         }
 
+        // Erasure: visit<DotIdExp>
         public  void visit(DotIdExp exp) {
             if ((this.buf.offset == 0))
             {
@@ -146,6 +151,7 @@ public class lambdacomp {
             }
         }
 
+        // Erasure: checkArgument<Ptr>
         public  boolean checkArgument(BytePtr id) {
             Ptr<StringValue> stringtable_value = this.arg_hash.lookup(id, strlen(id));
             if (stringtable_value != null)
@@ -159,6 +165,7 @@ public class lambdacomp {
             return false;
         }
 
+        // Erasure: visit<IdentifierExp>
         public  void visit(IdentifierExp exp) {
             if ((this.buf.offset == 0))
             {
@@ -203,6 +210,7 @@ public class lambdacomp {
             }
         }
 
+        // Erasure: visit<DotVarExp>
         public  void visit(DotVarExp exp) {
             exp.e1.value.accept(this);
             if ((this.buf.offset == 0))
@@ -215,6 +223,7 @@ public class lambdacomp {
             this.buf.writeByte(95);
         }
 
+        // Erasure: visit<VarExp>
         public  void visit(VarExp exp) {
             if ((this.buf.offset == 0))
             {
@@ -227,6 +236,7 @@ public class lambdacomp {
             }
         }
 
+        // Erasure: visit<CallExp>
         public  void visit(CallExp exp) {
             if ((this.buf.offset == 0))
             {
@@ -252,6 +262,7 @@ public class lambdacomp {
             this.buf.writeByte(41);
         }
 
+        // Erasure: visit<UnaExp>
         public  void visit(UnaExp exp) {
             if ((this.buf.offset == 0))
             {
@@ -266,6 +277,7 @@ public class lambdacomp {
             }
         }
 
+        // Erasure: visit<IntegerExp>
         public  void visit(IntegerExp exp) {
             if ((this.buf.offset == 0))
             {
@@ -275,6 +287,7 @@ public class lambdacomp {
             this.buf.writeByte(95);
         }
 
+        // Erasure: visit<RealExp>
         public  void visit(RealExp exp) {
             if ((this.buf.offset == 0))
             {
@@ -284,6 +297,7 @@ public class lambdacomp {
             this.buf.writeByte(95);
         }
 
+        // Erasure: visit<BinExp>
         public  void visit(BinExp exp) {
             if ((this.buf.offset == 0))
             {
@@ -304,11 +318,13 @@ public class lambdacomp {
             this.buf.writeByte(41);
         }
 
+        // Erasure: visit<TypeBasic>
         public  void visit(TypeBasic t) {
             this.buf.writestring(t.dstring);
             this.buf.writeByte(95);
         }
 
+        // Erasure: writeMangledName<Dsymbol>
         public  void writeMangledName(Dsymbol s) {
             if (s != null)
             {
@@ -328,6 +344,7 @@ public class lambdacomp {
         }
 
         // from template checkTemplateInstance!(TypeClass)
+        // Erasure: checkTemplateInstanceTypeClass<TypeClass>
         public  boolean checkTemplateInstanceTypeClass(TypeClass t) {
             if ((t.sym.parent.value != null) && (t.sym.parent.value.isTemplateInstance() != null))
             {
@@ -339,6 +356,7 @@ public class lambdacomp {
 
 
         // from template checkTemplateInstance!(TypeStruct)
+        // Erasure: checkTemplateInstanceTypeStruct<TypeStruct>
         public  boolean checkTemplateInstanceTypeStruct(TypeStruct t) {
             if ((t.sym.parent.value != null) && (t.sym.parent.value.isTemplateInstance() != null))
             {
@@ -349,6 +367,7 @@ public class lambdacomp {
         }
 
 
+        // Erasure: visit<TypeStruct>
         public  void visit(TypeStruct t) {
             if (!this.checkTemplateInstanceTypeStruct(t))
             {
@@ -356,6 +375,7 @@ public class lambdacomp {
             }
         }
 
+        // Erasure: visit<TypeClass>
         public  void visit(TypeClass t) {
             if (!this.checkTemplateInstanceTypeClass(t))
             {
@@ -363,6 +383,7 @@ public class lambdacomp {
             }
         }
 
+        // Erasure: visit<Parameter>
         public  void visit(Parameter p) {
             if (((p.type.ty & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)p.type).ident.asString().getLength() > 3) && (strncmp(((TypeIdentifier)p.type).ident.toChars(), new BytePtr("__T"), 3) == 0))
             {
@@ -374,6 +395,7 @@ public class lambdacomp {
             }
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             TypeStruct ty = (TypeStruct)e.stype;
             if (ty != null)
@@ -403,110 +425,137 @@ public class lambdacomp {
             }
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<CompileExp>
         public  void visit(CompileExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<ComplexExp>
         public  void visit(ComplexExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<DeclarationExp>
         public  void visit(DeclarationExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<DefaultInitExp>
         public  void visit(DefaultInitExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<DsymbolExp>
         public  void visit(DsymbolExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<ErrorExp>
         public  void visit(ErrorExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<HaltExp>
         public  void visit(HaltExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<IntervalExp>
         public  void visit(IntervalExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<IsExp>
         public  void visit(IsExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<NewAnonClassExp>
         public  void visit(NewAnonClassExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<NewExp>
         public  void visit(NewExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<NullExp>
         public  void visit(NullExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<ObjcClassReferenceExp>
         public  void visit(ObjcClassReferenceExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<OverExp>
         public  void visit(OverExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<ScopeExp>
         public  void visit(ScopeExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<StringExp>
         public  void visit(StringExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<SymbolExp>
         public  void visit(SymbolExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<TemplateExp>
         public  void visit(TemplateExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<ThisExp>
         public  void visit(ThisExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<TraitsExp>
         public  void visit(TraitsExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<TupleExp>
         public  void visit(TupleExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<TypeExp>
         public  void visit(TypeExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<TypeidExp>
         public  void visit(TypeidExp _param_0) {
             this.buf.reset();
         }
 
+        // Erasure: visit<VoidInitExp>
         public  void visit(VoidInitExp _param_0) {
             this.buf.reset();
         }

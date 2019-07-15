@@ -19,60 +19,75 @@ public class errors {
 
     public static abstract class DiagnosticReporter extends Object
     {
+        // Erasure: errorCount<>
         public abstract int errorCount();
 
 
+        // Erasure: warningCount<>
         public abstract int warningCount();
 
 
+        // Erasure: deprecationCount<>
         public abstract int deprecationCount();
 
 
+        // Erasure: error<Loc, Ptr>
         public  void error(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.error(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: error<>
         public abstract void error(Loc loc, BytePtr format, Slice<Object> args);
 
 
+        // Erasure: errorSupplemental<Loc, Ptr>
         public  void errorSupplemental(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.errorSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: errorSupplemental<>
         public abstract void errorSupplemental(Loc loc, BytePtr format, Slice<Object> arg2);
 
 
+        // Erasure: warning<Loc, Ptr>
         public  void warning(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.warning(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: warning<>
         public abstract void warning(Loc loc, BytePtr format, Slice<Object> args);
 
 
+        // Erasure: warningSupplemental<Loc, Ptr>
         public  void warningSupplemental(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.warningSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: warningSupplemental<>
         public abstract void warningSupplemental(Loc loc, BytePtr format, Slice<Object> arg2);
 
 
+        // Erasure: deprecation<Loc, Ptr>
         public  void deprecation(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.deprecation(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: deprecation<>
         public abstract void deprecation(Loc loc, BytePtr format, Slice<Object> args);
 
 
+        // Erasure: deprecationSupplemental<Loc, Ptr>
         public  void deprecationSupplemental(Loc loc, BytePtr format, Object... args) {
             Ref<BytePtr> format_ref = ref(format);
             this.deprecationSupplemental(loc, format_ref.value, new RawSlice<>(args));
         }
 
+        // Erasure: deprecationSupplemental<>
         public abstract void deprecationSupplemental(Loc loc, BytePtr format, Slice<Object> arg2);
 
 
@@ -87,40 +102,49 @@ public class errors {
         public int errorCount_ = 0;
         public int warningCount_ = 0;
         public int deprecationCount_ = 0;
+        // Erasure: __ctor<byte>
         public  StderrDiagnosticReporter(byte useDeprecated) {
             this.useDeprecated = useDeprecated;
         }
 
+        // Erasure: errorCount<>
         public  int errorCount() {
             return this.errorCount_;
         }
 
+        // Erasure: warningCount<>
         public  int warningCount() {
             return this.warningCount_;
         }
 
+        // Erasure: deprecationCount<>
         public  int deprecationCount() {
             return this.deprecationCount_;
         }
 
+        // Erasure: error<Loc, Ptr, Ptr>
         public  void error(Loc loc, BytePtr format, Slice<Object> args) {
             verror(loc, format, args, null, null, new BytePtr("Error: "));
             this.errorCount_++;
         }
 
+        // Erasure: errorSupplemental<Loc, Ptr, Ptr>
         public  void errorSupplemental(Loc loc, BytePtr format, Slice<Object> args) {
             verrorSupplemental(loc, format, args);
         }
 
+        // Erasure: warning<Loc, Ptr, Ptr>
         public  void warning(Loc loc, BytePtr format, Slice<Object> args) {
             vwarning(loc, format, args);
             this.warningCount_++;
         }
 
+        // Erasure: warningSupplemental<Loc, Ptr, Ptr>
         public  void warningSupplemental(Loc loc, BytePtr format, Slice<Object> args) {
             vwarningSupplemental(loc, format, args);
         }
 
+        // Erasure: deprecation<Loc, Ptr, Ptr>
         public  void deprecation(Loc loc, BytePtr format, Slice<Object> args) {
             vdeprecation(loc, format, args, null, null);
             if (((this.useDeprecated & 0xFF) == 0))
@@ -133,6 +157,7 @@ public class errors {
             }
         }
 
+        // Erasure: deprecationSupplemental<Loc, Ptr, Ptr>
         public  void deprecationSupplemental(Loc loc, BytePtr format, Slice<Object> args) {
             vdeprecationSupplemental(loc, format, args);
         }
@@ -158,53 +183,63 @@ public class errors {
         public static final int deprecation = Color.brightCyan;
     }
 
+    // Erasure: error<Loc, Ptr>
     public static void error(Loc loc, BytePtr format, Object... ap) {
         Ref<BytePtr> format_ref = ref(format);
         verror(loc, format_ref.value, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
     }
 
     // removed duplicate function, [["void errorLoc, BytePtr", "int isattyint"]] signature: void errorLoc, BytePtr
+    // Erasure: error<Ptr, int, int, Ptr>
     public static void error(BytePtr filename, int linnum, int charnum, BytePtr format, Object... ap) {
         Ref<BytePtr> format_ref = ref(format);
         Loc loc = loc = new Loc(filename, linnum, charnum);
         verror(loc, format_ref.value, new RawSlice<>(ap), null, null, new BytePtr("Error: "));
     }
 
+    // Erasure: errorSupplemental<Loc, Ptr>
     public static void errorSupplemental(Loc loc, BytePtr format, Object... ap) {
         Ref<BytePtr> format_ref = ref(format);
         verrorSupplemental(loc, format_ref.value, new RawSlice<>(ap));
     }
 
+    // Erasure: warning<Loc, Ptr>
     public static void warning(Loc loc, BytePtr format, Object... ap) {
         Ref<BytePtr> format_ref = ref(format);
         vwarning(loc, format_ref.value, new RawSlice<>(ap));
     }
 
+    // Erasure: warningSupplemental<Loc, Ptr>
     public static void warningSupplemental(Loc loc, BytePtr format, Object... ap) {
         Ref<BytePtr> format_ref = ref(format);
         vwarningSupplemental(loc, format_ref.value, new RawSlice<>(ap));
     }
 
+    // Erasure: deprecation<Loc, Ptr>
     public static void deprecation(Loc loc, BytePtr format, Object... ap) {
         Ref<BytePtr> format_ref = ref(format);
         vdeprecation(loc, format_ref.value, new RawSlice<>(ap), null, null);
     }
 
+    // Erasure: deprecationSupplemental<Loc, Ptr>
     public static void deprecationSupplemental(Loc loc, BytePtr format, Object... ap) {
         Ref<BytePtr> format_ref = ref(format);
         vdeprecationSupplemental(loc, format_ref.value, new RawSlice<>(ap));
     }
 
+    // Erasure: message<Loc, Ptr>
     public static void message(Loc loc, BytePtr format, Object... ap) {
         Ref<BytePtr> format_ref = ref(format);
         vmessage(loc, format_ref.value, new RawSlice<>(ap));
     }
 
+    // Erasure: message<Ptr>
     public static void message(BytePtr format, Object... ap) {
         Ref<BytePtr> format_ref = ref(format);
         vmessage(Loc.initial, format_ref.value, new RawSlice<>(ap));
     }
 
+    // Erasure: verrorPrint<Loc, int, Ptr, Ptr, Ptr, Ptr, Ptr>
     public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
         Ptr<Console> con = ((Ptr<Console>)global.console);
         BytePtr p = pcopy(loc.toChars(global.params.showColumns));
@@ -273,14 +308,15 @@ public class errors {
 
     // defaulted all parameters starting with #7
     public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Slice<Object> ap, BytePtr p1) {
-        verrorPrint(loc, headerColor, header, format, ap, p1, null);
+        verrorPrint(loc, headerColor, header, format, ap, p1, (BytePtr)null);
     }
 
     // defaulted all parameters starting with #6
     public static void verrorPrint(Loc loc, int headerColor, BytePtr header, BytePtr format, Slice<Object> ap) {
-        verrorPrint(loc, headerColor, header, format, ap, null, null);
+        verrorPrint(loc, headerColor, header, format, ap, (BytePtr)null, (BytePtr)null);
     }
 
+    // Erasure: verror<Loc, Ptr, Ptr, Ptr, Ptr, Ptr>
     public static void verror(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2, BytePtr header) {
         global.errors++;
         if (global.gag == 0)
@@ -309,14 +345,15 @@ public class errors {
 
     // defaulted all parameters starting with #5
     public static void verror(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1) {
-        verror(loc, format, ap, p1, null, new BytePtr("Error: "));
+        verror(loc, format, ap, p1, (BytePtr)null, new BytePtr("Error: "));
     }
 
     // defaulted all parameters starting with #4
     public static void verror(Loc loc, BytePtr format, Slice<Object> ap) {
-        verror(loc, format, ap, null, null, new BytePtr("Error: "));
+        verror(loc, format, ap, (BytePtr)null, (BytePtr)null, new BytePtr("Error: "));
     }
 
+    // Erasure: verrorSupplemental<Loc, Ptr, Ptr>
     public static void verrorSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
         int color = Color.black;
         if (global.gag != 0)
@@ -334,6 +371,7 @@ public class errors {
         verrorPrint(loc, color, new BytePtr("       "), format, ap, null, null);
     }
 
+    // Erasure: vwarning<Loc, Ptr, Ptr>
     public static void vwarning(Loc loc, BytePtr format, Slice<Object> ap) {
         if (((global.params.warnings & 0xFF) != 2))
         {
@@ -352,6 +390,7 @@ public class errors {
         }
     }
 
+    // Erasure: vwarningSupplemental<Loc, Ptr, Ptr>
     public static void vwarningSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
         if (((global.params.warnings & 0xFF) != 2) && (global.gag == 0))
         {
@@ -359,6 +398,7 @@ public class errors {
         }
     }
 
+    // Erasure: vdeprecation<Loc, Ptr, Ptr, Ptr, Ptr>
     public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1, BytePtr p2) {
         if (((global.params.useDeprecated & 0xFF) == 0))
         {
@@ -379,14 +419,15 @@ public class errors {
 
     // defaulted all parameters starting with #5
     public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap, BytePtr p1) {
-        vdeprecation(loc, format, ap, p1, null);
+        vdeprecation(loc, format, ap, p1, (BytePtr)null);
     }
 
     // defaulted all parameters starting with #4
     public static void vdeprecation(Loc loc, BytePtr format, Slice<Object> ap) {
-        vdeprecation(loc, format, ap, null, null);
+        vdeprecation(loc, format, ap, (BytePtr)null, (BytePtr)null);
     }
 
+    // Erasure: vmessage<Loc, Ptr, Ptr>
     public static void vmessage(Loc loc, BytePtr format, Slice<Object> ap) {
         BytePtr p = pcopy(loc.toChars(global.params.showColumns));
         if (p.get() != 0)
@@ -401,6 +442,7 @@ public class errors {
         fflush(stdout);
     }
 
+    // Erasure: vdeprecationSupplemental<Loc, Ptr, Ptr>
     public static void vdeprecationSupplemental(Loc loc, BytePtr format, Slice<Object> ap) {
         if (((global.params.useDeprecated & 0xFF) == 0))
         {
@@ -412,14 +454,17 @@ public class errors {
         }
     }
 
+    // Erasure: fatal<>
     public static void fatal() {
         exit(1);
     }
 
+    // Erasure: halt<>
     public static void halt() {
         throw new AssertionError("Unreachable code!");
     }
 
+    // Erasure: colorSyntaxHighlight<Ptr>
     public static void colorSyntaxHighlight(Ptr<OutBuffer> buf) {
         boolean inBacktick = false;
         int iCodeStart = 0;
@@ -471,6 +516,7 @@ public class errors {
         public static final byte Other = (byte)6;
     }
 
+    // Erasure: colorHighlightCode<Ptr>
     public static void colorHighlightCode(Ptr<OutBuffer> buf) {
         if (errors.colorHighlightCodenested != 0)
         {
@@ -550,6 +596,7 @@ public class errors {
         errors.colorHighlightCodenested -= 1;
     }
 
+    // Erasure: writeHighlights<Ptr, Ptr>
     public static void writeHighlights(Ptr<Console> con, Ptr<OutBuffer> buf) {
         boolean colors = false;
         {

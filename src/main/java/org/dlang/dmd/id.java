@@ -360,6 +360,7 @@ public class id {
         static Identifier FALSE;
         static Identifier unsigned;
         static Identifier wchar_t;
+        // Erasure: initialize<>
         public static void initialize() {
             IUnknown = Identifier.idPool(new ByteSlice("IUnknown"));
             Object = Identifier.idPool(new ByteSlice("Object"));
@@ -708,6 +709,7 @@ public class id {
             wchar_t = Identifier.idPool(new ByteSlice("wchar_t"));
         }
 
+        // Erasure: deinitialize<>
         public static void deinitialize() {
             IUnknown = null;
             Object = null;
@@ -1071,6 +1073,7 @@ public class id {
     {
         public ByteSlice ident = new ByteSlice();
         public ByteSlice name_ = new ByteSlice();
+        // Erasure: name<>
         public  ByteSlice name() {
             return this.name_.getLength() != 0 ? this.name_ : this.ident;
         }
@@ -1094,6 +1097,7 @@ public class id {
             return this;
         }
     }
+    // Erasure: generate<Array, Ptr>
     public static ByteSlice generate(Slice<Msgtable> msgtable, Function1<Msgtable,ByteSlice> dg) {
         ByteSlice code = new RawByteSlice().copy();
         {
@@ -1112,14 +1116,17 @@ public class id {
         return code;
     }
 
+    // Erasure: identifier<Msgtable>
     public static ByteSlice identifier(Msgtable m) {
         return concat(concat(new ByteSlice("Identifier "), m.ident), new ByteSlice(";"));
     }
 
+    // Erasure: initializer<Msgtable>
     public static ByteSlice initializer(Msgtable m) {
         return concat(concat(concat(m.ident, new ByteSlice(" = Identifier.idPool(\"")), m.name()), new ByteSlice("\");"));
     }
 
+    // Erasure: deinitializer<Msgtable>
     public static ByteSlice deinitializer(Msgtable m) {
         return concat(m.ident, new ByteSlice(" = Identifier.init;"));
     }

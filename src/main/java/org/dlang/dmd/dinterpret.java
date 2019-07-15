@@ -38,14 +38,17 @@ public class dinterpret {
     private static class VarWalker extends StoppableVisitor
     {
         private Ptr<CompiledCtfeFunction> ccf = null;
+        // Erasure: __ctor<Ptr>
         public  VarWalker(Ptr<CompiledCtfeFunction> ccf) {
             super();
             this.ccf = pcopy(ccf);
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
         }
 
+        // Erasure: visit<ErrorExp>
         public  void visit(ErrorExp e) {
             if ((global.gag != 0) && ((this.ccf.get()).func != null))
             {
@@ -56,6 +59,7 @@ public class dinterpret {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<DeclarationExp>
         public  void visit(DeclarationExp e) {
             VarDeclaration v = e.declaration.isVarDeclaration();
             if (v == null)
@@ -101,6 +105,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<IndexExp>
         public  void visit(IndexExp e) {
             if (e.lengthVar.value != null)
             {
@@ -108,6 +113,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             if (e.lengthVar.value != null)
             {
@@ -125,10 +131,12 @@ public class dinterpret {
         private boolean refCopy = false;
         private boolean needsPostblit = false;
         private boolean needsDtor = false;
+        // Erasure: assignTo<ArrayLiteralExp>
         public  Expression assignTo(ArrayLiteralExp ae) {
             return this.assignTo(ae, 0, (ae.elements.get()).length);
         }
 
+        // Erasure: assignTo<ArrayLiteralExp, int, int>
         public  Expression assignTo(ArrayLiteralExp ae, int lwr, int upr) {
             Ptr<DArray<Expression>> w = ae.elements;
             assert(((ae.type.value.ty & 0xFF) == ENUMTY.Tsarray) || ((ae.type.value.ty & 0xFF) == ENUMTY.Tarray));
@@ -214,6 +222,7 @@ public class dinterpret {
         }
     }
 
+    // Erasure: ctfeInterpret<Expression>
     public static Expression ctfeInterpret(Expression e) {
         {
             int __dispatch0 = 0;
@@ -259,6 +268,7 @@ public class dinterpret {
         return result;
     }
 
+    // Erasure: ctfeInterpretForPragmaMsg<Expression>
     public static Expression ctfeInterpretForPragmaMsg(Expression e) {
         if (((e.op & 0xFF) == 127) || ((e.op & 0xFF) == 20))
         {
@@ -307,10 +317,12 @@ public class dinterpret {
         return e;
     }
 
+    // Erasure: getValue<VarDeclaration>
     public static Expression getValue(VarDeclaration vd) {
         return ctfeStack.getValue(vd);
     }
 
+    // Erasure: printCtfePerformanceStats<>
     public static void printCtfePerformanceStats() {
     }
 
@@ -353,18 +365,22 @@ public class dinterpret {
         public int framepointer = 0;
         public int maxStackPointer = 0;
         public Expression localThis = null;
+        // Erasure: stackPointer<>
         public  int stackPointer() {
             return this.values.length;
         }
 
+        // Erasure: getThis<>
         public  Expression getThis() {
             return this.localThis;
         }
 
+        // Erasure: maxStackUsage<>
         public  int maxStackUsage() {
             return this.maxStackPointer;
         }
 
+        // Erasure: startFrame<Expression>
         public  void startFrame(Expression thisexp) {
             this.frames.push(this.framepointer);
             this.savedThis.push(this.localThis);
@@ -372,6 +388,7 @@ public class dinterpret {
             this.localThis = thisexp;
         }
 
+        // Erasure: endFrame<>
         public  void endFrame() {
             int oldframe = ((int)this.frames.get(this.frames.length - 1));
             this.localThis = this.savedThis.get(this.savedThis.length - 1);
@@ -381,6 +398,7 @@ public class dinterpret {
             this.savedThis.setDim(this.savedThis.length - 1);
         }
 
+        // Erasure: isInCurrentFrame<VarDeclaration>
         public  boolean isInCurrentFrame(VarDeclaration v) {
             if (v.isDataseg() && !v.isCTFE())
             {
@@ -389,6 +407,7 @@ public class dinterpret {
             return v.ctfeAdrOnStack >= this.framepointer;
         }
 
+        // Erasure: getValue<VarDeclaration>
         public  Expression getValue(VarDeclaration v) {
             if (v.isDataseg() || ((v.storage_class & 8388608L) != 0) && !v.isCTFE())
             {
@@ -399,12 +418,14 @@ public class dinterpret {
             return this.values.get(v.ctfeAdrOnStack);
         }
 
+        // Erasure: setValue<VarDeclaration, Expression>
         public  void setValue(VarDeclaration v, Expression e) {
             assert(!v.isDataseg() || v.isCTFE());
             assert((v.ctfeAdrOnStack >= 0) && (v.ctfeAdrOnStack < this.stackPointer()));
             this.values.set(v.ctfeAdrOnStack, e);
         }
 
+        // Erasure: push<VarDeclaration>
         public  void push(VarDeclaration v) {
             assert(!v.isDataseg() || v.isCTFE());
             if ((v.ctfeAdrOnStack != -1) && (v.ctfeAdrOnStack >= this.framepointer))
@@ -418,6 +439,7 @@ public class dinterpret {
             this.values.push(null);
         }
 
+        // Erasure: pop<VarDeclaration>
         public  void pop(VarDeclaration v) {
             assert(!v.isDataseg() || v.isCTFE());
             assert((v.storage_class & 2101248L) == 0);
@@ -431,6 +453,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: popAll<int>
         public  void popAll(int stackpointer) {
             if ((this.stackPointer() > this.maxStackPointer))
             {
@@ -449,6 +472,7 @@ public class dinterpret {
             this.savedId.setDim(stackpointer);
         }
 
+        // Erasure: saveGlobalConstant<VarDeclaration, Expression>
         public  void saveGlobalConstant(VarDeclaration v, Expression e) {
             assert((v._init != null) && v.isConst() || v.isImmutable() || ((v.storage_class & 8388608L) != 0) && !v.isCTFE());
             v.ctfeAdrOnStack = this.globalValues.length;
@@ -538,14 +562,17 @@ public class dinterpret {
         public FuncDeclaration func = null;
         public int numVars = 0;
         public Loc callingloc = new Loc();
+        // Erasure: __ctor<FuncDeclaration>
         public  CompiledCtfeFunction(FuncDeclaration f) {
             this.func = f;
         }
 
+        // Erasure: onDeclaration<VarDeclaration>
         public  void onDeclaration(VarDeclaration v) {
             this.numVars += 1;
         }
 
+        // Erasure: onExpression<Expression>
         public  void onExpression(Expression e) {
             // skipping duplicate class VarWalker
             VarWalker v = new VarWalker(ptr(this));
@@ -572,14 +599,17 @@ public class dinterpret {
     public static class CtfeCompiler extends SemanticTimeTransitiveVisitor
     {
         public Ptr<CompiledCtfeFunction> ccf = null;
+        // Erasure: __ctor<Ptr>
         public  CtfeCompiler(Ptr<CompiledCtfeFunction> ccf) {
             this.ccf = pcopy(ccf);
         }
 
+        // Erasure: visit<Statement>
         public  void visit(Statement s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<ExpStatement>
         public  void visit(ExpStatement s) {
             if (s.exp != null)
             {
@@ -587,6 +617,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<IfStatement>
         public  void visit(IfStatement s) {
             (this.ccf.get()).onExpression(s.condition);
             if (s.ifbody.value != null)
@@ -599,10 +630,12 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<ScopeGuardStatement>
         public  void visit(ScopeGuardStatement s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<DoStatement>
         public  void visit(DoStatement s) {
             (this.ccf.get()).onExpression(s.condition);
             if (s._body.value != null)
@@ -611,10 +644,12 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<WhileStatement>
         public  void visit(WhileStatement s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<ForStatement>
         public  void visit(ForStatement s) {
             if (s._init.value != null)
             {
@@ -634,10 +669,12 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<ForeachStatement>
         public  void visit(ForeachStatement s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<SwitchStatement>
         public  void visit(SwitchStatement s) {
             (this.ccf.get()).onExpression(s.condition);
             {
@@ -654,6 +691,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<CaseStatement>
         public  void visit(CaseStatement s) {
             if (s.statement.value != null)
             {
@@ -661,15 +699,19 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<GotoDefaultStatement>
         public  void visit(GotoDefaultStatement s) {
         }
 
+        // Erasure: visit<GotoCaseStatement>
         public  void visit(GotoCaseStatement s) {
         }
 
+        // Erasure: visit<SwitchErrorStatement>
         public  void visit(SwitchErrorStatement s) {
         }
 
+        // Erasure: visit<ReturnStatement>
         public  void visit(ReturnStatement s) {
             if (s.exp != null)
             {
@@ -677,12 +719,15 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<BreakStatement>
         public  void visit(BreakStatement s) {
         }
 
+        // Erasure: visit<ContinueStatement>
         public  void visit(ContinueStatement s) {
         }
 
+        // Erasure: visit<WithStatement>
         public  void visit(WithStatement s) {
             if (((s.exp.op & 0xFF) == 203) || ((s.exp.op & 0xFF) == 20))
             {
@@ -698,6 +743,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<TryCatchStatement>
         public  void visit(TryCatchStatement s) {
             if (s._body.value != null)
             {
@@ -720,23 +766,29 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<ThrowStatement>
         public  void visit(ThrowStatement s) {
             (this.ccf.get()).onExpression(s.exp);
         }
 
+        // Erasure: visit<GotoStatement>
         public  void visit(GotoStatement s) {
         }
 
+        // Erasure: visit<ImportStatement>
         public  void visit(ImportStatement s) {
         }
 
+        // Erasure: visit<ForeachRangeStatement>
         public  void visit(ForeachRangeStatement s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<AsmStatement>
         public  void visit(AsmStatement s) {
         }
 
+        // Erasure: ctfeCompile<Statement>
         public  void ctfeCompile(Statement s) {
             s.accept(this);
         }
@@ -750,6 +802,7 @@ public class dinterpret {
             return that;
         }
     }
+    // Erasure: ctfeCompile<FuncDeclaration>
     public static void ctfeCompile(FuncDeclaration fd) {
         assert(fd.ctfeCode.pimpl == null);
         assert(!fd.semantic3Errors);
@@ -776,6 +829,7 @@ public class dinterpret {
         v.ctfeCompile(fd.fbody.value);
     }
 
+    // Erasure: interpretFunction<Ptr, FuncDeclaration, Ptr, Ptr, Expression>
     public static Expression interpretFunction(Ptr<UnionExp> pue, FuncDeclaration fd, Ptr<InterState> istate, Ptr<DArray<Expression>> arguments, Expression thisarg) {
         assert(pue != null);
         if ((fd.semanticRun == PASS.semantic3))
@@ -1012,12 +1066,14 @@ public class dinterpret {
         public int goal = 0;
         public Expression result = null;
         public Ptr<UnionExp> pue = null;
+        // Erasure: __ctor<Ptr, Ptr, int>
         public  Interpreter(Ptr<UnionExp> pue, Ptr<InterState> istate, int goal) {
             this.pue = pcopy(pue);
             this.istate = pcopy(istate);
             this.goal = goal;
         }
 
+        // Erasure: exceptionOrCant<Expression>
         public  boolean exceptionOrCant(Expression e) {
             if (exceptionOrCantInterpret(e))
             {
@@ -1027,6 +1083,7 @@ public class dinterpret {
             return false;
         }
 
+        // Erasure: copyArrayOnWrite<Ptr, Ptr>
         public static Ptr<DArray<Expression>> copyArrayOnWrite(Ptr<DArray<Expression>> exps, Ptr<DArray<Expression>> original) {
             if ((exps == original))
             {
@@ -1043,6 +1100,7 @@ public class dinterpret {
             return exps;
         }
 
+        // Erasure: visit<Statement>
         public  void visit(Statement s) {
             if ((this.istate.get()).start != null)
             {
@@ -1056,6 +1114,7 @@ public class dinterpret {
             this.result = CTFEExp.cantexp;
         }
 
+        // Erasure: visit<ExpStatement>
         public  void visit(ExpStatement s) {
             if ((this.istate.get()).start != null)
             {
@@ -1072,6 +1131,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<CompoundStatement>
         public  void visit(CompoundStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1093,6 +1153,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<UnrolledLoopStatement>
         public  void visit(UnrolledLoopStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1141,6 +1202,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<IfStatement>
         public  void visit(IfStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1178,6 +1240,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<ScopeStatement>
         public  void visit(ScopeStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1186,6 +1249,7 @@ public class dinterpret {
             this.result = interpret(this.pue, s.statement.value, this.istate);
         }
 
+        // Erasure: stopPointersEscaping<Loc, Expression>
         public static boolean stopPointersEscaping(Loc loc, Expression e) {
             if (!e.type.value.hasPointers())
             {
@@ -1254,6 +1318,7 @@ public class dinterpret {
             return true;
         }
 
+        // Erasure: stopPointersEscapingFromArray<Loc, Ptr>
         public static boolean stopPointersEscapingFromArray(Loc loc, Ptr<DArray<Expression>> elems) {
             {
                 Slice<Expression> __r960 = (elems.get()).opSlice().copy();
@@ -1269,6 +1334,7 @@ public class dinterpret {
             return true;
         }
 
+        // Erasure: visit<ReturnStatement>
         public  void visit(ReturnStatement s) {
             if ((this.istate.get()).start != null)
             {
@@ -1313,6 +1379,7 @@ public class dinterpret {
             this.result = e;
         }
 
+        // Erasure: findGotoTarget<Ptr, Identifier>
         public static Statement findGotoTarget(Ptr<InterState> istate, Identifier ident) {
             Statement target = null;
             if (ident != null)
@@ -1325,6 +1392,7 @@ public class dinterpret {
             return target;
         }
 
+        // Erasure: visit<BreakStatement>
         public  void visit(BreakStatement s) {
             if ((this.istate.get()).start != null)
             {
@@ -1338,6 +1406,7 @@ public class dinterpret {
             this.result = CTFEExp.breakexp;
         }
 
+        // Erasure: visit<ContinueStatement>
         public  void visit(ContinueStatement s) {
             if ((this.istate.get()).start != null)
             {
@@ -1351,10 +1420,12 @@ public class dinterpret {
             this.result = CTFEExp.continueexp;
         }
 
+        // Erasure: visit<WhileStatement>
         public  void visit(WhileStatement s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<DoStatement>
         public  void visit(DoStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1416,6 +1487,7 @@ public class dinterpret {
             assert((this.result == null));
         }
 
+        // Erasure: visit<ForStatement>
         public  void visit(ForStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1488,14 +1560,17 @@ public class dinterpret {
             assert((this.result == null));
         }
 
+        // Erasure: visit<ForeachStatement>
         public  void visit(ForeachStatement s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<ForeachRangeStatement>
         public  void visit(ForeachRangeStatement s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<SwitchStatement>
         public  void visit(SwitchStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1576,6 +1651,7 @@ public class dinterpret {
             this.result = e;
         }
 
+        // Erasure: visit<CaseStatement>
         public  void visit(CaseStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1584,6 +1660,7 @@ public class dinterpret {
             this.result = interpret(this.pue, s.statement.value, this.istate);
         }
 
+        // Erasure: visit<DefaultStatement>
         public  void visit(DefaultStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1592,6 +1669,7 @@ public class dinterpret {
             this.result = interpret(this.pue, s.statement.value, this.istate);
         }
 
+        // Erasure: visit<GotoStatement>
         public  void visit(GotoStatement s) {
             if ((this.istate.get()).start != null)
             {
@@ -1606,6 +1684,7 @@ public class dinterpret {
             this.result = CTFEExp.gotoexp;
         }
 
+        // Erasure: visit<GotoCaseStatement>
         public  void visit(GotoCaseStatement s) {
             if ((this.istate.get()).start != null)
             {
@@ -1620,6 +1699,7 @@ public class dinterpret {
             this.result = CTFEExp.gotoexp;
         }
 
+        // Erasure: visit<GotoDefaultStatement>
         public  void visit(GotoDefaultStatement s) {
             if ((this.istate.get()).start != null)
             {
@@ -1634,6 +1714,7 @@ public class dinterpret {
             this.result = CTFEExp.gotoexp;
         }
 
+        // Erasure: visit<LabelStatement>
         public  void visit(LabelStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1642,6 +1723,7 @@ public class dinterpret {
             this.result = interpret(this.pue, s.statement.value, this.istate);
         }
 
+        // Erasure: visit<TryCatchStatement>
         public  void visit(TryCatchStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1706,10 +1788,12 @@ public class dinterpret {
             this.result = e;
         }
 
+        // Erasure: isAnErrorException<ClassDeclaration>
         public static boolean isAnErrorException(ClassDeclaration cd) {
             return (pequals(cd, ClassDeclaration.errorException)) || ClassDeclaration.errorException.isBaseOf(cd, null);
         }
 
+        // Erasure: chainExceptions<ThrownExceptionExp, ThrownExceptionExp>
         public static ThrownExceptionExp chainExceptions(ThrownExceptionExp oldest, ThrownExceptionExp newest) {
             ClassReferenceExp boss = oldest.thrown;
             int next = 4;
@@ -1733,6 +1817,7 @@ public class dinterpret {
             return oldest;
         }
 
+        // Erasure: visit<TryFinallyStatement>
         public  void visit(TryFinallyStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1788,6 +1873,7 @@ public class dinterpret {
             this.result = ex;
         }
 
+        // Erasure: visit<ThrowStatement>
         public  void visit(ThrowStatement s) {
             if ((this.istate.get()).start != null)
             {
@@ -1806,10 +1892,12 @@ public class dinterpret {
             this.result = new ThrownExceptionExp(s.loc, (ClassReferenceExp)e);
         }
 
+        // Erasure: visit<ScopeGuardStatement>
         public  void visit(ScopeGuardStatement s) {
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<WithStatement>
         public  void visit(WithStatement s) {
             if ((pequals((this.istate.get()).start, s)))
             {
@@ -1853,6 +1941,7 @@ public class dinterpret {
             this.result = e;
         }
 
+        // Erasure: visit<AsmStatement>
         public  void visit(AsmStatement s) {
             if ((this.istate.get()).start != null)
             {
@@ -1866,6 +1955,7 @@ public class dinterpret {
             this.result = CTFEExp.cantexp;
         }
 
+        // Erasure: visit<ImportStatement>
         public  void visit(ImportStatement s) {
             if ((this.istate.get()).start != null)
             {
@@ -1877,11 +1967,13 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             e.error(new BytePtr("cannot interpret `%s` at compile time"), e.toChars());
             this.result = CTFEExp.cantexp;
         }
 
+        // Erasure: visit<ThisExp>
         public  void visit(ThisExp e) {
             if ((this.goal == CtfeGoal.ctfeNeedLvalue))
             {
@@ -1924,30 +2016,37 @@ public class dinterpret {
             this.result = CTFEExp.cantexp;
         }
 
+        // Erasure: visit<NullExp>
         public  void visit(NullExp e) {
             this.result = e;
         }
 
+        // Erasure: visit<IntegerExp>
         public  void visit(IntegerExp e) {
             this.result = e;
         }
 
+        // Erasure: visit<RealExp>
         public  void visit(RealExp e) {
             this.result = e;
         }
 
+        // Erasure: visit<ComplexExp>
         public  void visit(ComplexExp e) {
             this.result = e;
         }
 
+        // Erasure: visit<StringExp>
         public  void visit(StringExp e) {
             this.result = e;
         }
 
+        // Erasure: visit<FuncExp>
         public  void visit(FuncExp e) {
             this.result = e;
         }
 
+        // Erasure: visit<SymOffExp>
         public  void visit(SymOffExp e) {
             if ((e.var.isFuncDeclaration() != null) && (e.offset == 0L))
             {
@@ -2062,6 +2161,7 @@ public class dinterpret {
             this.result = CTFEExp.cantexp;
         }
 
+        // Erasure: visit<AddrExp>
         public  void visit(AddrExp e) {
             {
                 VarExp ve = e.e1.value.isVarExp();
@@ -2102,6 +2202,7 @@ public class dinterpret {
             this.result = (this.pue.get()).exp();
         }
 
+        // Erasure: visit<DelegateExp>
         public  void visit(DelegateExp e) {
             {
                 VarExp ve1 = e.e1.value.isVarExp();
@@ -2132,6 +2233,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: getVarExp<Loc, Ptr, Declaration, int>
         public static Expression getVarExp(Loc loc, Ptr<InterState> istate, Declaration d, int goal) {
             Expression e = CTFEExp.cantexp;
             {
@@ -2280,6 +2382,7 @@ public class dinterpret {
             return e;
         }
 
+        // Erasure: visit<VarExp>
         public  void visit(VarExp e) {
             if (e.var.isFuncDeclaration() != null)
             {
@@ -2331,6 +2434,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<DeclarationExp>
         public  void visit(DeclarationExp e) {
             Dsymbol s = e.declaration;
             {
@@ -2451,6 +2555,7 @@ public class dinterpret {
             this.result = null;
         }
 
+        // Erasure: visit<TypeidExp>
         public  void visit(TypeidExp e) {
             {
                 Type t = isType(e.obj);
@@ -2492,6 +2597,7 @@ public class dinterpret {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<TupleExp>
         public  void visit(TupleExp e) {
             if (this.exceptionOrCant(interpret(e.e0.value, this.istate, CtfeGoal.ctfeNeedNothing)))
             {
@@ -2538,6 +2644,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
             if (((e.ownedByCtfe & 0xFF) >= 1))
             {
@@ -2607,6 +2714,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
             if (((e.ownedByCtfe & 0xFF) >= 1))
             {
@@ -2692,6 +2800,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
             if (((e.ownedByCtfe & 0xFF) >= 1))
             {
@@ -2780,6 +2889,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: recursivelyCreateArrayLiteral<Ptr, Loc, Type, Ptr, Ptr, int>
         public static Expression recursivelyCreateArrayLiteral(Ptr<UnionExp> pue, Loc loc, Type newtype, Ptr<InterState> istate, Ptr<DArray<Expression>> arguments, int argnum) {
             Expression lenExpr = interpret(pue, (arguments.get()).get(argnum), istate, CtfeGoal.ctfeNeedRvalue);
             if (exceptionOrCantInterpret(lenExpr))
@@ -2823,6 +2933,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<NewExp>
         public  void visit(NewExp e) {
             if (e.allocator != null)
             {
@@ -3013,6 +3124,7 @@ public class dinterpret {
             this.result = CTFEExp.cantexp;
         }
 
+        // Erasure: visit<UnaExp>
         public  void visit(UnaExp e) {
             Ref<UnionExp> ue = ref(null);
             Expression e1 = interpret(ptr(ue), e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
@@ -3037,6 +3149,7 @@ public class dinterpret {
             this.result = (this.pue.get()).exp();
         }
 
+        // Erasure: visit<DotTypeExp>
         public  void visit(DotTypeExp e) {
             Ref<UnionExp> ue = ref(null);
             Expression e1 = interpret(ptr(ue), e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
@@ -3056,6 +3169,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: interpretCommon<BinExp, Ptr>
         public  void interpretCommon(BinExp e, Function4<Ref<Loc>,Type,Expression,Expression,UnionExp> fp) {
             if (((e.e1.value.type.value.ty & 0xFF) == ENUMTY.Tpointer) && ((e.e2.value.type.value.ty & 0xFF) == ENUMTY.Tpointer) && ((e.op & 0xFF) == 75))
             {
@@ -3174,6 +3288,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: interpretCompareCommon<BinExp, Ptr>
         public  void interpretCompareCommon(BinExp e, Function4<Ref<Loc>,Byte,Expression,Expression,Integer> fp) {
             Ref<UnionExp> ue1 = ref(null);
             Ref<UnionExp> ue2 = ref(null);
@@ -3232,6 +3347,7 @@ public class dinterpret {
             this.result = (this.pue.get()).exp();
         }
 
+        // Erasure: visit<BinExp>
         public  void visit(BinExp e) {
             switch ((e.op & 0xFF))
             {
@@ -3291,6 +3407,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: findParentVar<Expression>
         public static VarDeclaration findParentVar(Expression e) {
             for (; ;){
                 {
@@ -3337,6 +3454,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: interpretAssignCommon<BinExp, Ptr, int>
         public  void interpretAssignCommon(BinExp e, Function4<Ref<Loc>,Type,Expression,Expression,UnionExp> fp, int post) {
             this.result = CTFEExp.cantexp;
             Expression e1 = e.e1.value;
@@ -3753,6 +3871,7 @@ public class dinterpret {
             interpretAssignCommon(e, fp, 0);
         }
 
+        // Erasure: stompOverlappedFields<StructLiteralExp, VarDeclaration>
         public  void stompOverlappedFields(StructLiteralExp sle, VarDeclaration v) {
             if (!v.overlapped)
             {
@@ -3777,6 +3896,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: assignToLvalue<BinExp, Expression, Expression>
         public  Expression assignToLvalue(BinExp e, Expression e1, Expression newval) {
             VarDeclaration vd = null;
             Ptr<Expression> payload = null;
@@ -3946,6 +4066,7 @@ public class dinterpret {
             return null;
         }
 
+        // Erasure: interpretAssignToSlice<Ptr, BinExp, Expression, Expression, boolean>
         public  Expression interpretAssignToSlice(Ptr<UnionExp> pue, BinExp e, Expression e1, Expression newval, boolean isBlockAssignment) {
             long lowerbound = 0L;
             long upperbound = 0L;
@@ -4279,10 +4400,12 @@ public class dinterpret {
             return CTFEExp.cantexp;
         }
 
+        // Erasure: visit<AssignExp>
         public  void visit(AssignExp e) {
             this.interpretAssignCommon(e, null, 0);
         }
 
+        // Erasure: visit<BinAssignExp>
         public  void visit(BinAssignExp e) {
             switch ((e.op & 0xFF))
             {
@@ -4332,6 +4455,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<PostExp>
         public  void visit(PostExp e) {
             if (((e.op & 0xFF) == 93))
             {
@@ -4343,6 +4467,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: isPointerCmpExp<Expression, Ptr, Ptr>
         public static int isPointerCmpExp(Expression e, Ptr<Expression> p1, Ptr<Expression> p2) {
             int ret = 1;
             for (; ((e.op & 0xFF) == 91);){
@@ -4370,6 +4495,7 @@ public class dinterpret {
             return ret;
         }
 
+        // Erasure: interpretFourPointerRelation<Ptr, BinExp>
         public  void interpretFourPointerRelation(Ptr<UnionExp> pue, BinExp e) {
             assert(((e.op & 0xFF) == 101) || ((e.op & 0xFF) == 102));
             Ref<Expression> p1 = ref(null);
@@ -4499,6 +4625,7 @@ public class dinterpret {
             this.result = (pue.get()).exp();
         }
 
+        // Erasure: visit<LogicalExp>
         public  void visit(LogicalExp e) {
             this.interpretFourPointerRelation(this.pue, e);
             if (this.result != null)
@@ -4558,6 +4685,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: showCtfeBackTrace<CallExp, FuncDeclaration>
         public  void showCtfeBackTrace(CallExp callingExp, FuncDeclaration fd) {
             if ((CtfeStatus.stackTraceCallsToSuppress > 0))
             {
@@ -4605,6 +4733,7 @@ public class dinterpret {
             CtfeStatus.stackTraceCallsToSuppress = numToSuppress;
         }
 
+        // Erasure: visit<CallExp>
         public  void visit(CallExp e) {
             Expression pthis = null;
             FuncDeclaration fd = null;
@@ -4810,6 +4939,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<CommaExp>
         public  void visit(CommaExp e) {
             Ref<InterState> istateComma = ref(new InterState());
             if ((this.istate == null) && ((firstComma(e.e1.value).op & 0xFF) == 38))
@@ -4868,6 +4998,7 @@ public class dinterpret {
             return ;
         }
 
+        // Erasure: visit<CondExp>
         public  void visit(CondExp e) {
             Ref<UnionExp> uecond = ref(null);
             Expression econd = null;
@@ -4899,6 +5030,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<ArrayLengthExp>
         public  void visit(ArrayLengthExp e) {
             Ref<UnionExp> ue1 = ref(new UnionExp().copy());
             Expression e1 = interpret(ptr(ue1), e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
@@ -4917,6 +5049,7 @@ public class dinterpret {
             this.result = (this.pue.get()).exp();
         }
 
+        // Erasure: interpretVectorToArray<Ptr, VectorExp>
         public static Expression interpretVectorToArray(Ptr<UnionExp> pue, VectorExp e) {
             {
                 ArrayLiteralExp ale = e.e1.value.isArrayLiteralExp();
@@ -4946,6 +5079,7 @@ public class dinterpret {
             return e;
         }
 
+        // Erasure: visit<VectorExp>
         public  void visit(VectorExp e) {
             if (((e.ownedByCtfe & 0xFF) >= 1))
             {
@@ -4976,6 +5110,7 @@ public class dinterpret {
             this.result = ve;
         }
 
+        // Erasure: visit<VectorArrayExp>
         public  void visit(VectorArrayExp e) {
             Expression e1 = interpret(this.pue, e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
             assert(e1 != null);
@@ -4998,6 +5133,7 @@ public class dinterpret {
             this.result = CTFEExp.cantexp;
         }
 
+        // Erasure: visit<DelegatePtrExp>
         public  void visit(DelegatePtrExp e) {
             Expression e1 = interpret(this.pue, e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
             assert(e1 != null);
@@ -5009,6 +5145,7 @@ public class dinterpret {
             this.result = CTFEExp.cantexp;
         }
 
+        // Erasure: visit<DelegateFuncptrExp>
         public  void visit(DelegateFuncptrExp e) {
             Expression e1 = interpret(this.pue, e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
             assert(e1 != null);
@@ -5020,6 +5157,7 @@ public class dinterpret {
             this.result = CTFEExp.cantexp;
         }
 
+        // Erasure: resolveIndexing<IndexExp, Ptr, Ptr, Ptr, boolean>
         public static boolean resolveIndexing(IndexExp e, Ptr<InterState> istate, Ptr<Expression> pagg, Ptr<Long> pidx, boolean modify) {
             assert(((e.e1.value.type.value.toBasetype().ty & 0xFF) != ENUMTY.Taarray));
             if (((e.e1.value.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tpointer))
@@ -5155,6 +5293,7 @@ public class dinterpret {
             return true;
         }
 
+        // Erasure: visit<IndexExp>
         public  void visit(IndexExp e) {
             if (((e.e1.value.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tpointer))
             {
@@ -5266,6 +5405,7 @@ public class dinterpret {
             this.result = paintTypeOntoLiteral(e.type.value, this.result);
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             if (((e.e1.value.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tpointer))
             {
@@ -5469,6 +5609,7 @@ public class dinterpret {
             this.result.type.value = e.type.value;
         }
 
+        // Erasure: visit<InExp>
         public  void visit(InExp e) {
             Expression e1 = interpret(e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(e1))
@@ -5512,6 +5653,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<CatExp>
         public  void visit(CatExp e) {
             Ref<UnionExp> ue1 = ref(null);
             Expression e1 = interpret(ptr(ue1), e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
@@ -5575,6 +5717,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<DeleteExp>
         public  void visit(DeleteExp e) {
             this.result = interpret(e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(this.result))
@@ -5682,6 +5825,7 @@ public class dinterpret {
             this.result = CTFEExp.voidexp;
         }
 
+        // Erasure: visit<CastExp>
         public  void visit(CastExp e) {
             Expression e1 = interpret(e.e1.value, this.istate, this.goal);
             if (this.exceptionOrCant(e1))
@@ -5911,6 +6055,7 @@ public class dinterpret {
             this.result = ctfeCast(this.pue, e.loc, e.type.value, e.to, e1);
         }
 
+        // Erasure: visit<AssertExp>
         public  void visit(AssertExp e) {
             Expression e1 = interpret(this.pue, e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(e1))
@@ -5949,6 +6094,7 @@ public class dinterpret {
             return ;
         }
 
+        // Erasure: visit<PtrExp>
         public  void visit(PtrExp e) {
             {
                 SymOffExp soe1 = e.e1.value.isSymOffExp();
@@ -6053,6 +6199,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<DotVarExp>
         public  void visit(DotVarExp e) {
             Expression ex = interpret(e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(ex))
@@ -6183,6 +6330,7 @@ public class dinterpret {
             }
         }
 
+        // Erasure: visit<RemoveExp>
         public  void visit(RemoveExp e) {
             Expression agg = interpret(e.e1.value, this.istate, CtfeGoal.ctfeNeedRvalue);
             if (this.exceptionOrCant(agg))
@@ -6228,15 +6376,18 @@ public class dinterpret {
             this.result = (this.pue.get()).exp();
         }
 
+        // Erasure: visit<ClassReferenceExp>
         public  void visit(ClassReferenceExp e) {
             this.result = e;
         }
 
+        // Erasure: visit<VoidInitExp>
         public  void visit(VoidInitExp e) {
             e.error(new BytePtr("CTFE internal error: trying to read uninitialized variable"));
             throw new AssertionError("Unreachable code!");
         }
 
+        // Erasure: visit<ThrownExceptionExp>
         public  void visit(ThrownExceptionExp e) {
             throw new AssertionError("Unreachable code!");
         }
@@ -6253,6 +6404,7 @@ public class dinterpret {
             return that;
         }
     }
+    // Erasure: interpret<Ptr, Expression, Ptr, int>
     public static Expression interpret(Ptr<UnionExp> pue, Expression e, Ptr<InterState> istate, int goal) {
         if (e == null)
         {
@@ -6270,6 +6422,7 @@ public class dinterpret {
         return interpret(pue, e, istate, CtfeGoal.ctfeNeedRvalue);
     }
 
+    // Erasure: interpret<Expression, Ptr, int>
     public static Expression interpret(Expression e, Ptr<InterState> istate, int goal) {
         Ref<UnionExp> ue = ref(null);
         Expression result = interpret(ptr(ue), e, istate, goal);
@@ -6285,6 +6438,7 @@ public class dinterpret {
         return interpret(e, istate, CtfeGoal.ctfeNeedRvalue);
     }
 
+    // Erasure: interpret<Ptr, Statement, Ptr>
     public static Expression interpret(Ptr<UnionExp> pue, Statement s, Ptr<InterState> istate) {
         if (s == null)
         {
@@ -6295,6 +6449,7 @@ public class dinterpret {
         return v.result;
     }
 
+    // Erasure: interpret<Statement, Ptr>
     public static Expression interpret(Statement s, Ptr<InterState> istate) {
         Ref<UnionExp> ue = ref(null);
         Expression result = interpret(ptr(ue), s, istate);
@@ -6305,6 +6460,7 @@ public class dinterpret {
         return result;
     }
 
+    // Erasure: scrubReturnValue<Loc, Expression>
     public static Expression scrubReturnValue(Loc loc, Expression e) {
         Function2<Expression,Boolean,Boolean> isVoid = new Function2<Expression,Boolean,Boolean>() {
             public Boolean invoke(Expression e, Boolean checkArrayType) {
@@ -6504,6 +6660,7 @@ public class dinterpret {
         return e;
     }
 
+    // Erasure: scrubCacheValue<Expression>
     public static Expression scrubCacheValue(Expression e) {
         if (e == null)
         {
@@ -6634,6 +6791,7 @@ public class dinterpret {
         return e;
     }
 
+    // Erasure: interpret_length<Ptr, Ptr, Expression>
     public static Expression interpret_length(Ptr<UnionExp> pue, Ptr<InterState> istate, Expression earg) {
         earg = interpret(pue, earg, istate, CtfeGoal.ctfeNeedRvalue);
         if (exceptionOrCantInterpret(earg))
@@ -6656,6 +6814,7 @@ public class dinterpret {
         return (pue.get()).exp();
     }
 
+    // Erasure: interpret_keys<Ptr, Ptr, Expression, Type>
     public static Expression interpret_keys(Ptr<UnionExp> pue, Ptr<InterState> istate, Expression earg, Type returnType) {
         earg = interpret(pue, earg, istate, CtfeGoal.ctfeNeedRvalue);
         if (exceptionOrCantInterpret(earg))
@@ -6678,6 +6837,7 @@ public class dinterpret {
         return (pue.get()).exp();
     }
 
+    // Erasure: interpret_values<Ptr, Ptr, Expression, Type>
     public static Expression interpret_values(Ptr<UnionExp> pue, Ptr<InterState> istate, Expression earg, Type returnType) {
         earg = interpret(pue, earg, istate, CtfeGoal.ctfeNeedRvalue);
         if (exceptionOrCantInterpret(earg))
@@ -6700,6 +6860,7 @@ public class dinterpret {
         return (pue.get()).exp();
     }
 
+    // Erasure: interpret_dup<Ptr, Ptr, Expression>
     public static Expression interpret_dup(Ptr<UnionExp> pue, Ptr<InterState> istate, Expression earg) {
         earg = interpret(pue, earg, istate, CtfeGoal.ctfeNeedRvalue);
         if (exceptionOrCantInterpret(earg))
@@ -6739,6 +6900,7 @@ public class dinterpret {
         return aae;
     }
 
+    // Erasure: interpret_aaApply<Ptr, Ptr, Expression, Expression>
     public static Expression interpret_aaApply(Ptr<UnionExp> pue, Ptr<InterState> istate, Expression aa, Expression deleg) {
         aa = interpret(aa, istate, CtfeGoal.ctfeNeedRvalue);
         if (exceptionOrCantInterpret(aa))
@@ -6819,6 +6981,7 @@ public class dinterpret {
         }
     }
 
+    // Erasure: foreachApplyUtf<Ptr, Ptr, Expression, Expression, boolean>
     public static Expression foreachApplyUtf(Ptr<UnionExp> pue, Ptr<InterState> istate, Expression str, Expression deleg, boolean rvs) {
         FuncDeclaration fd = null;
         Expression pthis = null;
@@ -7080,6 +7243,7 @@ public class dinterpret {
         }
     }
 
+    // Erasure: evaluateIfBuiltin<Ptr, Ptr, Loc, FuncDeclaration, Ptr, Expression>
     public static Expression evaluateIfBuiltin(Ptr<UnionExp> pue, Ptr<InterState> istate, Loc loc, FuncDeclaration fd, Ptr<DArray<Expression>> arguments, Expression pthis) {
         Expression e = null;
         int nargs = arguments != null ? (arguments.get()).length : 0;
@@ -7218,6 +7382,7 @@ public class dinterpret {
         return e;
     }
 
+    // Erasure: evaluatePostblit<Ptr, Expression>
     public static Expression evaluatePostblit(Ptr<InterState> istate, Expression e) {
         TypeStruct ts = e.type.value.baseElemOf().isTypeStruct();
         if (ts == null)
@@ -7267,6 +7432,7 @@ public class dinterpret {
         throw new AssertionError("Unreachable code!");
     }
 
+    // Erasure: evaluateDtor<Ptr, Expression>
     public static Expression evaluateDtor(Ptr<InterState> istate, Expression e) {
         TypeStruct ts = e.type.value.baseElemOf().isTypeStruct();
         if (ts == null)
@@ -7312,6 +7478,7 @@ public class dinterpret {
         return null;
     }
 
+    // Erasure: hasValue<VarDeclaration>
     public static boolean hasValue(VarDeclaration vd) {
         if ((vd.ctfeAdrOnStack == -1))
         {
@@ -7320,10 +7487,12 @@ public class dinterpret {
         return null != getValue(vd);
     }
 
+    // Erasure: setValueWithoutChecking<VarDeclaration, Expression>
     public static void setValueWithoutChecking(VarDeclaration vd, Expression newval) {
         ctfeStack.setValue(vd, newval);
     }
 
+    // Erasure: setValue<VarDeclaration, Expression>
     public static void setValue(VarDeclaration vd, Expression newval) {
         assert((vd.storage_class & 2101248L) != 0 ? isCtfeReferenceValid(newval) : isCtfeValueValid(newval));
         ctfeStack.setValue(vd, newval);

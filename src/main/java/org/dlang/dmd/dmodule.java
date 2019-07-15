@@ -48,6 +48,7 @@ public class dmodule {
 
     static int runDeferredSemanticnested = 0;
 
+    // Erasure: lookForSourceFile<Array>
     public static ByteSlice lookForSourceFile(ByteSlice filename) {
         ByteSlice sdi = FileName.forceExt(filename, toByteSlice(global.hdr_ext)).copy();
         if ((FileName.exists(sdi) == 1))
@@ -132,6 +133,7 @@ public class dmodule {
         }
     }
 
+    // Erasure: semantic3OnDependencies<Module>
     public static void semantic3OnDependencies(Module m) {
         if (m == null)
         {
@@ -152,6 +154,7 @@ public class dmodule {
         }
     }
 
+    // Erasure: getFilename<Ptr, Identifier>
     public static ByteSlice getFilename(Ptr<DArray<Identifier>> packages, Identifier ident) {
         ByteSlice filename = ident.asString().copy();
         if ((packages == null) || ((packages.get()).length == 0))
@@ -236,15 +239,18 @@ public class dmodule {
         public int isPkgMod = PKG.unknown;
         public int tag = 0;
         public Module mod = null;
+        // Erasure: __ctor<Loc, Identifier>
         public  Package(Loc loc, Identifier ident) {
             super(loc, ident);
             this.tag = dmodule.__ctorpackageTag++;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("package");
         }
 
+        // Erasure: resolve<Ptr, Ptr, Ptr>
         public static DsymbolTable resolve(Ptr<DArray<Identifier>> packages, Ptr<Dsymbol> pparent, Ptr<Package> ppkg) {
             DsymbolTable dst = Module.modules;
             Dsymbol parent = null;
@@ -300,10 +306,12 @@ public class dmodule {
             return dst;
         }
 
+        // Erasure: isPackage<>
         public  Package isPackage() {
             return this;
         }
 
+        // Erasure: isAncestorPackageOf<Package>
         public  boolean isAncestorPackageOf(Package pkg) {
             if ((pequals(this, pkg)))
             {
@@ -316,6 +324,7 @@ public class dmodule {
             return this.isAncestorPackageOf(pkg.parent.value.isPackage());
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             flags &= -9;
             if ((this.isModule() == null) && (this.mod != null))
@@ -335,10 +344,12 @@ public class dmodule {
             return search(loc, ident, 8);
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: isPackageMod<>
         public  Module isPackageMod() {
             if ((this.isPkgMod == PKG.module_))
             {
@@ -347,6 +358,7 @@ public class dmodule {
             return null;
         }
 
+        // Erasure: resolvePKGunknown<>
         public  void resolvePKGunknown() {
             if (this.isModule() != null)
             {
@@ -418,10 +430,12 @@ public class dmodule {
         public static DArray<Dsymbol> deferred2 = new DArray<Dsymbol>();
         public static DArray<Dsymbol> deferred3 = new DArray<Dsymbol>();
         public static int dprogress = 0;
+        // Erasure: _init<>
         public static void _init() {
             modules = new DsymbolTable();
         }
 
+        // Erasure: deinitialize<>
         public static void deinitialize() {
             modules = null;
         }
@@ -442,6 +456,7 @@ public class dmodule {
         public DArray<BytePtr> contentImportedFiles = new DArray<BytePtr>();
         public int needmoduleinfo = 0;
         public int selfimports = 0;
+        // Erasure: selfImports<>
         public  boolean selfImports() {
             if ((this.selfimports == 0))
             {
@@ -463,6 +478,7 @@ public class dmodule {
         }
 
         public int rootimports = 0;
+        // Erasure: rootImports<>
         public  boolean rootImports() {
             if ((this.rootimports == 0))
             {
@@ -511,6 +527,7 @@ public class dmodule {
         public Ptr<Escape> escapetable = null;
         public int nameoffset = 0;
         public int namelen = 0;
+        // Erasure: __ctor<Loc, Array, Identifier, int, int>
         public  Module(Loc loc, ByteSlice filename, Identifier ident, int doDocComment, int doHdrGen) {
             super(loc, ident);
             ByteSlice srcfilename = new RawByteSlice().copy();
@@ -539,18 +556,22 @@ public class dmodule {
             this.escapetable = pcopy((refPtr(new Escape(new ByteSlice()))));
         }
 
+        // Erasure: __ctor<Array, Identifier, int, int>
         public  Module(ByteSlice filename, Identifier ident, int doDocComment, int doHdrGen) {
             this(Loc.initial, filename, ident, doDocComment, doHdrGen);
         }
 
+        // Erasure: create<Ptr, Identifier, int, int>
         public static Module create(BytePtr filename, Identifier ident, int doDocComment, int doHdrGen) {
             return create(toDString(filename), ident, doDocComment, doHdrGen);
         }
 
+        // Erasure: create<Array, Identifier, int, int>
         public static Module create(ByteSlice filename, Identifier ident, int doDocComment, int doHdrGen) {
             return new Module(Loc.initial, filename, ident, doDocComment, doHdrGen);
         }
 
+        // Erasure: load<Loc, Ptr, Identifier>
         public static Module load(Loc loc, Ptr<DArray<Identifier>> packages, Identifier ident) {
             ByteSlice filename = getFilename(packages, ident).copy();
             {
@@ -593,14 +614,17 @@ public class dmodule {
             return m;
         }
 
+        // Erasure: kind<>
         public  BytePtr kind() {
             return new BytePtr("module");
         }
 
+        // Erasure: setOutfilename<Ptr, Ptr, Ptr, Ptr>
         public  FileName setOutfilename(BytePtr name, BytePtr dir, BytePtr arg, BytePtr ext) {
             return this.setOutfilename(toDString(name), toDString(dir), toDString(arg), toDString(ext));
         }
 
+        // Erasure: setOutfilename<Array, Array, Array, Array>
         public  FileName setOutfilename(ByteSlice name, ByteSlice dir, ByteSlice arg, ByteSlice ext) {
             ByteSlice docfilename = new RawByteSlice().copy();
             if (name.getLength() != 0)
@@ -638,10 +662,12 @@ public class dmodule {
             return new FileName(docfilename);
         }
 
+        // Erasure: setDocfile<>
         public  void setDocfile() {
             this.docfile.opAssign(this.setOutfilename(toDString(global.params.docname), toDString(global.params.docdir), this.arg, toByteSlice(global.doc_ext)).copy());
         }
 
+        // Erasure: loadSourceBuffer<Loc, ReadResult>
         public  boolean loadSourceBuffer(Loc loc, File.ReadResult readResult) {
             this.srcBuffer.value = pcopy((refPtr(new FileBuffer(readResult.extractData()))));
             if (readResult.success)
@@ -690,6 +716,7 @@ public class dmodule {
             return false;
         }
 
+        // Erasure: read<Loc>
         public  boolean read(Loc loc) {
             if (this.srcBuffer.value != null)
             {
@@ -703,6 +730,7 @@ public class dmodule {
             }
         }
 
+        // Erasure: parse<>
         public  Module parse() {
             StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
             try {
@@ -713,6 +741,7 @@ public class dmodule {
         }
 
         // from template parse!(ASTCodegen)
+        // Erasure: parseASTCodegen<DiagnosticReporter>
         public  Module parseASTCodegen(DiagnosticReporter diagnosticReporter) {
             // from template UTF32ToUTF8!(0)
             Function1<ByteSlice,ByteSlice> UTF32ToUTF80 = new Function1<ByteSlice,ByteSlice>() {
@@ -1146,6 +1175,7 @@ public class dmodule {
         }
 
 
+        // Erasure: importAll<Ptr>
         public  void importAll(Ptr<Scope> prevsc) {
             if (this._scope != null)
             {
@@ -1196,10 +1226,12 @@ public class dmodule {
             (sc.get()).pop();
         }
 
+        // Erasure: needModuleInfo<>
         public  int needModuleInfo() {
             return (((this.needmoduleinfo != 0) || global.params.cov) ? 1 : 0);
         }
 
+        // Erasure: search<Loc, Identifier, int>
         public  Dsymbol search(Loc loc, Identifier ident, int flags) {
             if (this.insearch != 0)
             {
@@ -1231,6 +1263,7 @@ public class dmodule {
             return search(loc, ident, 8);
         }
 
+        // Erasure: isPackageAccessible<Package, Prot, int>
         public  boolean isPackageAccessible(Package p, Prot protection, int flags) {
             if (this.insearch != 0)
             {
@@ -1254,11 +1287,13 @@ public class dmodule {
             return isPackageAccessible(p, protection, 0);
         }
 
+        // Erasure: symtabInsert<Dsymbol>
         public  Dsymbol symtabInsert(Dsymbol s) {
             this.searchCacheIdent = null;
             return this.symtabInsert(s);
         }
 
+        // Erasure: deleteObjFile<>
         public  void deleteObjFile() {
             if (global.params.obj)
             {
@@ -1270,18 +1305,22 @@ public class dmodule {
             }
         }
 
+        // Erasure: addDeferredSemantic<Dsymbol>
         public static void addDeferredSemantic(Dsymbol s) {
             deferred.push(s);
         }
 
+        // Erasure: addDeferredSemantic2<Dsymbol>
         public static void addDeferredSemantic2(Dsymbol s) {
             deferred2.push(s);
         }
 
+        // Erasure: addDeferredSemantic3<Dsymbol>
         public static void addDeferredSemantic3(Dsymbol s) {
             deferred3.push(s);
         }
 
+        // Erasure: runDeferredSemantic<>
         public static void runDeferredSemantic() {
             if ((dprogress == 0))
             {
@@ -1332,6 +1371,7 @@ public class dmodule {
             dmodule.runDeferredSemanticnested--;
         }
 
+        // Erasure: runDeferredSemantic2<>
         public static void runDeferredSemantic2() {
             runDeferredSemantic();
             Ptr<DArray<Dsymbol>> a = ptr(deferred2);
@@ -1349,6 +1389,7 @@ public class dmodule {
             (a.get()).setDim(0);
         }
 
+        // Erasure: runDeferredSemantic3<>
         public static void runDeferredSemantic3() {
             runDeferredSemantic2();
             Ptr<DArray<Dsymbol>> a = ptr(deferred3);
@@ -1366,6 +1407,7 @@ public class dmodule {
             (a.get()).setDim(0);
         }
 
+        // Erasure: clearCache<>
         public static void clearCache() {
             {
                 int i = 0;
@@ -1376,6 +1418,7 @@ public class dmodule {
             }
         }
 
+        // Erasure: imports<Module>
         public  int imports(Module m) {
             {
                 int i = 0;
@@ -1399,10 +1442,12 @@ public class dmodule {
             return 0;
         }
 
+        // Erasure: isRoot<>
         public  boolean isRoot() {
             return pequals(this.importedFrom, this);
         }
 
+        // Erasure: isCoreModule<Identifier>
         public  boolean isCoreModule(Identifier ident) {
             return (pequals(this.ident, ident)) && (this.parent.value != null) && (pequals(this.parent.value.ident, Id.core)) && (this.parent.value.parent.value == null);
         }
@@ -1417,14 +1462,17 @@ public class dmodule {
         public Ptr<Symbol> sshareddtor = null;
         public Ptr<Symbol> stest = null;
         public Ptr<Symbol> sfilename = null;
+        // Erasure: isModule<>
         public  Module isModule() {
             return this;
         }
 
+        // Erasure: accept<Visitor>
         public  void accept(Visitor v) {
             v.visit(this);
         }
 
+        // Erasure: fullyQualifiedName<OutBuffer>
         public  void fullyQualifiedName(OutBuffer buf) {
             buf.writestring(this.ident.asString());
             {
@@ -1518,6 +1566,7 @@ public class dmodule {
         public Ptr<DArray<Identifier>> packages = null;
         public boolean isdeprecated = false;
         public Expression msg = null;
+        // Erasure: __ctor<Loc, Ptr, Identifier, Expression, boolean>
         public  ModuleDeclaration(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Expression msg, boolean isdeprecated) {
             this.loc.value.opAssign(loc.copy());
             this.packages = pcopy(packages);
@@ -1526,6 +1575,7 @@ public class dmodule {
             this.isdeprecated = isdeprecated;
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
@@ -1548,6 +1598,7 @@ public class dmodule {
             }
         }
 
+        // Erasure: asString<>
         public  ByteSlice asString() {
             return toDString(this.toChars());
         }

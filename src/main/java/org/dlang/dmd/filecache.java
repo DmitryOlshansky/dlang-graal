@@ -15,11 +15,13 @@ public class filecache {
         public Ref<Ptr<FileName>> file = ref(null);
         public Ref<Ptr<FileBuffer>> buffer = ref(null);
         public Ref<Slice<ByteSlice>> lines = ref(new Slice<ByteSlice>());
+        // Erasure: __ctor<Array>
         public  FileAndLines(ByteSlice filename) {
             this.file.value = pcopy((refPtr(new FileName(filename))));
             this.readAndSplit();
         }
 
+        // Erasure: readAndSplit<>
         public  void readAndSplit() {
             File.ReadResult readResult = File.read((this.file.value.get()).toChars()).copy();
             this.buffer.value = pcopy((refPtr(new FileBuffer(readResult.extractData()))));
@@ -55,6 +57,7 @@ public class filecache {
     public static class FileCache
     {
         public StringTable files = new StringTable();
+        // Erasure: addOrGetFile<Array>
         public  FileAndLines addOrGetFile(ByteSlice file) {
             {
                 Ptr<StringValue> payload = this.files.lookup(file);
@@ -72,14 +75,17 @@ public class filecache {
         }
 
         public static FileCache fileCache = new FileCache(new StringTable(null, 0, null, 0, 0, 0, 0));
+        // Erasure: _init<>
         public static void _init() {
             fileCache.initialize();
         }
 
+        // Erasure: initialize<>
         public  void initialize() {
             this.files._init(0);
         }
 
+        // Erasure: deinitialize<>
         public  void deinitialize() {
             Function1<Ptr<StringValue>,Integer> __foreachbody1 = new Function1<Ptr<StringValue>,Integer>() {
                 public Integer invoke(Ptr<StringValue> sv) {

@@ -30,25 +30,30 @@ public class arrayop {
         private Ptr<Scope> sc = null;
         private Ptr<DArray<RootObject>> tiargs = null;
         private Ptr<DArray<Expression>> args = null;
+        // Erasure: __ctor<Ptr, Ptr, Ptr>
         public  BuildArrayOpVisitor(Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, Ptr<DArray<Expression>> args) {
             this.sc = pcopy(sc);
             this.tiargs = pcopy(tiargs);
             this.args = pcopy(args);
         }
 
+        // Erasure: visit<Expression>
         public  void visit(Expression e) {
             (this.tiargs.get()).push(e.type.value);
             (this.args.get()).push(e);
         }
 
+        // Erasure: visit<SliceExp>
         public  void visit(SliceExp e) {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<CastExp>
         public  void visit(CastExp e) {
             this.visit((Expression)e);
         }
 
+        // Erasure: visit<UnaExp>
         public  void visit(UnaExp e) {
             Type tb = e.type.value.toBasetype();
             if (((tb.ty & 0xFF) != ENUMTY.Tarray) && ((tb.ty & 0xFF) != ENUMTY.Tsarray))
@@ -69,6 +74,7 @@ public class arrayop {
             }
         }
 
+        // Erasure: visit<BinExp>
         public  void visit(BinExp e) {
             Type tb = e.type.value.toBasetype();
             if (((tb.ty & 0xFF) != ENUMTY.Tarray) && ((tb.ty & 0xFF) != ENUMTY.Tsarray))
@@ -87,6 +93,7 @@ public class arrayop {
         public BuildArrayOpVisitor() {}
     }
 
+    // Erasure: isArrayOpValid<Expression>
     public static boolean isArrayOpValid(Expression e) {
         if (((e.op & 0xFF) == 31))
         {
@@ -122,6 +129,7 @@ public class arrayop {
         return true;
     }
 
+    // Erasure: isNonAssignmentArrayOp<Expression>
     public static boolean isNonAssignmentArrayOp(Expression e) {
         if (((e.op & 0xFF) == 31))
         {
@@ -135,6 +143,7 @@ public class arrayop {
         return false;
     }
 
+    // Erasure: checkNonAssignmentArrayOp<Expression, boolean>
     public static boolean checkNonAssignmentArrayOp(Expression e, boolean suggestion) {
         if (isNonAssignmentArrayOp(e))
         {
@@ -154,6 +163,7 @@ public class arrayop {
         return checkNonAssignmentArrayOp(e, false);
     }
 
+    // Erasure: arrayOp<BinExp, Ptr>
     public static Expression arrayOp(BinExp e, Ptr<Scope> sc) {
         Type tb = e.type.value.toBasetype();
         assert(((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray));
@@ -190,6 +200,7 @@ public class arrayop {
         return expressionSemantic(new CallExp(e.loc, new VarExp(e.loc, fd, false), args), sc);
     }
 
+    // Erasure: arrayOp<BinAssignExp, Ptr>
     public static Expression arrayOp(BinAssignExp e, Ptr<Scope> sc) {
         Type tn = e.e1.value.type.value.toBasetype().nextOf();
         if ((tn != null) && !tn.isMutable() || !tn.isAssignable())
@@ -208,12 +219,14 @@ public class arrayop {
         return arrayOp((BinExp)e, sc);
     }
 
+    // Erasure: buildArrayOp<Ptr, Expression, Ptr, Ptr>
     public static void buildArrayOp(Ptr<Scope> sc, Expression e, Ptr<DArray<RootObject>> tiargs, Ptr<DArray<Expression>> args) {
         // skipping duplicate class BuildArrayOpVisitor
         BuildArrayOpVisitor v = new BuildArrayOpVisitor(sc, tiargs, args);
         e.accept(v);
     }
 
+    // Erasure: isUnaArrayOp<byte>
     public static boolean isUnaArrayOp(byte op) {
         switch ((op & 0xFF))
         {
@@ -226,6 +239,7 @@ public class arrayop {
         return false;
     }
 
+    // Erasure: isBinArrayOp<byte>
     public static boolean isBinArrayOp(byte op) {
         switch ((op & 0xFF))
         {
@@ -245,6 +259,7 @@ public class arrayop {
         return false;
     }
 
+    // Erasure: isBinAssignArrayOp<byte>
     public static boolean isBinAssignArrayOp(byte op) {
         switch ((op & 0xFF))
         {
@@ -264,6 +279,7 @@ public class arrayop {
         return false;
     }
 
+    // Erasure: isArrayOpOperand<Expression>
     public static boolean isArrayOpOperand(Expression e) {
         if (((e.op & 0xFF) == 31))
         {
@@ -285,6 +301,7 @@ public class arrayop {
         return false;
     }
 
+    // Erasure: arrayOpInvalidError<Expression>
     public static ErrorExp arrayOpInvalidError(Expression e) {
         e.error(new BytePtr("invalid array operation `%s` (possible missing [])"), e.toChars());
         if (((e.op & 0xFF) == 74))
@@ -299,6 +316,7 @@ public class arrayop {
     }
 
     // from template checkPossibleAddCatError!(AddAssignExpCatAssignExp)
+    // Erasure: checkPossibleAddCatErrorAddAssignExpCatAssignExp<AddAssignExp>
     public static void checkPossibleAddCatErrorAddAssignExpCatAssignExp(AddAssignExp ae) {
         if ((ae.e2.value.type.value == null) || ((ae.e2.value.type.value.ty & 0xFF) != ENUMTY.Tarray) || (ae.e2.value.type.value.implicitConvTo(ae.e1.value.type.value) == 0))
         {
@@ -310,6 +328,7 @@ public class arrayop {
 
 
     // from template checkPossibleAddCatError!(AddExpCatExp)
+    // Erasure: checkPossibleAddCatErrorAddExpCatExp<AddExp>
     public static void checkPossibleAddCatErrorAddExpCatExp(AddExp ae) {
         if ((ae.e2.value.type.value == null) || ((ae.e2.value.type.value.ty & 0xFF) != ENUMTY.Tarray) || (ae.e2.value.type.value.implicitConvTo(ae.e1.value.type.value) == 0))
         {

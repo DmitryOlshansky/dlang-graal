@@ -36,29 +36,35 @@ public class console {
     {
 
         public Ptr<_IO_FILE> _fp = null;
+        // Erasure: fp<>
         public  Ptr<_IO_FILE> fp() {
             return this._fp;
         }
 
+        // Erasure: detectTerminal<>
         public static boolean detectTerminal() {
             BytePtr term = pcopy(getenv(new BytePtr("TERM")));
             return (isatty(2) != 0) && (term != null) && (term.get(0) != 0) && (strcmp(term, new BytePtr("dumb")) != 0);
         }
 
+        // Erasure: create<Ptr>
         public static Ptr<Console> create(Ptr<_IO_FILE> fp) {
             Ptr<Console> c = refPtr(new Console(null));
             (c.get())._fp = pcopy(fp);
             return c;
         }
 
+        // Erasure: setColorBright<boolean>
         public  void setColorBright(boolean bright) {
             fprintf(this._fp, new BytePtr("\u001b[%dm"), (bright ? 1 : 0));
         }
 
+        // Erasure: setColor<int>
         public  void setColor(int color) {
             fprintf(this._fp, new BytePtr("\u001b[%d;%dm"), (color & Color.bright) != 0 ? 1 : 0, 30 + (color & -9));
         }
 
+        // Erasure: resetColor<>
         public  void resetColor() {
             fputs(new BytePtr("\u001b[m"), this._fp);
         }

@@ -24,6 +24,7 @@ import static org.dlang.dmd.utf.*;
 public class constfold {
 
     static boolean LOG = false;
+    // Erasure: expType<Type, Expression>
     public static Expression expType(Type type, Expression e) {
         if ((!pequals(type, e.type.value)))
         {
@@ -33,6 +34,7 @@ public class constfold {
         return e;
     }
 
+    // Erasure: isConst<Expression>
     public static int isConst(Expression e) {
         switch ((e.op & 0xFF))
         {
@@ -50,12 +52,14 @@ public class constfold {
         throw new AssertionError("Unreachable code!");
     }
 
+    // Erasure: cantExp<UnionExp>
     public static void cantExp(UnionExp ue) {
         Ref<UnionExp> ue_ref = ref(ue);
         ue_ref.value.opAssign(new UnionExp().copy());
         (ptr(ue_ref)) = new UnionExp(new CTFEExp(TOK.cantExpression));
     }
 
+    // Erasure: Neg<Type, Expression>
     public static UnionExp Neg(Type type, Expression e1) {
         Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
@@ -78,6 +82,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Com<Type, Expression>
     public static UnionExp Com(Type type, Expression e1) {
         Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
@@ -85,6 +90,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Not<Type, Expression>
     public static UnionExp Not(Type type, Expression e1) {
         Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
@@ -92,6 +98,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Bool<Type, Expression>
     public static UnionExp Bool(Type type, Expression e1) {
         Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
@@ -99,6 +106,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Add<Loc, Type, Expression, Expression>
     public static UnionExp Add(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         if (type.isreal())
@@ -201,6 +209,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Min<Loc, Type, Expression, Expression>
     public static UnionExp Min(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         if (type.isreal())
@@ -297,6 +306,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Mul<Loc, Type, Expression, Expression>
     public static UnionExp Mul(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         if (type.isfloating())
@@ -355,6 +365,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Div<Loc, Type, Expression, Expression>
     public static UnionExp Div(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         if (type.isfloating())
@@ -439,6 +450,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Mod<Loc, Type, Expression, Expression>
     public static UnionExp Mod(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         if (type.isfloating())
@@ -516,6 +528,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Pow<Loc, Type, Expression, Expression>
     public static UnionExp Pow(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(new UnionExp().copy());
         if (e2.type.value.isintegral())
@@ -600,12 +613,14 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Shl<Loc, Type, Expression, Expression>
     public static UnionExp Shl(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() << (int)e2.toInteger(), type));
         return ue.value;
     }
 
+    // Erasure: Shr<Loc, Type, Expression, Expression>
     public static UnionExp Shr(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         long value = e1.toInteger();
@@ -651,6 +666,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Ushr<Loc, Type, Expression, Expression>
     public static UnionExp Ushr(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         long value = e1.toInteger();
@@ -688,24 +704,28 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: And<Loc, Type, Expression, Expression>
     public static UnionExp And(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() & e2.toInteger(), type));
         return ue.value;
     }
 
+    // Erasure: Or<Loc, Type, Expression, Expression>
     public static UnionExp Or(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() | e2.toInteger(), type));
         return ue.value;
     }
 
+    // Erasure: Xor<Loc, Type, Expression, Expression>
     public static UnionExp Xor(Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         ptr(ue) = new UnionExp(new IntegerExp(loc, e1.toInteger() ^ e2.toInteger(), type));
         return ue.value;
     }
 
+    // Erasure: Equal<byte, Loc, Type, Expression, Expression>
     public static UnionExp Equal(byte op, Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         int cmp = 0;
@@ -984,6 +1004,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Identity<byte, Loc, Type, Expression, Expression>
     public static UnionExp Identity(byte op, Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         int cmp = 0;
@@ -1031,6 +1052,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Cmp<byte, Loc, Type, Expression, Expression>
     public static UnionExp Cmp(byte op, Loc loc, Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         long n = 0L;
@@ -1097,6 +1119,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Cast<Loc, Type, Type, Expression>
     public static UnionExp Cast(Loc loc, Type type, Type to, Expression e1) {
         Ref<UnionExp> ue = ref(null);
         Type tb = to.toBasetype();
@@ -1259,6 +1282,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: ArrayLength<Type, Expression>
     public static UnionExp ArrayLength(Type type, Expression e1) {
         Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
@@ -1291,6 +1315,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Index<Type, Expression, Expression>
     public static UnionExp Index(Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
@@ -1409,6 +1434,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Slice<Type, Expression, Expression, Expression>
     public static UnionExp Slice(Type type, Expression e1, Expression lwr, Expression upr) {
         Ref<UnionExp> ue = ref(null);
         Loc loc = e1.loc.copy();
@@ -1465,6 +1491,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: sliceAssignArrayLiteralFromString<ArrayLiteralExp, StringExp, int>
     public static void sliceAssignArrayLiteralFromString(ArrayLiteralExp existingAE, StringExp newval, int firstIndex) {
         int len = newval.len;
         Type elemType = existingAE.type.value.nextOf();
@@ -1479,6 +1506,7 @@ public class constfold {
         }
     }
 
+    // Erasure: sliceAssignStringFromArrayLiteral<StringExp, ArrayLiteralExp, int>
     public static void sliceAssignStringFromArrayLiteral(StringExp existingSE, ArrayLiteralExp newae, int firstIndex) {
         assert(((existingSE.ownedByCtfe & 0xFF) != 0));
         {
@@ -1491,6 +1519,7 @@ public class constfold {
         }
     }
 
+    // Erasure: sliceAssignStringFromString<StringExp, StringExp, int>
     public static void sliceAssignStringFromString(StringExp existingSE, StringExp newstr, int firstIndex) {
         assert(((existingSE.ownedByCtfe & 0xFF) != 0));
         int sz = (existingSE.sz & 0xFF);
@@ -1498,12 +1527,14 @@ public class constfold {
         memcpy((BytePtr)((existingSE.string.plus((firstIndex * sz)))), (newstr.string), (sz * newstr.len));
     }
 
+    // Erasure: sliceCmpStringWithString<StringExp, StringExp, int, int, int>
     public static int sliceCmpStringWithString(StringExp se1, StringExp se2, int lo1, int lo2, int len) {
         int sz = (se1.sz & 0xFF);
         assert((sz == (se2.sz & 0xFF)));
         return memcmp((se1.string.plus((sz * lo1))), (se2.string.plus((sz * lo2))), sz * len);
     }
 
+    // Erasure: sliceCmpStringWithArray<StringExp, ArrayLiteralExp, int, int, int>
     public static int sliceCmpStringWithArray(StringExp se1, ArrayLiteralExp ae2, int lo1, int lo2, int len) {
         {
             int __key844 = 0;
@@ -1522,6 +1553,7 @@ public class constfold {
         return 0;
     }
 
+    // Erasure: copyElements<Expression, Expression>
     public static Ptr<DArray<Expression>> copyElements(Expression e1, Expression e2) {
         Ptr<DArray<Expression>> elems = refPtr(new DArray<Expression>());
         Function1<ArrayLiteralExp,Void> append = new Function1<ArrayLiteralExp,Void>() {
@@ -1572,9 +1604,10 @@ public class constfold {
 
     // defaulted all parameters starting with #2
     public static Ptr<DArray<Expression>> copyElements(Expression e1) {
-        return copyElements(e1, null);
+        return copyElements(e1, (Expression)null);
     }
 
+    // Erasure: Cat<Type, Expression, Expression>
     public static UnionExp Cat(Type type, Expression e1, Expression e2) {
         Ref<UnionExp> ue = ref(null);
         Expression e = CTFEExp.cantexp;
@@ -1939,6 +1972,7 @@ public class constfold {
         return ue.value;
     }
 
+    // Erasure: Ptr<Type, Expression>
     public static UnionExp Ptr(Type type, Expression e1) {
         Ref<UnionExp> ue = ref(null);
         if (((e1.op & 0xFF) == 74))

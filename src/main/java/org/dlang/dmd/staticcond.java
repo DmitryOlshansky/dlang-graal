@@ -23,6 +23,7 @@ import static org.dlang.dmd.utils.*;
 
 public class staticcond {
 
+    // Erasure: evalStaticCondition<Ptr, Expression, Expression, boolean>
     public static boolean evalStaticCondition(Ptr<Scope> sc, Expression exp, Expression e, Ref<Boolean> errors) {
         if (((e.op & 0xFF) == 101) || ((e.op & 0xFF) == 102))
         {

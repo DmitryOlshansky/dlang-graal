@@ -286,6 +286,7 @@ public class tokens {
                 }
             }
         }
+        // Erasure: isKeyword<>
         public  int isKeyword() {
             {
                 ByteSlice __r132 = keywords.copy();
@@ -301,6 +302,7 @@ public class tokens {
             return 0;
         }
 
+        // Erasure: setString<Ptr, int>
         public  void setString(BytePtr ptr, int length) {
             BytePtr s = pcopy(((BytePtr)Mem.xmalloc(length + 1)));
             memcpy((BytePtr)(s), (ptr), length);
@@ -310,16 +312,19 @@ public class tokens {
             this.postfix = (byte)0;
         }
 
+        // Erasure: setString<OutBuffer>
         public  void setString(OutBuffer buf) {
             this.setString(toBytePtr(buf.data), buf.offset);
         }
 
+        // Erasure: setString<>
         public  void setString() {
             this.ustring = pcopy(new BytePtr(""));
             this.len = 0;
             this.postfix = (byte)0;
         }
 
+        // Erasure: toChars<>
         public  BytePtr toChars() {
             BytePtr p = pcopy(tokens.toCharsbuffer.ptr());
             {
@@ -496,10 +501,12 @@ public class tokens {
             return p;
         }
 
+        // Erasure: toChars<byte>
         public static BytePtr toChars(byte value) {
             return toBytePtr(asString(value));
         }
 
+        // Erasure: asString<byte>
         public static ByteSlice asString(byte value) {
             return tochars.get((value & 0xFF));
         }
