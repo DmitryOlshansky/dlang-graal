@@ -650,7 +650,7 @@ public class mtype {
                 buf.value.reserve(16);
                 Ref<HdrGenState> hgs = ref(new HdrGenState());
                 hgs.value.fullQual = ((this.ty & 0xFF) == ENUMTY.Tclass) && (this.mod == 0);
-                toCBuffer(this, ptr(buf), null, ptr(hgs));
+                toCBuffer(this, ptr(buf), (Identifier)null, ptr(hgs));
                 return buf.value.extractChars();
             }
             finally {
@@ -663,7 +663,7 @@ public class mtype {
                 buf.value.reserve(16);
                 Ref<HdrGenState> hgs = ref(new HdrGenState());
                 hgs.value.fullQual = QualifyTypes;
-                toCBuffer(this, ptr(buf), null, ptr(hgs));
+                toCBuffer(this, ptr(buf), (Identifier)null, ptr(hgs));
                 return buf.value.extractChars();
             }
             finally {

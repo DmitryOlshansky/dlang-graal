@@ -1564,6 +1564,9 @@ private void argsToBuffer(Expressions* expressions, TextBuffer buf, ExprOpts opt
                 tmp.put(printParent(var.var, opts));
                 tmp.put(var.var.varName(opts));
             }
+            else if (fd && n && fd.parameters && i < fd.parameters.length && fd.overnext) {
+                tmp.fmt("(%s)null", (*fd.parameters)[i].type.toJava(opts));
+            }
             else if (var && var.var in opts.refParams.top && refParam) {
                 tmp.put(printParent(var.var, opts));
                 tmp.put(var.var.varName(opts));

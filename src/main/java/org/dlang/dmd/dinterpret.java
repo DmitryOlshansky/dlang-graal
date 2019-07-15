@@ -247,7 +247,7 @@ public class dinterpret {
         CompiledCtfeFunction ctfeCodeGlobal = ctfeCodeGlobal = new CompiledCtfeFunction(null);
         ctfeCodeGlobal.callingloc.opAssign(e.loc.copy());
         ctfeCodeGlobal.onExpression(e);
-        Expression result = interpret(e, null, CtfeGoal.ctfeNeedRvalue);
+        Expression result = interpret(e, (Ptr<InterState>)null, CtfeGoal.ctfeNeedRvalue);
         if (!CTFEExp.isCantExp(result))
         {
             result = scrubReturnValue(e.loc, result);

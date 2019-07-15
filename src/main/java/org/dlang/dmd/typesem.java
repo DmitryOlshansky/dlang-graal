@@ -3598,7 +3598,7 @@ public class typesem {
                                     e_ref.value.error(new BytePtr("circular initialization of %s `%s`"), v.kind(), v.toPrettyChars(false));
                                     return new ErrorExp();
                                 }
-                                checkAccess(e_ref.value.loc, sc, null, (Declaration)v);
+                                checkAccess(e_ref.value.loc, sc, (Expression)null, (Declaration)v);
                                 Ref<Expression> ve = ref(new VarExp(e_ref.value.loc, v, true));
                                 if (!isTrivialExp(e_ref.value))
                                 {
@@ -4027,7 +4027,7 @@ public class typesem {
                                     e_ref.value.error(new BytePtr("circular initialization of %s `%s`"), v.kind(), v.toPrettyChars(false));
                                     return new ErrorExp();
                                 }
-                                checkAccess(e_ref.value.loc, sc, null, (Declaration)v);
+                                checkAccess(e_ref.value.loc, sc, (Expression)null, (Declaration)v);
                                 Ref<Expression> ve = ref(new VarExp(e_ref.value.loc, v, true));
                                 ve.value = expressionSemantic(ve.value, sc);
                                 return ve.value;

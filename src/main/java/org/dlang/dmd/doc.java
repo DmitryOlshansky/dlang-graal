@@ -632,7 +632,7 @@ public class doc {
                     else
                     {
                         Ref<HdrGenState> hgs = ref(new HdrGenState());
-                        toCBuffer((bc.get()).type, this.buf, null, ptr(hgs));
+                        toCBuffer((bc.get()).type, this.buf, (Identifier)null, ptr(hgs));
                     }
                 }
             }
@@ -649,7 +649,7 @@ public class doc {
             {
                 (this.buf.get()).writestring(new ByteSlice(": $(DDOC_ENUM_BASETYPE "));
                 Ref<HdrGenState> hgs = ref(new HdrGenState());
-                toCBuffer(ed.memtype, this.buf, null, ptr(hgs));
+                toCBuffer(ed.memtype, this.buf, (Identifier)null, ptr(hgs));
                 (this.buf.get()).writestring(new ByteSlice(")"));
             }
             (this.buf.get()).writestring(new ByteSlice(";\n"));

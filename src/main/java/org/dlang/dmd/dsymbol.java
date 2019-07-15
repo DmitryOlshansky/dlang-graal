@@ -1910,7 +1910,7 @@ public class dsymbol {
     {
         public ScopeDsymbol forward = null;
         public  ForwardingScopeDsymbol(ScopeDsymbol forward) {
-            super(null);
+            super((Identifier)null);
             this.forward = forward;
         }
 

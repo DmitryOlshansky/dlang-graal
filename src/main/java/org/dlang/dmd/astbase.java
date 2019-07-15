@@ -8625,15 +8625,11 @@ public class astbase {
             public ForeachStatement aggrfe = null;
             public ForeachRangeStatement rangefe = null;
             public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
-                {
-                    {
-                        assert(aggrfe != null ^ rangefe != null);
-                    }
-                }
                 super();
                 this.loc.opAssign(loc.copy());
                 this.aggrfe = aggrfe;
                 this.rangefe = rangefe;
+                assert(aggrfe != null ^ rangefe != null);
             }
 
 

@@ -4918,7 +4918,7 @@ public class expressionsem {
                         return ;
                     }
                     checkFunctionAttributes(exp, this.sc, exp.f);
-                    checkAccess(exp.loc, this.sc, null, exp.f);
+                    checkAccess(exp.loc, this.sc, (Expression)null, exp.f);
                     exp.e1.value = new DotVarExp(exp.e1.value.loc, exp.e1.value, exp.f, false);
                     exp.e1.value = expressionSemantic(exp.e1.value, this.sc);
                     t1 = exp.e1.value.type.value;
@@ -5192,7 +5192,7 @@ public class expressionsem {
                         }
                     }
                     checkFunctionAttributes(exp, this.sc, exp.f);
-                    checkAccess(exp.loc, this.sc, null, exp.f);
+                    checkAccess(exp.loc, this.sc, (Expression)null, exp.f);
                     if (exp.f.checkNestedReference(this.sc, exp.loc))
                     {
                         this.setError();

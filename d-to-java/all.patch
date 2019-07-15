@@ -1,5 +1,5 @@
 diff --git a/src/main/java/org/dlang/dmd/astbase.java b/src/main/java/org/dlang/dmd/astbase.java
-index d946482..7ba9007 100644
+index 9600738..9c19f61 100644
 --- a/src/main/java/org/dlang/dmd/astbase.java
 +++ b/src/main/java/org/dlang/dmd/astbase.java
 @@ -5951,7 +5951,7 @@ public class astbase {
@@ -11,8 +11,21 @@ index d946482..7ba9007 100644
                                  break;
                              case 15:
                                  this.value = (long)(int)this.value;
+@@ -6722,7 +6722,11 @@ public class astbase {
+         public static class VarExp extends SymbolExp
+         {
+             public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
+-                super(loc, TOK.variable, 29, var, var.isVarDeclaration() == null && hasOverloads);
++                if (var.isVarDeclaration() != null)
++                {
++                    hasOverloads = false;
++                }
++                super(loc, TOK.variable, 29, var, hasOverloads);
+                 this.type = var.type;
+             }
+ 
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
-index 24b62d8..e4857c6 100644
+index eae2c8c..73e923a 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
 +++ b/src/main/java/org/dlang/dmd/lexer.java
 @@ -1357,6 +1357,7 @@ public class lexer {
@@ -53,7 +66,7 @@ index 24b62d8..e4857c6 100644
                                      break;
                                  default:
 diff --git a/src/main/java/org/dlang/dmd/parse.java b/src/main/java/org/dlang/dmd/parse.java
-index 1fc98c7..5970e81 100644
+index 179681e..4a0c12d 100644
 --- a/src/main/java/org/dlang/dmd/parse.java
 +++ b/src/main/java/org/dlang/dmd/parse.java
 @@ -2711,13 +2711,14 @@ public class parse {
@@ -656,3 +669,25 @@ index 1fc98c7..5970e81 100644
                  break;
              }
              if ((((t.value.get()).value & 0xFF) != 2))
+diff --git a/src/main/java/org/dlang/dmd/target.java b/src/main/java/org/dlang/dmd/target.java
+index e46cc8d..8050d62 100644
+--- a/src/main/java/org/dlang/dmd/target.java
++++ b/src/main/java/org/dlang/dmd/target.java
+@@ -40,8 +40,6 @@ public class target {
+         public boolean reverseCppOverloads = false;
+         public boolean cppExceptions = false;
+         public boolean twoDtorInVtable = false;
+-        // from template FPTypeProperties!(Double)
+-
+         // from template FPTypeProperties!(Double)
+         public static class FPTypePropertiesDouble
+         {
+@@ -111,6 +109,8 @@ public class target {
+             }
+         }
+ 
++        // from template FPTypeProperties!(Double)
++
+         // from template FPTypeProperties!(Float)
+         public static class FPTypePropertiesFloat
+         {

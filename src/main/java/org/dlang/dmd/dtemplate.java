@@ -3027,7 +3027,7 @@ public class dtemplate {
                                                                 if ((tparam.specialization() != null) || (tparam.isTemplateTypeParameter() == null))
                                                                 {
                                                                     dedargs.get().set(i, oded);
-                                                                    int m2 = tparam.matchArg(instLoc, paramscope, dedargs, i, this.parameters, dedtypes, null);
+                                                                    int m2 = tparam.matchArg(instLoc, paramscope, dedargs, i, this.parameters, dedtypes, (Ptr<Declaration>)null);
                                                                     if ((m2 <= MATCH.nomatch))
                                                                     {
                                                                         /*goto Lnomatch*/throw Dispatch1.INSTANCE;
@@ -3379,7 +3379,7 @@ public class dtemplate {
                                     if ((tparam.specialization() != null) || (tparam.isTemplateTypeParameter() == null))
                                     {
                                         dedargs.get().set(i, oded);
-                                        int m2 = tparam.matchArg(instLoc, paramscope, dedargs, i, this.parameters, dedtypes, null);
+                                        int m2 = tparam.matchArg(instLoc, paramscope, dedargs, i, this.parameters, dedtypes, (Ptr<Declaration>)null);
                                         if ((m2 <= MATCH.nomatch))
                                         {
                                             /*goto Lnomatch*/throw Dispatch1.INSTANCE;
@@ -3425,7 +3425,7 @@ public class dtemplate {
                                     if (tparam.specialization() != null)
                                     {
                                         dedargs.get().set(i, oded);
-                                        int m2 = tparam.matchArg(instLoc, paramscope, dedargs, i, this.parameters, dedtypes, null);
+                                        int m2 = tparam.matchArg(instLoc, paramscope, dedargs, i, this.parameters, dedtypes, (Ptr<Declaration>)null);
                                         if ((m2 <= MATCH.nomatch))
                                         {
                                             /*goto Lnomatch*/throw Dispatch1.INSTANCE;
