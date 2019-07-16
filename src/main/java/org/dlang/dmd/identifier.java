@@ -186,7 +186,7 @@ public class identifier {
                     }}
 
                 };
-                Function1<Ref<Integer>,Integer> __lambda8 = new Function1<Ref<Integer>,Integer>() {
+                Function1<Integer,Integer> __lambda8 = new Function1<Integer,Integer>() {
                     public Integer invoke(Integer counter) {
                      {
                         idBuf.writestring(new ByteSlice("_"));

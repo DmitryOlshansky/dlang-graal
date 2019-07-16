@@ -7,6 +7,7 @@ object gluelayer {
 
     interface TYPE
     interface Symbol
+    interface code
 
     fun asmSemantic(s: statement.AsmStatement, sc: Ptr<dscope.Scope>): statement.Statement? {
         sc.get()!!.func.hasReturnExp = 8

@@ -5177,7 +5177,7 @@ public class doc {
                                 continue;
                             }
                             TemplateDeclaration td = fd.parent.value.isTemplateDeclaration();
-                            DArray<int> paramLens = new DArray<int>();
+                            DArray<Integer> paramLens = new DArray<Integer>();
                             try {
                                 paramLens.reserve((td.parameters.get()).length);
                                 Ref<OutBuffer> parametersBuf = ref(new OutBuffer());

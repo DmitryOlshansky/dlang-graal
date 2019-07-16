@@ -99,10 +99,10 @@ const(char)[] symbol(Identifier s) {
 }
 
 ///
-string toJavaFunc(TypeFunction t, ExprOpts opts)
+string toJavaFunc(TypeFunction t, ExprOpts opts, bool isLambda)
 {
     scope TextBuffer buf = new TextBuffer();
-    visitFuncIdentWithPostfix(t, buf, opts);
+    visitFuncIdentWithPostfix(t, buf, opts, isLambda);
     return buf.data.dup;
 }
 
@@ -2022,7 +2022,7 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
             buf.put("<");
             foreach(i, arg; (*ti.tiargs)[]) {
                 if(i) buf.put(",");
-                if (auto atype = isType(arg)) buf.put(atype.toJava(opts));
+                if (auto atype = isType(arg)) buf.put(atype.toJava(opts, Boxing.yes));
                 else buf.put(arg.toString());
             }
             buf.put(">");
@@ -2139,7 +2139,7 @@ private void parametersToBuffer(ParameterList pl, TextBuffer buf, ExprOpts opts,
 }
 
 
-private void visitFuncIdentWithPostfix(TypeFunction t, TextBuffer buf, ExprOpts opts)
+private void visitFuncIdentWithPostfix(TypeFunction t, TextBuffer buf, ExprOpts opts, bool isLambda=false)
 {
     if (t.inuse)
     {
@@ -2151,9 +2151,10 @@ private void visitFuncIdentWithPostfix(TypeFunction t, TextBuffer buf, ExprOpts 
     if (t.parameterList){
         foreach(i, p; *t.parameterList) {
             if (i) buf.put(",");
-            if (p.storageClass & (STC.ref_ | STC.out_)) buf.put("Ref<");
+            bool refness = (p.storageClass & (STC.ref_ | STC.out_)) && !isLambda;
+            if (refness) buf.put("Ref<");
             typeToBuffer(p.type, buf, opts, Boxing.yes);
-            if (p.storageClass & (STC.ref_ | STC.out_)) buf.put(">");
+            if (refness) buf.put(">");
         }
     }
     if (t.parameterList && t.parameterList.length > 0) buf.put(",");

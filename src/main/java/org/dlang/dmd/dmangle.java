@@ -76,8 +76,8 @@ public class dmangle {
 
     public static class Mangler extends Visitor
     {
-        public AA<Type,int> types = new AA<Type,int>();
-        public AA<Identifier,int> idents = new AA<Identifier,int>();
+        public AA<Type,Integer> types = new AA<Type,Integer>();
+        public AA<Identifier,Integer> idents = new AA<Identifier,Integer>();
         public Ptr<OutBuffer> buf = null;
         // Erasure: __ctor<Ptr>
         public  Mangler(Ptr<OutBuffer> buf) {

@@ -43,7 +43,7 @@ public class traits {
     private static class PointerBitmapVisitor extends Visitor
     {
         // Erasure: __ctor<Ptr, long>
-        public  PointerBitmapVisitor(Ptr<DArray<long>> _data, long _sz_size_t) {
+        public  PointerBitmapVisitor(Ptr<DArray<Long>> _data, long _sz_size_t) {
             this.data = pcopy(_data);
             this.sz_size_t = _sz_size_t;
         }
@@ -231,7 +231,7 @@ public class traits {
             this.offset = classoff;
         }
 
-        private Ptr<DArray<long>> data = null;
+        private Ptr<DArray<Long>> data = null;
         private long offset = 0L;
         private long sz_size_t = 0L;
         private boolean error = false;
@@ -273,7 +273,7 @@ public class traits {
         }
     }
     // Erasure: getTypePointerBitmap<Loc, Type, Ptr>
-    public static long getTypePointerBitmap(Loc loc, Type t, Ptr<DArray<long>> data) {
+    public static long getTypePointerBitmap(Loc loc, Type t, Ptr<DArray<Long>> data) {
         long sz = 0L;
         if (((t.ty & 0xFF) == ENUMTY.Tclass) && (((TypeClass)t).sym.isInterfaceDeclaration() == null))
         {
@@ -324,7 +324,7 @@ public class traits {
             error(e.loc, new BytePtr("`%s` is not a type"), (e.args.get()).get(0).toChars());
             return new ErrorExp();
         }
-        Ref<DArray<long>> data = ref(new DArray<long>());
+        Ref<DArray<Long>> data = ref(new DArray<Long>());
         try {
             long sz = getTypePointerBitmap(e.loc, t, ptr(data));
             if ((sz == -1L))

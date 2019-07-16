@@ -402,9 +402,9 @@ fun toStringz(s: ByteSlice) = s.ptr()
 // ========== AA ============
 fun<K,V> update(aa: AA<K,V>, key: K, ins:() -> V, upd:(V) -> V) {
     val s = aa.getLvalue(key)
-    val v = s.get(0)
+    val v = s as RefPtr<V>
     if (v == null) s.set(0, ins())
-    else s.set(0, upd(v))
+    else s.set(0, upd(v.ref.value))
 }
 
 // Goto exception singletons

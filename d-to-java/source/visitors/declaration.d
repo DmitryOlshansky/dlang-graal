@@ -1455,7 +1455,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                    if (i != 0) buf.fmt(", ");
                     auto box = p.storageClass & (STC.ref_ | STC.out_);
                     auto name = p.ident ? p.ident.toString : format("arg%d",i);
-                    if (box && !p.type.isTypeStruct && p.type.ty != Tarray && !p.type.isConst) {
+                    if (box && !isLambda && !p.type.isTypeStruct && p.type.ty != Tarray && !p.type.isConst) {
                         opts.refParams.top[p] = true;
                         buf.fmt("%s %s", refTypeOf(p.type), name);
                     }
@@ -1486,8 +1486,9 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     void printLocalFunction(FuncDeclaration func, bool isLambda = false) {
         auto t = func.type.isTypeFunction();
-        //stderr.writefln("\tLocal function %s", func.ident.toString);
-        buf.fmt("%s %s%s = new %s() {\n", t.toJavaFunc(opts), func.funcName, tiArgs.str, t.toJavaFunc(opts));
+        //buf.fmt("// Local function %s is lambda=%s\n", func.ident.toString, isLambda);
+        buf.fmt("%s %s%s = new %s() {\n", t.toJavaFunc(opts, isLambda), 
+            func.funcName, tiArgs.str, t.toJavaFunc(opts, isLambda));
         buf.indent;
         buf.fmt("public %s invoke(", t.nextOf.toJava(opts, Boxing.yes));
         VarDeclaration[] renamedVars = printParameters(func, Boxing.yes, isLambda);
