@@ -1,8 +1,8 @@
 diff --git a/src/main/java/org/dlang/dmd/astbase.java b/src/main/java/org/dlang/dmd/astbase.java
-index 6bbe8fa..3df1af1 100644
+index c6818b1..efe5bdd 100644
 --- a/src/main/java/org/dlang/dmd/astbase.java
 +++ b/src/main/java/org/dlang/dmd/astbase.java
-@@ -2454,7 +2454,12 @@ public class astbase {
+@@ -2452,7 +2452,12 @@ public class astbase {
              public int baseok = 0;
              // Erasure: __ctor<Loc, Identifier, Ptr, Ptr, boolean>
              public  ClassDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses, Ptr<DArray<Dsymbol>> members, boolean inObject) {
@@ -16,7 +16,7 @@ index 6bbe8fa..3df1af1 100644
                  if (baseclasses != null)
                  {
                      this.baseclasses = pcopy(baseclasses);
-@@ -6319,7 +6324,7 @@ public class astbase {
+@@ -6316,7 +6321,7 @@ public class astbase {
                                  break;
                              case 31:
                              case 14:
@@ -25,7 +25,7 @@ index 6bbe8fa..3df1af1 100644
                                  break;
                              case 15:
                                  this.value = (long)(int)this.value;
-@@ -7140,7 +7145,11 @@ public class astbase {
+@@ -7137,7 +7142,11 @@ public class astbase {
          {
              // Erasure: __ctor<Loc, Declaration, boolean>
              public  VarExp(Loc loc, Declaration var, boolean hasOverloads) {
@@ -38,8 +38,20 @@ index 6bbe8fa..3df1af1 100644
                  this.type = var.type;
              }
  
+@@ -9190,6 +9199,11 @@ public class astbase {
+             public ForeachRangeStatement rangefe = null;
+             // Erasure: __ctor<Loc, ForeachStatement, ForeachRangeStatement>
+             public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
++                {
++                    {
++                        assert(aggrfe != null ^ rangefe != null);
++                    }
++                }
+                 super();
+                 this.loc.opAssign(loc.copy());
+                 this.aggrfe = aggrfe;
 diff --git a/src/main/java/org/dlang/dmd/lexer.java b/src/main/java/org/dlang/dmd/lexer.java
-index be21c30..c378193 100644
+index 54c84e5..fd983fe 100644
 --- a/src/main/java/org/dlang/dmd/lexer.java
 +++ b/src/main/java/org/dlang/dmd/lexer.java
 @@ -1379,6 +1379,7 @@ public class lexer {
@@ -80,10 +92,10 @@ index be21c30..c378193 100644
                                      break;
                                  default:
 diff --git a/src/main/java/org/dlang/dmd/parse.java b/src/main/java/org/dlang/dmd/parse.java
-index aa9f931..8d29bdc 100644
+index 81eb252..ae6424d 100644
 --- a/src/main/java/org/dlang/dmd/parse.java
 +++ b/src/main/java/org/dlang/dmd/parse.java
-@@ -2751,13 +2751,14 @@ public class parse {
+@@ -2747,13 +2747,14 @@ public class parse {
                                          }
                                          else
                                          {
@@ -100,7 +112,7 @@ index aa9f931..8d29bdc 100644
                                          at = this.parseType(ptr(ai), null);
                                      }
                                      ae = null;
-@@ -3690,9 +3691,9 @@ public class parse {
+@@ -3686,9 +3687,9 @@ public class parse {
                      default:
                      return t;
                  }
@@ -112,7 +124,7 @@ index aa9f931..8d29bdc 100644
          }
  
          // Erasure: parseDeclarator<Type, Ptr, Ptr, Ptr, long, Ptr, Ptr>
-@@ -4522,8 +4523,7 @@ public class parse {
+@@ -4519,8 +4520,7 @@ public class parse {
              boolean literal = f.isFuncLiteralDeclaration() != null;
              this.linkage = LINK.d;
              boolean requireDo = false;
@@ -122,7 +134,7 @@ index aa9f931..8d29bdc 100644
              {
                  int __dispatch23 = 0;
                  dispatched_23:
-@@ -4584,7 +4584,7 @@ public class parse {
+@@ -4581,7 +4581,7 @@ public class parse {
                                  (f.frequires.get()).push(this.parseStatement(6, null, null));
                                  requireDo = true;
                              }
@@ -131,7 +143,7 @@ index aa9f931..8d29bdc 100644
                          case 176:
                              Loc loc_1 = this.token.value.loc.copy();
                              this.nextToken();
-@@ -4673,7 +4673,6 @@ public class parse {
+@@ -4670,7 +4670,6 @@ public class parse {
                          break;
                      }
                  } while(__dispatch23 != 0);
@@ -139,7 +151,7 @@ index aa9f931..8d29bdc 100644
              }
              if (literal && (f.fbody == null))
              {
-@@ -5102,9 +5101,6 @@ public class parse {
+@@ -5099,9 +5098,6 @@ public class parse {
                  return new ASTBase.StaticForeachDeclaration(new ASTBase.StaticForeach(loc, aggrfe, null), this.parseBlock(pLastDecl, null));
              }
          }
@@ -149,7 +161,7 @@ index aa9f931..8d29bdc 100644
  
  
          // Erasure: parseStatement<int, Ptr, Ptr>
-@@ -5340,7 +5336,7 @@ public class parse {
+@@ -5337,7 +5333,7 @@ public class parse {
                                  }
                                  else
                                  {
@@ -158,7 +170,7 @@ index aa9f931..8d29bdc 100644
                                  }
                                  if ((flags & ParseStatementFlags.scope_) != 0)
                                  {
-@@ -5449,7 +5445,7 @@ public class parse {
+@@ -5446,7 +5442,7 @@ public class parse {
                                  }
                              }
                              this.nextToken();
@@ -167,7 +179,7 @@ index aa9f931..8d29bdc 100644
                              break;
                          case 187:
                              ASTBase.Statement _body_1 = null;
-@@ -5520,11 +5516,12 @@ public class parse {
+@@ -5517,11 +5513,12 @@ public class parse {
                              s = this.parseForeach00(loc);
                              break;
                          case 183:
@@ -182,7 +194,7 @@ index aa9f931..8d29bdc 100644
                          /*LagainStc:*/
                          case -5:
                          __dispatch27 = 0;
-@@ -6393,7 +6390,6 @@ public class parse {
+@@ -6390,7 +6387,6 @@ public class parse {
                      }
                  } while(__dispatch30 != 0);
              }
@@ -190,7 +202,7 @@ index aa9f931..8d29bdc 100644
          }
  
          // Erasure: parseDefaultInitExp<>
-@@ -6473,7 +6469,7 @@ public class parse {
+@@ -6470,7 +6466,7 @@ public class parse {
          }
  
  
@@ -199,7 +211,7 @@ index aa9f931..8d29bdc 100644
          {
              public static final int no = 0;
              public static final int opt = 1;
-@@ -6569,98 +6565,102 @@ public class parse {
+@@ -6566,98 +6562,102 @@ public class parse {
                                      /*goto L4*/throw Dispatch.INSTANCE;
                                  }
                                  /*goto L3*/{ __dispatch36 = -3; continue dispatched_36; }
@@ -391,7 +403,7 @@ index aa9f931..8d29bdc 100644
                                  }
                                  break;
                              case 97:
-@@ -6952,7 +6952,7 @@ public class parse {
+@@ -6949,7 +6949,7 @@ public class parse {
                      } while(__dispatch39 != 0);
                  }
              }
@@ -400,7 +412,7 @@ index aa9f931..8d29bdc 100644
          }
  
          // defaulted all parameters starting with #5
-@@ -6971,7 +6971,7 @@ public class parse {
+@@ -6968,7 +6968,7 @@ public class parse {
          L_outer20:
              for (; 1 != 0;t.value = pcopy(this.peek(t.value))){
              /*L1:*/
@@ -409,7 +421,7 @@ index aa9f931..8d29bdc 100644
                      int __dispatch41 = 0;
                      dispatched_41:
                      do {
-@@ -7008,7 +7008,7 @@ public class parse {
+@@ -7005,7 +7005,7 @@ public class parse {
                                  }
                                  /*goto L1*/throw Dispatch0.INSTANCE;
                              default:
@@ -418,7 +430,7 @@ index aa9f931..8d29bdc 100644
                                  if (!this.isBasicType(ptr(t)))
                                  {
                                      return false;
-@@ -7028,7 +7028,7 @@ public class parse {
+@@ -7025,7 +7025,7 @@ public class parse {
                                      {
                                          return false;
                                      }
@@ -427,7 +439,7 @@ index aa9f931..8d29bdc 100644
                                  if ((((t.value.get()).value & 0xFF) == 10))
                                  {
                                      t.value = pcopy(this.peek(t.value));
-@@ -7042,8 +7042,7 @@ public class parse {
+@@ -7039,8 +7039,7 @@ public class parse {
                              break;
                          }
                      } while(__dispatch41 != 0);
@@ -437,7 +449,7 @@ index aa9f931..8d29bdc 100644
                  break;
              }
              if ((((t.value.get()).value & 0xFF) != 2))
-@@ -11147,12 +11146,14 @@ public class parse {
+@@ -11144,12 +11143,14 @@ public class parse {
                                          }
                                          else
                                          {
@@ -454,7 +466,7 @@ index aa9f931..8d29bdc 100644
                                          at = this.parseType(ptr(ai), null);
                                      }
                                      ae = null;
-@@ -14956,103 +14957,109 @@ public class parse {
+@@ -14954,103 +14955,109 @@ public class parse {
                                  t.value = pcopy(this.peek(t.value));
                                  if ((((t.value.get()).value & 0xFF) == 91))
                                  {
@@ -654,7 +666,7 @@ index aa9f931..8d29bdc 100644
                              case 39:
                              case 229:
                                  t.value = pcopy(this.peek(t.value));
-@@ -15359,7 +15366,7 @@ public class parse {
+@@ -15357,7 +15364,7 @@ public class parse {
          L_outer42:
              for (; 1 != 0;t.value = pcopy(this.peek(t.value))){
              /*L1:*/
@@ -663,7 +675,7 @@ index aa9f931..8d29bdc 100644
                      int __dispatch96 = 0;
                      dispatched_96:
                      do {
-@@ -15396,6 +15403,7 @@ public class parse {
+@@ -15394,6 +15401,7 @@ public class parse {
                                  }
                                  /*goto L1*/throw Dispatch0.INSTANCE;
                              default:
@@ -671,7 +683,7 @@ index aa9f931..8d29bdc 100644
                                  if (!this.isBasicType(ptr(t)))
                                  {
                                      return false;
-@@ -15427,9 +15435,9 @@ public class parse {
+@@ -15425,9 +15433,9 @@ public class parse {
                                  continue L_outer42;
                              }
                              break;
