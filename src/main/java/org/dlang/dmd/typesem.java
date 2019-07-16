@@ -218,7 +218,7 @@ public class typesem {
                         pt.set(0, Type.terror);
                         return ;
                     }
-                    Function0<Void> helper3 = new Function0<Void>() {
+                    Runnable0 helper3 = new Runnable0() {
                         public Void invoke() {
                          {
                             Ref<Expression> e = ref(null);
@@ -2464,7 +2464,7 @@ public class typesem {
     // Erasure: resolve<Type, Loc, Ptr, Ptr, Ptr, Ptr, boolean>
     public static void resolve(Type mt, Loc loc, Ptr<Scope> sc, Ptr<Expression> pe, Ptr<Type> pt, Ptr<Dsymbol> ps, boolean intypeid) {
         Ref<Ptr<Scope>> sc_ref = ref(sc);
-        Function1<Expression,Void> returnExp = new Function1<Expression,Void>() {
+        Runnable1<Expression> returnExp = new Runnable1<Expression>() {
             public Void invoke(Expression e) {
              {
                 pt.set(0, null);
@@ -2474,7 +2474,7 @@ public class typesem {
             }}
 
         };
-        Function1<Type,Void> returnType = new Function1<Type,Void>() {
+        Runnable1<Type> returnType = new Runnable1<Type>() {
             public Void invoke(Type t) {
              {
                 pt.set(0, t);
@@ -2484,7 +2484,7 @@ public class typesem {
             }}
 
         };
-        Function1<Dsymbol,Void> returnSymbol = new Function1<Dsymbol,Void>() {
+        Runnable1<Dsymbol> returnSymbol = new Runnable1<Dsymbol>() {
             public Void invoke(Dsymbol s) {
              {
                 pt.set(0, null);
@@ -2494,7 +2494,7 @@ public class typesem {
             }}
 
         };
-        Function0<Void> returnError = new Function0<Void>() {
+        Runnable0 returnError = new Runnable0() {
             public Void invoke() {
              {
                 returnType.invoke(Type.terror);
@@ -2502,7 +2502,7 @@ public class typesem {
             }}
 
         };
-        Function1<Type,Void> visitType = new Function1<Type,Void>() {
+        Runnable1<Type> visitType = new Runnable1<Type>() {
             public Void invoke(Type mt) {
              {
                 Type t = typeSemantic(mt, loc, sc_ref.value);
@@ -2512,7 +2512,7 @@ public class typesem {
             }}
 
         };
-        Function1<TypeSArray,Void> visitSArray = new Function1<TypeSArray,Void>() {
+        Runnable1<TypeSArray> visitSArray = new Runnable1<TypeSArray>() {
             public Void invoke(TypeSArray mt) {
              {
                 resolve(mt.next.value, loc, sc_ref.value, pe, pt, ps, intypeid);
@@ -2596,7 +2596,7 @@ public class typesem {
             }}
 
         };
-        Function1<TypeDArray,Void> visitDArray = new Function1<TypeDArray,Void>() {
+        Runnable1<TypeDArray> visitDArray = new Runnable1<TypeDArray>() {
             public Void invoke(TypeDArray mt) {
              {
                 resolve(mt.next.value, loc, sc_ref.value, pe, pt, ps, intypeid);
@@ -2636,7 +2636,7 @@ public class typesem {
             }}
 
         };
-        Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>() {
+        Runnable1<TypeAArray> visitAArray = new Runnable1<TypeAArray>() {
             public Void invoke(TypeAArray mt) {
              {
                 if (((mt.index.ty & 0xFF) == ENUMTY.Tident) || ((mt.index.ty & 0xFF) == ENUMTY.Tinstance) || ((mt.index.ty & 0xFF) == ENUMTY.Tsarray))
@@ -2665,7 +2665,7 @@ public class typesem {
             }}
 
         };
-        Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+        Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
             public Void invoke(Dsymbol s) {
              {
                 semanticOnMixin.invoke(s);
@@ -2673,7 +2673,7 @@ public class typesem {
             }}
 
         };
-        Function1<TypeIdentifier,Void> visitIdentifier = new Function1<TypeIdentifier,Void>() {
+        Runnable1<TypeIdentifier> visitIdentifier = new Runnable1<TypeIdentifier>() {
             public Void invoke(TypeIdentifier mt) {
              {
                 if (mt.ident.equals(Id._super) || mt.ident.equals(Id.This) && (hasThis(sc_ref.value) == null))
@@ -2728,7 +2728,7 @@ public class typesem {
                     ScopeDsymbol sds = ((sc_ref.value.get()).enclosing.get()).scopesym;
                     if ((sds != null) && (sds.members != null))
                     {
-                        Function1<Dsymbol,Void> semanticOnMixin = new Function1<Dsymbol,Void>() {
+                        Runnable1<Dsymbol> semanticOnMixin = new Runnable1<Dsymbol>() {
                             public Void invoke(Dsymbol member) {
                              {
                                 {
@@ -2781,7 +2781,7 @@ public class typesem {
             }}
 
         };
-        Function1<TypeInstance,Void> visitInstance = new Function1<TypeInstance,Void>() {
+        Runnable1<TypeInstance> visitInstance = new Runnable1<TypeInstance>() {
             public Void invoke(TypeInstance mt) {
              {
                 dsymbolSemantic(mt.tempinst, sc_ref.value);
@@ -2798,7 +2798,7 @@ public class typesem {
             }}
 
         };
-        Function1<TypeTypeof,Void> visitTypeof = new Function1<TypeTypeof,Void>() {
+        Runnable1<TypeTypeof> visitTypeof = new Runnable1<TypeTypeof>() {
             public Void invoke(TypeTypeof mt) {
              {
                 if ((sc_ref.value == null))
@@ -2897,7 +2897,7 @@ public class typesem {
             }}
 
         };
-        Function1<TypeReturn,Void> visitReturn = new Function1<TypeReturn,Void>() {
+        Runnable1<TypeReturn> visitReturn = new Runnable1<TypeReturn>() {
             public Void invoke(TypeReturn mt) {
              {
                 Ref<Type> t = ref(null);
@@ -2949,7 +2949,7 @@ public class typesem {
             }}
 
         };
-        Function1<TypeSlice,Void> visitSlice = new Function1<TypeSlice,Void>() {
+        Runnable1<TypeSlice> visitSlice = new Runnable1<TypeSlice>() {
             public Void invoke(TypeSlice mt) {
              {
                 resolve(mt.next.value, loc, sc_ref.value, pe, pt, ps, intypeid);

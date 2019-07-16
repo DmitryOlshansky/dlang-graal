@@ -1070,10 +1070,11 @@ public class dmangle {
 
         // Erasure: paramsToDecoBuffer<Ptr>
         public  void paramsToDecoBuffer(Ptr<DArray<Parameter>> parameters) {
+            Mangler __self = this;
             Function2<Integer,Parameter,Integer> paramsToDecoBufferDg = new Function2<Integer,Parameter,Integer>() {
                 public Integer invoke(Integer n, Parameter p) {
                  {
-                    p.accept(this);
+                    p.accept(__self);
                     return 0;
                 }}
 

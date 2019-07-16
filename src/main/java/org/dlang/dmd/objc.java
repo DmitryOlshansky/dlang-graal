@@ -495,6 +495,7 @@ public class objc {
             ClassDeclaration __result = null;
             Ref<FuncDeclaration> fd_ref = ref(fd);
             Ref<ClassDeclaration> cd_ref = ref(cd);
+            Supported __self = this;
             try {
                 if ((cd_ref.value.classKind == ClassKind.objc) && fd_ref.value.isStatic() && !cd_ref.value.objc.isMeta)
                 {
@@ -509,7 +510,7 @@ public class objc {
             }
             catch(Dispatch0 __d){}
         /*__returnLabel:*/
-            Function3<Ref<ClassDeclaration>,Ref<FuncDeclaration>,Ref<ClassDeclaration>,Void> __ensure = new Function3<Ref<ClassDeclaration>,Ref<FuncDeclaration>,Ref<ClassDeclaration>,Void>() {
+            Runnable3<Ref<ClassDeclaration>,Ref<FuncDeclaration>,Ref<ClassDeclaration>> __ensure = new Runnable3<Ref<ClassDeclaration>,Ref<FuncDeclaration>,Ref<ClassDeclaration>>() {
                 public Void invoke(ClassDeclaration __result, Ref<FuncDeclaration> fd, Ref<ClassDeclaration> cd) {
                  {
                     {
@@ -578,6 +579,7 @@ public class objc {
 
         // Erasure: setMetaclass<InterfaceDeclaration, Ptr>
         public  void setMetaclass(InterfaceDeclaration interfaceDeclaration, Ptr<Scope> sc) {
+            Supported __self = this;
             Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration> newMetaclass = new Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration>() {
                 public InterfaceDeclaration invoke(Loc loc, Ptr<DArray<Ptr<BaseClass>>> metaBases) {
                  {
@@ -590,6 +592,7 @@ public class objc {
 
         // Erasure: setMetaclass<ClassDeclaration, Ptr>
         public  void setMetaclass(ClassDeclaration classDeclaration, Ptr<Scope> sc) {
+            Supported __self = this;
             Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration> newMetaclass = new Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration>() {
                 public ClassDeclaration invoke(Loc loc, Ptr<DArray<Ptr<BaseClass>>> metaBases) {
                  {

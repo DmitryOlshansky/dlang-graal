@@ -9,9 +9,13 @@ public class Mem {
         return new BytePtr(size*item);
     }
 
+    public static void error(){ throw new IllegalStateException("Mem.error"); }
+
     public static void xfree(BytePtr p) { }
 
     public static void xfree(ByteSlice p) { }
+
+    public static void xfree(Ptr p) { }
 
     public static BytePtr xstrdup(BytePtr ptr) {
         return strdup(ptr);

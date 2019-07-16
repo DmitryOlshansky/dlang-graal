@@ -4344,6 +4344,7 @@ public class expressionsem {
 
         // Erasure: visit<CallExp>
         public  void visit(CallExp exp) {
+            ExpressionSemanticVisitor __self = this;
             if (exp.type.value != null)
             {
                 this.result = exp;
@@ -7322,6 +7323,7 @@ public class expressionsem {
 
         // Erasure: visit<VectorExp>
         public  void visit(VectorExp exp) {
+            ExpressionSemanticVisitor __self = this;
             if (exp.type.value != null)
             {
                 this.result = exp;
@@ -8204,7 +8206,8 @@ public class expressionsem {
 
         // Erasure: visit<AssignExp>
         public  void visit(AssignExp exp) {
-            Function2<Expression,Integer,Void> setResult = new Function2<Expression,Integer,Void>() {
+            ExpressionSemanticVisitor __self = this;
+            Runnable2<Expression,Integer> setResult = new Runnable2<Expression,Integer>() {
                 public Void invoke(Expression e, Integer line) {
                  {
                     result = e;
@@ -9248,6 +9251,7 @@ public class expressionsem {
 
         // Erasure: visit<CatAssignExp>
         public  void visit(CatAssignExp exp) {
+            ExpressionSemanticVisitor __self = this;
             if (exp.type.value != null)
             {
                 this.result = exp;
@@ -10783,6 +10787,7 @@ public class expressionsem {
 
         // Erasure: visit<EqualExp>
         public  void visit(EqualExp exp) {
+            ExpressionSemanticVisitor __self = this;
             if (exp.type.value != null)
             {
                 this.result = exp;

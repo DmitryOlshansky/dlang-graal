@@ -2453,6 +2453,7 @@ public class lexer {
 
         // Erasure: getDocComment<Ptr, int, boolean>
         public  void getDocComment(Ptr<Token> t, int lineComment, boolean newParagraph) {
+            Lexer __self = this;
             byte ct = (t.get()).ptr.get(2);
             BytePtr q = pcopy((t.get()).ptr.plus(3));
             BytePtr qend = pcopy(this.p.value);
@@ -2501,7 +2502,7 @@ public class lexer {
             }
             OutBuffer buf = new OutBuffer();
             try {
-                Function0<Void> trimTrailingWhitespace = new Function0<Void>() {
+                Runnable0 trimTrailingWhitespace = new Runnable0() {
                     public Void invoke() {
                      {
                         ByteSlice s = buf.peekSlice().copy();

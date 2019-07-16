@@ -178,6 +178,7 @@ public class cppmangle {
 
         // Erasure: mangleReturnType<TypeFunction>
         public  void mangleReturnType(TypeFunction preSemantic) {
+            CppMangleVisitor __self = this;
             TypeFunction tf = (TypeFunction)asFuncDecl(this.context.res).type;
             Type rt = preSemantic.nextOf();
             if (tf.isref)
@@ -202,9 +203,10 @@ public class cppmangle {
 
         // Erasure: writeSequenceFromIndex<int>
         public  void writeSequenceFromIndex(int idx) {
+            CppMangleVisitor __self = this;
             if (idx != 0)
             {
-                Function1<Integer,Void> write_seq_id = new Function1<Integer,Void>() {
+                Runnable1<Integer> write_seq_id = new Runnable1<Integer>() {
                     public Void invoke(Integer i) {
                      {
                         Ref<Integer> i_ref = ref(i);
@@ -324,6 +326,7 @@ public class cppmangle {
 
         // Erasure: template_arg<TemplateInstance, int>
         public  void template_arg(TemplateInstance ti, int arg) {
+            CppMangleVisitor __self = this;
             TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
             assert(td != null);
             TemplateParameter tp = (td.parameters.get()).get(arg);
@@ -477,8 +480,8 @@ public class cppmangle {
             return template_args(ti, 0);
         }
 
-        // Erasure: writeChained<Dsymbol, Function0>
-        public  void writeChained(Dsymbol p, Function0<Void> dg) {
+        // Erasure: writeChained<Dsymbol, Runnable0>
+        public  void writeChained(Dsymbol p, Runnable0 dg) {
             if ((p != null) && (p.isModule() == null))
             {
                 (this.buf.get()).writestring(new ByteSlice("N"));
@@ -494,6 +497,7 @@ public class cppmangle {
 
         // Erasure: source_name<Dsymbol, boolean>
         public  void source_name(Dsymbol s, boolean haveNE) {
+            CppMangleVisitor __self = this;
             {
                 TemplateInstance ti = s.isTemplateInstance();
                 if ((ti) != null)
@@ -513,7 +517,7 @@ public class cppmangle {
                     else
                     {
                         this.append(ti.tempdecl);
-                        Function0<Void> __lambda3 = new Function0<Void>() {
+                        Runnable0 __lambda3 = new Runnable0() {
                             public Void invoke() {
                              {
                                 writeIdentifier(ti.tempdecl.toAlias().ident);
@@ -527,7 +531,7 @@ public class cppmangle {
                 }
                 else
                 {
-                    Function0<Void> __lambda4 = new Function0<Void>() {
+                    Runnable0 __lambda4 = new Runnable0() {
                         public Void invoke() {
                          {
                             writeIdentifier(s.ident);
@@ -896,12 +900,13 @@ public class cppmangle {
             }
         }
 
-        // Erasure: writeNamespace<CPPNamespaceDeclaration, Function0, boolean>
-        public  void writeNamespace(CPPNamespaceDeclaration ns, Function0<Void> dg, boolean haveNE) {
-            Function0<Void> runDg = new Function0<Void>() {
+        // Erasure: writeNamespace<CPPNamespaceDeclaration, Runnable0, boolean>
+        public  void writeNamespace(CPPNamespaceDeclaration ns, Runnable0 dg, boolean haveNE) {
+            CppMangleVisitor __self = this;
+            Runnable0 runDg = new Runnable0() {
                 public Void invoke() {
                  {
-                    if ((dg != (Function0<Void>)null))
+                    if ((dg != (Runnable0)null))
                     {
                         dg.invoke();
                     }
@@ -922,7 +927,7 @@ public class cppmangle {
                 }
                 runDg.invoke();
             }
-            else if ((dg != (Function0<Void>)null))
+            else if ((dg != (Runnable0)null))
             {
                 if (!haveNE)
                 {
@@ -930,7 +935,7 @@ public class cppmangle {
                 }
                 if (!this.substitute(ns))
                 {
-                    this.writeNamespace(ns.namespace, (Function0<Void>)null, false);
+                    this.writeNamespace(ns.namespace, (Runnable0)null, false);
                     this.writeIdentifier(ns.ident);
                     this.append(ns);
                 }
@@ -942,19 +947,20 @@ public class cppmangle {
             }
             else if (!this.substitute(ns))
             {
-                this.writeNamespace(ns.namespace, (Function0<Void>)null, false);
+                this.writeNamespace(ns.namespace, (Runnable0)null, false);
                 this.writeIdentifier(ns.ident);
                 this.append(ns);
             }
         }
 
         // defaulted all parameters starting with #3
-        public  void writeNamespace(CPPNamespaceDeclaration ns, Function0<Void> dg) {
+        public  void writeNamespace(CPPNamespaceDeclaration ns, Runnable0 dg) {
             writeNamespace(ns, dg, false);
         }
 
         // Erasure: mangleTemplatedFunction<FuncDeclaration, TypeFunction, TemplateDeclaration, TemplateInstance>
         public  void mangleTemplatedFunction(FuncDeclaration d, TypeFunction tf, TemplateDeclaration ftd, TemplateInstance ti) {
+            CppMangleVisitor __self = this;
             Dsymbol p = ti.toParent();
             if ((p == null) || (p.isModule() != null) || (tf.linkage != LINK.cpp))
             {
@@ -965,7 +971,7 @@ public class cppmangle {
                 Dsymbol nspace = ti.toParent();
                 if ((nspace != null) && (nspace.isNspace() != null))
                 {
-                    Function0<Void> __lambda5 = new Function0<Void>() {
+                    Runnable0 __lambda5 = new Runnable0() {
                         public Void invoke() {
                          {
                             source_name(ti, true);
@@ -1202,6 +1208,7 @@ public class cppmangle {
 
         // Erasure: mangleFunctionParameters<Ptr, int>
         public  void mangleFunctionParameters(Ptr<DArray<Parameter>> parameters, int varargs) {
+            CppMangleVisitor __self = this;
             Ref<Integer> numparams = ref(0);
             Function0<RootObject> __dgliteral4 = new Function0<RootObject>() {
                 public RootObject invoke() {
@@ -1283,6 +1290,7 @@ public class cppmangle {
 
         // Erasure: headOfType<Type>
         public  void headOfType(Type t) {
+            CppMangleVisitor __self = this;
             if (((t.ty & 0xFF) == ENUMTY.Tclass))
             {
                 this.mangleTypeClass((TypeClass)t, true);
@@ -1441,8 +1449,9 @@ public class cppmangle {
             return (params.get()).length;
         }
 
-        // Erasure: writeQualified<TemplateInstance, Function0>
-        public  void writeQualified(TemplateInstance t, Function0<Void> dg) {
+        // Erasure: writeQualified<TemplateInstance, Runnable0>
+        public  void writeQualified(TemplateInstance t, Runnable0 dg) {
+            CppMangleVisitor __self = this;
             Type type = isType(this.context.res);
             if (type == null)
             {
@@ -1482,7 +1491,7 @@ public class cppmangle {
                     sym2.accept(this);
                 }
             }
-            Function0<Void> __lambda3 = new Function0<Void>() {
+            Runnable0 __lambda3 = new Runnable0() {
                 public Void invoke() {
                  {
                     writeIdentifier(t.name);
@@ -1676,6 +1685,7 @@ public class cppmangle {
 
         // Erasure: visit<TypePointer>
         public  void visit(TypePointer t) {
+            CppMangleVisitor __self = this;
             if (t.isImmutable() || t.isShared())
             {
                 this.error(t);
@@ -1706,6 +1716,7 @@ public class cppmangle {
 
         // Erasure: visit<TypeReference>
         public  void visit(TypeReference t) {
+            CppMangleVisitor __self = this;
             if (this.substitute(t))
             {
                 return ;
@@ -1835,7 +1846,8 @@ public class cppmangle {
 
         // Erasure: visit<TemplateInstance>
         public  void visit(TemplateInstance t) {
-            Function0<Void> writeArgs = new Function0<Void>() {
+            CppMangleVisitor __self = this;
+            Runnable0 writeArgs = new Runnable0() {
                 public Void invoke() {
                  {
                     (buf.get()).writeByte(73);
@@ -1849,7 +1861,7 @@ public class cppmangle {
                                 RootObject o = __r859.get(__key858.value);
                                 int idx = __key858.value;
                                 context.res = (analyzed_ti.tiargs.get()).get(idx);
-                                visitObjectCppMangleVisitor(o, this);
+                                visitObjectCppMangleVisitor(o, __self);
                             }
                         }
                         if (((analyzed_ti.tiargs.get()).length > (t.tiargs.get()).length))
@@ -1866,25 +1878,25 @@ public class cppmangle {
                                         TemplateTypeParameter ttp = arg.isTemplateTypeParameter();
                                         if ((ttp) != null)
                                         {
-                                            ttp.defaultType.accept(this);
+                                            ttp.defaultType.accept(__self);
                                         }
                                         else {
                                             TemplateValueParameter tvp = arg.isTemplateValueParameter();
                                             if ((tvp) != null)
                                             {
-                                                tvp.defaultValue.accept(this);
+                                                tvp.defaultValue.accept(__self);
                                             }
                                             else {
                                                 TemplateThisParameter tvp = arg.isTemplateThisParameter();
                                                 if ((tvp) != null)
                                                 {
-                                                    tvp.defaultType.accept(this);
+                                                    tvp.defaultType.accept(__self);
                                                 }
                                                 else {
                                                     TemplateAliasParameter tvp = arg.isTemplateAliasParameter();
                                                     if ((tvp) != null)
                                                     {
-                                                        visitObjectCppMangleVisitor(tvp.defaultAlias, this);
+                                                        visitObjectCppMangleVisitor(tvp.defaultAlias, __self);
                                                     }
                                                     else
                                                     {

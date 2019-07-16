@@ -340,6 +340,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         schwartzSort!(x => x.fd.funcName)(lambdas);
         foreach (i, v; lambdas)  {
             auto sig = funcSig(v.fd);
+            opts.localFuncs[v.fd] = true;
             if (sig !in generatedFunctions.top) {
                 auto _ = pushed(opts.funcs, v.fd);
                 printLocalFunction(v.fd, true);
@@ -1407,7 +1408,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         }
     }
 
-    extern(D) void printFunctionBody(FuncDeclaration func, VarDeclaration[] renamedVars) {
+    extern(D) void printFunctionBody(FuncDeclaration func, VarDeclaration[] renamedVars, bool needsSelf = false) {
         if (func.fbody is null) 
             buf.put(";\n");
         else {
@@ -1417,6 +1418,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             foreach (var; renamedVars) {
                 buf.fmt("%s %s = ref(%s);\n", refType(var.type, opts), opts.renamed[var], var.ident.symbol);
             }
+            if (needsSelf) buf.fmt("%s __self = this;\n", func.isThis.type.toJava(opts));
             func.fbody.accept(this);
             if (!func.hasReturnExp && opts.funcs.length > 1 && func.type.nextOf.ty == Tvoid)
                 buf.put("return null;\n");
@@ -1506,7 +1508,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         //stderr.writefln("\tFunction %s", func.ident.toString);
         buf.fmt("// Erasure: %s\n", erasureOf(func, opts));
         VarDeclaration[] renamedVars = printGlobalFunctionHead(func);
-        printFunctionBody(func, renamedVars);
+        bool needsSelf = func.isThis !is null && hasLocalFunctions(func);
+        printFunctionBody(func, renamedVars, needsSelf);
         buf.put("\n\n");
         void printDefaulted(size_t split, Parameters* params) {
             foreach (j; 0..params.length) {

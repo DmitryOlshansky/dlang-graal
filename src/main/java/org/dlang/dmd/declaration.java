@@ -1099,6 +1099,7 @@ public class declaration {
 
         // Erasure: isUnique<>
         public  Dsymbol isUnique() {
+            OverDeclaration __self = this;
             if (!this.hasOverloads)
             {
                 if ((this.aliassym.isFuncDeclaration() != null) || (this.aliassym.isTemplateDeclaration() != null))

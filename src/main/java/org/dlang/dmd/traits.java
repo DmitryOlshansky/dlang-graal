@@ -1260,7 +1260,7 @@ public class traits {
                         ex = null;
                     }
                     AA<ByteSlice,Boolean> funcTypeHash = null;
-                    Function2<FuncDeclaration,Expression,Void> insertInterfaceInheritedFunction = new Function2<FuncDeclaration,Expression,Void>() {
+                    Runnable2<FuncDeclaration,Expression> insertInterfaceInheritedFunction = new Runnable2<FuncDeclaration,Expression>() {
                         public Void invoke(FuncDeclaration fd, Expression e) {
                          {
                             BytePtr funcType = pcopy(fd.type.toChars());
@@ -1438,7 +1438,7 @@ public class traits {
                 return new ErrorExp();
             }
             Ptr<DArray<Expression>> mods = refPtr(new DArray<Expression>());
-            Function1<ByteSlice,Void> addToMods = new Function1<ByteSlice,Void>() {
+            Runnable1<ByteSlice> addToMods = new Runnable1<ByteSlice>() {
                 public Void invoke(ByteSlice str) {
                  {
                     (mods.get()).push(new StringExp(Loc.initial, toBytePtr(str.getPtr(0)), str.getLength()));
@@ -1558,7 +1558,7 @@ public class traits {
                 stc &= -536870913L;
             }
             Ptr<DArray<Expression>> exps = refPtr(new DArray<Expression>());
-            Function1<ByteSlice,Void> push = new Function1<ByteSlice,Void>() {
+            Runnable1<ByteSlice> push = new Runnable1<ByteSlice>() {
                 public Void invoke(ByteSlice s) {
                  {
                     (exps.get()).push(new StringExp(e.loc, toBytePtr(s.getPtr(0)), s.getLength()));
@@ -1762,7 +1762,7 @@ public class traits {
                 {
                     dsymbolSemantic(cd, null);
                 }
-                Function1<ClassDeclaration,Void> pushBaseMembersDg = new Function1<ClassDeclaration,Void>() {
+                Runnable1<ClassDeclaration> pushBaseMembersDg = new Runnable1<ClassDeclaration>() {
                     public Void invoke(ClassDeclaration cd) {
                      {
                         {
@@ -2048,7 +2048,7 @@ public class traits {
             if (global.params.useUnitTests)
             {
                 AA<Object,Boolean> uniqueUnitTests = null;
-                Function1<Dsymbol,Void> symbolDg = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> symbolDg = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         {

@@ -873,6 +873,7 @@ public class opover {
 
         // Erasure: visit<EqualExp>
         public  void visit(EqualExp e) {
+            OpOverload __self = this;
             Type t1 = e.e1.value.type.value.toBasetype();
             Type t2 = e.e2.value.type.value.toBasetype();
             if (((t1.ty & 0xFF) == ENUMTY.Tarray) || ((t1.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.ty & 0xFF) == ENUMTY.Tarray) || ((t2.ty & 0xFF) == ENUMTY.Tsarray))

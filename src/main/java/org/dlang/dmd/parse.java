@@ -3979,6 +3979,7 @@ public class parse {
 
         // Erasure: parseDeclarations<boolean, Ptr, Ptr>
         public  Ptr<DArray<ASTBase.Dsymbol>> parseDeclarations(boolean autodecl, Ptr<PrefixAttributesASTBase> pAttrs, BytePtr comment) {
+            ParserASTBase __self = this;
             Ref<Long> storage_class = ref(0L);
             byte tok = TOK.reserved;
             Ref<Integer> link = ref(this.linkage);
@@ -4018,7 +4019,7 @@ public class parse {
                         }
                         this.check(TOK.assign);
                         Ref<Boolean> hasParsedAttributes = ref(false);
-                        Function0<Void> parseAttributes = new Function0<Void>() {
+                        Runnable0 parseAttributes = new Runnable0() {
                             public Void invoke() {
                              {
                                 if (hasParsedAttributes.value)
@@ -12374,6 +12375,7 @@ public class parse {
 
         // Erasure: parseDeclarations<boolean, Ptr, Ptr>
         public  Ptr<DArray<Dsymbol>> parseDeclarations(boolean autodecl, Ptr<PrefixAttributesASTCodegen> pAttrs, BytePtr comment) {
+            ParserASTCodegen __self = this;
             Ref<Long> storage_class = ref(0L);
             byte tok = TOK.reserved;
             Ref<Integer> link = ref(this.linkage);
@@ -12413,7 +12415,7 @@ public class parse {
                         }
                         this.check(TOK.assign);
                         Ref<Boolean> hasParsedAttributes = ref(false);
-                        Function0<Void> parseAttributes = new Function0<Void>() {
+                        Runnable0 parseAttributes = new Runnable0() {
                             public Void invoke() {
                              {
                                 if (hasParsedAttributes.value)

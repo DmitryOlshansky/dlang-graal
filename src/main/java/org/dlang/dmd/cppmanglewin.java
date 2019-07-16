@@ -1254,6 +1254,7 @@ public class cppmanglewin {
 
         // Erasure: mangleFunctionType<TypeFunction, boolean, boolean>
         public  BytePtr mangleFunctionType(TypeFunction type, boolean needthis, boolean noreturn) {
+            VisualCPPMangler __self = this;
             VisualCPPMangler tmp = new VisualCPPMangler(this);
             if (global.params.is64bit)
             {

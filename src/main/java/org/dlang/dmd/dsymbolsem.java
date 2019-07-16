@@ -214,7 +214,7 @@ public class dsymbolsem {
                 }
             }
         }
-        Function0<Void> checkShared = new Function0<Void>() {
+        Runnable0 checkShared = new Runnable0() {
             public Void invoke() {
              {
                 if (sd.type.isShared())
@@ -469,7 +469,7 @@ public class dsymbolsem {
             if ((ad) != null)
             {
                 int nestedCount = 0;
-                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         nestedCount += setMangleOverride(s, sym);
@@ -2053,6 +2053,7 @@ public class dsymbolsem {
 
         // Erasure: visit<CPPNamespaceDeclaration>
         public  void visit(CPPNamespaceDeclaration ns) {
+            DsymbolSemanticVisitor __self = this;
             Function1<StringExp,Identifier> identFromSE = new Function1<StringExp,Identifier>() {
                 public Identifier invoke(StringExp se) {
                  {
@@ -2172,6 +2173,7 @@ public class dsymbolsem {
 
         // Erasure: visit<Module>
         public  void visit(dmodule.Module m) {
+            DsymbolSemanticVisitor __self = this;
             if ((m.semanticRun != PASS.init))
             {
                 return ;
@@ -2182,7 +2184,7 @@ public class dsymbolsem {
             {
                 Scope.createGlobal(m);
             }
-            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+            Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     dsymbolSemantic(s, sc);
@@ -2206,6 +2208,7 @@ public class dsymbolsem {
 
         // Erasure: visit<EnumDeclaration>
         public  void visit(EnumDeclaration ed) {
+            DsymbolSemanticVisitor __self = this;
             if ((ed.semanticRun >= PASS.semanticdone))
             {
                 return ;
@@ -2275,7 +2278,7 @@ public class dsymbolsem {
                 if (((ed.memtype.ty & 0xFF) == ENUMTY.Terror))
                 {
                     ed.errors = true;
-                    Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+                    Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                         public Void invoke(Dsymbol s) {
                          {
                             s.errors = true;
@@ -2312,7 +2315,7 @@ public class dsymbolsem {
             }
             sce = pcopy((sce.get()).startCTFE());
             (sce.get()).setNoFree();
-            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+            Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     EnumMember em = s.isEnumMember();
@@ -2350,7 +2353,7 @@ public class dsymbolsem {
                 {
                     scopesym = ed;
                 }
-                Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda4 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         EnumMember em = s.isEnumMember();
@@ -2365,7 +2368,7 @@ public class dsymbolsem {
                 };
                 foreachDsymbol(ed.members, __lambda4);
             }
-            Function1<Dsymbol,Void> __lambda5 = new Function1<Dsymbol,Void>() {
+            Runnable1<Dsymbol> __lambda5 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     EnumMember em = s.isEnumMember();
@@ -2382,7 +2385,8 @@ public class dsymbolsem {
 
         // Erasure: visit<EnumMember>
         public  void visit(EnumMember em) {
-            Function0<Void> errorReturn = new Function0<Void>() {
+            DsymbolSemanticVisitor __self = this;
+            Runnable0 errorReturn = new Runnable0() {
                 public Void invoke() {
                  {
                     em.errors = true;
@@ -2465,7 +2469,7 @@ public class dsymbolsem {
                     }
                     if (((em.ed.memtype.ty & 0xFF) != ENUMTY.Terror))
                     {
-                        Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+                        Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
                             public Void invoke(Dsymbol s) {
                              {
                                 EnumMember enm = s.isEnumMember();
@@ -2764,6 +2768,7 @@ public class dsymbolsem {
 
         // Erasure: visit<TemplateMixin>
         public  void visit(TemplateMixin tm) {
+            DsymbolSemanticVisitor __self = this;
             if ((tm.semanticRun != PASS.init))
             {
                 return ;
@@ -2905,7 +2910,7 @@ public class dsymbolsem {
             Ptr<Scope> argscope = (scy.get()).push(tm.argsym);
             int errorsave = global.errors;
             tm.declareParameters(argscope);
-            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+            Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     s.addMember(argscope, tm);
@@ -2921,7 +2926,7 @@ public class dsymbolsem {
                 tm.error(new BytePtr("recursive expansion"));
                 fatal();
             }
-            Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>() {
+            Runnable1<Dsymbol> __lambda4 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     s.setScope(sc2);
@@ -2930,7 +2935,7 @@ public class dsymbolsem {
 
             };
             foreachDsymbol(tm.members, __lambda4);
-            Function1<Dsymbol,Void> __lambda5 = new Function1<Dsymbol,Void>() {
+            Runnable1<Dsymbol> __lambda5 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     s.importAll(sc2);
@@ -2939,7 +2944,7 @@ public class dsymbolsem {
 
             };
             foreachDsymbol(tm.members, __lambda5);
-            Function1<Dsymbol,Void> __lambda6 = new Function1<Dsymbol,Void>() {
+            Runnable1<Dsymbol> __lambda6 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     dsymbolSemantic(s, sc2);
@@ -4360,6 +4365,7 @@ public class dsymbolsem {
 
         // Erasure: visit<StructDeclaration>
         public  void visit(StructDeclaration sd) {
+            DsymbolSemanticVisitor __self = this;
             if ((sd.semanticRun >= PASS.semanticdone))
             {
                 return ;
@@ -4436,7 +4442,7 @@ public class dsymbolsem {
                 if (sd.symtab == null)
                 {
                     sd.symtab = new DsymbolTable();
-                    Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+                    Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                         public Void invoke(Dsymbol s) {
                          {
                             s.addMember(sc, sd);
@@ -4447,7 +4453,7 @@ public class dsymbolsem {
                     foreachDsymbol(sd.members, __lambda2);
                 }
                 Ptr<Scope> sc2 = sd.newScope(this.sc);
-                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.setScope(sc2);
@@ -4456,7 +4462,7 @@ public class dsymbolsem {
 
                 };
                 foreachDsymbol(sd.members, __lambda3);
-                Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda4 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.importAll(sc2);
@@ -4465,7 +4471,7 @@ public class dsymbolsem {
 
                 };
                 foreachDsymbol(sd.members, __lambda4);
-                Function1<Dsymbol,Void> __lambda5 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda5 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         dsymbolSemantic(s, sc2);
@@ -4596,6 +4602,7 @@ public class dsymbolsem {
 
         // Erasure: visit<ClassDeclaration>
         public  void visit(ClassDeclaration cldec) {
+            DsymbolSemanticVisitor __self = this;
             if ((cldec.semanticRun >= PASS.semanticdone))
             {
                 return ;
@@ -4691,7 +4698,7 @@ public class dsymbolsem {
                         };
 
                         // from template resolveBase!(Void)
-                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>() {
+                        Runnable1<Void> resolveBaseVoid = new Runnable1<Void>() {
                             public Void invoke(Void exp) {
                              {
                                 if (scx == null)
@@ -4794,7 +4801,7 @@ public class dsymbolsem {
                                 (b.get()).sym = cldec.baseClass;
                                 if ((tc.sym.baseok < Baseok.done))
                                 {
-                                    Function0<Void> __dgliteral3 = new Function0<Void>() {
+                                    Runnable0 __dgliteral3 = new Runnable0() {
                                         public Void invoke() {
                                          {
                                             dsymbolSemantic(tc.sym, null);
@@ -4871,7 +4878,7 @@ public class dsymbolsem {
                                 (b.get()).sym = tc.sym;
                                 if ((tc.sym.baseok < Baseok.done))
                                 {
-                                    Function0<Void> __dgliteral4 = new Function0<Void>() {
+                                    Runnable0 __dgliteral4 = new Runnable0() {
                                         public Void invoke() {
                                          {
                                             dsymbolSemantic(tc.sym, null);
@@ -4906,7 +4913,7 @@ public class dsymbolsem {
                         }
                         if ((cldec.baseClass == null) && (!pequals(cldec.ident, Id.Object)) && (ClassDeclaration.object != null) && (cldec.classKind == ClassKind.d))
                         {
-                            Function0<Void> badObjectDotD = new Function0<Void>() {
+                            Runnable0 badObjectDotD = new Runnable0() {
                                 public Void invoke() {
                                  {
                                     cldec.error(new BytePtr("missing or corrupt object.d"));
@@ -4983,7 +4990,7 @@ public class dsymbolsem {
                 if (cldec.symtab == null)
                 {
                     cldec.symtab = new DsymbolTable();
-                    Function1<Dsymbol,Void> __lambda6 = new Function1<Dsymbol,Void>() {
+                    Runnable1<Dsymbol> __lambda6 = new Runnable1<Dsymbol>() {
                         public Void invoke(Dsymbol s) {
                          {
                             s.addMember(sc, cldec);
@@ -4993,7 +5000,7 @@ public class dsymbolsem {
                     };
                     foreachDsymbol(cldec.members, __lambda6);
                     Ptr<Scope> sc2 = cldec.newScope(this.sc);
-                    Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>() {
+                    Runnable1<Dsymbol> __lambda7 = new Runnable1<Dsymbol>() {
                         public Void invoke(Dsymbol s) {
                          {
                             s.setScope(sc2);
@@ -5089,7 +5096,7 @@ public class dsymbolsem {
                     }
                 }
                 Ptr<Scope> sc2 = cldec.newScope(this.sc);
-                Function1<Dsymbol,Void> __lambda8 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda8 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.importAll(sc2);
@@ -5098,7 +5105,7 @@ public class dsymbolsem {
 
                 };
                 foreachDsymbol(cldec.members, __lambda8);
-                Function1<Dsymbol,Void> __lambda9 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda9 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         dsymbolSemantic(s, sc2);
@@ -5264,6 +5271,7 @@ public class dsymbolsem {
 
         // Erasure: visit<InterfaceDeclaration>
         public  void visit(InterfaceDeclaration idec) {
+            DsymbolSemanticVisitor __self = this;
             Function1<InterfaceDeclaration,Boolean> isAnonymousMetaclass = new Function1<InterfaceDeclaration,Boolean>() {
                 public Boolean invoke(InterfaceDeclaration idec) {
                  {
@@ -5344,7 +5352,7 @@ public class dsymbolsem {
                         };
 
                         // from template resolveBase!(Void)
-                        Function1<Void,Void> resolveBaseVoid = new Function1<Void,Void>() {
+                        Runnable1<Void> resolveBaseVoid = new Runnable1<Void>() {
                             public Void invoke(Void exp) {
                              {
                                 if (scx == null)
@@ -5458,7 +5466,7 @@ public class dsymbolsem {
                                 (b.get()).sym = tc.sym;
                                 if ((tc.sym.baseok < Baseok.done))
                                 {
-                                    Function0<Void> __dgliteral4 = new Function0<Void>() {
+                                    Runnable0 __dgliteral4 = new Runnable0() {
                                         public Void invoke() {
                                          {
                                             dsymbolSemantic(tc.sym, null);
@@ -5580,7 +5588,7 @@ public class dsymbolsem {
                         }
                     }
                 }
-                Function1<Dsymbol,Void> __lambda5 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda5 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.addMember(sc, idec);
@@ -5590,7 +5598,7 @@ public class dsymbolsem {
                 };
                 foreachDsymbol(idec.members, __lambda5);
                 Ptr<Scope> sc2 = idec.newScope(this.sc);
-                Function1<Dsymbol,Void> __lambda6 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda6 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.setScope(sc2);
@@ -5599,7 +5607,7 @@ public class dsymbolsem {
 
                 };
                 foreachDsymbol(idec.members, __lambda6);
-                Function1<Dsymbol,Void> __lambda7 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda7 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.importAll(sc2);
@@ -5608,7 +5616,7 @@ public class dsymbolsem {
 
                 };
                 foreachDsymbol(idec.members, __lambda7);
-                Function1<Dsymbol,Void> __lambda8 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda8 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         dsymbolSemantic(s, sc2);
@@ -5792,7 +5800,7 @@ public class dsymbolsem {
         tempinst.declareParameters(paramscope);
         (paramscope.get()).pop();
         tempinst.symtab = new DsymbolTable();
-        Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>() {
+        Runnable1<Dsymbol> __lambda4 = new Runnable1<Dsymbol>() {
             public Void invoke(Dsymbol s) {
              {
                 s.addMember(_scope, tempinst);

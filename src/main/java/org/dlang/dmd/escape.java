@@ -655,7 +655,7 @@ public class escape {
                 return false;
             }
             Ref<Boolean> result = ref(false);
-            Function2<VarDeclaration,BytePtr,Void> unsafeAssign = new Function2<VarDeclaration,BytePtr,Void>() {
+            Runnable2<VarDeclaration,BytePtr> unsafeAssign = new Runnable2<VarDeclaration,BytePtr>() {
                 public Void invoke(VarDeclaration v, BytePtr desc) {
                  {
                     if (global.params.vsafe && (sc.get()).func.setUnsafe())
@@ -1359,7 +1359,7 @@ public class escape {
                     {
                         printf(new BytePtr("byref `%s`\n"), v.toChars());
                     }
-                    Function1<VarDeclaration,Void> escapingRef = new Function1<VarDeclaration,Void>() {
+                    Runnable1<VarDeclaration> escapingRef = new Runnable1<VarDeclaration>() {
                         public Void invoke(VarDeclaration v) {
                          {
                             if (!gag)
@@ -1531,7 +1531,7 @@ public class escape {
                     {
                         printf(new BytePtr("byref `%s`\n"), v.toChars());
                     }
-                    Function1<VarDeclaration,Void> escapingRef = new Function1<VarDeclaration,Void>() {
+                    Runnable1<VarDeclaration> escapingRef = new Runnable1<VarDeclaration>() {
                         public Void invoke(VarDeclaration v) {
                          {
                             if (!gag)

@@ -135,6 +135,7 @@ public class aggregate {
 
         // Erasure: determineFields<>
         public  boolean determineFields() {
+            AggregateDeclaration __self = this;
             if (this._scope != null)
             {
                 dsymbolSemantic(this, null);
@@ -706,6 +707,7 @@ public class aggregate {
 
         // Erasure: searchCtor<>
         public  Dsymbol searchCtor() {
+            AggregateDeclaration __self = this;
             Dsymbol s = this.search(Loc.initial, Id.ctor, 8);
             if (s != null)
             {

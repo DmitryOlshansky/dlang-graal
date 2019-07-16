@@ -187,6 +187,7 @@ public class semantic3 {
 
         // Erasure: visit<FuncDeclaration>
         public  void visit(FuncDeclaration funcdecl) {
+            Semantic3Visitor __self = this;
             Function0<Boolean> addReturn0 = new Function0<Boolean>() {
                 public Boolean invoke() {
                  {

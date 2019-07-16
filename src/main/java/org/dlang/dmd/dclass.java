@@ -551,6 +551,7 @@ public class dclass {
 
         // Erasure: finalizeSize<>
         public  void finalizeSize() {
+            ClassDeclaration __self = this;
             assert((this.sizeok != Sizeok.done));
             if (this.baseClass != null)
             {
@@ -657,6 +658,7 @@ public class dclass {
 
         // Erasure: isFuncHidden<FuncDeclaration>
         public  boolean isFuncHidden(FuncDeclaration fd) {
+            ClassDeclaration __self = this;
             Dsymbol s = this.search(Loc.initial, fd.ident, 6);
             if (s == null)
             {
@@ -695,9 +697,10 @@ public class dclass {
 
         // Erasure: findFunc<Identifier, TypeFunction>
         public  FuncDeclaration findFunc(Identifier ident, TypeFunction tf) {
+            ClassDeclaration __self = this;
             Ref<FuncDeclaration> fdmatch = ref(null);
             Ref<FuncDeclaration> fdambig = ref(null);
-            Function1<FuncDeclaration,Void> updateBestMatch = new Function1<FuncDeclaration,Void>() {
+            Runnable1<FuncDeclaration> updateBestMatch = new Runnable1<FuncDeclaration>() {
                 public Void invoke(FuncDeclaration fd) {
                  {
                     fdmatch.value = fd;
@@ -706,7 +709,7 @@ public class dclass {
                 }}
 
             };
-            Function1<Ref<DArray<Dsymbol>>,Void> searchVtbl = new Function1<Ref<DArray<Dsymbol>>,Void>() {
+            Runnable1<Ref<DArray<Dsymbol>>> searchVtbl = new Runnable1<Ref<DArray<Dsymbol>>>() {
                 public Void invoke(DArray<Dsymbol> vtbl) {
                  {
                     {
@@ -813,6 +816,7 @@ public class dclass {
 
         // Erasure: isAbstract<>
         public  boolean isAbstract() {
+            ClassDeclaration __self = this;
             boolean log = false;
             if ((this.isabstract != Abstract.fwdref))
             {

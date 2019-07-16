@@ -38,6 +38,7 @@ public class nspace {
 
         // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
+            Nspace __self = this;
             this.addMember(sc, sds);
             if (this.members != null)
             {
@@ -60,10 +61,10 @@ public class nspace {
                 sc = pcopy((sc.get()).push(this));
                 (sc.get()).linkage = LINK.cpp;
                 (sc.get()).parent.value = this;
-                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
-                        s.addMember(sc, this);
+                        s.addMember(sc, __self);
                         return null;
                     }}
 
@@ -75,6 +76,7 @@ public class nspace {
 
         // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
+            Nspace __self = this;
             this.setScope(sc);
             if (this.members != null)
             {
@@ -82,7 +84,7 @@ public class nspace {
                 sc = pcopy((sc.get()).push(this));
                 (sc.get()).linkage = LINK.cpp;
                 (sc.get()).parent.value = this;
-                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.setScope(sc);
@@ -121,6 +123,7 @@ public class nspace {
 
         // Erasure: apply<Ptr, Ptr>
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
+            Nspace __self = this;
             Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
                  {
@@ -133,6 +136,7 @@ public class nspace {
 
         // Erasure: hasPointers<>
         public  boolean hasPointers() {
+            Nspace __self = this;
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
                  {
@@ -145,11 +149,12 @@ public class nspace {
 
         // Erasure: setFieldOffset<AggregateDeclaration, Ptr, boolean>
         public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
+            Nspace __self = this;
             if (this._scope != null)
             {
                 dsymbolSemantic(this, null);
             }
-            Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>() {
+            Runnable1<Dsymbol> __lambda4 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     s.setFieldOffset(ad, poffset, isunion);

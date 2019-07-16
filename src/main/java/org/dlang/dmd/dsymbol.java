@@ -61,8 +61,8 @@ public class dsymbol {
         return 0;
     }
 
-    // Erasure: foreachDsymbol<Ptr, Function1>
-    public static void foreachDsymbol(Ptr<DArray<Dsymbol>> symbols, Function1<Dsymbol,Void> dg, ETag1 __tag) {
+    // Erasure: foreachDsymbol<Ptr, Runnable1>
+    public static void foreachDsymbol(Ptr<DArray<Dsymbol>> symbols, Runnable1<Dsymbol> dg) {
         assert(dg != null);
         if (symbols != null)
         {
@@ -675,6 +675,7 @@ public class dsymbol {
 
         // Erasure: search_correct<Identifier>
         public  Dsymbol search_correct(Identifier ident) {
+            Dsymbol __self = this;
             Function2<ByteSlice,Ref<Integer>,Dsymbol> symbol_search_fp = new Function2<ByteSlice,Ref<Integer>,Dsymbol>() {
                 public Dsymbol invoke(ByteSlice seed, Ref<Integer> cost) {
                  {
@@ -688,7 +689,7 @@ public class dsymbol {
                         return null;
                     }
                     cost.value = 0;
-                    Dsymbol s = this;
+                    Dsymbol s = __self;
                     dmodule.Module.clearCache();
                     return s.search(Loc.initial, id, 2);
                 }}

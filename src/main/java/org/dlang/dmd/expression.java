@@ -4475,6 +4475,7 @@ public class expression {
 
         // Erasure: matchType<Type, Ptr, Ptr, int>
         public  int matchType(Type to, Ptr<Scope> sc, Ptr<FuncExp> presult, int flag) {
+            FuncExp __self = this;
             Function3<Expression,Type,Integer,Integer> cannotInfer = new Function3<Expression,Type,Integer,Integer>() {
                 public Integer invoke(Expression e, Type to, Integer flag) {
                  {
@@ -8180,6 +8181,7 @@ public class expression {
 
         // Erasure: hookDtors<Ptr>
         public  void hookDtors(Ptr<Scope> sc) {
+            CondExp __self = this;
             // skipping duplicate class DtorVisitor
             DtorVisitor v = new DtorVisitor(sc, this);
             v.isThen = true;

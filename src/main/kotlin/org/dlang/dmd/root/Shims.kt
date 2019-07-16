@@ -95,6 +95,10 @@ fun strcat(dest: BytePtr, src: BytePtr) {
     dest.data[slen + len] = 0.toByte()
 }
 
+fun malloc(size: Int) = Mem.xmalloc(size)
+
+fun<T> free(p: Ptr<T>) = Mem.xfree(p)
+
 fun strdup(src: BytePtr) = BytePtr(src.data.copyOf(), src.offset)
 
 fun xarraydup(src: ByteSlice) = ByteSlice(src.data.copyOfRange(src.beg, src.end))
@@ -219,6 +223,39 @@ object ETag1
 object ETag2
 object ETag3
 
+// Functions that return void specialize, mostly to simplify opApply by providing
+// unique type erasure in addition to FunctionX of Kotlin
+interface Runnable0 {
+    /** Invokes the function with the specified argument. */
+    operator fun invoke(): Void
+}
+/** A function that takes 1 argument. */
+interface Runnable1<in P1> {
+    /** Invokes the function with the specified argument. */
+     operator fun invoke(p1: P1): Void
+}
+/** A function that takes 2 arguments. */
+ interface Runnable2<in P1, in P2> {
+    /** Invokes the function with the specified arguments. */
+     operator fun invoke(p1: P1, p2: P2): Void
+}
+/** A function that takes 3 arguments. */
+ interface Runnable3<in P1, in P2, in P3>{
+    /** Invokes the function with the specified arguments. */
+     operator fun invoke(p1: P1, p2: P2, p3: P3): Void
+}
+/** A function that takes 4 arguments. */
+ interface Runnable4<in P1, in P2, in P3, in P4> {
+    /** Invokes the function with the specified arguments. */
+     operator fun invoke(p1: P1, p2: P2, p3: P3, p4: P4): Void
+}
+/** A function that takes 5 arguments. */
+ interface Runnable5<in P1, in P2, in P3, in P4, in P5> {
+    /** Invokes the function with the specified arguments. */
+     operator fun invoke(p1: P1, p2: P2, p3: P3, p4: P4, p5: P5): Void
+}
+
+
 fun assertMsg(cond: Boolean, msg: ByteSlice) {
     require(cond){ msg }
 }
@@ -297,7 +334,7 @@ fun exit(code: Int): Nothing = exitProcess(code)
 @Suppress("UNUSED_PARAMETER")
 object speller {
     //fun <T> invoke(fn: (ByteSlice, Ref<Int>) -> T) = null
-    fun <T> invoke(fn: (ByteSlice) -> T) = null
+    fun <T> invoke(fn: (ByteSlice) -> T, s: ByteSlice) = null
 }
 
 // ======== STDIO ===========

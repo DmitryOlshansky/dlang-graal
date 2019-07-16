@@ -87,6 +87,7 @@ public class filecache {
 
         // Erasure: deinitialize<>
         public  void deinitialize() {
+            FileCache __self = this;
             Function1<Ptr<StringValue>,Integer> __foreachbody1 = new Function1<Ptr<StringValue>,Integer>() {
                 public Integer invoke(Ptr<StringValue> sv) {
                  {

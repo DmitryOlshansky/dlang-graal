@@ -36,6 +36,7 @@ public class dimport {
         public DArray<AliasDeclaration> aliasdecls = new DArray<AliasDeclaration>();
         // Erasure: __ctor<Loc, Ptr, Identifier, Identifier, int>
         public  Import(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Identifier aliasId, int isstatic) {
+            Import __self = this;
             Function0<Identifier> selectIdent = new Function0<Identifier>() {
                 public Identifier invoke() {
                  {

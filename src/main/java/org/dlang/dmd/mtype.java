@@ -4420,6 +4420,7 @@ public class mtype {
 
         // Erasure: purityLevel<>
         public  void purityLevel() {
+            TypeFunction __self = this;
             TypeFunction tf = this;
             if ((tf.purity != PURE.fwdref))
             {
@@ -7343,8 +7344,8 @@ public class mtype {
         return slice(new BytePtr[]{s1, s2});
     }
 
-    // Erasure: modifiersApply<TypeFunction, Function1>
-    public static void modifiersApply(TypeFunction tf, Function1<ByteSlice,Void> dg) {
+    // Erasure: modifiersApply<TypeFunction, Runnable1>
+    public static void modifiersApply(TypeFunction tf, Runnable1<ByteSlice> dg) {
         ByteSlice modsArr = slice(new byte[]{(byte)1, (byte)4, (byte)8, (byte)2});
         {
             ByteSlice __r1549 = modsArr.copy();
@@ -7359,8 +7360,8 @@ public class mtype {
         }
     }
 
-    // Erasure: attributesApply<TypeFunction, Function1, int>
-    public static void attributesApply(TypeFunction tf, Function1<ByteSlice,Void> dg, int trustFormat) {
+    // Erasure: attributesApply<TypeFunction, Runnable1, int>
+    public static void attributesApply(TypeFunction tf, Runnable1<ByteSlice> dg, int trustFormat) {
         if (tf.purity != 0)
         {
             dg.invoke(new ByteSlice("pure"));
@@ -7405,7 +7406,7 @@ public class mtype {
     }
 
     // defaulted all parameters starting with #3
-    public static void attributesApply(TypeFunction tf, Function1<ByteSlice,Void> dg) {
+    public static void attributesApply(TypeFunction tf, Runnable1<ByteSlice> dg) {
         attributesApply(tf, dg, TRUSTformat.TRUSTformatDefault);
     }
 

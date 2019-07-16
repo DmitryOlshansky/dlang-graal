@@ -214,6 +214,7 @@ public class semantic2 {
 
         // Erasure: visit<VarDeclaration>
         public  void visit(VarDeclaration vd) {
+            Semantic2Visitor __self = this;
             if ((vd.semanticRun < PASS.semanticdone) && (vd.inuse != 0))
             {
                 return ;
@@ -337,6 +338,7 @@ public class semantic2 {
 
         // Erasure: visit<FuncDeclaration>
         public  void visit(FuncDeclaration fd) {
+            Semantic2Visitor __self = this;
             if ((fd.semanticRun >= PASS.semantic2done))
             {
                 return ;
@@ -498,9 +500,10 @@ public class semantic2 {
 
         // Erasure: visit<UserAttributeDeclaration>
         public  void visit(UserAttributeDeclaration uad) {
+            Semantic2Visitor __self = this;
             if ((uad.decl != null) && (uad.atts != null) && ((uad.atts.get()).length != 0) && (uad._scope != null))
             {
-                Function2<Ptr<Scope>,Ptr<DArray<Expression>>,Void> eval = new Function2<Ptr<Scope>,Ptr<DArray<Expression>>,Void>() {
+                Runnable2<Ptr<Scope>,Ptr<DArray<Expression>>> eval = new Runnable2<Ptr<Scope>,Ptr<DArray<Expression>>>() {
                     public Void invoke(Ptr<Scope> sc, Ptr<DArray<Expression>> exps) {
                      {
                         {

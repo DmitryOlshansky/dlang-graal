@@ -564,6 +564,7 @@ public class dinterpret {
 
         // Erasure: onExpression<Expression>
         public  void onExpression(Expression e) {
+            CompiledCtfeFunction __self = this;
             // skipping duplicate class VarWalker
             VarWalker v = new VarWalker(ptr(this));
             walkPostorder(e, v);
@@ -3159,6 +3160,7 @@ public class dinterpret {
 
         // Erasure: interpretCommon<BinExp, Ptr>
         public  void interpretCommon(BinExp e, Function4<Ref<Loc>,Type,Expression,Expression,UnionExp> fp) {
+            Interpreter __self = this;
             if (((e.e1.value.type.value.ty & 0xFF) == ENUMTY.Tpointer) && ((e.e2.value.type.value.ty & 0xFF) == ENUMTY.Tpointer) && ((e.op & 0xFF) == 75))
             {
                 Ref<UnionExp> ue1 = ref(null);
@@ -4056,6 +4058,7 @@ public class dinterpret {
 
         // Erasure: interpretAssignToSlice<Ptr, BinExp, Expression, Expression, boolean>
         public  Expression interpretAssignToSlice(Ptr<UnionExp> pue, BinExp e, Expression e1, Expression newval, boolean isBlockAssignment) {
+            Interpreter __self = this;
             long lowerbound = 0L;
             long upperbound = 0L;
             long firstIndex = 0L;
@@ -4485,6 +4488,7 @@ public class dinterpret {
 
         // Erasure: interpretFourPointerRelation<Ptr, BinExp>
         public  void interpretFourPointerRelation(Ptr<UnionExp> pue, BinExp e) {
+            Interpreter __self = this;
             assert(((e.op & 0xFF) == 101) || ((e.op & 0xFF) == 102));
             Ref<Expression> p1 = ref(null);
             Ref<Expression> p2 = ref(null);
@@ -4929,13 +4933,14 @@ public class dinterpret {
 
         // Erasure: visit<CommaExp>
         public  void visit(CommaExp e) {
+            Interpreter __self = this;
             Ref<InterState> istateComma = ref(new InterState());
             if ((this.istate == null) && ((firstComma(e.e1.value).op & 0xFF) == 38))
             {
                 ctfeStack.startFrame(null);
                 this.istate = pcopy(ptr(istateComma));
             }
-            Function0<Void> endTempStackFrame = new Function0<Void>() {
+            Runnable0 endTempStackFrame = new Runnable0() {
                 public Void invoke() {
                  {
                     if ((istate == ptr(istateComma)))

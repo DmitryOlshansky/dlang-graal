@@ -166,7 +166,7 @@ public class dmodule {
             OutBuffer dotmods = new OutBuffer();
             try {
                 Ptr<DArray<BytePtr>> modAliases = ptr(global.params.modFileAliasStrings);
-                Function1<ByteSlice,Void> checkModFileAlias = new Function1<ByteSlice,Void>() {
+                Runnable1<ByteSlice> checkModFileAlias = new Runnable1<ByteSlice>() {
                     public Void invoke(ByteSlice p) {
                      {
                         dotmods.writestring(p);

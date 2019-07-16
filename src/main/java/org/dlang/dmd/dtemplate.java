@@ -1019,6 +1019,7 @@ public class dtemplate {
 
         // Erasure: visit<Expression>
         public  void visit(Expression e) {
+            DeduceType __self = this;
             int i = templateParameterLookup(this.tparam, this.parameters);
             if ((i == 305419896) || (((TypeIdentifier)this.tparam).idents.length > 0))
             {
@@ -6270,6 +6271,7 @@ public class dtemplate {
 
         // Erasure: findTempDecl<Ptr, Ptr>
         public  boolean findTempDecl(Ptr<Scope> sc, Ptr<WithScopeSymbol> pwithsym) {
+            TemplateInstance __self = this;
             if (pwithsym != null)
             {
                 pwithsym.set(0, null);
@@ -7105,6 +7107,7 @@ public class dtemplate {
 
         // Erasure: findBestMatch<Ptr, Ptr>
         public  boolean findBestMatch(Ptr<Scope> sc, Ptr<DArray<Expression>> fargs) {
+            TemplateInstance __self = this;
             if (this.havetempdecl)
             {
                 TemplateDeclaration tempdecl = this.tempdecl.isTemplateDeclaration();
@@ -7159,7 +7162,7 @@ public class dtemplate {
                                 dedtypes.value.setDim((td.parameters.get()).length);
                                 dedtypes.value.zero();
                                 assert((td.semanticRun != PASS.init));
-                                int m = td.matchWithInstance(sc, this, ptr(dedtypes), fargs, 0);
+                                int m = td.matchWithInstance(sc, __self, ptr(dedtypes), fargs, 0);
                                 if ((m <= MATCH.nomatch))
                                 {
                                     return 0;
@@ -7283,6 +7286,7 @@ public class dtemplate {
 
         // Erasure: needsTypeInference<Ptr, int>
         public  boolean needsTypeInference(Ptr<Scope> sc, int flag) {
+            TemplateInstance __self = this;
             if ((this.semanticRun != PASS.init))
             {
                 return false;
@@ -7404,7 +7408,7 @@ public class dtemplate {
                                             return 1;
                                         }
                                     }
-                                    int m = td.matchWithInstance(sc, this, ptr(dedtypes), null, 0);
+                                    int m = td.matchWithInstance(sc, __self, ptr(dedtypes), null, 0);
                                     if ((m <= MATCH.nomatch))
                                     {
                                         return 0;
@@ -7731,6 +7735,7 @@ public class dtemplate {
 
         // Erasure: appendToModuleMember<>
         public  Ptr<DArray<Dsymbol>> appendToModuleMember() {
+            TemplateInstance __self = this;
             dmodule.Module mi = this.minst;
             if (global.params.useUnitTests || (global.params.debuglevel != 0))
             {
@@ -7815,7 +7820,8 @@ public class dtemplate {
 
         // Erasure: expandMembers<Ptr>
         public  void expandMembers(Ptr<Scope> sc2) {
-            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+            TemplateInstance __self = this;
+            Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     s.setScope(sc2);
@@ -7824,7 +7830,7 @@ public class dtemplate {
 
             };
             foreachDsymbol(this.members, __lambda2);
-            Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+            Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     s.importAll(sc2);
@@ -7833,7 +7839,7 @@ public class dtemplate {
 
             };
             foreachDsymbol(this.members, __lambda3);
-            Function1<Dsymbol,Void> symbolDg = new Function1<Dsymbol,Void>() {
+            Runnable1<Dsymbol> symbolDg = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     dsymbolSemantic(s, sc2);
@@ -8081,6 +8087,7 @@ public class dtemplate {
 
         // Erasure: apply<Ptr, Ptr>
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
+            TemplateMixin __self = this;
             if (this._scope != null)
             {
                 dsymbolSemantic(this, null);
@@ -8097,6 +8104,7 @@ public class dtemplate {
 
         // Erasure: hasPointers<>
         public  boolean hasPointers() {
+            TemplateMixin __self = this;
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
                  {
@@ -8109,11 +8117,12 @@ public class dtemplate {
 
         // Erasure: setFieldOffset<AggregateDeclaration, Ptr, boolean>
         public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
+            TemplateMixin __self = this;
             if (this._scope != null)
             {
                 dsymbolSemantic(this, null);
             }
-            Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>() {
+            Runnable1<Dsymbol> __lambda4 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     s.setFieldOffset(ad, poffset, isunion);
@@ -8137,6 +8146,7 @@ public class dtemplate {
 
         // Erasure: findTempDecl<Ptr>
         public  boolean findTempDecl(Ptr<Scope> sc) {
+            TemplateMixin __self = this;
             if (this.tempdecl == null)
             {
                 Ref<Expression> e = ref(null);

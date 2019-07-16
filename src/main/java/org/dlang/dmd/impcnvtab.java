@@ -61,7 +61,7 @@ public class impcnvtab {
                 }
             }
         }
-        Function5<Integer,Integer,Integer,Integer,Integer,Void> X = new Function5<Integer,Integer,Integer,Integer,Integer,Void>() {
+        Runnable5<Integer,Integer,Integer,Integer,Integer> X = new Runnable5<Integer,Integer,Integer,Integer,Integer>() {
             public Void invoke(Integer t1, Integer t2, Integer nt1, Integer nt2, Integer rt) {
              {
                 impCnvTab.impcnvResultTab.get(t1).set((t2), rt);

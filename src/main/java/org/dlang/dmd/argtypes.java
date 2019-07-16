@@ -259,6 +259,7 @@ public class argtypes {
 
         // Erasure: visit<TypeSArray>
         public  void visit(TypeSArray t) {
+            ToArgTypes __self = this;
             long sz = t.size(Loc.initial);
             if ((sz > 16L))
             {
@@ -285,6 +286,7 @@ public class argtypes {
 
         // Erasure: visit<TypeStruct>
         public  void visit(TypeStruct t) {
+            ToArgTypes __self = this;
             if (!t.sym.isPOD())
             {
                 this.memory();

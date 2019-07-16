@@ -137,6 +137,7 @@ public class denum {
 
         // Erasure: getMaxMinValue<Loc, Identifier>
         public  Expression getMaxMinValue(Loc loc, Identifier id) {
+            EnumDeclaration __self = this;
             Function2<Expression,Ref<Loc>,Expression> pvalToResult = new Function2<Expression,Ref<Loc>,Expression>() {
                 public Expression invoke(Expression e, Loc loc) {
                  {
@@ -239,6 +240,7 @@ public class denum {
 
         // Erasure: getDefaultValue<Loc>
         public  Expression getDefaultValue(Loc loc) {
+            EnumDeclaration __self = this;
             Function0<Expression> handleErrors = new Function0<Expression>() {
                 public Expression invoke() {
                  {

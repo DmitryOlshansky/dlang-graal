@@ -71,7 +71,7 @@ public class dstruct {
         {
             return ;
         }
-        Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>() {
+        Runnable1<TypeVector> visitVector = new Runnable1<TypeVector>() {
             public Void invoke(TypeVector t) {
              {
                 semanticTypeInfo(sc, t.basetype);
@@ -79,7 +79,7 @@ public class dstruct {
             }}
 
         };
-        Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>() {
+        Runnable1<TypeAArray> visitAArray = new Runnable1<TypeAArray>() {
             public Void invoke(TypeAArray t) {
              {
                 semanticTypeInfo(sc, t.index);
@@ -88,7 +88,7 @@ public class dstruct {
             }}
 
         };
-        Function1<TypeStruct,Void> visitStruct = new Function1<TypeStruct,Void>() {
+        Runnable1<TypeStruct> visitStruct = new Runnable1<TypeStruct>() {
             public Void invoke(TypeStruct t) {
              {
                 StructDeclaration sd = t.sym;
@@ -139,7 +139,7 @@ public class dstruct {
             }}
 
         };
-        Function1<TypeTuple,Void> visitTuple = new Function1<TypeTuple,Void>() {
+        Runnable1<TypeTuple> visitTuple = new Runnable1<TypeTuple>() {
             public Void invoke(TypeTuple t) {
              {
                 if (t.arguments != null)

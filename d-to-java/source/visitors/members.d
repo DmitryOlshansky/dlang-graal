@@ -241,6 +241,43 @@ bool containsStatement(Statement haystack, Statement needle) {
     return v.found;   
 }
 
+bool hasLocalFunctions(FuncDeclaration func) {
+    extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
+        alias visit = typeof(super).visit;
+        bool found;
+        int depth;
+        
+        override void visit(ConditionalDeclaration ver) {
+            if (ver.condition.inc == Include.yes) {
+                if (ver.decl) {
+                    foreach(d; *ver.decl){
+                        d.accept(this);
+                    }
+                }
+            }
+            else if(ver.elsedecl) {
+                foreach(d; *ver.elsedecl){
+                    d.accept(this);
+                }
+            }
+        }
+
+        override void visit(FuncExp ) {
+            found = true;
+        }
+
+        override void visit(FuncDeclaration func) {
+            depth++;
+            if (depth > 1) found = true;
+            super.visit(func);
+            depth--;
+        }
+    }
+    scope v = new Collector();
+    func.accept(v);
+    return v.found;   
+}
+
 bool hasReturn(FuncDeclaration func) {
     extern(C++) static class Collector : SemanticTimeTransitiveVisitor {
         alias visit = typeof(super).visit;

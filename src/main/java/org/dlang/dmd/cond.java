@@ -667,6 +667,7 @@ public class cond {
 
         // Erasure: include<Ptr>
         public  int include(Ptr<Scope> sc) {
+            StaticIfCondition __self = this;
             Function0<Integer> errorReturn = new Function0<Integer>() {
                 public Integer invoke() {
                  {

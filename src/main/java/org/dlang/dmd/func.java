@@ -787,6 +787,7 @@ public class func {
 
         // Erasure: overloadExactMatch<Type>
         public  FuncDeclaration overloadExactMatch(Type t) {
+            FuncDeclaration __self = this;
             FuncDeclaration fd = null;
             Function1<Dsymbol,Integer> __lambda2 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
@@ -820,6 +821,7 @@ public class func {
 
         // Erasure: overloadModMatch<Loc, Type, boolean>
         public  FuncDeclaration overloadModMatch(Loc loc, Type tthis, Ref<Boolean> hasOverloads) {
+            FuncDeclaration __self = this;
             MatchAccumulator m = new MatchAccumulator();
             Function1<Dsymbol,Integer> __lambda4 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
@@ -1455,6 +1457,7 @@ public class func {
 
         // Erasure: isTypeIsolatedIndirect<Type>
         public  boolean isTypeIsolatedIndirect(Type t) {
+            FuncDeclaration __self = this;
             assert(t != null);
             if ((this.isPureBypassingInference() == 0) || this.isNested())
             {
@@ -1624,6 +1627,7 @@ public class func {
 
         // Erasure: isUnique<>
         public  boolean isUnique() {
+            FuncDeclaration __self = this;
             boolean result = false;
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
@@ -1652,6 +1656,7 @@ public class func {
 
         // Erasure: checkNestedReference<Ptr, Loc>
         public  boolean checkNestedReference(Ptr<Scope> sc, Loc loc) {
+            FuncDeclaration __self = this;
             {
                 FuncLiteralDeclaration fld = this.isFuncLiteralDeclaration();
                 if ((fld) != null)
@@ -1700,7 +1705,7 @@ public class func {
                         {
                             return false;
                         }
-                        if ((!pequals(fdthis, this)))
+                        if ((!pequals(fdthis, __self)))
                         {
                             Ref<Boolean> found = ref(false);
                             {
@@ -1990,6 +1995,7 @@ public class func {
 
         // Erasure: buildEnsureRequire<>
         public  void buildEnsureRequire() {
+            FuncDeclaration __self = this;
             if (this.frequires != null)
             {
                 assert((this.frequires.get()).length != 0);
@@ -3444,6 +3450,7 @@ public class func {
 
         // Erasure: modifyReturns<Ptr, Type>
         public  void modifyReturns(Ptr<Scope> sc, Type tret) {
+            FuncLiteralDeclaration __self = this;
             // skipping duplicate class RetWalker
             if ((this.semanticRun < PASS.semantic3done))
             {

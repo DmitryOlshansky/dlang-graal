@@ -177,6 +177,7 @@ public class statementsem {
 
         // Erasure: visit<CompoundStatement>
         public  void visit(CompoundStatement cs) {
+            StatementSemanticVisitor __self = this;
             {
                 int i = 0;
                 for (; (i < (cs.statements.get()).length);){
@@ -298,7 +299,7 @@ public class statementsem {
                     i++;
                 }
             }
-            Function1<Ptr<DArray<Statement>>,Void> flatten = new Function1<Ptr<DArray<Statement>>,Void>() {
+            Runnable1<Ptr<DArray<Statement>>> flatten = new Runnable1<Ptr<DArray<Statement>>>() {
                 public Void invoke(Ptr<DArray<Statement>> statements) {
                  {
                     {
@@ -561,7 +562,8 @@ public class statementsem {
         // from template makeTupleForeach!(00)
         // Erasure: makeTupleForeach00<ForeachStatement>
         public  void makeTupleForeach00(ForeachStatement fs) {
-            Function0<Void> returnEarly00 = new Function0<Void>() {
+            StatementSemanticVisitor __self = this;
+            Runnable0 returnEarly00 = new Runnable0() {
                 public Void invoke() {
                  {
                     result = new ErrorStatement();
@@ -815,7 +817,8 @@ public class statementsem {
         // from template makeTupleForeach!(10)
         // Erasure: makeTupleForeach10<ForeachStatement, boolean>
         public  void makeTupleForeach10(ForeachStatement fs, boolean _param_1) {
-            Function0<Void> returnEarly10 = new Function0<Void>() {
+            StatementSemanticVisitor __self = this;
+            Runnable0 returnEarly10 = new Runnable0() {
                 public Void invoke() {
                  {
                     result = new ErrorStatement();
@@ -1105,6 +1108,7 @@ public class statementsem {
         // from template makeTupleForeach!(11)
         // Erasure: makeTupleForeach11<ForeachStatement, Ptr, boolean>
         public  Ptr<DArray<Dsymbol>> makeTupleForeach11(ForeachStatement fs, Ptr<DArray<Dsymbol>> _param_1, boolean _param_2) {
+            StatementSemanticVisitor __self = this;
             Function0<Object> returnEarly11 = new Function0<Object>() {
                 public Object invoke() {
                  {
@@ -1381,6 +1385,7 @@ public class statementsem {
 
         // Erasure: visit<ForeachStatement>
         public  void visit(ForeachStatement fs) {
+            StatementSemanticVisitor __self = this;
             Function1<ForeachStatement,Boolean> checkForArgTypes = new Function1<ForeachStatement,Boolean>() {
                 public Boolean invoke(ForeachStatement fs) {
                  {
@@ -2698,6 +2703,7 @@ public class statementsem {
 
         // Erasure: visit<SwitchStatement>
         public  void visit(SwitchStatement ss) {
+            StatementSemanticVisitor __self = this;
             ss.tf = (this.sc.get()).tf;
             if (ss.cases != null)
             {
@@ -3270,6 +3276,7 @@ public class statementsem {
 
         // Erasure: visit<ReturnStatement>
         public  void visit(ReturnStatement rs) {
+            StatementSemanticVisitor __self = this;
             FuncDeclaration fd = (this.sc.get()).parent.value.isFuncDeclaration();
             if (fd.fes != null)
             {
@@ -3427,7 +3434,7 @@ public class statementsem {
                 }
                 if (inferRef)
                 {
-                    Function0<Void> turnOffRef = new Function0<Void>() {
+                    Runnable0 turnOffRef = new Runnable0() {
                         public Void invoke() {
                          {
                             tf.isref = false;

@@ -41,8 +41,6 @@ public class target {
         public boolean cppExceptions = false;
         public boolean twoDtorInVtable = false;
         // from template FPTypeProperties!(Double)
-
-        // from template FPTypeProperties!(Double)
         public static class FPTypePropertiesDouble
         {
             public double max = 0.0;
@@ -110,6 +108,8 @@ public class target {
                 return this;
             }
         }
+
+        // from template FPTypeProperties!(Double)
 
         // from template FPTypeProperties!(Float)
         public static class FPTypePropertiesFloat
@@ -709,6 +709,7 @@ public class target {
 
         // Erasure: getTargetInfo<Ptr, Loc>
         public  Expression getTargetInfo(BytePtr name, Loc loc) {
+            Target __self = this;
             Function1<ByteSlice,StringExp> stringExp = new Function1<ByteSlice,StringExp>() {
                 public StringExp invoke(ByteSlice sval) {
                  {

@@ -385,6 +385,7 @@ public class statement {
 
         // Erasure: usesEH<>
         public  boolean usesEH() {
+            Statement __self = this;
             // skipping duplicate class UsesEH
             UsesEH ueh = new UsesEH();
             return walkPostorder(this, ueh);
@@ -392,6 +393,7 @@ public class statement {
 
         // Erasure: comeFrom<>
         public  boolean comeFrom() {
+            Statement __self = this;
             // skipping duplicate class ComeFrom
             ComeFrom cf = new ComeFrom();
             return walkPostorder(this, cf);
@@ -399,6 +401,7 @@ public class statement {
 
         // Erasure: hasCode<>
         public  boolean hasCode() {
+            Statement __self = this;
             // skipping duplicate class HasCode
             HasCode hc = new HasCode();
             return walkPostorder(this, hc);
@@ -719,6 +722,7 @@ public class statement {
 
         // Erasure: compileIt<Ptr>
         public  Ptr<DArray<Statement>> compileIt(Ptr<Scope> sc) {
+            CompileStatement __self = this;
             Function0<Ptr<DArray<Statement>>> errorStatements = new Function0<Ptr<DArray<Statement>>>() {
                 public Ptr<DArray<Statement>> invoke() {
                  {
@@ -1623,6 +1627,7 @@ public class statement {
 
         // Erasure: checkLabel<>
         public  boolean checkLabel() {
+            SwitchStatement __self = this;
             Function1<VarDeclaration,Boolean> checkVar = new Function1<VarDeclaration,Boolean>() {
                 public Boolean invoke(VarDeclaration vd) {
                  {

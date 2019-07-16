@@ -1257,7 +1257,8 @@ public class hdrgen {
 
         // Erasure: visit<StaticForeachDeclaration>
         public  void visit(StaticForeachDeclaration s) {
-            Function1<ForeachStatement,Void> foreachWithoutBody = new Function1<ForeachStatement,Void>() {
+            DsymbolPrettyPrintVisitor __self = this;
+            Runnable1<ForeachStatement> foreachWithoutBody = new Runnable1<ForeachStatement>() {
                 public Void invoke(ForeachStatement s) {
                  {
                     (buf.get()).writestring(Token.asString(s.op));
@@ -1294,7 +1295,7 @@ public class hdrgen {
                 }}
 
             };
-            Function1<ForeachRangeStatement,Void> foreachRangeWithoutBody = new Function1<ForeachRangeStatement,Void>() {
+            Runnable1<ForeachRangeStatement> foreachRangeWithoutBody = new Runnable1<ForeachRangeStatement>() {
                 public Void invoke(ForeachRangeStatement s) {
                  {
                     (buf.get()).writestring(Token.asString(s.op));
@@ -3867,7 +3868,7 @@ public class hdrgen {
             (buf.get()).writeByte(32);
             MODtoBuffer(buf, t.mod);
         }
-        Function1<ByteSlice,Void> dg = new Function1<ByteSlice,Void>() {
+        Runnable1<ByteSlice> dg = new Runnable1<ByteSlice>() {
             public Void invoke(ByteSlice str) {
              {
                 (buf.get()).writeByte(32);
@@ -3893,7 +3894,7 @@ public class hdrgen {
             MODtoBuffer(buf, t.mod);
             (buf.get()).writeByte(32);
         }
-        Function1<ByteSlice,Void> ignoreReturn = new Function1<ByteSlice,Void>() {
+        Runnable1<ByteSlice> ignoreReturn = new Runnable1<ByteSlice>() {
             public Void invoke(ByteSlice str) {
              {
                 if (!__equals(str, new ByteSlice("return")))
@@ -3962,7 +3963,7 @@ public class hdrgen {
 
     // Erasure: initializerToBuffer<Initializer, Ptr, Ptr>
     public static void initializerToBuffer(Initializer inx, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-        Function1<ErrorInitializer,Void> visitError = new Function1<ErrorInitializer,Void>() {
+        Runnable1<ErrorInitializer> visitError = new Runnable1<ErrorInitializer>() {
             public Void invoke(ErrorInitializer iz) {
              {
                 (buf.get()).writestring(new ByteSlice("__error__"));
@@ -3970,7 +3971,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<VoidInitializer,Void> visitVoid = new Function1<VoidInitializer,Void>() {
+        Runnable1<VoidInitializer> visitVoid = new Runnable1<VoidInitializer>() {
             public Void invoke(VoidInitializer iz) {
              {
                 (buf.get()).writestring(new ByteSlice("void"));
@@ -3978,7 +3979,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<StructInitializer,Void> visitStruct = new Function1<StructInitializer,Void>() {
+        Runnable1<StructInitializer> visitStruct = new Runnable1<StructInitializer>() {
             public Void invoke(StructInitializer si) {
              {
                 (buf.get()).writeByte(123);
@@ -4011,7 +4012,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<ArrayInitializer,Void> visitArray = new Function1<ArrayInitializer,Void>() {
+        Runnable1<ArrayInitializer> visitArray = new Runnable1<ArrayInitializer>() {
             public Void invoke(ArrayInitializer ai) {
              {
                 (buf.get()).writeByte(91);
@@ -4044,7 +4045,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<ExpInitializer,Void> visitExp = new Function1<ExpInitializer,Void>() {
+        Runnable1<ExpInitializer> visitExp = new Runnable1<ExpInitializer>() {
             public Void invoke(ExpInitializer ei) {
              {
                 expressionToBuffer(ei.exp, buf, hgs);
@@ -4076,7 +4077,7 @@ public class hdrgen {
 
     // Erasure: typeToBufferx<Type, Ptr, Ptr>
     public static void typeToBufferx(Type t, Ptr<OutBuffer> buf, Ptr<HdrGenState> hgs) {
-        Function1<Type,Void> visitType = new Function1<Type,Void>() {
+        Runnable1<Type> visitType = new Runnable1<Type>() {
             public Void invoke(Type t) {
              {
                 printf(new BytePtr("t = %p, ty = %d\n"), t, (t.ty & 0xFF));
@@ -4084,7 +4085,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeError,Void> visitError = new Function1<TypeError,Void>() {
+        Runnable1<TypeError> visitError = new Runnable1<TypeError>() {
             public Void invoke(TypeError t) {
              {
                 (buf.get()).writestring(new ByteSlice("_error_"));
@@ -4092,7 +4093,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeBasic,Void> visitBasic = new Function1<TypeBasic,Void>() {
+        Runnable1<TypeBasic> visitBasic = new Runnable1<TypeBasic>() {
             public Void invoke(TypeBasic t) {
              {
                 (buf.get()).writestring(t.dstring);
@@ -4100,7 +4101,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeTraits,Void> visitTraits = new Function1<TypeTraits,Void>() {
+        Runnable1<TypeTraits> visitTraits = new Runnable1<TypeTraits>() {
             public Void invoke(TypeTraits t) {
              {
                 expressionToBuffer(t.exp, buf, hgs);
@@ -4108,7 +4109,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeVector,Void> visitVector = new Function1<TypeVector,Void>() {
+        Runnable1<TypeVector> visitVector = new Runnable1<TypeVector>() {
             public Void invoke(TypeVector t) {
              {
                 (buf.get()).writestring(new ByteSlice("__vector("));
@@ -4118,7 +4119,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeSArray,Void> visitSArray = new Function1<TypeSArray,Void>() {
+        Runnable1<TypeSArray> visitSArray = new Runnable1<TypeSArray>() {
             public Void invoke(TypeSArray t) {
              {
                 visitWithMask(t.next.value, t.mod, buf, hgs);
@@ -4129,7 +4130,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeDArray,Void> visitDArray = new Function1<TypeDArray,Void>() {
+        Runnable1<TypeDArray> visitDArray = new Runnable1<TypeDArray>() {
             public Void invoke(TypeDArray t) {
              {
                 Type ut = t.castMod((byte)0);
@@ -4160,7 +4161,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeAArray,Void> visitAArray = new Function1<TypeAArray,Void>() {
+        Runnable1<TypeAArray> visitAArray = new Runnable1<TypeAArray>() {
             public Void invoke(TypeAArray t) {
              {
                 visitWithMask(t.next.value, t.mod, buf, hgs);
@@ -4171,7 +4172,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypePointer,Void> visitPointer = new Function1<TypePointer,Void>() {
+        Runnable1<TypePointer> visitPointer = new Runnable1<TypePointer>() {
             public Void invoke(TypePointer t) {
              {
                 if (((t.next.value.ty & 0xFF) == ENUMTY.Tfunction))
@@ -4187,7 +4188,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeReference,Void> visitReference = new Function1<TypeReference,Void>() {
+        Runnable1<TypeReference> visitReference = new Runnable1<TypeReference>() {
             public Void invoke(TypeReference t) {
              {
                 visitWithMask(t.next.value, t.mod, buf, hgs);
@@ -4196,7 +4197,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeFunction,Void> visitFunction = new Function1<TypeFunction,Void>() {
+        Runnable1<TypeFunction> visitFunction = new Runnable1<TypeFunction>() {
             public Void invoke(TypeFunction t) {
              {
                 visitFuncIdentWithPostfix(t, new ByteSlice(), buf, hgs);
@@ -4204,7 +4205,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeDelegate,Void> visitDelegate = new Function1<TypeDelegate,Void>() {
+        Runnable1<TypeDelegate> visitDelegate = new Runnable1<TypeDelegate>() {
             public Void invoke(TypeDelegate t) {
              {
                 visitFuncIdentWithPostfix((TypeFunction)t.next.value, new ByteSlice("delegate"), buf, hgs);
@@ -4212,7 +4213,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeQualified,Void> visitTypeQualifiedHelper = new Function1<TypeQualified,Void>() {
+        Runnable1<TypeQualified> visitTypeQualifiedHelper = new Runnable1<TypeQualified>() {
             public Void invoke(TypeQualified t) {
              {
                 {
@@ -4249,7 +4250,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeIdentifier,Void> visitIdentifier = new Function1<TypeIdentifier,Void>() {
+        Runnable1<TypeIdentifier> visitIdentifier = new Runnable1<TypeIdentifier>() {
             public Void invoke(TypeIdentifier t) {
              {
                 (buf.get()).writestring(t.ident.asString());
@@ -4258,7 +4259,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeInstance,Void> visitInstance = new Function1<TypeInstance,Void>() {
+        Runnable1<TypeInstance> visitInstance = new Runnable1<TypeInstance>() {
             public Void invoke(TypeInstance t) {
              {
                 dsymbolToBuffer(t.tempinst, buf, hgs);
@@ -4267,7 +4268,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeTypeof,Void> visitTypeof = new Function1<TypeTypeof,Void>() {
+        Runnable1<TypeTypeof> visitTypeof = new Runnable1<TypeTypeof>() {
             public Void invoke(TypeTypeof t) {
              {
                 (buf.get()).writestring(new ByteSlice("typeof("));
@@ -4278,7 +4279,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeReturn,Void> visitReturn = new Function1<TypeReturn,Void>() {
+        Runnable1<TypeReturn> visitReturn = new Runnable1<TypeReturn>() {
             public Void invoke(TypeReturn t) {
              {
                 (buf.get()).writestring(new ByteSlice("typeof(return)"));
@@ -4287,7 +4288,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeEnum,Void> visitEnum = new Function1<TypeEnum,Void>() {
+        Runnable1<TypeEnum> visitEnum = new Runnable1<TypeEnum>() {
             public Void invoke(TypeEnum t) {
              {
                 (buf.get()).writestring((hgs.get()).fullQual ? t.sym.toPrettyChars(false) : t.sym.toChars());
@@ -4295,7 +4296,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeStruct,Void> visitStruct = new Function1<TypeStruct,Void>() {
+        Runnable1<TypeStruct> visitStruct = new Runnable1<TypeStruct>() {
             public Void invoke(TypeStruct t) {
              {
                 TemplateInstance ti = t.sym.parent.value != null ? t.sym.parent.value.isTemplateInstance() : null;
@@ -4311,7 +4312,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeClass,Void> visitClass = new Function1<TypeClass,Void>() {
+        Runnable1<TypeClass> visitClass = new Runnable1<TypeClass>() {
             public Void invoke(TypeClass t) {
              {
                 TemplateInstance ti = t.sym.parent.value.isTemplateInstance();
@@ -4327,7 +4328,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeTuple,Void> visitTuple = new Function1<TypeTuple,Void>() {
+        Runnable1<TypeTuple> visitTuple = new Runnable1<TypeTuple>() {
             public Void invoke(TypeTuple t) {
              {
                 parametersToBuffer(new ParameterList(t.arguments, VarArg.none), buf, hgs);
@@ -4335,7 +4336,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeSlice,Void> visitSlice = new Function1<TypeSlice,Void>() {
+        Runnable1<TypeSlice> visitSlice = new Runnable1<TypeSlice>() {
             public Void invoke(TypeSlice t) {
              {
                 visitWithMask(t.next.value, t.mod, buf, hgs);
@@ -4348,7 +4349,7 @@ public class hdrgen {
             }}
 
         };
-        Function1<TypeNull,Void> visitNull = new Function1<TypeNull,Void>() {
+        Runnable1<TypeNull> visitNull = new Runnable1<TypeNull>() {
             public Void invoke(TypeNull t) {
              {
                 (buf.get()).writestring(new ByteSlice("typeof(null)"));

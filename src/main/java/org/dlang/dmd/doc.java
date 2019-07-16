@@ -1452,7 +1452,7 @@ public class doc {
                     }
                     else
                     {
-                        Function0<Void> printFullyQualifiedImport = new Function0<Void>() {
+                        Runnable0 printFullyQualifiedImport = new Runnable0() {
                             public Void invoke() {
                              {
                                 if ((imp.packages != null) && ((imp.packages.get()).length != 0))
@@ -3727,6 +3727,7 @@ public class doc {
         // Erasure: extractReferences<Ptr, int, Loc>
         public  void extractReferences(Ptr<OutBuffer> buf, int i, Loc loc) {
             Ref<Integer> i_ref = ref(i);
+            MarkdownLinkReferences __self = this;
             Function2<Ptr<OutBuffer>,Integer,Boolean> isFollowedBySpace = new Function2<Ptr<OutBuffer>,Integer,Boolean>() {
                 public Boolean invoke(Ptr<OutBuffer> buf, Integer i) {
                  {
@@ -4077,7 +4078,7 @@ public class doc {
             message(loc, new BytePtr("Ddoc: formatting table '%.*s'"), s.getLength(), s.getPtr(0));
         }
         Ref<Integer> delta = ref(0);
-        Function4<Integer,Integer,Integer,Integer,Void> replaceTableCell = new Function4<Integer,Integer,Integer,Integer,Void>() {
+        Runnable4<Integer,Integer,Integer,Integer> replaceTableCell = new Runnable4<Integer,Integer,Integer,Integer>() {
             public Void invoke(Integer iCellStart, Integer iCellEnd, Integer cellIndex, Integer di) {
              {
                 Ref<Integer> iCellEnd_ref = ref(iCellEnd);

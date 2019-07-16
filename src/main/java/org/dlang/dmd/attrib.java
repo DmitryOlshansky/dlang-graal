@@ -58,6 +58,7 @@ public class attrib {
 
         // Erasure: apply<Ptr, Ptr>
         public  int apply(Function2<Dsymbol,Object,Integer> fp, Object param) {
+            AttribDeclaration __self = this;
             Function1<Dsymbol,Integer> __lambda3 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
                  {
@@ -92,11 +93,12 @@ public class attrib {
 
         // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
+            AttribDeclaration __self = this;
             Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
             {
                 Ptr<Scope> sc2 = this.newScope(sc);
-                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.addMember(sc2, sds);
@@ -114,11 +116,12 @@ public class attrib {
 
         // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
+            AttribDeclaration __self = this;
             Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
             {
                 Ptr<Scope> sc2 = this.newScope(sc);
-                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.setScope(sc2);
@@ -136,11 +139,12 @@ public class attrib {
 
         // Erasure: importAll<Ptr>
         public  void importAll(Ptr<Scope> sc) {
+            AttribDeclaration __self = this;
             Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
             {
                 Ptr<Scope> sc2 = this.newScope(sc);
-                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.importAll(sc2);
@@ -158,9 +162,10 @@ public class attrib {
 
         // Erasure: addComment<Ptr>
         public  void addComment(BytePtr comment) {
+            AttribDeclaration __self = this;
             if (comment != null)
             {
-                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.addComment(comment);
@@ -185,7 +190,8 @@ public class attrib {
 
         // Erasure: setFieldOffset<AggregateDeclaration, Ptr, boolean>
         public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
-            Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>() {
+            AttribDeclaration __self = this;
+            Runnable1<Dsymbol> __lambda4 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     s.setFieldOffset(ad, poffset, isunion);
@@ -198,6 +204,7 @@ public class attrib {
 
         // Erasure: hasPointers<>
         public  boolean hasPointers() {
+            AttribDeclaration __self = this;
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
                  {
@@ -210,6 +217,7 @@ public class attrib {
 
         // Erasure: hasStaticCtorOrDtor<>
         public  boolean hasStaticCtorOrDtor() {
+            AttribDeclaration __self = this;
             Function1<Dsymbol,Integer> __lambda1 = new Function1<Dsymbol,Integer>() {
                 public Integer invoke(Dsymbol s) {
                  {
@@ -222,7 +230,8 @@ public class attrib {
 
         // Erasure: checkCtorConstInit<>
         public  void checkCtorConstInit() {
-            Function1<Dsymbol,Void> __lambda1 = new Function1<Dsymbol,Void>() {
+            AttribDeclaration __self = this;
+            Runnable1<Dsymbol> __lambda1 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     s.checkCtorConstInit();
@@ -235,7 +244,8 @@ public class attrib {
 
         // Erasure: addLocalClass<Ptr>
         public  void addLocalClass(Ptr<DArray<ClassDeclaration>> aclasses) {
-            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+            AttribDeclaration __self = this;
+            Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     s.addLocalClass(aclasses);
@@ -324,11 +334,12 @@ public class attrib {
 
         // Erasure: addMember<Ptr, ScopeDsymbol>
         public  void addMember(Ptr<Scope> sc, ScopeDsymbol sds) {
+            StorageClassDeclaration __self = this;
             Ptr<DArray<Dsymbol>> d = this.include(sc);
             if (d != null)
             {
                 Ptr<Scope> sc2 = this.newScope(sc);
-                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         {
@@ -867,6 +878,7 @@ public class attrib {
 
         // Erasure: setFieldOffset<AggregateDeclaration, Ptr, boolean>
         public  void setFieldOffset(AggregateDeclaration ad, Ptr<Integer> poffset, boolean isunion) {
+            AnonDeclaration __self = this;
             if (this.decl != null)
             {
                 int fieldstart = ad.fields.length;
@@ -875,7 +887,7 @@ public class attrib {
                 ad.structsize.value = 0;
                 ad.alignsize.value = 0;
                 Ref<Integer> offset = ref(0);
-                Function1<Dsymbol,Void> __lambda4 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda4 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.setFieldOffset(ad, ptr(offset), isunion);
@@ -1095,9 +1107,10 @@ public class attrib {
 
         // Erasure: addComment<Ptr>
         public  void addComment(BytePtr comment) {
+            ConditionalDeclaration __self = this;
             if (comment != null)
             {
-                Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.addComment(comment);
@@ -1106,7 +1119,7 @@ public class attrib {
 
                 };
                 foreachDsymbol(this.decl, __lambda2);
-                Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+                Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
                     public Void invoke(Dsymbol s) {
                      {
                         s.addComment(comment);
@@ -1120,7 +1133,8 @@ public class attrib {
 
         // Erasure: setScope<Ptr>
         public  void setScope(Ptr<Scope> sc) {
-            Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+            ConditionalDeclaration __self = this;
+            Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                 public Void invoke(Dsymbol s) {
                  {
                     s.setScope(sc);
@@ -1179,6 +1193,7 @@ public class attrib {
 
         // Erasure: include<Ptr>
         public  Ptr<DArray<Dsymbol>> include(Ptr<Scope> sc) {
+            StaticIfDeclaration __self = this;
             if (this.errors || this.onStack)
             {
                 return null;
@@ -1192,7 +1207,7 @@ public class attrib {
                     Ptr<DArray<Dsymbol>> d = this.include(this._scope);
                     if ((d != null) && !this.addisdone)
                     {
-                        Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+                        Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                             public Void invoke(Dsymbol s) {
                              {
                                 s.addMember(_scope, scopesym);
@@ -1201,7 +1216,7 @@ public class attrib {
 
                         };
                         foreachDsymbol(d, __lambda2);
-                        Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+                        Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
                             public Void invoke(Dsymbol s) {
                              {
                                 s.setScope(_scope);
@@ -1307,6 +1322,7 @@ public class attrib {
 
         // Erasure: include<Ptr>
         public  Ptr<DArray<Dsymbol>> include(Ptr<Scope> sc) {
+            StaticForeachDeclaration __self = this;
             if (this.errors || this.onStack)
             {
                 return null;
@@ -1329,7 +1345,7 @@ public class attrib {
                 Ptr<DArray<Dsymbol>> d = makeTupleForeach11(this._scope, this.sfe.aggrfe, this.decl, this.sfe.needExpansion);
                 if (d != null)
                 {
-                    Function1<Dsymbol,Void> __lambda2 = new Function1<Dsymbol,Void>() {
+                    Runnable1<Dsymbol> __lambda2 = new Runnable1<Dsymbol>() {
                         public Void invoke(Dsymbol s) {
                          {
                             s.addMember(_scope, scopesym);
@@ -1338,7 +1354,7 @@ public class attrib {
 
                     };
                     foreachDsymbol(d, __lambda2);
-                    Function1<Dsymbol,Void> __lambda3 = new Function1<Dsymbol,Void>() {
+                    Runnable1<Dsymbol> __lambda3 = new Runnable1<Dsymbol>() {
                         public Void invoke(Dsymbol s) {
                          {
                             s.setScope(_scope);

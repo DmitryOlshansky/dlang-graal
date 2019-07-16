@@ -19,7 +19,6 @@ public class CTFloat {
         return Double.isNaN(d);
     }
 
-
     public static double parse(BytePtr sbufptr, Ptr<Boolean> isOutOfRange){
         try {
             isOutOfRange.set(0, false);
@@ -31,6 +30,8 @@ public class CTFloat {
         }
 
     }
+
+    public static double fabs(double v) { return Math.abs(v); }
 
     public static final Double zero = 0.0;
 

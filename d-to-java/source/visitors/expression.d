@@ -366,7 +366,10 @@ public:
 
     override void visit(ThisExp e)
     {
-        buf.put("this");
+        if (opts.funcs.top in opts.localFuncs)
+            buf.put("__self");
+        else
+            buf.put("this");
     }
 
     override void visit(SuperExp e)
@@ -1741,10 +1744,12 @@ private void typeErasureToBuffer(Type t, TextBuffer buf, ExprOpts opts, Boxing b
         case Tpointer:
             return buf.put("Ptr");
         case Tfunction:
-            return buf.fmt("Function%d", t.isTypeFunction.parameterList ? t.isTypeFunction.parameterList.length : 0);
+            return buf.fmt(t.nextOf.ty == Tvoid ? "Runnable%d" : "Function%d", 
+                t.isTypeFunction.parameterList ? t.isTypeFunction.parameterList.length : 0);
         case Tdelegate:
-            auto params = t.isTypeDelegate.next.isTypeFunction.parameterList;
-            return buf.fmt("Function%d", params ? params.length : 0);
+            auto tf = t.isTypeDelegate.next.isTypeFunction;
+            auto params = tf.parameterList;
+            return buf.fmt(tf.nextOf.ty == Tvoid ? "Runnable%d" : "Function%d", params ? params.length : 0);
         case Tstruct:
             return buf.fmt("%s", t.isTypeStruct.sym.ident.symbol);
         case Tclass:
@@ -2159,8 +2164,13 @@ private void visitFuncIdentWithPostfix(TypeFunction t, TextBuffer buf, ExprOpts 
         return;
     }
     t.inuse++;
-    buf.fmt("Function%d<", t.parameterList ? t.parameterList.length : 0);
+    bool runnable =  !t.next || t.next.ty == Tvoid;
+    if (runnable)
+        buf.fmt("Runnable%d", t.parameterList ? t.parameterList.length : 0);
+    else
+        buf.fmt("Function%d", t.parameterList ? t.parameterList.length : 0);
     if (t.parameterList){
+        if (t.parameterList.length > 0) buf.put("<");
         foreach(i, p; *t.parameterList) {
             if (i) buf.put(",");
             bool refness = (p.storageClass & (STC.ref_ | STC.out_)) && !isLambda;
@@ -2169,14 +2179,15 @@ private void visitFuncIdentWithPostfix(TypeFunction t, TextBuffer buf, ExprOpts 
             if (refness) buf.put(">");
         }
     }
-    if (t.parameterList && t.parameterList.length > 0) buf.put(",");
-    if (t.next)
+    if (t.next && t.next.ty != Tvoid)
     {
+        if (t.parameterList && t.parameterList.length > 0) buf.put(",");
+        else buf.put("<");
         typeToBuffer(t.next, buf, opts, Boxing.yes);
+        buf.put(">");
     }
-    else 
-        buf.put("Void");
-    buf.put(">");
+    else if(t.parameterList && t.parameterList.length > 0) 
+        buf.put(">");
     t.inuse--;
 }
 

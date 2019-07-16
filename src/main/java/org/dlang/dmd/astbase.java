@@ -9190,11 +9190,6 @@ public class astbase {
             public ForeachRangeStatement rangefe = null;
             // Erasure: __ctor<Loc, ForeachStatement, ForeachRangeStatement>
             public  StaticForeach(Loc loc, ForeachStatement aggrfe, ForeachRangeStatement rangefe) {
-                {
-                    {
-                        assert(aggrfe != null ^ rangefe != null);
-                    }
-                }
                 super();
                 this.loc.opAssign(loc.copy());
                 this.aggrfe = aggrfe;

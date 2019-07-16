@@ -1138,6 +1138,7 @@ public class dcast {
 
         // Erasure: visit<NewExp>
         public  void visit(NewExp e) {
+            ImplicitConvTo __self = this;
             this.visit((Expression)e);
             if ((this.result != MATCH.nomatch))
             {

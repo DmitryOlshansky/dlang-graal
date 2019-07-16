@@ -225,6 +225,7 @@ public class dscope {
 
         // Erasure: search<Loc, Identifier, Ptr, int>
         public  Dsymbol search(Loc loc, Identifier ident, Ptr<Dsymbol> pscopesym, int flags) {
+            Scope __self = this;
             assert((flags & 24) == 0);
             if ((pequals(ident, Id.empty)))
             {
@@ -324,7 +325,7 @@ public class dscope {
                  {
                     Ref<Integer> flags_ref = ref(flags);
                     {
-                        Ref<Ptr<Scope>> sc = ref(ptr(this));
+                        Ref<Ptr<Scope>> sc = ref(ptr(__self));
                         for (; sc.value != null;sc.value = pcopy((sc.value.get()).enclosing)){
                             assert((sc.value != (sc.value.get()).enclosing));
                             if ((sc.value.get()).scopesym == null)
@@ -392,6 +393,7 @@ public class dscope {
 
         // Erasure: search_correct<Identifier>
         public  Dsymbol search_correct(Identifier ident) {
+            Scope __self = this;
             if (global.gag != 0)
             {
                 return null;
@@ -408,7 +410,7 @@ public class dscope {
                     {
                         return null;
                     }
-                    Ref<Ptr<Scope>> sc = ref(ptr(this));
+                    Ref<Ptr<Scope>> sc = ref(ptr(__self));
                     dmodule.Module.clearCache();
                     Ref<Dsymbol> scopesym = ref(null);
                     Dsymbol s = (sc.value.get()).search(Loc.initial, id, ptr(scopesym), 2);

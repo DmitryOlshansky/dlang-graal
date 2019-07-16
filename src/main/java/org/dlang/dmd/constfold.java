@@ -1556,7 +1556,7 @@ public class constfold {
     // Erasure: copyElements<Expression, Expression>
     public static Ptr<DArray<Expression>> copyElements(Expression e1, Expression e2) {
         Ptr<DArray<Expression>> elems = refPtr(new DArray<Expression>());
-        Function1<ArrayLiteralExp,Void> append = new Function1<ArrayLiteralExp,Void>() {
+        Runnable1<ArrayLiteralExp> append = new Runnable1<ArrayLiteralExp>() {
             public Void invoke(ArrayLiteralExp ale) {
              {
                 if (ale.elements == null)
