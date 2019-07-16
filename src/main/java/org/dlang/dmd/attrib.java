@@ -487,7 +487,7 @@ public class attrib {
 
         // Erasure: toChars<>
         public  BytePtr toChars() {
-            return toBytePtr(this.asString());
+            return this.asString().getPtr(0);
         }
 
         // Erasure: asString<>
@@ -546,7 +546,7 @@ public class attrib {
 
         // Erasure: toChars<>
         public  BytePtr toChars() {
-            return toBytePtr(this.asString());
+            return this.asString().getPtr(0);
         }
 
         // Erasure: asString<>
@@ -622,7 +622,7 @@ public class attrib {
 
         // Erasure: toChars<>
         public  BytePtr toChars() {
-            return toBytePtr(this.asString());
+            return this.asString().getPtr(0);
         }
 
         // Erasure: asString<>

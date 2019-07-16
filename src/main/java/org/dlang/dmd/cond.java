@@ -164,7 +164,7 @@ public class cond {
             StructDeclaration sdecl = new StructDeclaration(loc, sid, false);
             sdecl.storage_class |= 1L;
             sdecl.members = pcopy((refPtr(new DArray<Dsymbol>())));
-            Identifier fid = Identifier.idPool(toBytePtr(tupleFieldName), 5);
+            Identifier fid = Identifier.idPool(tupleFieldName.getPtr(0), 5);
             TypeTypeof ty = new TypeTypeof(loc, new TupleExp(loc, e));
             (sdecl.members.get()).push(new VarDeclaration(loc, ty, fid, null, 0L));
             TypeStruct r = (TypeStruct)sdecl.type;
@@ -554,7 +554,7 @@ public class cond {
         public static void checkReserved(Loc loc, ByteSlice ident) {
             if (isReserved(ident))
             {
-                error(loc, new BytePtr("version identifier `%s` is reserved and cannot be set"), toBytePtr(ident));
+                error(loc, new BytePtr("version identifier `%s` is reserved and cannot be set"), ident.getPtr(0));
             }
         }
 

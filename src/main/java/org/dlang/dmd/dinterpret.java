@@ -193,8 +193,7 @@ public class dinterpret {
             return null;
         }
 
-        public RecursiveBlock(){
-        }
+        public RecursiveBlock(){ }
         public RecursiveBlock copy(){
             RecursiveBlock r = new RecursiveBlock();
             r.istate = istate;
@@ -329,8 +328,7 @@ public class dinterpret {
     public static class CompiledCtfeFunctionPimpl
     {
         public Ptr<CompiledCtfeFunction> pimpl = null;
-        public CompiledCtfeFunctionPimpl(){
-        }
+        public CompiledCtfeFunctionPimpl(){ }
         public CompiledCtfeFunctionPimpl copy(){
             CompiledCtfeFunctionPimpl r = new CompiledCtfeFunctionPimpl();
             r.pimpl = pimpl;
@@ -479,14 +477,7 @@ public class dinterpret {
             this.globalValues.push(e);
         }
 
-        public CtfeStack(){
-            values = new DArray<Expression>();
-            vars = new DArray<VarDeclaration>();
-            savedId = new DArray<Object>();
-            frames = new DArray<Object>();
-            savedThis = new DArray<Expression>();
-            globalValues = new DArray<Expression>();
-        }
+        public CtfeStack(){ }
         public CtfeStack copy(){
             CtfeStack r = new CtfeStack();
             r.values = values.copy();
@@ -531,8 +522,7 @@ public class dinterpret {
         public FuncDeclaration fd = null;
         public Statement start = null;
         public Statement gotoTarget = null;
-        public InterState(){
-        }
+        public InterState(){ }
         public InterState copy(){
             InterState r = new InterState();
             r.caller = caller;
@@ -579,9 +569,7 @@ public class dinterpret {
             walkPostorder(e, v);
         }
 
-        public CompiledCtfeFunction(){
-            callingloc = new Loc();
-        }
+        public CompiledCtfeFunction(){ }
         public CompiledCtfeFunction copy(){
             CompiledCtfeFunction r = new CompiledCtfeFunction();
             r.func = func;
@@ -7023,8 +7011,8 @@ public class dinterpret {
         Ref<DArray<Expression>> args = ref(args.value = new DArray<Expression>(numParams));
         try {
             Expression eresult = null;
-            ByteSlice utf8buf = new RawByteSlice(new byte[4]);
-            CharSlice utf16buf = new RawCharSlice(new char[2]);
+            ByteSlice utf8buf = new ByteSlice(new byte[4]);
+            CharSlice utf16buf = new CharSlice(new char[2]);
             int start = rvs ? len : 0;
             int end = rvs ? 0 : len;
             {

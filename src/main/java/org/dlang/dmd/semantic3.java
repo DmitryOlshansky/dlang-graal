@@ -291,7 +291,7 @@ public class semantic3 {
                 {
                     (sc2.get()).intypeof = 2;
                 }
-                (sc2.get()).ctorflow.fieldinit = new Slice<FieldInit>().copy();
+                (sc2.get()).ctorflow.fieldinit = new RawSlice<FieldInit>().copy();
                 {
                     FuncLiteralDeclaration fld = funcdecl.isFuncLiteralDeclaration();
                     if ((fld) != null)
@@ -1154,7 +1154,7 @@ public class semantic3 {
                 eliminateMaybeScopes(array.slice(0,n));
                 if ((dim > 10))
                 {
-                    Mem.xfree(toPtr<VarDeclaration>(array));
+                    Mem.xfree(array.getPtr(0));
                 }
             }
             if ((funcdecl.parameters != null) && !funcdecl.errors)
@@ -1364,8 +1364,7 @@ public class semantic3 {
             }
         }
 
-        public FuncDeclSem3(){
-        }
+        public FuncDeclSem3(){ }
         public FuncDeclSem3 copy(){
             FuncDeclSem3 r = new FuncDeclSem3();
             r.funcdecl = funcdecl;

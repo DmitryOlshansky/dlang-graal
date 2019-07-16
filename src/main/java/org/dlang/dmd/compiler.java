@@ -30,8 +30,7 @@ public class compiler {
         private long int64value = 0L;
         private float float32value = 0.0;
         private double float64value = 0.0;
-        public U(){
-        }
+        public U(){ }
         public U copy(){
             U r = new U();
             r.int32value = int32value;
@@ -186,8 +185,7 @@ public class compiler {
             return false;
         }
 
-        public Compiler(){
-        }
+        public Compiler(){ }
         public Compiler copy(){
             Compiler r = new Compiler();
             return r;
@@ -233,8 +231,7 @@ public class compiler {
             this.index++;
         }
 
-        public ModuleComponentRange(){
-        }
+        public ModuleComponentRange(){ }
         public ModuleComponentRange copy(){
             ModuleComponentRange r = new ModuleComponentRange();
             r.packages = packages;
@@ -309,8 +306,7 @@ public class compiler {
             this.isExclude = isExclude;
         }
 
-        public MatcherNode(){
-        }
+        public MatcherNode(){ }
         public MatcherNode copy(){
             MatcherNode r = new MatcherNode();
             r.depth = depth;

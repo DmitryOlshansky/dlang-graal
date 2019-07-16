@@ -1058,8 +1058,7 @@ public class id {
             wchar_t = null;
         }
 
-        public Id(){
-        }
+        public Id(){ }
         public Id copy(){
             Id r = new Id();
             return r;
@@ -1078,8 +1077,7 @@ public class id {
             return this.name_.getLength() != 0 ? this.name_ : this.ident;
         }
 
-        public Msgtable(){
-        }
+        public Msgtable(){ }
         public Msgtable copy(){
             Msgtable r = new Msgtable();
             r.ident = ident.copy();
@@ -1099,7 +1097,7 @@ public class id {
     }
     // Erasure: generate<Array, Ptr>
     public static ByteSlice generate(Slice<Msgtable> msgtable, Function1<Msgtable,ByteSlice> dg) {
-        ByteSlice code = new RawByteSlice().copy();
+        ByteSlice code = new ByteSlice().copy();
         {
             Slice<Msgtable> __r110 = msgtable.copy();
             int __key109 = 0;

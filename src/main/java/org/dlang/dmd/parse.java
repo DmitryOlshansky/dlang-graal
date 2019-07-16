@@ -61,13 +61,11 @@ public class parse {
         public ASTBase.Expression ealign = null;
         public Ptr<DArray<ASTBase.Expression>> udas = null;
         public BytePtr comment = null;
-        public PrefixAttributesASTBase(){
-            protection = new ASTBase.Prot();
-        }
+        public PrefixAttributesASTBase(){ }
         public PrefixAttributesASTBase copy(){
             PrefixAttributesASTBase r = new PrefixAttributesASTBase();
             r.storageClass = storageClass;
-            r.depmsg = depmsg;
+            r.depmsg = depmsg.copy();
             r.link = link;
             r.protection = protection.copy();
             r.setAlignment = setAlignment;
@@ -76,9 +74,9 @@ public class parse {
             r.comment = comment;
             return r;
         }
-        public PrefixAttributesASTBase(long storageClass, Ref<ASTBase.Expression> depmsg, int link, ASTBase.Prot protection, boolean setAlignment, ASTBase.Expression ealign, Ptr<DArray<ASTBase.Expression>> udas, BytePtr comment) {
+        public PrefixAttributesASTBase(long storageClass, ASTBase.Expression depmsg, int link, ASTBase.Prot protection, boolean setAlignment, ASTBase.Expression ealign, Ptr<DArray<ASTBase.Expression>> udas, BytePtr comment) {
             this.storageClass = storageClass;
-            this.depmsg = depmsg;
+            this.depmsg = ref(depmsg);
             this.link = link;
             this.protection = protection;
             this.setAlignment = setAlignment;
@@ -111,13 +109,11 @@ public class parse {
         public Expression ealign = null;
         public Ptr<DArray<Expression>> udas = null;
         public BytePtr comment = null;
-        public PrefixAttributesASTCodegen(){
-            protection = new Prot();
-        }
+        public PrefixAttributesASTCodegen(){ }
         public PrefixAttributesASTCodegen copy(){
             PrefixAttributesASTCodegen r = new PrefixAttributesASTCodegen();
             r.storageClass = storageClass;
-            r.depmsg = depmsg;
+            r.depmsg = depmsg.copy();
             r.link = link;
             r.protection = protection.copy();
             r.setAlignment = setAlignment;
@@ -126,9 +122,9 @@ public class parse {
             r.comment = comment;
             return r;
         }
-        public PrefixAttributesASTCodegen(long storageClass, Ref<Expression> depmsg, int link, Prot protection, boolean setAlignment, Expression ealign, Ptr<DArray<Expression>> udas, BytePtr comment) {
+        public PrefixAttributesASTCodegen(long storageClass, Expression depmsg, int link, Prot protection, boolean setAlignment, Expression ealign, Ptr<DArray<Expression>> udas, BytePtr comment) {
             this.storageClass = storageClass;
-            this.depmsg = depmsg;
+            this.depmsg = ref(depmsg);
             this.link = link;
             this.protection = protection;
             this.setAlignment = setAlignment;
@@ -232,7 +228,7 @@ public class parse {
         public Loc lookingForElse = new Loc();
         // Erasure: __ctor<Loc, Module, Array, boolean, DiagnosticReporter>
         public  ParserASTBase(Loc loc, ASTBase.Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
-            super(_module != null ? _module.srcfile.toChars() : null, toBytePtr(input), 0, input.getLength(), doDocComment, false, diagnosticReporter);
+            super(_module != null ? _module.srcfile.toChars() : null, input.getPtr(0), 0, input.getLength(), doDocComment, false, diagnosticReporter);
             this.scanloc.value.opAssign(loc.copy());
             if (!writeMixin(input, scanloc) && (loc.filename != null))
             {
@@ -246,7 +242,7 @@ public class parse {
 
         // Erasure: __ctor<Module, Array, boolean, DiagnosticReporter>
         public  ParserASTBase(ASTBase.Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
-            super(_module != null ? _module.srcfile.toChars() : null, toBytePtr(input), 0, input.getLength(), doDocComment, false, diagnosticReporter);
+            super(_module != null ? _module.srcfile.toChars() : null, input.getPtr(0), 0, input.getLength(), doDocComment, false, diagnosticReporter);
             this.mod = _module;
             this.linkage = LINK.d;
         }
@@ -8628,7 +8624,7 @@ public class parse {
         public Loc lookingForElse = new Loc();
         // Erasure: __ctor<Loc, Module, Array, boolean, DiagnosticReporter>
         public  ParserASTCodegen(Loc loc, dmodule.Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
-            super(_module != null ? _module.srcfile.toChars() : null, toBytePtr(input), 0, input.getLength(), doDocComment, false, diagnosticReporter);
+            super(_module != null ? _module.srcfile.toChars() : null, input.getPtr(0), 0, input.getLength(), doDocComment, false, diagnosticReporter);
             this.scanloc.value.opAssign(loc.copy());
             if (!writeMixin(input, scanloc) && (loc.filename != null))
             {
@@ -8642,7 +8638,7 @@ public class parse {
 
         // Erasure: __ctor<Module, Array, boolean, DiagnosticReporter>
         public  ParserASTCodegen(dmodule.Module _module, ByteSlice input, boolean doDocComment, DiagnosticReporter diagnosticReporter) {
-            super(_module != null ? _module.srcfile.toChars() : null, toBytePtr(input), 0, input.getLength(), doDocComment, false, diagnosticReporter);
+            super(_module != null ? _module.srcfile.toChars() : null, input.getPtr(0), 0, input.getLength(), doDocComment, false, diagnosticReporter);
             this.mod = _module;
             this.linkage = LINK.d;
         }

@@ -41,6 +41,8 @@ public class target {
         public boolean cppExceptions = false;
         public boolean twoDtorInVtable = false;
         // from template FPTypeProperties!(Double)
+
+        // from template FPTypeProperties!(Double)
         public static class FPTypePropertiesDouble
         {
             public double max = 0.0;
@@ -63,8 +65,7 @@ public class target {
                 this.epsilon = 2.22045e-16;
             }
 
-            public FPTypePropertiesDouble(){
-            }
+            public FPTypePropertiesDouble(){ }
             public FPTypePropertiesDouble copy(){
                 FPTypePropertiesDouble r = new FPTypePropertiesDouble();
                 r.max = max;
@@ -110,8 +111,6 @@ public class target {
             }
         }
 
-        // from template FPTypeProperties!(Double)
-
         // from template FPTypeProperties!(Float)
         public static class FPTypePropertiesFloat
         {
@@ -135,8 +134,7 @@ public class target {
                 this.epsilon = 1.19209e-07;
             }
 
-            public FPTypePropertiesFloat(){
-            }
+            public FPTypePropertiesFloat(){ }
             public FPTypePropertiesFloat copy(){
                 FPTypePropertiesFloat r = new FPTypePropertiesFloat();
                 r.max = max;
@@ -714,7 +712,7 @@ public class target {
             Function1<ByteSlice,StringExp> stringExp = new Function1<ByteSlice,StringExp>() {
                 public StringExp invoke(ByteSlice sval) {
                  {
-                    return new StringExp(loc, toBytePtr(sval), sval.getLength());
+                    return new StringExp(loc, sval.getPtr(0), sval.getLength());
                 }}
 
             };
@@ -752,11 +750,7 @@ public class target {
             }
         }
 
-        public Target(){
-            FloatProperties = new FPTypePropertiesFloat();
-            DoubleProperties = new FPTypePropertiesDouble();
-            RealProperties = new FPTypePropertiesDouble();
-        }
+        public Target(){ }
         public Target copy(){
             Target r = new Target();
             r.ptrsize = ptrsize;

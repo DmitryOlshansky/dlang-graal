@@ -19,8 +19,7 @@ public class impcnvtab {
         public Slice<IntSlice> impcnvResultTab = new RawSlice<IntSlice>(new IntSlice[45]);
         public Slice<IntSlice> impcnvType1Tab = new RawSlice<IntSlice>(new IntSlice[45]);
         public Slice<IntSlice> impcnvType2Tab = new RawSlice<IntSlice>(new IntSlice[45]);
-        public ImpCnvTab(){
-        }
+        public ImpCnvTab(){ }
         public ImpCnvTab copy(){
             ImpCnvTab r = new ImpCnvTab();
             r.impcnvResultTab = impcnvResultTab;

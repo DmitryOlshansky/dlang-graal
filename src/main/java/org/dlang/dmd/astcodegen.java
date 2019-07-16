@@ -37,8 +37,7 @@ public class astcodegen {
 
     public static class ASTCodegen
     {
-        public ASTCodegen(){
-        }
+        public ASTCodegen(){ }
         public ASTCodegen copy(){
             ASTCodegen r = new ASTCodegen();
             return r;

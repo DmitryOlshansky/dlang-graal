@@ -424,7 +424,7 @@ public class typesem {
                 ByteSlice n = importHint(id.asString()).copy();
                 if ((n).getLength() != 0)
                 {
-                    error(loc, new BytePtr("`%s` is not defined, perhaps `import %.*s;` ?"), p, n.getLength(), toBytePtr(n));
+                    error(loc, new BytePtr("`%s` is not defined, perhaps `import %.*s;` ?"), p, n.getLength(), n.getPtr(0));
                 }
                 else {
                     Dsymbol s2 = (sc.get()).search_correct(id);

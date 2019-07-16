@@ -69,13 +69,13 @@ public class dmodule {
                     {
                         return ni;
                     }
-                    FileName.free(toBytePtr(ni));
+                    FileName.free(ni.getPtr(0));
                     ByteSlice n = FileName.combine(filename, new ByteSlice("package.d")).copy();
                     if ((FileName.exists(n) == 1))
                     {
                         return n;
                     }
-                    FileName.free(toBytePtr(n));
+                    FileName.free(n.getPtr(0));
                 }
                 if (FileName.absolute(filename))
                 {
@@ -94,16 +94,16 @@ public class dmodule {
                         {
                             return n;
                         }
-                        FileName.free(toBytePtr(n));
+                        FileName.free(n.getPtr(0));
                         n = FileName.combine(p, sd).copy();
                         if ((FileName.exists(n) == 1))
                         {
                             return n;
                         }
-                        FileName.free(toBytePtr(n));
+                        FileName.free(n.getPtr(0));
                         ByteSlice b = FileName.removeExt(filename).copy();
                         n = FileName.combine(p, b).copy();
-                        FileName.free(toBytePtr(b));
+                        FileName.free(b.getPtr(0));
                         if ((FileName.exists(n) == 2))
                         {
                             ByteSlice n2i = FileName.combine(n, new ByteSlice("package.di")).copy();
@@ -111,25 +111,25 @@ public class dmodule {
                             {
                                 return n2i;
                             }
-                            FileName.free(toBytePtr(n2i));
+                            FileName.free(n2i.getPtr(0));
                             ByteSlice n2 = FileName.combine(n, new ByteSlice("package.d")).copy();
                             if ((FileName.exists(n2) == 1))
                             {
                                 return n2;
                             }
-                            FileName.free(toBytePtr(n2));
+                            FileName.free(n2.getPtr(0));
                         }
-                        FileName.free(toBytePtr(n));
+                        FileName.free(n.getPtr(0));
                     }
                 }
                 return new ByteSlice();
             }
             finally {
-                FileName.free(toBytePtr(sd));
+                FileName.free(sd.getPtr(0));
             }
         }
         finally {
-            FileName.free(toBytePtr(sdi));
+            FileName.free(sdi.getPtr(0));
         }
     }
 
@@ -530,17 +530,17 @@ public class dmodule {
         // Erasure: __ctor<Loc, Array, Identifier, int, int>
         public  Module(Loc loc, ByteSlice filename, Identifier ident, int doDocComment, int doHdrGen) {
             super(loc, ident);
-            ByteSlice srcfilename = new RawByteSlice().copy();
+            ByteSlice srcfilename = new ByteSlice().copy();
             this.arg = filename.copy();
             srcfilename = FileName.defaultExt(filename, toByteSlice(global.mars_ext)).copy();
             if (global.run_noext && global.params.run && (FileName.ext(filename).getLength() == 0) && (FileName.exists(srcfilename) == 0) && (FileName.exists(filename) == 1))
             {
-                FileName.free(toBytePtr(srcfilename));
+                FileName.free(srcfilename.getPtr(0));
                 srcfilename = FileName.removeExt(filename).copy();
             }
             else if (!FileName.equalsExt(srcfilename, toByteSlice(global.mars_ext)) && !FileName.equalsExt(srcfilename, toByteSlice(global.hdr_ext)) && !FileName.equalsExt(srcfilename, new ByteSlice("dd")))
             {
-                this.error(new BytePtr("source file name '%.*s' must have .%.*s extension"), srcfilename.getLength(), toBytePtr(srcfilename), global.mars_ext.getLength(), toBytePtr(global.mars_ext));
+                this.error(new BytePtr("source file name '%.*s' must have .%.*s extension"), srcfilename.getLength(), srcfilename.getPtr(0), global.mars_ext.getLength(), global.mars_ext.getPtr(0));
                 fatal();
             }
             this.srcfile = new FileName(srcfilename);
@@ -626,14 +626,14 @@ public class dmodule {
 
         // Erasure: setOutfilename<Array, Array, Array, Array>
         public  FileName setOutfilename(ByteSlice name, ByteSlice dir, ByteSlice arg, ByteSlice ext) {
-            ByteSlice docfilename = new RawByteSlice().copy();
+            ByteSlice docfilename = new ByteSlice().copy();
             if (name.getLength() != 0)
             {
                 docfilename = name.copy();
             }
             else
             {
-                ByteSlice argdoc = new RawByteSlice().copy();
+                ByteSlice argdoc = new ByteSlice().copy();
                 OutBuffer buf = new OutBuffer();
                 if (__equals(arg, new ByteSlice("__stdin.d")))
                 {
@@ -679,7 +679,7 @@ public class dmodule {
                 error(loc, new BytePtr("cannot find source code for runtime library file 'object.d'"));
                 errorSupplemental(loc, new BytePtr("dmd might not be correctly installed. Run 'dmd -man' for installation instructions."));
                 ByteSlice dmdConfFile = global.inifilename.getLength() != 0 ? FileName.canonicalName(global.inifilename) : new ByteSlice("not found").copy();
-                errorSupplemental(loc, new BytePtr("config file: %.*s"), dmdConfFile.getLength(), toBytePtr(dmdConfFile));
+                errorSupplemental(loc, new BytePtr("config file: %.*s"), dmdConfFile.getLength(), dmdConfFile.getPtr(0));
             }
             else
             {
@@ -1051,7 +1051,7 @@ public class dmodule {
             }
             if ((buf.getLength() >= 4) && __equals(buf.slice(0,4), new ByteSlice("Ddoc")))
             {
-                this.comment = pcopy((toBytePtr(buf).plus(4)));
+                this.comment = pcopy((buf.getPtr(0).plus(4)));
                 this.isDocFile = true;
                 if (!this.docfile.opCast())
                 {
@@ -1061,7 +1061,7 @@ public class dmodule {
             }
             if (FileName.equalsExt(this.arg, new ByteSlice("dd")))
             {
-                this.comment = pcopy((toBytePtr(buf)));
+                this.comment = pcopy((buf.getPtr(0)));
                 this.isDocFile = true;
                 if (!this.docfile.opCast())
                 {
@@ -1603,9 +1603,7 @@ public class dmodule {
             return toDString(this.toChars());
         }
 
-        public ModuleDeclaration(){
-            loc = new Loc();
-        }
+        public ModuleDeclaration(){ }
         public ModuleDeclaration copy(){
             ModuleDeclaration r = new ModuleDeclaration();
             r.loc = loc.copy();

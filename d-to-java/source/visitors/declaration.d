@@ -224,6 +224,11 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
         return toJava(t, opts, boxing);
     }
 
+    string typeCons(Type type) {
+        auto tc = typeOf(type);
+        return tc.startsWith("Slice") ? "Raw"~tc : tc;
+    }
+
     string refTypeOf(Type t) {
         addImportForType(t);
         return refType(t, opts);
@@ -361,7 +366,8 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
 
     void printSArray(Type type, TextBuffer sink) {
         auto st = cast(TypeSArray)type;
-        sink.fmt("new Raw%s(new %s[%s])", typeOf(type), typeOf(type.nextOf), st.dim.toJava(opts));
+        auto tc = typeCons(type);
+        sink.fmt("new %s(new %s[%s])", tc, typeOf(type.nextOf), st.dim.toJava(opts));
     }
    
     extern(D) private void printVar(VarDeclaration var, const(char)[] ident, TextBuffer sink) {
@@ -404,7 +410,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     printSArray(var.type, sink);
                 }
                 else if(var.type.ty == Tarray && isNull) {
-                    sink.fmt("new Raw%s()", typeOf(var.type));
+                    sink.fmt("new %s()", typeCons(var.type));
                 }
                 else {
                     sink.put(assign.e2.toJava(opts));
@@ -425,7 +431,7 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
             printSArray(var.type, sink);
         }
         else if (var.type.ty == Tstruct || var.type.ty == Taarray || var.type.ty == Tarray) {
-            sink.fmt("new %s()", typeOf(var.type));
+            sink.fmt("new %s()", typeCons(var.type));
         }
         else if (var.type.ty == Tbool) {
             sink.fmt("false");
@@ -1254,22 +1260,15 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                 s.accept(this);
         }
         // .init ctor
-        buf.fmt("public %s(){\n", nameOf(d));
-        buf.indent;
-        foreach(m; members.all) {
-            if (auto ts = m.type.isTypeStruct()) {
-                buf.fmt("%s = new %s();\n", m.ident.symbol, typeOf(ts));
-            }
-        }
-        buf.outdent;
-        buf.put("}\n");
+        buf.fmt("public %s(){ }\n", nameOf(d));
         // default shallow copy for structs
         buf.fmt("public %s copy(){\n", nameOf(d));
         buf.indent;
         buf.fmt("%s r = new %s();\n", nameOf(d), nameOf(d));
         foreach(m; members.all) {
             if (m !in opts.aliasedUnion) {
-                if (m.type.ty == Tstruct || m.type.ty == Tarray) {
+                bool refness = (m in opts.refParams.top) !is null;
+                if (m.type.ty == Tstruct || m.type.ty == Tarray || m in opts.refParams.top) {
                     buf.fmt("r.%s = %s.copy();\n", m.ident.symbol, m.ident.symbol);
                 }
                 else
@@ -1288,16 +1287,17 @@ extern (C++) class ToJavaModuleVisitor : SemanticTimeTransitiveVisitor {
                     buf.fmt("public %s(", nameOf(d));
                     foreach(i, m; members.all) {
                         if(i) buf.put(", ");
-                        buf.fmt("%s %s",
-                            m in opts.refParams.top ? refTypeOf(m.type) : typeOf(m.type), 
-                            m.ident.toString
-                        );
+                        buf.fmt("%s %s", typeOf(m.type), m.ident.toString);
                     }
                     buf.put(") {\n");
                     buf.indent;
                     foreach(i,m; members.all){
-                        if (m !in opts.aliasedUnion)
-                            buf.fmt("this.%s = %s;\n", m.ident.toString, m.ident.toString);
+                        if (m !in opts.aliasedUnion) {
+                            if (m in opts.refParams.top)
+                                buf.fmt("this.%s = ref(%s);\n", m.ident.toString, m.ident.toString);
+                            else
+                                buf.fmt("this.%s = %s;\n", m.ident.toString, m.ident.toString);
+                        }
                     }
                     buf.outdent;
                     buf.put("}\n\n");

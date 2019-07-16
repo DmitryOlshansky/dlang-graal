@@ -28,17 +28,15 @@ public class ctorflow {
     {
         public Ref<Integer> csx = ref(0);
         public Loc loc = new Loc();
-        public FieldInit(){
-            loc = new Loc();
-        }
+        public FieldInit(){ }
         public FieldInit copy(){
             FieldInit r = new FieldInit();
-            r.csx = csx;
+            r.csx = csx.copy();
             r.loc = loc.copy();
             return r;
         }
-        public FieldInit(Ref<Integer> csx, Loc loc) {
-            this.csx = csx;
+        public FieldInit(int csx, Loc loc) {
+            this.csx = ref(csx);
             this.loc = loc;
         }
 
@@ -51,7 +49,7 @@ public class ctorflow {
     public static class CtorFlow
     {
         public Ref<Integer> callSuper = ref(0);
-        public Slice<FieldInit> fieldinit = new Slice<FieldInit>();
+        public Slice<FieldInit> fieldinit = new RawSlice<FieldInit>();
         // Erasure: allocFieldinit<int>
         public  void allocFieldinit(int dim) {
             this.fieldinit = (ptr(new FieldInit[dim])).slice(0,dim).copy();
@@ -59,11 +57,11 @@ public class ctorflow {
 
         // Erasure: freeFieldinit<>
         public  void freeFieldinit() {
-            if ((Ptr<FieldInit>)this.fieldinit != null)
+            if (this.fieldinit.getPtr(0) != null)
             {
-                Mem.xfree((Ptr<FieldInit>)this.fieldinit);
+                Mem.xfree(this.fieldinit.getPtr(0));
             }
-            this.fieldinit = new Slice<FieldInit>().copy();
+            this.fieldinit = new RawSlice<FieldInit>().copy();
         }
 
         // Erasure: clone<>
@@ -107,16 +105,15 @@ public class ctorflow {
             }
         }
 
-        public CtorFlow(){
-        }
+        public CtorFlow(){ }
         public CtorFlow copy(){
             CtorFlow r = new CtorFlow();
-            r.callSuper = callSuper;
+            r.callSuper = callSuper.copy();
             r.fieldinit = fieldinit.copy();
             return r;
         }
-        public CtorFlow(Ref<Integer> callSuper, Slice<FieldInit> fieldinit) {
-            this.callSuper = callSuper;
+        public CtorFlow(int callSuper, Slice<FieldInit> fieldinit) {
+            this.callSuper = ref(callSuper);
             this.fieldinit = fieldinit;
         }
 

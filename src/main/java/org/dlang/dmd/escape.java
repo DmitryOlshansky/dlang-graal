@@ -1681,12 +1681,7 @@ public class escape {
         public DArray<VarDeclaration> byvalue = new DArray<VarDeclaration>();
         public DArray<FuncDeclaration> byfunc = new DArray<FuncDeclaration>();
         public DArray<Expression> byexp = new DArray<Expression>();
-        public EscapeByResults(){
-            byref = new DArray<VarDeclaration>();
-            byvalue = new DArray<VarDeclaration>();
-            byfunc = new DArray<FuncDeclaration>();
-            byexp = new DArray<Expression>();
-        }
+        public EscapeByResults(){ }
         public EscapeByResults copy(){
             EscapeByResults r = new EscapeByResults();
             r.byref = byref.copy();

@@ -2065,7 +2065,7 @@ public class dtool {
                 }
                 else
                 {
-                    fprintf(stderr, new BytePtr("Unsupported tool name: %.*s"), tool.value.getLength(), toBytePtr(tool));
+                    fprintf(stderr, new BytePtr("Unsupported tool name: %.*s"), tool.value.getLength(), tool.value.getPtr(0));
                     exit(2);
                 }
             }
@@ -2075,7 +2075,7 @@ public class dtool {
 
     // Erasure: lex<Ptr, Array>
     public static ByteSlice lex(BytePtr argz, ByteSlice buf) {
-        Lexer lexer = new Lexer(argz, toBytePtr(buf), 0, buf.getLength(), true, true, new StderrDiagnosticReporter(DiagnosticReporting.error));
+        Lexer lexer = new Lexer(argz, buf.getPtr(0), 0, buf.getLength(), true, true, new StderrDiagnosticReporter(DiagnosticReporting.error));
         Ptr<OutBuffer> output = refPtr(new OutBuffer(null, 0, 0, 0, false, false));
         int i = 0;
         for (; ((lexer.nextToken() & 0xFF) != 11);){

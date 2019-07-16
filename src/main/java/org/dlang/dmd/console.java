@@ -69,8 +69,7 @@ public class console {
             fputs(new BytePtr("\u001b[m"), this._fp);
         }
 
-        public Console(){
-        }
+        public Console(){ }
         public Console copy(){
             Console r = new Console();
             r._fp = _fp;

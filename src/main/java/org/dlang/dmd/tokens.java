@@ -14,7 +14,7 @@ import static org.dlang.dmd.utf.*;
 public class tokens {
     private static final byte[] initializer_0 = {TOK.this_, TOK.super_, TOK.assert_, TOK.null_, TOK.true_, TOK.false_, TOK.cast_, TOK.new_, TOK.delete_, TOK.throw_, TOK.module_, TOK.pragma_, TOK.typeof_, TOK.typeid_, TOK.template_, TOK.void_, TOK.int8, TOK.uns8, TOK.int16, TOK.uns16, TOK.int32, TOK.uns32, TOK.int64, TOK.uns64, TOK.int128, TOK.uns128, TOK.float32, TOK.float64, TOK.float80, TOK.bool_, TOK.char_, TOK.wchar_, TOK.dchar_, TOK.imaginary32, TOK.imaginary64, TOK.imaginary80, TOK.complex32, TOK.complex64, TOK.complex80, TOK.delegate_, TOK.function_, TOK.is_, TOK.if_, TOK.else_, TOK.while_, TOK.for_, TOK.do_, TOK.switch_, TOK.case_, TOK.default_, TOK.break_, TOK.continue_, TOK.synchronized_, TOK.return_, TOK.goto_, TOK.try_, TOK.catch_, TOK.finally_, TOK.with_, TOK.asm_, TOK.foreach_, TOK.foreach_reverse_, TOK.scope_, TOK.struct_, TOK.class_, TOK.interface_, TOK.union_, TOK.enum_, TOK.import_, TOK.mixin_, TOK.static_, TOK.final_, TOK.const_, TOK.alias_, TOK.override_, TOK.abstract_, TOK.debug_, TOK.deprecated_, TOK.in_, TOK.out_, TOK.inout_, TOK.lazy_, TOK.auto_, TOK.align_, TOK.extern_, TOK.private_, TOK.package_, TOK.protected_, TOK.public_, TOK.export_, TOK.invariant_, TOK.unittest_, TOK.version_, TOK.argumentTypes, TOK.parameters, TOK.ref_, TOK.macro_, TOK.pure_, TOK.nothrow_, TOK.gshared, TOK.traits, TOK.vector, TOK.overloadSet, TOK.file, TOK.fileFullPath, TOK.line, TOK.moduleString, TOK.functionString, TOK.prettyFunction, TOK.shared_, TOK.immutable_};
     private static final ByteSlice[] initializer_1 = {new ByteSlice("reserved"), new ByteSlice("("), new ByteSlice(")"), new ByteSlice("["), new ByteSlice("]"), new ByteSlice("{"), new ByteSlice("}"), new ByteSlice(":"), new ByteSlice("-"), new ByteSlice(";"), new ByteSlice("..."), new ByteSlice("End of File"), new ByteSlice("cast"), new ByteSlice("null"), new ByteSlice("assert"), new ByteSlice("true"), new ByteSlice("false"), new ByteSlice("[]"), new ByteSlice("call"), new ByteSlice("&"), new ByteSlice("type"), new ByteSlice("throw"), new ByteSlice("new"), new ByteSlice("delete"), new ByteSlice("*"), new ByteSlice("symoff"), new ByteSlice("var"), new ByteSlice("dotvar"), new ByteSlice("dotid"), new ByteSlice("dotti"), new ByteSlice("dottype"), new ByteSlice(".."), new ByteSlice("arraylength"), new ByteSlice("version"), new ByteSlice("module"), new ByteSlice("$"), new ByteSlice("template"), new ByteSlice("dottd"), new ByteSlice("declaration"), new ByteSlice("typeof"), new ByteSlice("pragma"), new ByteSlice("symbol"), new ByteSlice("typeid"), new ByteSlice("+"), new ByteSlice("remove"), new ByteSlice("newanonclass"), new ByteSlice("comment"), new ByteSlice("arrayliteral"), new ByteSlice("assocarrayliteral"), new ByteSlice("structliteral"), new ByteSlice("classreference"), new ByteSlice("thrownexception"), new ByteSlice("delegateptr"), new ByteSlice("delegatefuncptr"), new ByteSlice("<"), new ByteSlice(">"), new ByteSlice("<="), new ByteSlice(">="), new ByteSlice("=="), new ByteSlice("!="), new ByteSlice("is"), new ByteSlice("!is"), new ByteSlice("[i]"), new ByteSlice("is"), new ByteSlice("<<"), new ByteSlice(">>"), new ByteSlice("<<="), new ByteSlice(">>="), new ByteSlice(">>>"), new ByteSlice(">>>="), new ByteSlice("~"), new ByteSlice("~="), new ByteSlice("~="), new ByteSlice("~="), new ByteSlice("+"), new ByteSlice("-"), new ByteSlice("+="), new ByteSlice("-="), new ByteSlice("*"), new ByteSlice("/"), new ByteSlice("%"), new ByteSlice("*="), new ByteSlice("/="), new ByteSlice("%="), new ByteSlice("&"), new ByteSlice("|"), new ByteSlice("^"), new ByteSlice("&="), new ByteSlice("|="), new ByteSlice("^="), new ByteSlice("="), new ByteSlice("!"), new ByteSlice("~"), new ByteSlice("++"), new ByteSlice("--"), new ByteSlice("="), new ByteSlice("="), new ByteSlice("."), new ByteSlice("arrow"), new ByteSlice(","), new ByteSlice("?"), new ByteSlice("&&"), new ByteSlice("||"), new ByteSlice("++"), new ByteSlice("--"), new ByteSlice("int32v"), new ByteSlice("uns32v"), new ByteSlice("int64v"), new ByteSlice("uns64v"), new ByteSlice("int128v"), new ByteSlice("uns128v"), new ByteSlice("float32v"), new ByteSlice("float64v"), new ByteSlice("float80v"), new ByteSlice("imaginary32v"), new ByteSlice("imaginary64v"), new ByteSlice("imaginary80v"), new ByteSlice("charv"), new ByteSlice("wcharv"), new ByteSlice("dcharv"), new ByteSlice("identifier"), new ByteSlice("string"), new ByteSlice("xstring"), new ByteSlice("this"), new ByteSlice("super"), new ByteSlice("halt"), new ByteSlice("tuple"), new ByteSlice("error"), new ByteSlice("void"), new ByteSlice("byte"), new ByteSlice("ubyte"), new ByteSlice("short"), new ByteSlice("ushort"), new ByteSlice("int"), new ByteSlice("uint"), new ByteSlice("long"), new ByteSlice("ulong"), new ByteSlice("cent"), new ByteSlice("ucent"), new ByteSlice("float"), new ByteSlice("double"), new ByteSlice("real"), new ByteSlice("ifloat"), new ByteSlice("idouble"), new ByteSlice("ireal"), new ByteSlice("cfloat"), new ByteSlice("cdouble"), new ByteSlice("creal"), new ByteSlice("char"), new ByteSlice("wchar"), new ByteSlice("dchar"), new ByteSlice("bool"), new ByteSlice("struct"), new ByteSlice("class"), new ByteSlice("interface"), new ByteSlice("union"), new ByteSlice("enum"), new ByteSlice("import"), new ByteSlice("alias"), new ByteSlice("override"), new ByteSlice("delegate"), new ByteSlice("function"), new ByteSlice("mixin"), new ByteSlice("align"), new ByteSlice("extern"), new ByteSlice("private"), new ByteSlice("protected"), new ByteSlice("public"), new ByteSlice("export"), new ByteSlice("static"), new ByteSlice("final"), new ByteSlice("const"), new ByteSlice("abstract"), new ByteSlice("debug"), new ByteSlice("deprecated"), new ByteSlice("in"), new ByteSlice("out"), new ByteSlice("inout"), new ByteSlice("lazy"), new ByteSlice("auto"), new ByteSlice("package"), new ByteSlice("manifest"), new ByteSlice("immutable"), new ByteSlice("if"), new ByteSlice("else"), new ByteSlice("while"), new ByteSlice("for"), new ByteSlice("do"), new ByteSlice("switch"), new ByteSlice("case"), new ByteSlice("default"), new ByteSlice("break"), new ByteSlice("continue"), new ByteSlice("with"), new ByteSlice("synchronized"), new ByteSlice("return"), new ByteSlice("goto"), new ByteSlice("try"), new ByteSlice("catch"), new ByteSlice("finally"), new ByteSlice("asm"), new ByteSlice("foreach"), new ByteSlice("foreach_reverse"), new ByteSlice("scope"), new ByteSlice("scope(exit)"), new ByteSlice("scope(failure)"), new ByteSlice("scope(success)"), new ByteSlice("invariant"), new ByteSlice("unittest"), new ByteSlice("__argTypes"), new ByteSlice("ref"), new ByteSlice("macro"), new ByteSlice("__parameters"), new ByteSlice("__traits"), new ByteSlice("__overloadset"), new ByteSlice("pure"), new ByteSlice("nothrow"), new ByteSlice("__gshared"), new ByteSlice("__LINE__"), new ByteSlice("__FILE__"), new ByteSlice("__FILE_FULL_PATH__"), new ByteSlice("__MODULE__"), new ByteSlice("__FUNCTION__"), new ByteSlice("__PRETTY_FUNCTION__"), new ByteSlice("shared"), new ByteSlice("@"), new ByteSlice("^^"), new ByteSlice("^^="), new ByteSlice("=>"), new ByteSlice("__vector"), new ByteSlice("#"), new ByteSlice("interval"), new ByteSlice("voidexp"), new ByteSlice("cantexp"), new ByteSlice("showCtfeContext"), new ByteSlice("class"), new ByteSlice("vectorarray")};
-    static ByteSlice toCharsbuffer = new RawByteSlice(new byte[52]);
+    static ByteSlice toCharsbuffer = new ByteSlice(new byte[52]);
 
 
     public static class TOK 
@@ -282,7 +282,7 @@ public class tokens {
                 int __key131 = 0;
                 for (; (__key131 < __r130.getLength());__key131 += 1) {
                     byte kw = __r130.get(__key131);
-                    Identifier.idPool(toBytePtr(tochars.get((kw & 0xFF))), tochars.get((kw & 0xFF)).getLength(), (kw & 0xFF));
+                    Identifier.idPool(tochars.get((kw & 0xFF)).getPtr(0), tochars.get((kw & 0xFF)).getLength(), (kw & 0xFF));
                 }
             }
         }
@@ -503,7 +503,7 @@ public class tokens {
 
         // Erasure: toChars<byte>
         public static BytePtr toChars(byte value) {
-            return toBytePtr(asString(value));
+            return asString(value).getPtr(0);
         }
 
         // Erasure: asString<byte>
@@ -511,17 +511,15 @@ public class tokens {
             return tochars.get((value & 0xFF));
         }
 
-        public Token(){
-            loc = new Loc();
-        }
+        public Token(){ }
         public Token copy(){
             Token r = new Token();
-            r.next = next;
+            r.next = next.copy();
             r.loc = loc.copy();
             r.ptr = ptr;
             r.value = value;
-            r.blockComment = blockComment;
-            r.lineComment = lineComment;
+            r.blockComment = blockComment.copy();
+            r.lineComment = lineComment.copy();
             r.intvalue = intvalue;
             r.floatvalue = floatvalue;
             r.ustring = ustring;

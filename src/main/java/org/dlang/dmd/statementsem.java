@@ -1065,7 +1065,7 @@ public class statementsem {
                         assert((e != null) && (t == null));
                         Identifier ident = Identifier.generateId(new BytePtr("__value"));
                         declareVariable10.invoke(0L, e.type.value, ident, e, null);
-                        Identifier field = Identifier.idPool(toBytePtr(StaticForeach.tupleFieldName), 5);
+                        Identifier field = Identifier.idPool(StaticForeach.tupleFieldName.getPtr(0), 5);
                         Expression access = new DotIdExp(loc, e, field);
                         access = expressionSemantic(access, this.sc);
                         if (tuple == null)
@@ -1348,7 +1348,7 @@ public class statementsem {
                         assert((e != null) && (t == null));
                         Identifier ident = Identifier.generateId(new BytePtr("__value"));
                         declareVariable11.invoke(0L, e.type.value, ident, e, null);
-                        Identifier field = Identifier.idPool(toBytePtr(StaticForeach.tupleFieldName), 5);
+                        Identifier field = Identifier.idPool(StaticForeach.tupleFieldName.getPtr(0), 5);
                         Expression access = new DotIdExp(loc, e, field);
                         access = expressionSemantic(access, this.sc);
                         if (tuple == null)

@@ -97,11 +97,11 @@ public class objc {
                         }
                         buf.value.writestring(new ByteSlice("set"));
                         buf.value.writeByte((firstChar & 0xFF));
-                        buf.value.write((toBytePtr(id).plus(1)), id.getLength() - 1);
+                        buf.value.write((id.getPtr(0).plus(1)), id.getLength() - 1);
                         buf.value.writeByte(58);
                         /*goto Lcomplete*/throw Dispatch0.INSTANCE;
                     }
-                    buf.value.write(toBytePtr(id), id.getLength());
+                    buf.value.write(id.getPtr(0), id.getLength());
                     if ((ftype.parameterList.parameters != null) && ((ftype.parameterList.parameters.get()).length != 0))
                     {
                         buf.value.writeByte(95);
@@ -132,8 +132,7 @@ public class objc {
             return this.stringvalue.slice(0,this.stringlen);
         }
 
-        public ObjcSelector(){
-        }
+        public ObjcSelector(){ }
         public ObjcSelector copy(){
             ObjcSelector r = new ObjcSelector();
             r.stringvalue = stringvalue;
@@ -173,8 +172,7 @@ public class objc {
             return (this.classDeclaration.classKind == ClassKind.objc) && (this.metaclass == null) && (this.classDeclaration.baseClass == null);
         }
 
-        public ObjcClassDeclaration(){
-        }
+        public ObjcClassDeclaration(){ }
         public ObjcClassDeclaration copy(){
             ObjcClassDeclaration r = new ObjcClassDeclaration();
             r.isMeta = isMeta;

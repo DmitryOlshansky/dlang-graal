@@ -40,8 +40,7 @@ public class aggregate {
             return 0;
         }
 
-        public SearchCtor(){
-        }
+        public SearchCtor(){ }
         public SearchCtor copy(){
             SearchCtor r = new SearchCtor();
             return r;

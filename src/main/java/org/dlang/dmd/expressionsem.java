@@ -2960,7 +2960,7 @@ public class expressionsem {
                 ByteSlice n = importHint(exp.ident.asString()).copy();
                 if ((n).getLength() != 0)
                 {
-                    exp.error(new BytePtr("`%s` is not defined, perhaps `import %.*s;` is needed?"), exp.ident.toChars(), n.getLength(), toBytePtr(n));
+                    exp.error(new BytePtr("`%s` is not defined, perhaps `import %.*s;` is needed?"), exp.ident.toChars(), n.getLength(), n.getPtr(0));
                 }
                 else {
                     Dsymbol s2 = (this.sc.get()).search_correct(exp.ident);
@@ -5115,7 +5115,7 @@ public class expressionsem {
                         return ;
                     }
                     Ref<BytePtr> failMessage = ref(null);
-                    Slice<Expression> fargs = exp.arguments != null ? (exp.arguments.get()).opSlice() : new Slice<Expression>().copy();
+                    Slice<Expression> fargs = exp.arguments != null ? (exp.arguments.get()).opSlice() : new RawSlice<Expression>().copy();
                     if (tf.callMatch(null, fargs, 0, ptr(failMessage), this.sc) == 0)
                     {
                         Ref<OutBuffer> buf = ref(new OutBuffer());
@@ -5196,7 +5196,7 @@ public class expressionsem {
                         exp.f = exp.f.toAliasFunc();
                         TypeFunction tf = (TypeFunction)exp.f.type;
                         Ref<BytePtr> failMessage = ref(null);
-                        Slice<Expression> fargs = exp.arguments != null ? (exp.arguments.get()).opSlice() : new Slice<Expression>().copy();
+                        Slice<Expression> fargs = exp.arguments != null ? (exp.arguments.get()).opSlice() : new RawSlice<Expression>().copy();
                         if (tf.callMatch(null, fargs, 0, ptr(failMessage), this.sc) == 0)
                         {
                             Ref<OutBuffer> buf = ref(new OutBuffer());
@@ -6037,7 +6037,7 @@ public class expressionsem {
                         }
                         if (((p.token.value.value & 0xFF) != 11))
                         {
-                            exp.error(new BytePtr("incomplete mixin expression `%s`"), toBytePtr(str));
+                            exp.error(new BytePtr("incomplete mixin expression `%s`"), str.getPtr(0));
                             return null;
                         }
                         return e;
@@ -6072,7 +6072,7 @@ public class expressionsem {
                 return ;
             }
             se = se.toUTF8(this.sc);
-            BytePtr namez = pcopy(toBytePtr(se.toStringz()));
+            BytePtr namez = pcopy(se.toStringz().getPtr(0));
             if (global.filePath == null)
             {
                 e.error(new BytePtr("need `-J` switch to import text file `%s`"), namez);
@@ -6125,7 +6125,7 @@ public class expressionsem {
                     else
                     {
                         ByteSlice data = readResult.extractData().copy();
-                        se = new StringExp(e.loc, toBytePtr(data), data.getLength());
+                        se = new StringExp(e.loc, data.getPtr(0), data.getLength());
                     }
                 }
                 finally {
@@ -6172,7 +6172,7 @@ public class expressionsem {
                     {
                         CallExp callExp = (CallExp)exp.e1.value;
                         Ptr<DArray<Expression>> args = callExp.arguments;
-                        Expression comp = new StringExp(loc, toBytePtr(toBytePtr(expressionsem.visitcompMsg)));
+                        Expression comp = new StringExp(loc, toBytePtr(expressionsem.visitcompMsg.getPtr(0)));
                         comp = expressionSemantic(comp, this.sc);
                         tiargs.get().set(0, comp);
                         tiargs.get().set(1, (args.get()).get(0).type.value);
@@ -11585,7 +11585,7 @@ public class expressionsem {
             else if ((pequals(exp.ident, Id.stringof)))
             {
                 ByteSlice p = ie.asString().copy();
-                e = new StringExp(exp.loc, toBytePtr(p), p.getLength());
+                e = new StringExp(exp.loc, p.getPtr(0), p.getLength());
                 e = expressionSemantic(e, sc);
                 return e;
             }
@@ -11973,7 +11973,7 @@ public class expressionsem {
                 }
             }
         }
-        error(loc, new BytePtr("`%s.%s` not found. The current runtime does not support %.*s, or the runtime is corrupt."), module_.toChars(), id.toChars(), description.getLength(), toBytePtr(description));
+        error(loc, new BytePtr("`%s.%s` not found. The current runtime does not support %.*s, or the runtime is corrupt."), module_.toChars(), id.toChars(), description.getLength(), description.getPtr(0));
         return false;
     }
 

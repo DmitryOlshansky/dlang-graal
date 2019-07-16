@@ -655,17 +655,14 @@ public class dscope {
             return false;
         }
 
-        public Scope(){
-            ctorflow = new CtorFlow();
-            protection = new Prot();
-        }
+        public Scope(){ }
         public Scope copy(){
             Scope r = new Scope();
             r.enclosing = enclosing;
             r._module = _module;
             r.scopesym = scopesym;
             r.func = func;
-            r.parent = parent;
+            r.parent = parent.copy();
             r.slabel = slabel;
             r.sw = sw;
             r.tf = tf;

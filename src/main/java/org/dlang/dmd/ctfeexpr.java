@@ -33,8 +33,7 @@ public class ctfeexpr {
         public static int maxCallDepth = 0;
         public static int numArrayAllocs = 0;
         public static int numAssignments = 0;
-        public CtfeStatus(){
-        }
+        public CtfeStatus(){ }
         public CtfeStatus copy(){
             CtfeStatus r = new CtfeStatus();
             return r;

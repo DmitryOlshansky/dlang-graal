@@ -398,7 +398,7 @@ public class cppmanglewin {
         // Erasure: visit<TypeEnum>
         public  void visit(TypeEnum type) {
             Identifier id = type.sym.ident;
-            ByteSlice c = new RawByteSlice().copy();
+            ByteSlice c = new ByteSlice().copy();
             if ((pequals(id, Id.__c_long_double)))
             {
                 c = new ByteSlice("O").copy();
@@ -637,7 +637,7 @@ public class cppmanglewin {
 
         // Erasure: mangleSpecialName<Dsymbol>
         public static ByteSlice mangleSpecialName(Dsymbol sym) {
-            ByteSlice mangle = new RawByteSlice().copy();
+            ByteSlice mangle = new ByteSlice().copy();
             if (sym.isCtorDeclaration() != null)
             {
                 mangle = new ByteSlice("?0").copy();

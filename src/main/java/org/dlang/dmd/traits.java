@@ -267,7 +267,7 @@ public class traits {
             int __key1674 = 0;
             for (; (__key1674 < __r1673.getLength());__key1674 += 1) {
                 ByteSlice s = __r1673.get(__key1674).copy();
-                Ptr<StringValue> sv = traitsStringTable.insert(toByteSlice(s), toBytePtr(s));
+                Ptr<StringValue> sv = traitsStringTable.insert(toByteSlice(s), s.getPtr(0));
                 assert(sv != null);
             }
         }
@@ -1441,7 +1441,7 @@ public class traits {
             Function1<ByteSlice,Void> addToMods = new Function1<ByteSlice,Void>() {
                 public Void invoke(ByteSlice str) {
                  {
-                    (mods.get()).push(new StringExp(Loc.initial, toBytePtr(toBytePtr(str)), str.getLength()));
+                    (mods.get()).push(new StringExp(Loc.initial, toBytePtr(str.getPtr(0)), str.getLength()));
                     return null;
                 }}
 
@@ -1494,7 +1494,7 @@ public class traits {
                 link = fd.value.linkage;
                 varargs = fd.value.getParameterList().varargs;
             }
-            ByteSlice style = new RawByteSlice().copy();
+            ByteSlice style = new ByteSlice().copy();
             switch (varargs)
             {
                 case VarArg.none:
@@ -1509,7 +1509,7 @@ public class traits {
                 default:
                 throw SwitchError.INSTANCE;
             }
-            StringExp se = new StringExp(e.loc, toBytePtr(style));
+            StringExp se = new StringExp(e.loc, style.getPtr(0));
             return expressionSemantic(se, sc);
         }
         if ((pequals(e.ident, Id.getParameterStorageClasses)))
@@ -1561,7 +1561,7 @@ public class traits {
             Function1<ByteSlice,Void> push = new Function1<ByteSlice,Void>() {
                 public Void invoke(ByteSlice s) {
                  {
-                    (exps.get()).push(new StringExp(e.loc, toBytePtr(toBytePtr(s)), s.getLength()));
+                    (exps.get()).push(new StringExp(e.loc, toBytePtr(s.getPtr(0)), s.getLength()));
                     return null;
                 }}
 

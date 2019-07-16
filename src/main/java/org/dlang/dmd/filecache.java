@@ -14,7 +14,7 @@ public class filecache {
     {
         public Ref<Ptr<FileName>> file = ref(null);
         public Ref<Ptr<FileBuffer>> buffer = ref(null);
-        public Ref<Slice<ByteSlice>> lines = ref(new Slice<ByteSlice>());
+        public Ref<Slice<ByteSlice>> lines = ref(new RawSlice<ByteSlice>());
         // Erasure: __ctor<Array>
         public  FileAndLines(ByteSlice filename) {
             this.file.value = pcopy((refPtr(new FileName(filename))));
@@ -25,7 +25,7 @@ public class filecache {
         public  void readAndSplit() {
             File.ReadResult readResult = File.read((this.file.value.get()).toChars()).copy();
             this.buffer.value = pcopy((refPtr(new FileBuffer(readResult.extractData()))));
-            BytePtr buf = pcopy(toBytePtr(this.buffer.value.get().data));
+            BytePtr buf = pcopy((this.buffer.value.get()).data.getPtr(0));
             for (; buf.get() != 0;){
                 BytePtr prevBuf = pcopy(buf);
                 for (; ((buf.get() & 0xFF) != 10) && ((buf.get() & 0xFF) != 13);buf.postInc()){
@@ -100,9 +100,7 @@ public class filecache {
             this.files.reset(0);
         }
 
-        public FileCache(){
-            files = new StringTable();
-        }
+        public FileCache(){ }
         public FileCache copy(){
             FileCache r = new FileCache();
             r.files = files.copy();

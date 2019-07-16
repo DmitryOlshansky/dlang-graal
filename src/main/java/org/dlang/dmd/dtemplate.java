@@ -1416,7 +1416,7 @@ public class dtemplate {
     }
     private static class ReliesOnTemplateParameters extends Visitor
     {
-        private Slice<TemplateParameter> tparams = new Slice<TemplateParameter>();
+        private Slice<TemplateParameter> tparams = new RawSlice<TemplateParameter>();
         private boolean result = false;
         // Erasure: __ctor<Array>
         public  ReliesOnTemplateParameters(Slice<TemplateParameter> tparams) {
@@ -2266,8 +2266,7 @@ public class dtemplate {
         public Ptr<TemplatePrevious> prev = null;
         public Ptr<Scope> sc = null;
         public Ptr<DArray<RootObject>> dedargs = null;
-        public TemplatePrevious(){
-        }
+        public TemplatePrevious(){ }
         public TemplatePrevious copy(){
             TemplatePrevious r = new TemplatePrevious();
             r.prev = prev;
@@ -8310,8 +8309,7 @@ public class dtemplate {
             return res;
         }
 
-        public TemplateInstanceBox(){
-        }
+        public TemplateInstanceBox(){ }
         public TemplateInstanceBox copy(){
             TemplateInstanceBox r = new TemplateInstanceBox();
             r.ti = ti;

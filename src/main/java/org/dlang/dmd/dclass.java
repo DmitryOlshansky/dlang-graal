@@ -41,7 +41,7 @@ public class dclass {
         public ClassDeclaration sym = null;
         public int offset = 0;
         public DArray<FuncDeclaration> vtbl = new DArray<FuncDeclaration>();
-        public Slice<BaseClass> baseInterfaces = new Slice<BaseClass>();
+        public Slice<BaseClass> baseInterfaces = new RawSlice<BaseClass>();
         // Erasure: __ctor<Type>
         public  BaseClass(Type type) {
             this.type = type;
@@ -115,9 +115,7 @@ public class dclass {
             }
         }
 
-        public BaseClass(){
-            vtbl = new DArray<FuncDeclaration>();
-        }
+        public BaseClass(){ }
         public BaseClass copy(){
             BaseClass r = new BaseClass();
             r.type = type;
@@ -164,7 +162,7 @@ public class dclass {
         public Ref<DArray<Dsymbol>> vtbl = ref(new DArray<Dsymbol>());
         public Ref<DArray<Dsymbol>> vtblFinal = ref(new DArray<Dsymbol>());
         public Ptr<DArray<Ptr<BaseClass>>> baseclasses = null;
-        public Slice<Ptr<BaseClass>> interfaces = new Slice<Ptr<BaseClass>>();
+        public Slice<Ptr<BaseClass>> interfaces = new RawSlice<Ptr<BaseClass>>();
         public Ptr<DArray<Ptr<BaseClass>>> vtblInterfaces = null;
         public TypeInfoClassDeclaration vclassinfo = null;
         public boolean com = false;

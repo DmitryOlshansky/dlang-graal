@@ -46,8 +46,7 @@ public class func {
     {
         private boolean isNotShared = false;
         private boolean isMutable = false;
-        public Mismatches(){
-        }
+        public Mismatches(){ }
         public Mismatches copy(){
             Mismatches r = new Mismatches();
             r.isNotShared = isNotShared;
@@ -69,8 +68,7 @@ public class func {
     {
         private Ptr<Ctxt> prev = null;
         private Type type = null;
-        public Ctxt(){
-        }
+        public Ctxt(){ }
         public Ctxt copy(){
             Ctxt r = new Ctxt();
             r.prev = prev;
@@ -92,8 +90,7 @@ public class func {
     {
         private Ptr<PrevSibling> p = null;
         private FuncDeclaration f = null;
-        public PrevSibling(){
-        }
+        public PrevSibling(){ }
         public PrevSibling copy(){
             PrevSibling r = new PrevSibling();
             r.p = p;
@@ -253,8 +250,7 @@ public class func {
             return b;
         }
 
-        public Ensure(){
-        }
+        public Ensure(){ }
         public Ensure copy(){
             Ensure r = new Ensure();
             r.id = id;
@@ -279,8 +275,7 @@ public class func {
             public VarDeclaration vthis = null;
             public boolean isThis2 = false;
             public VarDeclaration selectorParameter = null;
-            public HiddenParameters(){
-            }
+            public HiddenParameters(){ }
             public HiddenParameters copy(){
                 HiddenParameters r = new HiddenParameters();
                 r.vthis = vthis;
@@ -2589,7 +2584,7 @@ public class func {
         {
             return new BytePtr("");
         }
-        return toBytePtr((concat(concat(new ByteSlice(" "), str.slice(0,strlen(str))), new ByteSlice("\u0000"))));
+        return (concat(concat(new ByteSlice(" "), str.slice(0,strlen(str))), new ByteSlice("\u0000"))).getPtr(0);
     }
 
 

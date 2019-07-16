@@ -10,6 +10,8 @@ interface Slice<T> {
 
     operator fun get(idx: Int): T?
 
+    fun getPtr(idx: Int): Ptr<T>
+
     fun ptr(): Ptr<T>
 
     fun slice(from:Int, to:Int): Slice<T>
@@ -42,6 +44,8 @@ class RawSlice<T> (var data: Array<T?>, override var beg: Int, override var end:
     }
 
     override operator fun get(idx: Int): T? = data[beg+idx]
+
+    override fun getPtr(idx: Int): Ptr<T> = RawPtr(data, beg+idx)
 
     override fun ptr():Ptr<T> = RawPtr(data, beg)
 
@@ -118,6 +122,11 @@ class RefSlice<T>(val ref: Ref<T>) : Slice<T> {
         return ref.value
     }
 
+    override fun getPtr(idx: Int): Ptr<T> {
+        require(idx == 0)
+        return ptr()
+    }
+
     override fun ptr(): Ptr<T> = RefPtr(ref)
 
     override fun slice(from: Int, to: Int): Slice<T> {
@@ -173,13 +182,14 @@ class ByteSlice(var data: ByteArray, var beg: Int, var end: Int): RootObject() {
 
     operator fun get(idx: Int): Byte = data[beg+idx]
 
+    fun getPtr(idx: Int): BytePtr = BytePtr(data, beg+idx)
+
     fun set(value: Byte) = data.fill(value, beg, end)
 
     fun ptr() =
         if (end == data.size) BytePtr(data, beg)
         else BytePtr(data.copyOfRange(beg, end))
 
-    fun toBytePtr() = ptr()
 
     fun slice(from:Int, to:Int): ByteSlice {
         return ByteSlice(data, from+beg, to+beg)

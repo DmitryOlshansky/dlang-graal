@@ -20,9 +20,7 @@ public class identifier {
     {
         private Loc loc = new Loc();
         private ByteSlice prefix = new ByteSlice();
-        public Key(){
-            loc = new Loc();
-        }
+        public Key(){ }
         public Key copy(){
             Key r = new Key();
             r.loc = loc.copy();
@@ -81,7 +79,7 @@ public class identifier {
 
         // Erasure: toChars<>
         public  BytePtr toChars() {
-            return toBytePtr(this.name);
+            return this.name.getPtr(0);
         }
 
         // Erasure: asString<>
@@ -247,7 +245,7 @@ public class identifier {
             Ref<Integer> idx = ref(0);
             for (; (idx.value < str.getLength());){
                 Ref<Integer> dc = ref(0x0ffff);
-                BytePtr q = pcopy(utf_decodeChar(toBytePtr(str), str.getLength(), idx, dc));
+                BytePtr q = pcopy(utf_decodeChar(str.getPtr(0), str.getLength(), idx, dc));
                 if ((q != null) || !((dc.value >= 128) && isUniAlpha(dc.value) || (isalnum(dc.value) != 0) || (dc.value == 95)))
                 {
                     return false;

@@ -270,15 +270,7 @@ public class globals {
             return __result;
         }
 
-        public Param(){
-            modFileAliasStrings = new DArray<BytePtr>();
-            ddocfiles = new DArray<BytePtr>();
-            runargs = new DArray<BytePtr>();
-            objfiles = new DArray<BytePtr>();
-            linkswitches = new DArray<BytePtr>();
-            libfiles = new DArray<BytePtr>();
-            dllfiles = new DArray<BytePtr>();
-        }
+        public Param(){ }
         public Param copy(){
             Param r = new Param();
             r.obj = obj;
@@ -415,7 +407,7 @@ public class globals {
             r.mapfile = mapfile.copy();
             return r;
         }
-        public Param(boolean obj, boolean link, boolean dll, boolean lib, boolean multiobj, boolean oneobj, boolean trace, boolean tracegc, boolean verbose, boolean vcg_ast, boolean showColumns, boolean vtls, boolean vgc, boolean vfield, boolean vcomplex, byte symdebug, boolean symdebugref, boolean alwaysframe, boolean optimize, boolean map, boolean is64bit, boolean isLP64, boolean isLinux, boolean isOSX, boolean isWindows, boolean isFreeBSD, boolean isOpenBSD, boolean isDragonFlyBSD, boolean isSolaris, boolean hasObjectiveC, boolean mscoff, byte useDeprecated, boolean stackstomp, boolean useUnitTests, boolean useInline, boolean useDIP25, boolean noDIP25, boolean release, boolean preservePaths, byte warnings, byte pic, boolean color, boolean cov, byte covPercent, boolean nofloat, boolean ignoreUnsupportedPragmas, boolean useModuleInfo, boolean useTypeInfo, boolean useExceptions, boolean betterC, boolean addMain, boolean allInst, boolean check10378, boolean bug10378, boolean fix16997, boolean fixAliasThis, boolean vsafe, boolean ehnogc, boolean dtorFields, boolean fieldwise, boolean rvalueRefParam, int cplusplus, boolean markdown, boolean vmarkdown, boolean showGaggedErrors, boolean printErrorContext, boolean manual, boolean usage, boolean mcpuUsage, boolean transitionUsage, boolean checkUsage, boolean checkActionUsage, boolean revertUsage, boolean previewUsage, boolean externStdUsage, boolean logo, int cpu, byte useInvariants, byte useIn, byte useOut, byte useArrayBounds, byte useAssert, byte useSwitchError, byte boundscheck, byte checkAction, int errorLimit, ByteSlice argv0, Ref<DArray<BytePtr>> modFileAliasStrings, Ptr<DArray<BytePtr>> imppath, Ptr<DArray<BytePtr>> fileImppath, ByteSlice objdir, ByteSlice objname, ByteSlice libname, boolean doDocComments, BytePtr docdir, BytePtr docname, DArray<BytePtr> ddocfiles, boolean doHdrGeneration, ByteSlice hdrdir, ByteSlice hdrname, boolean hdrStripPlainFunctions, boolean doJsonGeneration, ByteSlice jsonfilename, int jsonFieldFlags, Ptr<OutBuffer> mixinOut, BytePtr mixinFile, int mixinLines, int debuglevel, Ptr<DArray<BytePtr>> debugids, int versionlevel, Ptr<DArray<BytePtr>> versionids, ByteSlice defaultlibname, ByteSlice debuglibname, ByteSlice mscrtlib, ByteSlice moduleDepsFile, Ptr<OutBuffer> moduleDeps, boolean debugb, boolean debugc, boolean debugf, boolean debugr, boolean debugx, boolean debugy, boolean run, DArray<BytePtr> runargs, DArray<BytePtr> objfiles, DArray<BytePtr> linkswitches, DArray<BytePtr> libfiles, DArray<BytePtr> dllfiles, ByteSlice deffile, ByteSlice resfile, ByteSlice exefile, ByteSlice mapfile) {
+        public Param(boolean obj, boolean link, boolean dll, boolean lib, boolean multiobj, boolean oneobj, boolean trace, boolean tracegc, boolean verbose, boolean vcg_ast, boolean showColumns, boolean vtls, boolean vgc, boolean vfield, boolean vcomplex, byte symdebug, boolean symdebugref, boolean alwaysframe, boolean optimize, boolean map, boolean is64bit, boolean isLP64, boolean isLinux, boolean isOSX, boolean isWindows, boolean isFreeBSD, boolean isOpenBSD, boolean isDragonFlyBSD, boolean isSolaris, boolean hasObjectiveC, boolean mscoff, byte useDeprecated, boolean stackstomp, boolean useUnitTests, boolean useInline, boolean useDIP25, boolean noDIP25, boolean release, boolean preservePaths, byte warnings, byte pic, boolean color, boolean cov, byte covPercent, boolean nofloat, boolean ignoreUnsupportedPragmas, boolean useModuleInfo, boolean useTypeInfo, boolean useExceptions, boolean betterC, boolean addMain, boolean allInst, boolean check10378, boolean bug10378, boolean fix16997, boolean fixAliasThis, boolean vsafe, boolean ehnogc, boolean dtorFields, boolean fieldwise, boolean rvalueRefParam, int cplusplus, boolean markdown, boolean vmarkdown, boolean showGaggedErrors, boolean printErrorContext, boolean manual, boolean usage, boolean mcpuUsage, boolean transitionUsage, boolean checkUsage, boolean checkActionUsage, boolean revertUsage, boolean previewUsage, boolean externStdUsage, boolean logo, int cpu, byte useInvariants, byte useIn, byte useOut, byte useArrayBounds, byte useAssert, byte useSwitchError, byte boundscheck, byte checkAction, int errorLimit, ByteSlice argv0, DArray<BytePtr> modFileAliasStrings, Ptr<DArray<BytePtr>> imppath, Ptr<DArray<BytePtr>> fileImppath, ByteSlice objdir, ByteSlice objname, ByteSlice libname, boolean doDocComments, BytePtr docdir, BytePtr docname, DArray<BytePtr> ddocfiles, boolean doHdrGeneration, ByteSlice hdrdir, ByteSlice hdrname, boolean hdrStripPlainFunctions, boolean doJsonGeneration, ByteSlice jsonfilename, int jsonFieldFlags, Ptr<OutBuffer> mixinOut, BytePtr mixinFile, int mixinLines, int debuglevel, Ptr<DArray<BytePtr>> debugids, int versionlevel, Ptr<DArray<BytePtr>> versionids, ByteSlice defaultlibname, ByteSlice debuglibname, ByteSlice mscrtlib, ByteSlice moduleDepsFile, Ptr<OutBuffer> moduleDeps, boolean debugb, boolean debugc, boolean debugf, boolean debugr, boolean debugx, boolean debugy, boolean run, DArray<BytePtr> runargs, DArray<BytePtr> objfiles, DArray<BytePtr> linkswitches, DArray<BytePtr> libfiles, DArray<BytePtr> dllfiles, ByteSlice deffile, ByteSlice resfile, ByteSlice exefile, ByteSlice mapfile) {
             this.obj = obj;
             this.link = link;
             this.dll = dll;
@@ -503,7 +495,7 @@ public class globals {
             this.checkAction = checkAction;
             this.errorLimit = errorLimit;
             this.argv0 = argv0;
-            this.modFileAliasStrings = modFileAliasStrings;
+            this.modFileAliasStrings = ref(modFileAliasStrings);
             this.imppath = imppath;
             this.fileImppath = fileImppath;
             this.objdir = objdir;
@@ -764,7 +756,7 @@ public class globals {
                 int minor = 0;
                 boolean point = false;
                 {
-                    BytePtr p = pcopy(toBytePtr(this._version).plus(1));
+                    BytePtr p = pcopy(this._version.getPtr(0).plus(1));
                     for (; ;p.postInc()){
                         byte c = p.get();
                         if (isdigit((c & 0xFF)) != 0)
@@ -797,9 +789,7 @@ public class globals {
             return this.params.betterC ? new ByteSlice() : this.params.symdebug != 0 ? this.params.debuglibname : this.params.defaultlibname;
         }
 
-        public Global(){
-            params = new Param();
-        }
+        public Global(){ }
         public Global copy(){
             Global r = new Global();
             r.inifilename = inifilename.copy();
@@ -955,8 +945,7 @@ public class globals {
             return this.filename != null;
         }
 
-        public Loc(){
-        }
+        public Loc(){ }
         public Loc copy(){
             Loc r = new Loc();
             r.filename = filename;

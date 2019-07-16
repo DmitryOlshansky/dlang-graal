@@ -3,7 +3,7 @@ package org.dlang.dmd.root
 import java.lang.AssertionError
 
 object DYNCAST {
-    @JvmField val _object = 0
+    @JvmField val `object` = 0
     @JvmField val expression = 1
     @JvmField val dsymbol = 2
     @JvmField val type = 3
@@ -32,5 +32,5 @@ abstract class RootObject {
         buf.writestring(toChars())
     }
 
-    open fun dyncast() = DYNCAST._object
+    open fun dyncast() = DYNCAST.`object`
 }

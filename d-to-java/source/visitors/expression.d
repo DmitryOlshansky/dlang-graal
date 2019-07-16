@@ -377,7 +377,8 @@ public:
     override void visit(NullExp e)
     {
         auto t = e.type.toJava(opts);
-        if (e.type.ty == Tarray) buf.fmt("new %s()", t);
+        if (t.startsWith("Slice")) buf.fmt("new Raw%s()", t);
+        else if (e.type.ty == Tarray) buf.fmt("new %s()", t);
         else buf.put("null");
     }
 
@@ -1128,14 +1129,17 @@ public:
         bool toBool = false;
         bool toVoidPtr = false;
         bool toVoid = false;
+        bool toPtr = false;
         bool toClass = false;
         bool toFnPtr = false;
         bool fromByte = false;
+        bool fromArray = false;
         if (e.to) switch(e.to.ty) {
             case Tvoid:
                 toVoid = true;
                 break;
             case Tpointer:
+                toPtr = true;
                 if (e.to.nextOf.ty == Tvoid)  {
                     toVoidPtr = true;
                     break;
@@ -1168,6 +1172,9 @@ public:
             default:
         }
         if (e.e1.type) switch(e.e1.type.ty) {
+            case Tarray:
+                fromArray = true;
+                break;
             case Tpointer:
                 if (e.e1.type.nextOf.ty == Tvoid)
                     fromVoidPtr = true;
@@ -1237,6 +1244,11 @@ public:
                     return;
                 }
             }
+        }
+        else if(fromArray && toPtr) {
+            expToBuffer(e.e1, PREC.primary, buf, opts);
+            buf.put(".getPtr(0)");
+            return;
         }
         else if(complexTarget && fromClass) {
             buf.put("(Object)");

@@ -27,8 +27,7 @@ public class astbase {
         private long stc = 0L;
         private byte tok = 0;
         private BytePtr id = null;
-        public SCstring(){
-        }
+        public SCstring(){ }
         public SCstring copy(){
             SCstring r = new SCstring();
             r.stc = stc;
@@ -800,8 +799,7 @@ public class astbase {
         {
             public Identifier id = null;
             public Statement ensure = null;
-            public Ensure(){
-            }
+            public Ensure(){ }
             public Ensure copy(){
                 Ensure r = new Ensure();
                 r.id = id;
@@ -2753,8 +2751,7 @@ public class astbase {
         {
             public Ptr<DArray<Parameter>> parameters = null;
             public int varargs = VarArg.none;
-            public ParameterList(){
-            }
+            public ParameterList(){ }
             public ParameterList copy(){
                 ParameterList r = new ParameterList();
                 r.parameters = parameters;
@@ -9512,8 +9509,7 @@ public class astbase {
         public static class BaseClass
         {
             public Type type = null;
-            public BaseClass(){
-            }
+            public BaseClass(){ }
             public BaseClass copy(){
                 BaseClass r = new BaseClass();
                 r.type = type;
@@ -9566,9 +9562,7 @@ public class astbase {
                 }
             }
 
-            public ModuleDeclaration(){
-                loc = new Loc();
-            }
+            public ModuleDeclaration(){ }
             public ModuleDeclaration copy(){
                 ModuleDeclaration r = new ModuleDeclaration();
                 r.loc = loc.copy();
@@ -9603,8 +9597,7 @@ public class astbase {
 
             public int kind = 0;
             public Package pkg = null;
-            public Prot(){
-            }
+            public Prot(){ }
             public Prot copy(){
                 Prot r = new Prot();
                 r.kind = kind;
@@ -9624,8 +9617,7 @@ public class astbase {
         }
         public static class Scope
         {
-            public Scope(){
-            }
+            public Scope(){ }
             public Scope copy(){
                 Scope r = new Scope();
                 return r;
@@ -9804,8 +9796,7 @@ public class astbase {
                 }
             }
 
-            public Target(){
-            }
+            public Target(){ }
             public Target copy(){
                 Target r = new Target();
                 return r;
@@ -9814,8 +9805,7 @@ public class astbase {
                 return this;
             }
         }
-        public ASTBase(){
-        }
+        public ASTBase(){ }
         public ASTBase copy(){
             ASTBase r = new ASTBase();
             return r;

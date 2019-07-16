@@ -219,8 +219,7 @@ public class dcast {
             return cd.baseClass != null ? convertible(loc, cd.baseClass, mod) : true;
         }
 
-        public ClassCheck(){
-        }
+        public ClassCheck(){ }
         public ClassCheck copy(){
             ClassCheck r = new ClassCheck();
             return r;

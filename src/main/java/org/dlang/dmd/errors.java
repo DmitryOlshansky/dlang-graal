@@ -289,7 +289,7 @@ public class errors {
                 ByteSlice line = fllines.lines.value.get(loc.linnum - 1).copy();
                 if ((loc.charnum < line.getLength()))
                 {
-                    fprintf(stderr, new BytePtr("%.*s\n"), line.getLength(), toBytePtr(line));
+                    fprintf(stderr, new BytePtr("%.*s\n"), line.getLength(), line.getPtr(0));
                     {
                         int __key126 = 1;
                         int __limit127 = loc.charnum;
@@ -481,7 +481,7 @@ public class errors {
                             inBacktick = false;
                             Ref<OutBuffer> codebuf = ref(new OutBuffer());
                             try {
-                                codebuf.value.write((toBytePtr((buf.get()).peekSlice()).plus(iCodeStart).plus(1)), i - (iCodeStart + 1));
+                                codebuf.value.write(((buf.get()).peekSlice().getPtr(0).plus(iCodeStart).plus(1)), i - (iCodeStart + 1));
                                 codebuf.value.writeByte(0);
                                 colorHighlightCode(ptr(codebuf));
                                 (buf.get()).remove(iCodeStart, i - iCodeStart + 1);

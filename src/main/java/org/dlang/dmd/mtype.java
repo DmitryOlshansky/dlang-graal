@@ -158,7 +158,7 @@ public class mtype {
 
     // Erasure: MODtoChars<byte>
     public static BytePtr MODtoChars(byte mod) {
-        return toBytePtr(MODtoString(mod));
+        return MODtoString(mod).getPtr(0);
     }
 
     // Erasure: MODtoString<byte>
@@ -2408,7 +2408,7 @@ public class mtype {
                 int namelen = 31 + slice.getLength() + 1;
                 BytePtr name = pcopy((namelen <= 128) ? namebuf.ptr() : ((BytePtr)malloc(namelen)));
                 assert(name != null);
-                int length = sprintf(name, new BytePtr("_D%lluTypeInfo_%.*s6__initZ"), (long)(9 + slice.getLength()), slice.getLength(), toBytePtr(slice));
+                int length = sprintf(name, new BytePtr("_D%lluTypeInfo_%.*s6__initZ"), (long)(9 + slice.getLength()), slice.getLength(), slice.getPtr(0));
                 assert((0 < length) && (length < namelen));
                 Identifier id = Identifier.idPool(name, length);
                 if ((name != namebuf.ptr()))
@@ -7044,8 +7044,7 @@ public class mtype {
             return Parameter.getNth(this.parameters, i, null);
         }
 
-        public ParameterList(){
-        }
+        public ParameterList(){ }
         public ParameterList copy(){
             ParameterList r = new ParameterList();
             r.parameters = parameters;

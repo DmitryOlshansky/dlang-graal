@@ -709,8 +709,7 @@ public class doc {
             return this.strings.get((c & 0xFF));
         }
 
-        public Escape(){
-        }
+        public Escape(){ }
         public Escape copy(){
             Escape r = new Escape();
             r.strings = strings;
@@ -746,7 +745,7 @@ public class doc {
                             ByteSlice entry = __r1058.get(__key1059).copy();
                             if (iequals(toByteSlice(entry), this.name.slice(0,this.namelen)))
                             {
-                                (buf.get()).printf(new BytePtr("$(DDOC_%s "), toBytePtr(entry));
+                                (buf.get()).printf(new BytePtr("$(DDOC_%s "), entry.getPtr(0));
                                 /*goto L1*/throw Dispatch0.INSTANCE;
                             }
                         }
@@ -1084,11 +1083,11 @@ public class doc {
                     for (; (i < global.params.ddocfiles.length);i++){
                         FileBuffer buffer = readFile(m.loc, global.params.ddocfiles.get(i)).copy();
                         ByteSlice data = buffer.data.copy();
-                        doc.gendocfilembuf.write(toBytePtr(data), data.getLength());
+                        doc.gendocfilembuf.write(data.getPtr(0), data.getLength());
                     }
                 }
             }
-            DocComment.parseMacros(m.escapetable, ptr(m.macrotable), toBytePtr(doc.gendocfilembuf.peekSlice()), doc.gendocfilembuf.peekSlice().getLength());
+            DocComment.parseMacros(m.escapetable, ptr(m.macrotable), doc.gendocfilembuf.peekSlice().getPtr(0), doc.gendocfilembuf.peekSlice().getLength());
             Ptr<Scope> sc = Scope.createGlobal(m);
             Ptr<DocComment> dc = DocComment.parse(m, m.comment);
             (dc.get()).pmacrotable = pcopy((ptr(m.macrotable)));
@@ -1118,7 +1117,7 @@ public class doc {
             if (m.isDocFile)
             {
                 Ptr<Loc> ploc = m.md != null ? ptr(m.md.get().loc) : ptr(m.loc);
-                Loc loc = loc = new Loc((ploc.get()).filename != null ? (ploc.get()).filename : toBytePtr(srcfilename), (ploc.get()).linnum, (ploc.get()).charnum);
+                Loc loc = loc = new Loc((ploc.get()).filename != null ? (ploc.get()).filename : srcfilename.getPtr(0), (ploc.get()).linnum, (ploc.get()).charnum);
                 int commentlen = strlen(m.comment);
                 Ref<DArray<Dsymbol>> a = ref(new DArray<Dsymbol>());
                 try {
@@ -1154,7 +1153,7 @@ public class doc {
                     ByteSlice slice = buf2.value.peekSlice().copy();
                     buf.value.setsize(0);
                     buf.value.reserve(slice.getLength());
-                    BytePtr p = pcopy(toBytePtr(slice));
+                    BytePtr p = pcopy(slice.getPtr(0));
                     {
                         int j = 0;
                         for (; (j < slice.getLength());j++){
@@ -1445,10 +1444,10 @@ public class doc {
                     if (imp.aliasId != null)
                     {
                         ByteSlice symbolName = imp.aliasId.asString().copy();
-                        (buf.get()).printf(new BytePtr("$(%.*s %.*s"), macroName.getLength(), toBytePtr(macroName), symbolName.getLength(), toBytePtr(symbolName));
+                        (buf.get()).printf(new BytePtr("$(%.*s %.*s"), macroName.getLength(), macroName.getPtr(0), symbolName.getLength(), symbolName.getPtr(0));
                         if (forHeader)
                         {
-                            (buf.get()).printf(new BytePtr(", %.*s"), symbolName.getLength(), toBytePtr(symbolName));
+                            (buf.get()).printf(new BytePtr(", %.*s"), symbolName.getLength(), symbolName.getPtr(0));
                         }
                     }
                     else
@@ -1472,7 +1471,7 @@ public class doc {
                             }}
 
                         };
-                        (buf.get()).printf(new BytePtr("$(%.*s "), macroName.getLength(), toBytePtr(macroName));
+                        (buf.get()).printf(new BytePtr("$(%.*s "), macroName.getLength(), macroName.getPtr(0));
                         printFullyQualifiedImport.invoke();
                         if (forHeader)
                         {
@@ -1486,7 +1485,7 @@ public class doc {
             else
             {
                 ByteSlice symbolName = ident.asString().copy();
-                (buf.get()).printf(new BytePtr("$(%.*s %.*s"), macroName.getLength(), toBytePtr(macroName), symbolName.getLength(), toBytePtr(symbolName));
+                (buf.get()).printf(new BytePtr("$(%.*s %.*s"), macroName.getLength(), macroName.getPtr(0), symbolName.getLength(), symbolName.getPtr(0));
                 if ((count > 1))
                 {
                     (buf.get()).printf(new BytePtr(".%u"), count);
@@ -1504,7 +1503,7 @@ public class doc {
                         }
                     }
                     ByteSlice shortName = shortIdent.asString().copy();
-                    (buf.get()).printf(new BytePtr(", %.*s"), shortName.getLength(), toBytePtr(shortName));
+                    (buf.get()).printf(new BytePtr(", %.*s"), shortName.getLength(), shortName.getPtr(0));
                 }
                 (buf.get()).writeByte(41);
             }
@@ -2115,10 +2114,7 @@ public class doc {
             }
         }
 
-        public DocComment(){
-            sections = new DArray<Section>();
-            a = new DArray<Dsymbol>();
-        }
+        public DocComment(){ }
         public DocComment copy(){
             DocComment r = new DocComment();
             r.sections = sections.copy();
@@ -2130,14 +2126,14 @@ public class doc {
             r.a = a.copy();
             return r;
         }
-        public DocComment(DArray<Section> sections, Section summary, Section copyright, Section macros, Ptr<Ptr<Macro>> pmacrotable, Ptr<Escape> escapetable, Ref<DArray<Dsymbol>> a) {
+        public DocComment(DArray<Section> sections, Section summary, Section copyright, Section macros, Ptr<Ptr<Macro>> pmacrotable, Ptr<Escape> escapetable, DArray<Dsymbol> a) {
             this.sections = sections;
             this.summary = summary;
             this.copyright = copyright;
             this.macros = macros;
             this.pmacrotable = pmacrotable;
             this.escapetable = escapetable;
-            this.a = a;
+            this.a = ref(a);
         }
 
         public DocComment opAssign(DocComment that) {
@@ -2166,7 +2162,7 @@ public class doc {
 
     // Erasure: skipwhitespace<Ptr>
     public static BytePtr skipwhitespace(BytePtr p) {
-        return toBytePtr(skipwhitespace(toDString(p)));
+        return skipwhitespace(toDString(p)).getPtr(0);
     }
 
     // Erasure: skipwhitespace<Array>
@@ -2235,7 +2231,7 @@ public class doc {
         {
             return s;
         }
-        Ref<ByteSlice> result = ref(new RawByteSlice().copy());
+        Ref<ByteSlice> result = ref(new ByteSlice().copy());
         reserve(result, s.getLength() - count + r.getLength() * count);
         int start = 0;
         {
@@ -2258,7 +2254,7 @@ public class doc {
 
     // Erasure: toLowercase<Array>
     public static ByteSlice toLowercase(ByteSlice s) {
-        Ref<ByteSlice> lower = ref(new RawByteSlice().copy());
+        Ref<ByteSlice> lower = ref(new ByteSlice().copy());
         {
             int __key1075 = 0;
             int __limit1076 = s.getLength();
@@ -2314,7 +2310,7 @@ public class doc {
         for (; (i_ref.value < slice.getLength());){
             Ref<Integer> c = ref(0x0ffff);
             int oi = i_ref.value;
-            if (utf_decodeChar(toBytePtr(slice), slice.getLength(), i_ref, c) != null)
+            if (utf_decodeChar(slice.getPtr(0), slice.getLength(), i_ref, c) != null)
             {
                 break;
             }
@@ -2342,7 +2338,7 @@ public class doc {
         for (; (i_ref.value < slice.getLength());){
             Ref<Integer> c = ref(0x0ffff);
             int oi = i_ref.value;
-            if (utf_decodeChar(toBytePtr(slice), slice.getLength(), i_ref, c) != null)
+            if (utf_decodeChar(slice.getPtr(0), slice.getLength(), i_ref, c) != null)
             {
                 break;
             }
@@ -2371,7 +2367,7 @@ public class doc {
         for (; (i_ref.value < slice.getLength());){
             Ref<Integer> c = ref(0x0ffff);
             int oi = i_ref.value;
-            if (utf_decodeChar(toBytePtr(slice), slice.getLength(), i_ref, c) != null)
+            if (utf_decodeChar(slice.getPtr(0), slice.getLength(), i_ref, c) != null)
             {
                 break;
             }
@@ -2417,11 +2413,11 @@ public class doc {
         int j = 0;
         boolean sawdot = false;
         try {
-            if ((slice.getLength() > 7) && (Port.memicmp(toBytePtr(slice), new BytePtr("http://"), 7) == 0))
+            if ((slice.getLength() > 7) && (Port.memicmp(slice.getPtr(0), new BytePtr("http://"), 7) == 0))
             {
                 j = 7;
             }
-            else if ((slice.getLength() > 8) && (Port.memicmp(toBytePtr(slice), new BytePtr("https://"), 8) == 0))
+            else if ((slice.getLength() > 8) && (Port.memicmp(slice.getPtr(0), new BytePtr("https://"), 8) == 0))
             {
                 j = 8;
             }
@@ -2498,7 +2494,7 @@ public class doc {
                 if (global.params.vmarkdown)
                 {
                     ByteSlice s = (buf.get()).peekSlice().slice(i.value,j).copy();
-                    message(loc, new BytePtr("Ddoc: converted '%.*s' to a thematic break"), s.getLength(), toBytePtr(s));
+                    message(loc, new BytePtr("Ddoc: converted '%.*s' to a thematic break"), s.getLength(), s.getPtr(0));
                 }
                 (buf.get()).remove(iLineStart, j - iLineStart);
                 i.value = (buf.get()).insert(iLineStart, new ByteSlice("$(HR)")) - 1;
@@ -2577,7 +2573,7 @@ public class doc {
         if (global.params.vmarkdown)
         {
             ByteSlice s = (buf.get()).peekSlice().slice(iStart,iEnd.value).copy();
-            message(loc, new BytePtr("Ddoc: added heading '%.*s'"), s.getLength(), toBytePtr(s));
+            message(loc, new BytePtr("Ddoc: added heading '%.*s'"), s.getLength(), s.getPtr(0));
         }
         ByteSlice heading = new ByteSlice("$(H0 ");
         heading.set(3, (byte)(48 + headingLevel.value));
@@ -2637,7 +2633,7 @@ public class doc {
                 if (global.params.vmarkdown)
                 {
                     ByteSlice s = (buf.get()).peekSlice().slice(iStart.value + count,iEnd.value).copy();
-                    message(loc, new BytePtr("Ddoc: emphasized text '%.*s'"), s.getLength(), toBytePtr(s));
+                    message(loc, new BytePtr("Ddoc: emphasized text '%.*s'"), s.getLength(), s.getPtr(0));
                 }
                 (buf.get()).remove(iStart.value, count);
                 iEnd.value -= count;
@@ -2714,7 +2710,7 @@ public class doc {
                         }
                         else
                         {
-                            ByteSlice fullyQualifiedImport = new RawByteSlice().copy();
+                            ByteSlice fullyQualifiedImport = new ByteSlice().copy();
                             if ((imp.packages != null) && ((imp.packages.get()).length != 0))
                             {
                                 {
@@ -2912,8 +2908,7 @@ public class doc {
             this.count = 0;
         }
 
-        public MarkdownDelimiter(){
-        }
+        public MarkdownDelimiter(){ }
         public MarkdownDelimiter copy(){
             MarkdownDelimiter r = new MarkdownDelimiter();
             r.iStart = iStart;
@@ -3026,7 +3021,7 @@ public class doc {
                     iEnd += 1;
                 }
                 ByteSlice s = (buf.get()).peekSlice().slice(this.iStart.value,iEnd).copy();
-                message(loc, new BytePtr("Ddoc: starting list item '%.*s'"), s.getLength(), toBytePtr(s));
+                message(loc, new BytePtr("Ddoc: starting list item '%.*s'"), s.getLength(), s.getPtr(0));
             }
             return true;
         }
@@ -3101,12 +3096,11 @@ public class doc {
             return new MarkdownList(new ByteSlice(), 0, 0, 0, 0, 0, (byte)255);
         }
 
-        public MarkdownList(){
-        }
+        public MarkdownList(){ }
         public MarkdownList copy(){
             MarkdownList r = new MarkdownList();
             r.orderedStart = orderedStart.copy();
-            r.iStart = iStart;
+            r.iStart = iStart.copy();
             r.iContentStart = iContentStart;
             r.delimiterIndent = delimiterIndent;
             r.contentIndent = contentIndent;
@@ -3114,9 +3108,9 @@ public class doc {
             r.type = type;
             return r;
         }
-        public MarkdownList(ByteSlice orderedStart, Ref<Integer> iStart, int iContentStart, int delimiterIndent, int contentIndent, int macroLevel, byte type) {
+        public MarkdownList(ByteSlice orderedStart, int iStart, int iContentStart, int delimiterIndent, int contentIndent, int macroLevel, byte type) {
             this.orderedStart = orderedStart;
-            this.iStart = iStart;
+            this.iStart = ref(iStart);
             this.iContentStart = iContentStart;
             this.delimiterIndent = delimiterIndent;
             this.contentIndent = contentIndent;
@@ -3183,7 +3177,7 @@ public class doc {
             if (global.params.vmarkdown)
             {
                 ByteSlice s = (buf.get()).peekSlice().slice(delimiter.iStart,iEnd).copy();
-                message(loc, new BytePtr("Ddoc: linking '%.*s' to '%.*s'"), s.getLength(), toBytePtr(s), link.href.getLength(), toBytePtr(link.href));
+                message(loc, new BytePtr("Ddoc: linking '%.*s' to '%.*s'"), s.getLength(), s.getPtr(0), link.href.getLength(), link.href.getPtr(0));
             }
             link.replaceLink(buf, i, iEnd, delimiter);
             return true;
@@ -3513,7 +3507,7 @@ public class doc {
         // Erasure: replaceLink<Ptr, int, int, MarkdownDelimiter>
         public  void replaceLink(Ptr<OutBuffer> buf, Ref<Integer> i, int iLinkEnd, MarkdownDelimiter delimiter) {
             int iAfterLink = i.value - delimiter.count;
-            ByteSlice macroName = new RawByteSlice().copy();
+            ByteSlice macroName = new ByteSlice().copy();
             if (this.symbol != null)
             {
                 macroName = new ByteSlice("$(SYMBOL_LINK ").copy();
@@ -3571,7 +3565,7 @@ public class doc {
         public  void storeAndReplaceDefinition(Ptr<OutBuffer> buf, Ref<Integer> i, int iEnd, MarkdownLinkReferences linkReferences, Loc loc) {
             if (global.params.vmarkdown)
             {
-                message(loc, new BytePtr("Ddoc: found link reference '%.*s' to '%.*s'"), this.label.value.getLength(), toBytePtr(this.label), this.href.getLength(), toBytePtr(this.href));
+                message(loc, new BytePtr("Ddoc: found link reference '%.*s' to '%.*s'"), this.label.value.getLength(), this.label.value.getPtr(0), this.href.getLength(), this.href.getPtr(0));
             }
             iEnd = skipChars(buf, iEnd, new ByteSlice(" \u0009\r\n"));
             (buf.get()).remove(i.value, iEnd - i.value);
@@ -3657,8 +3651,7 @@ public class doc {
             return false;
         }
 
-        public MarkdownLink(){
-        }
+        public MarkdownLink(){ }
         public MarkdownLink copy(){
             MarkdownLink r = new MarkdownLink();
             r.href = href.copy();
@@ -3667,10 +3660,10 @@ public class doc {
             r.symbol = symbol;
             return r;
         }
-        public MarkdownLink(ByteSlice href, ByteSlice title, Ref<ByteSlice> label, Dsymbol symbol) {
+        public MarkdownLink(ByteSlice href, ByteSlice title, ByteSlice label, Dsymbol symbol) {
             this.href = href;
             this.title = title;
-            this.label = label;
+            this.label = ref(label);
             this.symbol = symbol;
         }
 
@@ -3710,7 +3703,7 @@ public class doc {
             }
             Slice<ByteSlice> ids = split(name, (byte)46).copy();
             MarkdownLink link = new MarkdownLink();
-            Identifier id = Identifier.lookup(toBytePtr(ids.get(0)), ids.get(0).getLength());
+            Identifier id = Identifier.lookup(ids.get(0).getPtr(0), ids.get(0).getLength());
             if (id != null)
             {
                 Loc loc = new Loc(null, 0, 0).copy();
@@ -3718,7 +3711,7 @@ public class doc {
                 {
                     int i = 1;
                     for (; (symbol != null) && (i < ids.getLength());i += 1){
-                        id = Identifier.lookup(toBytePtr(ids.get(i)), ids.get(i).getLength());
+                        id = Identifier.lookup(ids.get(i).getPtr(0), ids.get(i).getLength());
                         symbol = (id != null) ? symbol.search(loc, id, 2) : null;
                     }
                 }
@@ -3897,7 +3890,7 @@ public class doc {
         // Erasure: createHref<Dsymbol>
         public  ByteSlice createHref(Dsymbol symbol) {
             Dsymbol root = symbol;
-            ByteSlice lref = new RawByteSlice().copy();
+            ByteSlice lref = new ByteSlice().copy();
             for (; (symbol != null) && (symbol.ident != null) && (symbol.isModule() == null);){
                 if (lref.getLength() != 0)
                 {
@@ -3906,7 +3899,7 @@ public class doc {
                 lref = (concat(symbol.ident.asString(), lref)).copy();
                 symbol = symbol.parent.value;
             }
-            ByteSlice path = new RawByteSlice().copy();
+            ByteSlice path = new ByteSlice().copy();
             if ((symbol != null) && (symbol.ident != null) && (!pequals(symbol.isModule(), (this._scope.get())._module)))
             {
                 do {
@@ -3951,8 +3944,7 @@ public class doc {
             return toByteSlice((concat(concat(path, (byte)35), lref)));
         }
 
-        public MarkdownLinkReferences(){
-        }
+        public MarkdownLinkReferences(){ }
         public MarkdownLinkReferences copy(){
             MarkdownLinkReferences r = new MarkdownLinkReferences();
             r.references = references;
@@ -4082,7 +4074,7 @@ public class doc {
         if (headerRow && global.params.vmarkdown)
         {
             ByteSlice s = (buf.get()).peekSlice().slice(iStart,iEnd).copy();
-            message(loc, new BytePtr("Ddoc: formatting table '%.*s'"), s.getLength(), toBytePtr(s));
+            message(loc, new BytePtr("Ddoc: formatting table '%.*s'"), s.getLength(), s.getPtr(0));
         }
         Ref<Integer> delta = ref(0);
         Function4<Integer,Integer,Integer,Integer,Void> replaceTableCell = new Function4<Integer,Integer,Integer,Integer,Void>() {
@@ -4220,7 +4212,7 @@ public class doc {
         Ref<Slice<MarkdownList>> nestedLists = ref(new RawSlice<MarkdownList>().copy());
         Ref<Slice<MarkdownDelimiter>> inlineDelimiters = ref(new RawSlice<MarkdownDelimiter>().copy());
         Ref<MarkdownLinkReferences> linkReferences = ref(new MarkdownLinkReferences());
-        Ref<IntSlice> columnAlignments = ref(new RawIntSlice().copy());
+        Ref<IntSlice> columnAlignments = ref(new IntSlice().copy());
         boolean tableRowDetected = false;
         int inCode = 0;
         int inBacktick = 0;
@@ -4230,7 +4222,7 @@ public class doc {
         int iCodeStart = 0;
         int codeFenceLength = 0;
         int codeIndent = 0;
-        ByteSlice codeLanguage = new RawByteSlice().copy();
+        ByteSlice codeLanguage = new ByteSlice().copy();
         Ref<Integer> iLineStart = ref(offset);
         linkReferences.value._scope = pcopy(sc);
         {
@@ -4387,7 +4379,7 @@ public class doc {
                                             iEnd += 1;
                                         }
                                         ByteSlice s = (buf.get()).peekSlice().slice(i.value,iEnd).copy();
-                                        message(loc, new BytePtr("Ddoc: starting quote block with '%.*s'"), s.getLength(), toBytePtr(s));
+                                        message(loc, new BytePtr("Ddoc: starting quote block with '%.*s'"), s.getLength(), s.getPtr(0));
                                     }
                                     lineQuoted = true;
                                     int lineQuoteLevel = 1;
@@ -4476,7 +4468,7 @@ public class doc {
                                     inCode = 0;
                                     Ref<OutBuffer> codebuf = ref(new OutBuffer());
                                     try {
-                                        codebuf.value.write((toBytePtr((buf.get()).peekSlice()).plus(iCodeStart).plus(count)), i.value - (iCodeStart + count));
+                                        codebuf.value.write(((buf.get()).peekSlice().getPtr(0).plus(iCodeStart).plus(count)), i.value - (iCodeStart + count));
                                         highlightCode(sc, a, ptr(codebuf), 0);
                                         escapeStrayParenthesis(loc, ptr(codebuf), 0, false);
                                         (buf.get()).remove(iCodeStart, i.value - iCodeStart + count);
@@ -4735,7 +4727,7 @@ public class doc {
                                             }
                                             if (global.params.vmarkdown)
                                             {
-                                                message(loc, new BytePtr("Ddoc: adding code block for language '%.*s'"), codeLanguage.getLength(), toBytePtr(codeLanguage));
+                                                message(loc, new BytePtr("Ddoc: adding code block for language '%.*s'"), codeLanguage.getLength(), codeLanguage.getPtr(0));
                                             }
                                             i.value = (buf.get()).insert(i.value, new ByteSlice("$(OTHER_CODE "));
                                             i.value = (buf.get()).insert(i.value, toByteSlice(codeLanguage));
@@ -5204,7 +5196,7 @@ public class doc {
                                     if (__equals(start.slice(0,templateParams.getLength()), templateParams))
                                     {
                                         ByteSlice templateParamListMacro = new ByteSlice("$(DDOC_TEMPLATE_PARAM_LIST ").copy();
-                                        (buf.get()).bracket(i, toBytePtr(templateParamListMacro), i + templateParams.getLength(), new BytePtr(")"));
+                                        (buf.get()).bracket(i, templateParamListMacro.getPtr(0), i + templateParams.getLength(), new BytePtr(")"));
                                         i += 28;
                                         {
                                             IntSlice __r1111 = paramLens.opSlice().copy();
@@ -5262,7 +5254,7 @@ public class doc {
                         Ref<Token> tok = ref(new Token().copy());
                         lex.scan(ptr(tok));
                         highlightCode3(sc, ptr(res), lastp, tok.value.ptr);
-                        ByteSlice highlight = new RawByteSlice().copy();
+                        ByteSlice highlight = new ByteSlice().copy();
                         switch ((tok.value.value & 0xFF))
                         {
                             case 120:

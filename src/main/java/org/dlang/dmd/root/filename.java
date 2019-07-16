@@ -51,11 +51,11 @@ public class filename {
         public static BytePtr toAbsolute(BytePtr name, BytePtr base) {
             ByteSlice name_ = toDString(name);
             ByteSlice base_ = base != null ? toDString(base) : toDString(getcwd(null, 0));
-            return FileName.absolute(name_) ? name : FileName.combine(base_, name_).toBytePtr();
+            return FileName.absolute(name_) ? name : FileName.combine(base_, name_).ptr();
         }
 
         public static BytePtr ext(BytePtr str) {
-            return FileName.ext(toDString(str)).toBytePtr();
+            return FileName.ext(toDString(str)).ptr();
         }
 
         public static ByteSlice ext(ByteSlice str) {
@@ -83,11 +83,11 @@ public class filename {
 
 
         public  BytePtr ext() {
-            return FileName.ext(this.str).toBytePtr();
+            return FileName.ext(this.str).ptr();
         }
 
         public static BytePtr removeExt(BytePtr str) {
-            return FileName.removeExt(toDString(str)).toBytePtr();
+            return FileName.removeExt(toDString(str)).ptr();
         }
 
         public static ByteSlice removeExt(ByteSlice str) {
@@ -95,16 +95,16 @@ public class filename {
             if ((e.getLength()) != 0)
             {
                 int len = str.getLength() - e.getLength() - 1;
-                BytePtr n = Mem.xmalloc(len + 1).toBytePtr();
-                memcpy(n, str.toBytePtr(), len);
+                BytePtr n = Mem.xmalloc(len + 1);
+                memcpy(n, str.ptr(), len);
                 n.set(len, (byte)0);
                 return n.slice(0,len);
             }
-            return Mem.xstrdup(str.toBytePtr()).slice(0,str.getLength());
+            return Mem.xstrdup(str.ptr()).slice(0,str.getLength());
         }
 
         public static BytePtr name(BytePtr str) {
-            return FileName.name(toDString(str)).toBytePtr();
+            return FileName.name(toDString(str)).ptr();
         }
 
         public static ByteSlice name(ByteSlice str) {
@@ -129,11 +129,11 @@ public class filename {
         }
 
         public  BytePtr name() {
-            return FileName.name(this.str).toBytePtr();
+            return FileName.name(this.str).ptr();
         }
 
         public static BytePtr path(BytePtr str) {
-            return FileName.path(toDString(str)).toBytePtr();
+            return FileName.path(toDString(str)).ptr();
         }
 
         public static ByteSlice path(ByteSlice str) {
@@ -145,8 +145,8 @@ public class filename {
                     hasTrailingSlash = true;
             }
             int pathlen = str.getLength() - n.getLength() - (hasTrailingSlash ? 1 : 0);
-            BytePtr path = Mem.xmalloc(pathlen + 1).toBytePtr();
-            memcpy(path, str.toBytePtr(), pathlen);
+            BytePtr path = Mem.xmalloc(pathlen + 1);
+            memcpy(path, str.ptr(), pathlen);
             path.set(pathlen, (byte)0);
             return path.slice(0,pathlen);
         }
@@ -163,14 +163,14 @@ public class filename {
         public static BytePtr combine(BytePtr path, BytePtr name) {
             if (path == null)
                 return name;
-            return FileName.combine(toDString(path), toDString(name)).toBytePtr();
+            return FileName.combine(toDString(path), toDString(name)).ptr();
         }
 
         public static ByteSlice combine(ByteSlice path, ByteSlice name) {
             if ((path.getLength()) == 0)
                 return name;
-            BytePtr f = Mem.xmalloc(path.getLength() + 1 + name.getLength() + 1).toBytePtr();
-            memcpy(f, path.toBytePtr(), path.getLength());
+            BytePtr f = Mem.xmalloc(path.getLength() + 1 + name.getLength() + 1);
+            memcpy(f, path.ptr(), path.getLength());
             boolean trailingSlash = false;
             if (path.get(path.getLength() - (byte)1) != (byte)47)
             {
@@ -178,7 +178,7 @@ public class filename {
                 trailingSlash = true;
             }
             int len = path.getLength() + (trailingSlash ? 1 : 0);
-            memcpy((f.plus(len)), name.toBytePtr(), name.getLength());
+            memcpy((f.plus(len)), name.ptr(), name.getLength());
             f.set((len + name.getLength()), (byte)0);
             return f.slice(0,len + name.getLength());
         }
@@ -265,7 +265,7 @@ public class filename {
 
         public static ByteSlice addExt(ByteSlice name, ByteSlice ext) {
             int len = name.getLength() + ext.getLength() + 2;
-            BytePtr s = Mem.xmalloc(len).toBytePtr();
+            BytePtr s = Mem.xmalloc(len);
             name.copyTo(s.slice(0,name.getLength()));
             s.set(name.getLength(), (byte)46);
             ext.copyTo(s.slice(name.getLength() + 1,len - 1));
@@ -274,7 +274,7 @@ public class filename {
         }
 
         public static BytePtr defaultExt(BytePtr name, BytePtr ext) {
-            return FileName.defaultExt(toDString(name), toDString(ext)).toBytePtr();
+            return FileName.defaultExt(toDString(name), toDString(ext)).ptr();
         }
 
         public static ByteSlice defaultExt(ByteSlice name, ByteSlice ext) {
@@ -285,7 +285,7 @@ public class filename {
         }
 
         public static BytePtr forceExt(BytePtr name, BytePtr ext) {
-            return FileName.forceExt(toDString(name), toDString(ext)).toBytePtr();
+            return FileName.forceExt(toDString(name), toDString(ext)).ptr();
         }
 
         public static ByteSlice forceExt(ByteSlice name, ByteSlice ext) {
@@ -314,7 +314,7 @@ public class filename {
         }
 
         public static BytePtr searchPath(DArray<BytePtr> path, BytePtr name, boolean cwd) {
-            return FileName.searchPath(path, toDString(name), cwd).toBytePtr();
+            return FileName.searchPath(path, toDString(name), cwd).ptr();
         }
 
         public static ByteSlice searchPath(DArray<BytePtr> path, ByteSlice name, boolean cwd) {
@@ -337,9 +337,9 @@ public class filename {
                         ByteSlice n = FileName.combine(toDString(p), name);
                         if ((FileName.exists(n)) != 0)
                             return n;
-                        if (n.toBytePtr() != name.toBytePtr())
+                        if (n.ptr() != name.ptr())
                         {
-                            Mem.xfree(n.toBytePtr());
+                            Mem.xfree(n.ptr());
                         }
                     }
                 }
@@ -460,7 +460,7 @@ public class filename {
         }
 
         public static BytePtr canonicalName(BytePtr name) {
-            return FileName.canonicalName(toDString(name)).toBytePtr();
+            return FileName.canonicalName(toDString(name)).ptr();
         }
 
         public static ByteSlice canonicalName(ByteSlice name) {
@@ -483,7 +483,7 @@ public class filename {
         }
 
         public  BytePtr toChars() {
-            return this.str.toBytePtr();
+            return this.str.ptr();
         }
 
         public  ByteSlice asString() {

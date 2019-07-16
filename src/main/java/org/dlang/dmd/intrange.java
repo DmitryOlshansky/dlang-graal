@@ -300,8 +300,7 @@ public class intrange {
         }
 
 
-        public SignExtendedNumber(){
-        }
+        public SignExtendedNumber(){ }
         public SignExtendedNumber copy(){
             SignExtendedNumber r = new SignExtendedNumber();
             r.value = value;
@@ -877,10 +876,7 @@ public class intrange {
             b.opAssign(aux.copy());
         }
 
-        public IntRange(){
-            imin = new SignExtendedNumber();
-            imax = new SignExtendedNumber();
-        }
+        public IntRange(){ }
         public IntRange copy(){
             IntRange r = new IntRange();
             r.imin = imin.copy();

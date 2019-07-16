@@ -84,8 +84,7 @@ public class dsymbol {
             this.oldgag = old;
         }
 
-        public Ungag(){
-        }
+        public Ungag(){ }
         public Ungag copy(){
             Ungag r = new Ungag();
             r.oldgag = oldgag;
@@ -159,8 +158,7 @@ public class dsymbol {
             return true;
         }
 
-        public Prot(){
-        }
+        public Prot(){ }
         public Prot copy(){
             Prot r = new Prot();
             r.kind = kind;
@@ -296,7 +294,7 @@ public class dsymbol {
             Ref<BytePtr> format_ref = ref(format);
             BytePtr cstr = pcopy(this.toPrettyChars(false));
             ByteSlice pretty = concat(concat((byte)96, cstr.slice(0,strlen(cstr))), new ByteSlice("`\u0000")).copy();
-            verror(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty), new BytePtr("Error: "));
+            verror(loc, format_ref.value, new RawSlice<>(ap), this.kind(), pretty.getPtr(0), new BytePtr("Error: "));
         }
 
         // Erasure: error<Ptr>
@@ -305,7 +303,7 @@ public class dsymbol {
             BytePtr cstr = pcopy(this.toPrettyChars(false));
             ByteSlice pretty = concat(concat((byte)96, cstr.slice(0,strlen(cstr))), new ByteSlice("`\u0000")).copy();
             Loc loc = this.getLoc().copy();
-            verror(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty), new BytePtr("Error: "));
+            verror(loc, format_ref.value, new RawSlice<>(ap), this.kind(), pretty.getPtr(0), new BytePtr("Error: "));
         }
 
         // Erasure: deprecation<Loc, Ptr>
@@ -313,7 +311,7 @@ public class dsymbol {
             Ref<BytePtr> format_ref = ref(format);
             BytePtr cstr = pcopy(this.toPrettyChars(false));
             ByteSlice pretty = concat(concat((byte)96, cstr.slice(0,strlen(cstr))), new ByteSlice("`\u0000")).copy();
-            vdeprecation(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty));
+            vdeprecation(loc, format_ref.value, new RawSlice<>(ap), this.kind(), pretty.getPtr(0));
         }
 
         // Erasure: deprecation<Ptr>
@@ -322,7 +320,7 @@ public class dsymbol {
             BytePtr cstr = pcopy(this.toPrettyChars(false));
             ByteSlice pretty = concat(concat((byte)96, cstr.slice(0,strlen(cstr))), new ByteSlice("`\u0000")).copy();
             Loc loc = this.getLoc().copy();
-            vdeprecation(loc, format_ref.value, new RawSlice<>(ap), this.kind(), toBytePtr(pretty));
+            vdeprecation(loc, format_ref.value, new RawSlice<>(ap), this.kind(), pretty.getPtr(0));
         }
 
         // Erasure: checkDeprecated<Loc, Ptr>
@@ -575,7 +573,7 @@ public class dsymbol {
                 int __limit1139 = complength;
                 for (; (__key1138 < __limit1139);__key1138 += 1) {
                     int j = __key1138;
-                    BytePtr t = pcopy(toBytePtr(comp.get(j)));
+                    BytePtr t = pcopy(comp.get(j).getPtr(0));
                     int len = comp.get(j).getLength();
                     q.minusAssign(len);
                     memcpy((BytePtr)(q), (t), len);
@@ -586,7 +584,7 @@ public class dsymbol {
                     (q.minusAssign(1)).set(0, (byte)46);
                 }
             }
-            free(toPtr<ByteSlice>(comp));
+            free(comp.getPtr(0));
             if (!QualifyTypes)
             {
                 this.prettystring = pcopy(s);
@@ -1516,7 +1514,7 @@ public class dsymbol {
                 return true;
             }
             {
-                Slice<Dsymbol> __r1149 = (this.importedScopes != null ? (this.importedScopes.get()).opSlice() : new Slice<Dsymbol>()).copy();
+                Slice<Dsymbol> __r1149 = (this.importedScopes != null ? (this.importedScopes.get()).opSlice() : new RawSlice<Dsymbol>()).copy();
                 int __key1148 = 0;
                 for (; (__key1148 < __r1149.getLength());__key1148 += 1) {
                     Dsymbol ss = __r1149.get(__key1148);

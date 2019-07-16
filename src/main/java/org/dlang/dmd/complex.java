@@ -88,8 +88,7 @@ public class complex {
             return (((this.re == y.re) && (this.im == y.im)) ? 1 : 0);
         }
 
-        public complex_t(){
-        }
+        public complex_t(){ }
         public complex_t copy(){
             complex_t r = new complex_t();
             r.re = re;

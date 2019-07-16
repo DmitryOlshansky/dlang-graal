@@ -257,8 +257,7 @@ public class declaration {
         public int last = MATCH.nomatch;
         public FuncDeclaration lastf = null;
         public FuncDeclaration nextf = null;
-        public MatchAccumulator(){
-        }
+        public MatchAccumulator(){ }
         public MatchAccumulator copy(){
             MatchAccumulator r = new MatchAccumulator();
             r.count = count;

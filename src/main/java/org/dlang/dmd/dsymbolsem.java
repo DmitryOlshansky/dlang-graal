@@ -535,7 +535,7 @@ public class dsymbolsem {
                     StringExp se = dd.msg.toStringExp();
                     if ((se) != null)
                     {
-                        dd.msgstr = pcopy((toBytePtr(se.toStringz())));
+                        dd.msgstr = pcopy((se.toStringz().getPtr(0)));
                     }
                     else
                     {
@@ -1777,7 +1777,7 @@ public class dsymbolsem {
                             ByteSlice name = xarraydup(se.string.slice(0,se.len)).copy();
                             if (global.params.verbose)
                             {
-                                message(new BytePtr("library   %s"), toBytePtr(name));
+                                message(new BytePtr("library   %s"), name.getPtr(0));
                             }
                             if ((global.params.moduleDeps != null) && (global.params.moduleDepsFile.getLength() == 0))
                             {
@@ -1791,7 +1791,7 @@ public class dsymbolsem {
                                 (ob.get()).writestring(name);
                                 (ob.get()).writenl();
                             }
-                            Mem.xfree(toBytePtr(name));
+                            Mem.xfree(name.getPtr(0));
                         }
                         /*goto Lnodecl*/throw Dispatch1.INSTANCE;
                     }
@@ -2015,7 +2015,7 @@ public class dsymbolsem {
                         }
                         if (((p.token.value.value & 0xFF) != 11))
                         {
-                            cd.error(new BytePtr("incomplete mixin declaration `%s`"), toBytePtr(str));
+                            cd.error(new BytePtr("incomplete mixin declaration `%s`"), str.getPtr(0));
                             return null;
                         }
                         return d;
@@ -2059,7 +2059,7 @@ public class dsymbolsem {
                     ByteSlice sident = se.toStringz().copy();
                     if ((sident.getLength() == 0) || !Identifier.isValidIdentifier(sident))
                     {
-                        ns.exp.error(new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), sident.getLength(), toBytePtr(sident));
+                        ns.exp.error(new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), sident.getLength(), sident.getPtr(0));
                         return null;
                     }
                     else
@@ -3001,7 +3001,7 @@ public class dsymbolsem {
                     ByteSlice ident = name.toStringz().copy();
                     if ((ident.getLength() == 0) || !Identifier.isValidIdentifier(ident))
                     {
-                        error(ns.loc, new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), ident.getLength(), toBytePtr(ident));
+                        error(ns.loc, new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), ident.getLength(), ident.getPtr(0));
                         return ;
                     }
                     ns.ident = Identifier.idPool(ident);
@@ -3024,7 +3024,7 @@ public class dsymbolsem {
                             ByteSlice ident = name.toStringz().copy();
                             if ((ident.getLength() == 0) || !Identifier.isValidIdentifier(ident))
                             {
-                                error(ns.loc, new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), ident.getLength(), toBytePtr(ident));
+                                error(ns.loc, new BytePtr("expected valid identifer for C++ namespace but got `%.*s`"), ident.getLength(), ident.getPtr(0));
                                 return ;
                             }
                             if ((i == 0))

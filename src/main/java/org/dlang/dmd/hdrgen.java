@@ -47,8 +47,7 @@ public class hdrgen {
         private long stc = 0L;
         private byte tok = 0;
         private ByteSlice id = new ByteSlice();
-        public SCstring(){
-        }
+        public SCstring(){ }
         public SCstring copy(){
             SCstring r = new SCstring();
             r.stc = stc;
@@ -82,8 +81,7 @@ public class hdrgen {
         public int forStmtInit = 0;
         public boolean declstring = false;
         public EnumDeclaration inEnumDecl = null;
-        public HdrGenState(){
-        }
+        public HdrGenState(){ }
         public HdrGenState copy(){
             HdrGenState r = new HdrGenState();
             r.hdrgen = hdrgen;
@@ -1127,7 +1125,7 @@ public class hdrgen {
 
         // Erasure: visit<CPPMangleDeclaration>
         public  void visit(CPPMangleDeclaration d) {
-            ByteSlice s = new RawByteSlice().copy();
+            ByteSlice s = new ByteSlice().copy();
             switch (d.cppmangle)
             {
                 case CPPMANGLE.asClass:
@@ -3229,7 +3227,7 @@ public class hdrgen {
 
     // Erasure: trustToChars<int>
     public static BytePtr trustToChars(int trust) {
-        return toBytePtr(trustToString(trust));
+        return trustToString(trust).getPtr(0);
     }
 
     // Erasure: trustToString<int>
@@ -3262,7 +3260,7 @@ public class hdrgen {
 
     // Erasure: linkageToChars<int>
     public static BytePtr linkageToChars(int linkage) {
-        return toBytePtr(linkageToString(linkage));
+        return linkageToString(linkage).getPtr(0);
     }
 
     // Erasure: linkageToString<int>
@@ -3303,7 +3301,7 @@ public class hdrgen {
 
     // Erasure: protectionToChars<int>
     public static BytePtr protectionToChars(int kind) {
-        return toBytePtr(protectionToString(kind));
+        return protectionToString(kind).getPtr(0);
     }
 
     // Erasure: protectionToString<int>

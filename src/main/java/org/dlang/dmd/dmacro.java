@@ -88,7 +88,7 @@ public class dmacro {
                         }
                         byte c = p.get(u + 1);
                         int n = ((c & 0xFF) == 43) ? -1 : (c & 0xFF) - 48;
-                        Ref<ByteSlice> marg = ref(new RawByteSlice().copy());
+                        Ref<ByteSlice> marg = ref(new ByteSlice().copy());
                         if ((n == 0))
                         {
                             marg.value = arg.copy();
@@ -137,7 +137,7 @@ public class dmacro {
                     {
                         BytePtr name = pcopy(p.plus(u).plus(2));
                         int namelen = 0;
-                        Ref<ByteSlice> marg = ref(new RawByteSlice().copy());
+                        Ref<ByteSlice> marg = ref(new ByteSlice().copy());
                         int v = 0;
                         {
                             v = u + 2;
@@ -173,7 +173,7 @@ public class dmacro {
                                         assert(q != null);
                                         memcpy((BytePtr)(q), (name), namelen);
                                         q.set(namelen, (byte)44);
-                                        memcpy((BytePtr)((q.plus(namelen).plus(1))), (toBytePtr(marg)), marg.value.getLength());
+                                        memcpy((BytePtr)((q.plus(namelen).plus(1))), (marg.value.getPtr(0)), marg.value.getLength());
                                         marg.value = q.slice(0,marg.value.getLength() + namelen + 1).copy();
                                     }
                                     else
@@ -189,7 +189,7 @@ public class dmacro {
                                     (buf.get()).remove(u, v + 1 - u);
                                     end -= v + 1 - u;
                                 }
-                                else if (((m.get()).inuse != 0) && (arg.getLength() == marg.value.getLength()) && (memcmp(toBytePtr(arg), toBytePtr(marg), arg.getLength()) == 0) || (arg.getLength() + 4 == marg.value.getLength()) && ((marg.value.get(0) & 0xFF) == 255) && ((marg.value.get(1) & 0xFF) == 123) && (memcmp(toBytePtr(arg), (toBytePtr(marg).plus(2)), arg.getLength()) == 0) && ((marg.value.get(marg.value.getLength() - 2) & 0xFF) == 255) && ((marg.value.get(marg.value.getLength() - 1) & 0xFF) == 125))
+                                else if (((m.get()).inuse != 0) && (arg.getLength() == marg.value.getLength()) && (memcmp(arg.getPtr(0), marg.value.getPtr(0), arg.getLength()) == 0) || (arg.getLength() + 4 == marg.value.getLength()) && ((marg.value.get(0) & 0xFF) == 255) && ((marg.value.get(1) & 0xFF) == 123) && (memcmp(arg.getPtr(0), (marg.value.getPtr(0).plus(2)), arg.getLength()) == 0) && ((marg.value.get(marg.value.getLength() - 2) & 0xFF) == 255) && ((marg.value.get(marg.value.getLength() - 1) & 0xFF) == 125))
                                 {
                                 }
                                 else
@@ -210,7 +210,7 @@ public class dmacro {
                                     (buf.get()).remove(u, v + 1 - u);
                                     end -= v + 1 - u;
                                     u += mend.value - (v + 1);
-                                    Mem.xfree(toBytePtr(marg));
+                                    Mem.xfree(marg.value.getPtr(0));
                                     continue;
                                 }
                             }
@@ -225,13 +225,12 @@ public class dmacro {
                     u++;
                 }
             }
-            Mem.xfree(toBytePtr(arg));
+            Mem.xfree(arg.getPtr(0));
             pend.set(0, end);
             dmacro.expandnest--;
         }
 
-        public Macro(){
-        }
+        public Macro(){ }
         public Macro copy(){
             Macro r = new Macro();
             r.next = next;
@@ -251,7 +250,7 @@ public class dmacro {
     // Erasure: memdup<Array>
     public static ByteSlice memdup(ByteSlice p) {
         int len = p.getLength();
-        return (((BytePtr)memcpy((BytePtr)Mem.xmalloc(len), (toBytePtr(p)), len))).slice(0,len);
+        return (((BytePtr)memcpy((BytePtr)Mem.xmalloc(len), (p.getPtr(0)), len))).slice(0,len);
     }
 
     // Erasure: extractArgN<Array, Array, int>
@@ -264,7 +263,7 @@ public class dmacro {
         int inexp = 0;
         int argn = 0;
         int v = 0;
-        BytePtr p = pcopy(toBytePtr(buf));
+        BytePtr p = pcopy(buf.getPtr(0));
         int end = buf.getLength();
         while(true) try {
         /*Largstart:*/

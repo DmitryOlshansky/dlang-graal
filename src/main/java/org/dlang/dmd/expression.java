@@ -1788,7 +1788,7 @@ public class expression {
 
         // Erasure: isSliceExp<>
         public  SliceExp isSliceExp() {
-            return ((this.op & 0xFF) == 31) ? (SliceExp)this : null;
+            return ((this.op & 0xFF) == 31) ? (SliceExp)this : new RawSliceExp();
         }
 
         // Erasure: isArrayLengthExp<>
@@ -3807,7 +3807,7 @@ public class expression {
             if ((this.sd.dtor != null) && ((sc.get()).func != null))
             {
                 int len = 10;
-                ByteSlice buf = new RawByteSlice(new byte[11]);
+                ByteSlice buf = new ByteSlice(new byte[11]);
                 buf.set(10, (byte)0);
                 strcpy(buf.ptr(), new BytePtr("__sl"));
                 strncat(buf.ptr(), this.sd.ident.toChars(), 5);

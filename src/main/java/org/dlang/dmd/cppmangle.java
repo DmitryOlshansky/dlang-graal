@@ -27,7 +27,7 @@ import static org.dlang.dmd.typesem.*;
 import static org.dlang.dmd.visitor.*;
 
 public class cppmangle {
-    static Slice<Identifier> isCppOperatoroperators = new Slice<Identifier>();
+    static Slice<Identifier> isCppOperatoroperators = new RawSlice<Identifier>();
 
 
     public static class CppOperator 
@@ -121,8 +121,7 @@ public class cppmangle {
             this.res = prev.res;
         }
 
-        public Context(){
-        }
+        public Context(){ }
         public Context copy(){
             Context r = new Context();
             r.ti = ti;
@@ -620,7 +619,7 @@ public class cppmangle {
         public  boolean char_std_char_traits_char(TemplateInstance ti, ByteSlice st) {
             if (((ti.tiargs.get()).length == 2) && isChar((ti.tiargs.get()).get(0)) && this.isChar_traits_char((ti.tiargs.get()).get(1)))
             {
-                (this.buf.get()).writestring(toBytePtr(st));
+                (this.buf.get()).writestring(st.getPtr(0));
                 return true;
             }
             return false;
@@ -998,7 +997,7 @@ public class cppmangle {
                 int firstTemplateArg = 0;
                 boolean appendReturnType = true;
                 boolean isConvertFunc = false;
-                ByteSlice symName = new RawByteSlice().copy();
+                ByteSlice symName = new ByteSlice().copy();
                 int whichOp = isCppOperator(ti.name);
                 {
                     int __dispatch0 = 0;
