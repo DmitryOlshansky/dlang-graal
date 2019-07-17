@@ -4,13 +4,17 @@ data class StringValue(@JvmField var str: ByteSlice, @JvmField var hash: Int, @J
     override fun toChars(): BytePtr = str.ptr()
 }
 
-class StringTable(private val table : HashMap<ByteSlice, Ptr<StringValue?>>) {
+class StringTable(private var table : HashMap<ByteSlice, Ptr<StringValue?>>) {
 
     constructor(): this(HashMap<ByteSlice, Ptr<StringValue?>>()) {}
 
     // shim
     @Suppress("UNUSED_PARAMETER")
     constructor(any: Any?, n: Int, any2: Any?, n1: Int, n2: Int, n3: Int, n4: Int) : this()
+
+    fun opAssign(table: StringTable) {
+        this.table = table.table
+    }
 
     fun copy(): StringTable = StringTable(table)
 

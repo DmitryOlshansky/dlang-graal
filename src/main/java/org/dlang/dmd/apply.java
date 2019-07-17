@@ -33,15 +33,15 @@ public class apply {
         }
 
         // Erasure: doCond<Ptr>
-        public  boolean doCond(Ptr<DArray<Expression>> e) {
+        public  boolean doCond(DArray<Expression> e) {
             if (e == null)
             {
                 return false;
             }
             {
                 int i = 0;
-                for (; (i < (e.get()).length) && !this.stop;i++) {
-                    this.doCond((e.get()).get(i));
+                for (; (i < (e).length) && !this.stop;i++) {
+                    this.doCond((e).get(i));
                 }
             }
             return this.stop;

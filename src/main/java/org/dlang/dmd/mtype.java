@@ -152,8 +152,8 @@ public class mtype {
     }
 
     // Erasure: MODtoBuffer<Ptr, byte>
-    public static void MODtoBuffer(Ptr<OutBuffer> buf, byte mod) {
-        (buf.get()).writestring(MODtoString(mod));
+    public static void MODtoBuffer(OutBuffer buf, byte mod) {
+        (buf).writestring(MODtoString(mod));
     }
 
     // Erasure: MODtoChars<byte>
@@ -392,7 +392,7 @@ public class mtype {
 
         // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
-            Type t = (Type)o;
+            Type t = ((Type)o);
             if ((pequals(this, o)) || (t != null) && (this.deco == t.deco) && (this.deco != null))
             {
                 return true;
@@ -463,7 +463,7 @@ public class mtype {
                                                     TypeClass tc1 = tp1.isTypeClass();
                                                     if ((tc1) != null)
                                                     {
-                                                        if ((pequals(tc1.sym, ((TypeClass)tp2).sym)) && MODimplicitConv(tp2.mod, tp1.mod))
+                                                        if ((pequals(tc1.sym, (((TypeClass)tp2)).sym)) && MODimplicitConv(tp2.mod, tp1.mod))
                                                         {
                                                             /*goto Lcov*/throw Dispatch0.INSTANCE;
                                                         }
@@ -472,7 +472,7 @@ public class mtype {
                                                         TypeStruct ts1 = tp1.isTypeStruct();
                                                         if ((ts1) != null)
                                                         {
-                                                            if ((pequals(ts1.sym, ((TypeStruct)tp2).sym)) && MODimplicitConv(tp2.mod, tp1.mod))
+                                                            if ((pequals(ts1.sym, (((TypeStruct)tp2)).sym)) && MODimplicitConv(tp2.mod, tp1.mod))
                                                             {
                                                                 /*goto Lcov*/throw Dispatch0.INSTANCE;
                                                             }
@@ -538,11 +538,11 @@ public class mtype {
                             }
                             if (((t1n.ty & 0xFF) == ENUMTY.Tclass) && ((t2n.ty & 0xFF) == ENUMTY.Tclass))
                             {
-                                if ((pequals(((TypeClass)t1n).sym, ((TypeClass)t2n).sym)) && MODimplicitConv(t1n.mod, t2n.mod))
+                                if ((pequals((((TypeClass)t1n)).sym, (((TypeClass)t2n)).sym)) && MODimplicitConv(t1n.mod, t2n.mod))
                                 {
                                     /*goto Lcovariant*/throw Dispatch0.INSTANCE;
                                 }
-                                ClassDeclaration cd = ((TypeClass)t1n).sym;
+                                ClassDeclaration cd = (((TypeClass)t1n)).sym;
                                 if ((cd.semanticRun < PASS.semanticdone) && !cd.isBaseInfoComplete())
                                 {
                                     dsymbolSemantic(cd, null);
@@ -554,7 +554,7 @@ public class mtype {
                             }
                             if (((t1n.ty & 0xFF) == ENUMTY.Tstruct) && ((t2n.ty & 0xFF) == ENUMTY.Tstruct))
                             {
-                                if ((pequals(((TypeStruct)t1n).sym, ((TypeStruct)t2n).sym)) && MODimplicitConv(t1n.mod, t2n.mod))
+                                if ((pequals((((TypeStruct)t1n)).sym, (((TypeStruct)t2n)).sym)) && MODimplicitConv(t1n.mod, t2n.mod))
                                 {
                                     /*goto Lcovariant*/throw Dispatch0.INSTANCE;
                                 }
@@ -665,7 +665,7 @@ public class mtype {
                 buf.value.reserve(16);
                 Ref<HdrGenState> hgs = ref(new HdrGenState());
                 hgs.value.fullQual = ((this.ty & 0xFF) == ENUMTY.Tclass) && (this.mod == 0);
-                toCBuffer(this, ptr(buf), (Identifier)null, ptr(hgs));
+                toCBuffer(this, buf.value, (Identifier)null, ptr(hgs));
                 return buf.value.extractChars();
             }
             finally {
@@ -679,7 +679,7 @@ public class mtype {
                 buf.value.reserve(16);
                 Ref<HdrGenState> hgs = ref(new HdrGenState());
                 hgs.value.fullQual = QualifyTypes;
-                toCBuffer(this, ptr(buf), (Identifier)null, ptr(hgs));
+                toCBuffer(this, buf.value, (Identifier)null, ptr(hgs));
                 return buf.value.extractChars();
             }
             finally {
@@ -805,10 +805,10 @@ public class mtype {
         }
 
         // Erasure: modToBuffer<Ptr>
-        public  void modToBuffer(Ptr<OutBuffer> buf) {
+        public  void modToBuffer(OutBuffer buf) {
             if (this.mod != 0)
             {
-                (buf.get()).writeByte(32);
+                (buf).writeByte(32);
                 MODtoBuffer(buf, this.mod);
             }
         }
@@ -818,7 +818,7 @@ public class mtype {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
                 buf.value.reserve(16);
-                this.modToBuffer(ptr(buf));
+                this.modToBuffer(buf.value);
                 return buf.value.extractChars();
             }
             finally {
@@ -962,11 +962,11 @@ public class mtype {
             t.ctype = null;
             if (((t.ty & 0xFF) == ENUMTY.Tstruct))
             {
-                ((TypeStruct)t).att.value = AliasThisRec.fwdref;
+                (((TypeStruct)t)).att.value = AliasThisRec.fwdref;
             }
             if (((t.ty & 0xFF) == ENUMTY.Tclass))
             {
-                ((TypeClass)t).att.value = AliasThisRec.fwdref;
+                (((TypeClass)t)).att.value = AliasThisRec.fwdref;
             }
             return t;
         }
@@ -2036,11 +2036,11 @@ public class mtype {
             Ptr<Integer> pflag = null;
             if (((tb.ty & 0xFF) == ENUMTY.Tstruct))
             {
-                pflag = pcopy((ptr((TypeStruct)tb.att)));
+                pflag = pcopy(ptr(((TypeStruct)tb).att));
             }
             else if (((tb.ty & 0xFF) == ENUMTY.Tclass))
             {
-                pflag = pcopy((ptr((TypeClass)tb.att)));
+                pflag = pcopy(ptr(((TypeClass)tb).att));
             }
             else
             {
@@ -2052,7 +2052,7 @@ public class mtype {
                 Type att = this.aliasthisOf();
                 flag = (att != null) && (att.implicitConvTo(this) != 0) ? AliasThisRec.yes : AliasThisRec.no;
             }
-            pflag.set(0, (flag | pflag.get() & -4));
+            pflag.set(0, flag | pflag.get() & -4);
             return flag == AliasThisRec.yes;
         }
 
@@ -2257,12 +2257,12 @@ public class mtype {
                             }
                             else if (((this.ty & 0xFF) == ENUMTY.Tsarray))
                             {
-                                t = new TypeSArray(t, ((TypeSArray)this).dim.syntaxCopy());
+                                t = new TypeSArray(t, (((TypeSArray)this)).dim.syntaxCopy());
                             }
                             else if (((this.ty & 0xFF) == ENUMTY.Taarray))
                             {
-                                t = new TypeAArray(t, ((TypeAArray)this).index.syntaxCopy());
-                                ((TypeAArray)t).sc = pcopy(((TypeAArray)this).sc);
+                                t = new TypeAArray(t, (((TypeAArray)this)).index.syntaxCopy());
+                                (((TypeAArray)t)).sc = pcopy((((TypeAArray)this)).sc);
                             }
                             else if (((this.ty & 0xFF) == ENUMTY.Tdelegate))
                             {
@@ -2350,12 +2350,12 @@ public class mtype {
                     }
                     else if (((this.ty & 0xFF) == ENUMTY.Tsarray))
                     {
-                        t = new TypeSArray(utn, ((TypeSArray)this).dim);
+                        t = new TypeSArray(utn, (((TypeSArray)this)).dim);
                     }
                     else if (((this.ty & 0xFF) == ENUMTY.Taarray))
                     {
-                        t = new TypeAArray(utn, ((TypeAArray)this).index);
-                        ((TypeAArray)t).sc = pcopy(((TypeAArray)this).sc);
+                        t = new TypeAArray(utn, (((TypeAArray)this)).index);
+                        (((TypeAArray)t)).sc = pcopy((((TypeAArray)this)).sc);
                     }
                     else
                     {
@@ -2402,7 +2402,7 @@ public class mtype {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
                 buf.value.reserve(32);
-                mangleToBuffer(this, ptr(buf));
+                mangleToBuffer(this, buf.value);
                 ByteSlice slice = buf.value.peekSlice().copy();
                 ByteSlice namebuf = (byte)255;
                 int namelen = 31 + slice.getLength() + 1;
@@ -2457,13 +2457,13 @@ public class mtype {
             Type tb = this;
             for (; (((tb = tb.toBasetype()).ty & 0xFF) == ENUMTY.Tsarray);){
                 Ref<Boolean> overflow = ref(false);
-                n = mulu(n, ((TypeSArray)tb).dim.toUInteger(), overflow);
+                n = mulu(n, (((TypeSArray)tb)).dim.toUInteger(), overflow);
                 if (overflow.value || (n >= 4294967295L))
                 {
                     error(loc, new BytePtr("static array `%s` size overflowed to %llu"), this.toChars(), n);
                     return -1;
                 }
-                tb = ((TypeSArray)tb).next.value;
+                tb = (((TypeSArray)tb)).next.value;
             }
             return (int)n;
         }
@@ -2521,7 +2521,7 @@ public class mtype {
             for (; ((t.ty & 0xFF) == ENUMTY.Tpointer) || ((t.ty & 0xFF) == ENUMTY.Tarray);) {
                 t = t.nextOf().baseElemOf();
             }
-            if (((t.ty & 0xFF) == ENUMTY.Tenum) && (((TypeEnum)t).sym.memtype == null))
+            if (((t.ty & 0xFF) == ENUMTY.Tenum) && ((((TypeEnum)t)).sym.memtype == null))
             {
                 return false;
             }
@@ -2566,97 +2566,97 @@ public class mtype {
 
         // Erasure: isTypeError<>
         public  TypeError isTypeError() {
-            return ((this.ty & 0xFF) == ENUMTY.Terror) ? (TypeError)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Terror) ? ((TypeError)this) : null;
         }
 
         // Erasure: isTypeVector<>
         public  TypeVector isTypeVector() {
-            return ((this.ty & 0xFF) == ENUMTY.Tvector) ? (TypeVector)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tvector) ? ((TypeVector)this) : null;
         }
 
         // Erasure: isTypeSArray<>
         public  TypeSArray isTypeSArray() {
-            return ((this.ty & 0xFF) == ENUMTY.Tsarray) ? (TypeSArray)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tsarray) ? ((TypeSArray)this) : null;
         }
 
         // Erasure: isTypeDArray<>
         public  TypeDArray isTypeDArray() {
-            return ((this.ty & 0xFF) == ENUMTY.Tarray) ? (TypeDArray)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tarray) ? ((TypeDArray)this) : null;
         }
 
         // Erasure: isTypeAArray<>
         public  TypeAArray isTypeAArray() {
-            return ((this.ty & 0xFF) == ENUMTY.Taarray) ? (TypeAArray)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Taarray) ? ((TypeAArray)this) : null;
         }
 
         // Erasure: isTypePointer<>
         public  TypePointer isTypePointer() {
-            return ((this.ty & 0xFF) == ENUMTY.Tpointer) ? (TypePointer)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tpointer) ? ((TypePointer)this) : null;
         }
 
         // Erasure: isTypeReference<>
         public  TypeReference isTypeReference() {
-            return ((this.ty & 0xFF) == ENUMTY.Treference) ? (TypeReference)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Treference) ? ((TypeReference)this) : null;
         }
 
         // Erasure: isTypeFunction<>
         public  TypeFunction isTypeFunction() {
-            return ((this.ty & 0xFF) == ENUMTY.Tfunction) ? (TypeFunction)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tfunction) ? ((TypeFunction)this) : null;
         }
 
         // Erasure: isTypeDelegate<>
         public  TypeDelegate isTypeDelegate() {
-            return ((this.ty & 0xFF) == ENUMTY.Tdelegate) ? (TypeDelegate)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tdelegate) ? ((TypeDelegate)this) : null;
         }
 
         // Erasure: isTypeIdentifier<>
         public  TypeIdentifier isTypeIdentifier() {
-            return ((this.ty & 0xFF) == ENUMTY.Tident) ? (TypeIdentifier)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tident) ? ((TypeIdentifier)this) : null;
         }
 
         // Erasure: isTypeInstance<>
         public  TypeInstance isTypeInstance() {
-            return ((this.ty & 0xFF) == ENUMTY.Tinstance) ? (TypeInstance)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tinstance) ? ((TypeInstance)this) : null;
         }
 
         // Erasure: isTypeTypeof<>
         public  TypeTypeof isTypeTypeof() {
-            return ((this.ty & 0xFF) == ENUMTY.Ttypeof) ? (TypeTypeof)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Ttypeof) ? ((TypeTypeof)this) : null;
         }
 
         // Erasure: isTypeReturn<>
         public  TypeReturn isTypeReturn() {
-            return ((this.ty & 0xFF) == ENUMTY.Treturn) ? (TypeReturn)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Treturn) ? ((TypeReturn)this) : null;
         }
 
         // Erasure: isTypeStruct<>
         public  TypeStruct isTypeStruct() {
-            return ((this.ty & 0xFF) == ENUMTY.Tstruct) ? (TypeStruct)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tstruct) ? ((TypeStruct)this) : null;
         }
 
         // Erasure: isTypeEnum<>
         public  TypeEnum isTypeEnum() {
-            return ((this.ty & 0xFF) == ENUMTY.Tenum) ? (TypeEnum)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tenum) ? ((TypeEnum)this) : null;
         }
 
         // Erasure: isTypeClass<>
         public  TypeClass isTypeClass() {
-            return ((this.ty & 0xFF) == ENUMTY.Tclass) ? (TypeClass)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tclass) ? ((TypeClass)this) : null;
         }
 
         // Erasure: isTypeTuple<>
         public  TypeTuple isTypeTuple() {
-            return ((this.ty & 0xFF) == ENUMTY.Ttuple) ? (TypeTuple)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Ttuple) ? ((TypeTuple)this) : null;
         }
 
         // Erasure: isTypeSlice<>
         public  TypeSlice isTypeSlice() {
-            return ((this.ty & 0xFF) == ENUMTY.Tslice) ? (TypeSlice)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tslice) ? ((TypeSlice)this) : null;
         }
 
         // Erasure: isTypeNull<>
         public  TypeNull isTypeNull() {
-            return ((this.ty & 0xFF) == ENUMTY.Tnull) ? (TypeNull)this : null;
+            return ((this.ty & 0xFF) == ENUMTY.Tnull) ? ((TypeNull)this) : null;
         }
 
         // Erasure: accept<Visitor>
@@ -2670,7 +2670,7 @@ public class mtype {
             {
                 throw new AssertionError("Unreachable code!");
             }
-            return (TypeFunction)this;
+            return ((TypeFunction)this);
         }
 
 
@@ -2770,7 +2770,7 @@ public class mtype {
                 assert(((this.cto.mod & 0xFF) == MODFlags.const_));
                 return this.cto;
             }
-            TypeNext t = (TypeNext)this.makeConst();
+            TypeNext t = ((TypeNext)this.makeConst());
             if (((this.ty & 0xFF) != ENUMTY.Tfunction) && ((this.next.value.ty & 0xFF) != ENUMTY.Tfunction) && !this.next.value.isImmutable())
             {
                 if (this.next.value.isShared())
@@ -2806,7 +2806,7 @@ public class mtype {
                 assert(this.ito.isImmutable());
                 return this.ito;
             }
-            TypeNext t = (TypeNext)this.makeImmutable();
+            TypeNext t = ((TypeNext)this.makeImmutable());
             if (((this.ty & 0xFF) != ENUMTY.Tfunction) && ((this.next.value.ty & 0xFF) != ENUMTY.Tfunction) && !this.next.value.isImmutable())
             {
                 t.next.value = this.next.value.immutableOf();
@@ -2821,7 +2821,7 @@ public class mtype {
                 assert(((this.sto.mod & 0xFF) == MODFlags.shared_));
                 return this.sto;
             }
-            TypeNext t = (TypeNext)this.makeShared();
+            TypeNext t = ((TypeNext)this.makeShared());
             if (((this.ty & 0xFF) != ENUMTY.Tfunction) && ((this.next.value.ty & 0xFF) != ENUMTY.Tfunction) && !this.next.value.isImmutable())
             {
                 if (this.next.value.isWild())
@@ -2857,7 +2857,7 @@ public class mtype {
                 assert(((this.scto.mod & 0xFF) == 3));
                 return this.scto;
             }
-            TypeNext t = (TypeNext)this.makeSharedConst();
+            TypeNext t = ((TypeNext)this.makeSharedConst());
             if (((this.ty & 0xFF) != ENUMTY.Tfunction) && ((this.next.value.ty & 0xFF) != ENUMTY.Tfunction) && !this.next.value.isImmutable())
             {
                 if (this.next.value.isWild())
@@ -2879,7 +2879,7 @@ public class mtype {
                 assert(((this.wto.mod & 0xFF) == MODFlags.wild));
                 return this.wto;
             }
-            TypeNext t = (TypeNext)this.makeWild();
+            TypeNext t = ((TypeNext)this.makeWild());
             if (((this.ty & 0xFF) != ENUMTY.Tfunction) && ((this.next.value.ty & 0xFF) != ENUMTY.Tfunction) && !this.next.value.isImmutable())
             {
                 if (this.next.value.isShared())
@@ -2915,7 +2915,7 @@ public class mtype {
                 assert(((this.wcto.mod & 0xFF) == MODFlags.wildconst));
                 return this.wcto;
             }
-            TypeNext t = (TypeNext)this.makeWildConst();
+            TypeNext t = ((TypeNext)this.makeWildConst());
             if (((this.ty & 0xFF) != ENUMTY.Tfunction) && ((this.next.value.ty & 0xFF) != ENUMTY.Tfunction) && !this.next.value.isImmutable())
             {
                 if (this.next.value.isShared())
@@ -2937,7 +2937,7 @@ public class mtype {
                 assert(this.swto.isSharedWild());
                 return this.swto;
             }
-            TypeNext t = (TypeNext)this.makeSharedWild();
+            TypeNext t = ((TypeNext)this.makeSharedWild());
             if (((this.ty & 0xFF) != ENUMTY.Tfunction) && ((this.next.value.ty & 0xFF) != ENUMTY.Tfunction) && !this.next.value.isImmutable())
             {
                 if (this.next.value.isConst())
@@ -2959,7 +2959,7 @@ public class mtype {
                 assert(((this.swcto.mod & 0xFF) == 11));
                 return this.swcto;
             }
-            TypeNext t = (TypeNext)this.makeSharedWildConst();
+            TypeNext t = ((TypeNext)this.makeSharedWildConst());
             if (((this.ty & 0xFF) != ENUMTY.Tfunction) && ((this.next.value.ty & 0xFF) != ENUMTY.Tfunction) && !this.next.value.isImmutable())
             {
                 t.next.value = this.next.value.sharedWildConstOf();
@@ -2969,7 +2969,7 @@ public class mtype {
 
         // Erasure: makeMutable<>
         public  Type makeMutable() {
-            TypeNext t = (TypeNext)this.makeMutable();
+            TypeNext t = ((TypeNext)this.makeMutable());
             if (((this.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 t.next.value = this.next.value.mutableOf();
@@ -3316,7 +3316,7 @@ public class mtype {
             TypeBasic tob = null;
             if (((to.ty & 0xFF) == ENUMTY.Tvector) && (to.deco != null))
             {
-                TypeVector tv = (TypeVector)to;
+                TypeVector tv = ((TypeVector)to);
                 tob = tv.elementType();
             }
             else {
@@ -3524,7 +3524,7 @@ public class mtype {
         // Erasure: elementType<>
         public  TypeBasic elementType() {
             assert(((this.basetype.ty & 0xFF) == ENUMTY.Tsarray));
-            TypeSArray t = (TypeSArray)this.basetype;
+            TypeSArray t = ((TypeSArray)this.basetype);
             TypeBasic tb = t.nextOf().isTypeBasic();
             assert(tb != null);
             return tb;
@@ -3717,9 +3717,9 @@ public class mtype {
             {
                 elementinit = this.next.value.defaultInitLiteral(loc);
             }
-            Ptr<DArray<Expression>> elements = refPtr(new DArray<Expression>(d));
+            DArray<Expression> elements = new DArray<Expression>(d);
             {
-                Slice<Expression> __r1531 = (elements.get()).opSlice().copy();
+                Slice<Expression> __r1531 = (elements).opSlice().copy();
                 int __key1532 = 0;
                 for (; (__key1532 < __r1531.getLength());__key1532 += 1) {
                     Expression e = __r1531.get(__key1532);
@@ -4145,7 +4145,7 @@ public class mtype {
         public  int constConv(Type to) {
             if (((this.next.value.ty & 0xFF) == ENUMTY.Tfunction))
             {
-                if ((to.nextOf() != null) && this.next.value.equals(((TypeNext)to).next.value))
+                if ((to.nextOf() != null) && this.next.value.equals((((TypeNext)to)).next.value))
                 {
                     return this.constConv(to);
                 }
@@ -4317,7 +4317,7 @@ public class mtype {
         public int trust = 0;
         public int purity = PURE.impure;
         public byte iswild = 0;
-        public Ptr<DArray<Expression>> fargs = null;
+        public DArray<Expression> fargs = null;
         public int inuse = 0;
         public boolean incomplete = false;
         // Erasure: __ctor<ParameterList, Type, int, long>
@@ -4383,12 +4383,12 @@ public class mtype {
         }
 
         // Erasure: create<Ptr, Type, int, int, long>
-        public static TypeFunction create(Ptr<DArray<Parameter>> parameters, Type treturn, int varargs, int linkage, long stc) {
+        public static TypeFunction create(DArray<Parameter> parameters, Type treturn, int varargs, int linkage, long stc) {
             return new TypeFunction(new ParameterList(parameters, varargs), treturn, linkage, stc);
         }
 
         // defaulted all parameters starting with #5
-        public static TypeFunction create(Ptr<DArray<Parameter>> parameters, Type treturn, int varargs, int linkage) {
+        public static TypeFunction create(DArray<Parameter> parameters, Type treturn, int varargs, int linkage) {
             return create(parameters, treturn, varargs, linkage, 0L);
         }
 
@@ -4400,7 +4400,7 @@ public class mtype {
         // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
             Type treturn = this.next.value != null ? this.next.value.syntaxCopy() : null;
-            Ptr<DArray<Parameter>> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
+            DArray<Parameter> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
             TypeFunction t = new TypeFunction(new ParameterList(params, this.parameterList.varargs), treturn, this.linkage, 0L);
             t.mod = this.mod;
             t.isnothrow = this.isnothrow;
@@ -4686,15 +4686,15 @@ public class mtype {
             int m = 1;
             assert(this.next.value != null);
             Type tret = this.next.value.substWildTo(m);
-            Ptr<DArray<Parameter>> params = this.parameterList.parameters;
+            DArray<Parameter> params = this.parameterList.parameters;
             if (((this.mod & 0xFF) & MODFlags.wild) != 0)
             {
-                params = pcopy((this.parameterList.parameters.get()).copy());
+                params = pcopy((this.parameterList.parameters).copy());
             }
             {
                 int i = 0;
-                for (; (i < (params.get()).length);i++){
-                    Parameter p = (params.get()).get(i);
+                for (; (i < (params).length);i++){
+                    Parameter p = (params).get(i);
                     Type t = p.type.substWildTo(m);
                     if ((pequals(t, p.type)))
                     {
@@ -4702,9 +4702,9 @@ public class mtype {
                     }
                     if ((params == this.parameterList.parameters))
                     {
-                        params = pcopy((this.parameterList.parameters.get()).copy());
+                        params = pcopy((this.parameterList.parameters).copy());
                     }
-                    params.get().set(i, new Parameter(p.storageClass, t, null, null, null));
+                    params.set(i, new Parameter(p.storageClass, t, null, null, null));
                 }
             }
             if ((pequals(this.next.value, tret)) && (params == this.parameterList.parameters))
@@ -4911,7 +4911,7 @@ public class mtype {
                                             switch (__dispatch15 != 0 ? __dispatch15 : (tb.ty & 0xFF))
                                             {
                                                 case 1:
-                                                    tsa = (TypeSArray)tb;
+                                                    tsa = ((TypeSArray)tb);
                                                     sz = tsa.dim.toInteger();
                                                     if ((sz != (long)(nargs - u)))
                                                     {
@@ -4930,7 +4930,7 @@ public class mtype {
                                                     /*goto case*/{ __dispatch15 = 0; continue dispatched_15; }
                                                 case 0:
                                                     __dispatch15 = 0;
-                                                    TypeArray ta = (TypeArray)tb;
+                                                    TypeArray ta = ((TypeArray)tb);
                                                     {
                                                         Slice<Expression> __r1539 = args.slice(u,nargs).copy();
                                                         int __key1540 = 0;
@@ -5017,8 +5017,8 @@ public class mtype {
                                         StructDeclaration prmStruct = null;
                                         if (arg.isLvalue() && !isRef && ((targ.ty & 0xFF) == ENUMTY.Tstruct) && ((tprm.ty & 0xFF) == ENUMTY.Tstruct))
                                         {
-                                            argStruct = ((TypeStruct)targ).sym;
-                                            prmStruct = ((TypeStruct)tprm).sym;
+                                            argStruct = (((TypeStruct)targ)).sym;
+                                            prmStruct = (((TypeStruct)tprm)).sym;
                                         }
                                         if ((argStruct != null) && (pequals(argStruct, prmStruct)) && argStruct.hasCopyCtor)
                                         {
@@ -5072,7 +5072,7 @@ public class mtype {
                                             if (((ta.ty & 0xFF) != ENUMTY.Tsarray))
                                             {
                                                 Type tn = tp.nextOf().castMod(ta.nextOf().mod);
-                                                long dim = (long)((StringExp)arg).len;
+                                                long dim = (long)(((StringExp)arg)).len;
                                                 ta = tn.sarrayOf(dim);
                                             }
                                         }
@@ -5081,7 +5081,7 @@ public class mtype {
                                             if (((ta.ty & 0xFF) != ENUMTY.Tsarray))
                                             {
                                                 Type tn = ta.nextOf();
-                                                long dim = ((TypeSArray)tp).dim.toUInteger();
+                                                long dim = (((TypeSArray)tp)).dim.toUInteger();
                                                 ta = tn.sarrayOf(dim);
                                             }
                                         }
@@ -5137,7 +5137,7 @@ public class mtype {
                                             switch (__dispatch16 != 0 ? __dispatch16 : (tb.ty & 0xFF))
                                             {
                                                 case 1:
-                                                    tsa = (TypeSArray)tb;
+                                                    tsa = ((TypeSArray)tb);
                                                     sz = tsa.dim.toInteger();
                                                     if ((sz != (long)(nargs - u)))
                                                     {
@@ -5156,7 +5156,7 @@ public class mtype {
                                                     /*goto case*/{ __dispatch16 = 0; continue dispatched_16; }
                                                 case 0:
                                                     __dispatch16 = 0;
-                                                    TypeArray ta = (TypeArray)tb;
+                                                    TypeArray ta = ((TypeArray)tb);
                                                     {
                                                         Slice<Expression> __r1539 = args.slice(u,nargs).copy();
                                                         int __key1540 = 0;
@@ -5236,7 +5236,7 @@ public class mtype {
                                             switch (__dispatch17 != 0 ? __dispatch17 : (tb.ty & 0xFF))
                                             {
                                                 case 1:
-                                                    tsa = (TypeSArray)tb;
+                                                    tsa = ((TypeSArray)tb);
                                                     sz = tsa.dim.toInteger();
                                                     if ((sz != (long)(nargs - u)))
                                                     {
@@ -5255,7 +5255,7 @@ public class mtype {
                                                     /*goto case*/{ __dispatch17 = 0; continue dispatched_17; }
                                                 case 0:
                                                     __dispatch17 = 0;
-                                                    TypeArray ta = (TypeArray)tb;
+                                                    TypeArray ta = ((TypeArray)tb);
                                                     {
                                                         Slice<Expression> __r1539 = args.slice(u,nargs).copy();
                                                         int __key1540 = 0;
@@ -5471,7 +5471,7 @@ public class mtype {
 
         // Erasure: addStorageClass<long>
         public  Type addStorageClass(long stc) {
-            TypeDelegate t = (TypeDelegate)this.addStorageClass(stc);
+            TypeDelegate t = ((TypeDelegate)this.addStorageClass(stc));
             if (!global.params.vsafe)
             {
                 return t;
@@ -5507,7 +5507,7 @@ public class mtype {
             if (((to.ty & 0xFF) == ENUMTY.Tdelegate) && (this.nextOf().covariant(to.nextOf(), null, true) == 1))
             {
                 Type tret = this.next.value.nextOf();
-                Type toret = ((TypeDelegate)to).next.value.nextOf();
+                Type toret = (((TypeDelegate)to)).next.value.nextOf();
                 if (((tret.ty & 0xFF) == ENUMTY.Tclass) && ((toret.ty & 0xFF) == ENUMTY.Tclass))
                 {
                     Ref<Integer> offset = ref(0);
@@ -5581,7 +5581,7 @@ public class mtype {
 
         // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
-            TraitsExp te = (TraitsExp)this.exp.syntaxCopy();
+            TraitsExp te = ((TraitsExp)this.exp.syntaxCopy());
             TypeTraits tt = new TypeTraits(this.loc, te);
             tt.mod = this.mod;
             return tt;
@@ -5644,19 +5644,19 @@ public class mtype {
                     RootObject id = t.idents.get(i);
                     if ((id.dyncast() == DYNCAST.dsymbol))
                     {
-                        TemplateInstance ti = (TemplateInstance)id;
-                        ti = (TemplateInstance)ti.syntaxCopy(null);
+                        TemplateInstance ti = ((TemplateInstance)id);
+                        ti = ((TemplateInstance)ti.syntaxCopy(null));
                         id = ti;
                     }
                     else if ((id.dyncast() == DYNCAST.expression))
                     {
-                        Expression e = (Expression)id;
+                        Expression e = ((Expression)id);
                         e = e.syntaxCopy();
                         id = e;
                     }
                     else if ((id.dyncast() == DYNCAST.type))
                     {
-                        Type tx = (Type)id;
+                        Type tx = ((Type)id);
                         tx = tx.syntaxCopy();
                         id = tx;
                     }
@@ -5789,7 +5789,7 @@ public class mtype {
 
         // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
-            TypeInstance t = new TypeInstance(this.loc, (TemplateInstance)this.tempinst.syntaxCopy(null));
+            TypeInstance t = new TypeInstance(this.loc, ((TemplateInstance)this.tempinst.syntaxCopy(null)));
             t.syntaxCopyHelper(this);
             t.mod = this.mod;
             return t;
@@ -6046,11 +6046,11 @@ public class mtype {
             {
                 return new ErrorExp();
             }
-            Ptr<DArray<Expression>> structelems = refPtr(new DArray<Expression>(this.sym.nonHiddenFields()));
+            DArray<Expression> structelems = new DArray<Expression>(this.sym.nonHiddenFields());
             int offset = 0;
             {
                 int __key1541 = 0;
-                int __limit1542 = (structelems.get()).length;
+                int __limit1542 = (structelems).length;
                 for (; (__key1541 < __limit1542);__key1541 += 1) {
                     int j = __key1541;
                     VarDeclaration vd = this.sym.fields.get(j);
@@ -6087,7 +6087,7 @@ public class mtype {
                     {
                         offset = vd.offset + (int)vd.type.size();
                     }
-                    structelems.get().set(j, e);
+                    structelems.set(j, e);
                 }
             }
             StructLiteralExp structinit = new StructLiteralExp(loc, this.sym, structelems, null);
@@ -6212,7 +6212,7 @@ public class mtype {
         // Erasure: implicitConvToWithoutAliasThis<Type>
         public  int implicitConvToWithoutAliasThis(Type to) {
             int m = MATCH.nomatch;
-            if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeStruct)to).sym)))
+            if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, (((TypeStruct)to)).sym)))
             {
                 m = MATCH.exact;
                 if (((this.mod & 0xFF) != (to.mod & 0xFF)))
@@ -6268,7 +6268,7 @@ public class mtype {
         // Erasure: implicitConvToThroughAliasThis<Type>
         public  int implicitConvToThroughAliasThis(Type to) {
             int m = MATCH.nomatch;
-            if (!(((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeStruct)to).sym))) && (this.sym.aliasthis != null) && ((this.att.value & AliasThisRec.tracing) == 0))
+            if (!(((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, (((TypeStruct)to)).sym))) && (this.sym.aliasthis != null) && ((this.att.value & AliasThisRec.tracing) == 0))
             {
                 {
                     Type ato = this.aliasthisOf();
@@ -6299,7 +6299,7 @@ public class mtype {
             {
                 return MATCH.exact;
             }
-            if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeStruct)to).sym)) && MODimplicitConv(this.mod, to.mod))
+            if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, (((TypeStruct)to)).sym)) && MODimplicitConv(this.mod, to.mod))
             {
                 return MATCH.constant;
             }
@@ -6308,7 +6308,7 @@ public class mtype {
 
         // Erasure: deduceWild<Type, boolean>
         public  byte deduceWild(Type t, boolean isRef) {
-            if (((this.ty & 0xFF) == (t.ty & 0xFF)) && (pequals(this.sym, ((TypeStruct)t).sym)))
+            if (((this.ty & 0xFF) == (t.ty & 0xFF)) && (pequals(this.sym, (((TypeStruct)t)).sym)))
             {
                 return this.deduceWild(t, isRef);
             }
@@ -6482,7 +6482,7 @@ public class mtype {
         // Erasure: implicitConvTo<Type>
         public  int implicitConvTo(Type to) {
             int m = MATCH.nomatch;
-            if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeEnum)to).sym)))
+            if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, (((TypeEnum)to)).sym)))
             {
                 m = ((this.mod & 0xFF) == (to.mod & 0xFF)) ? MATCH.exact : MATCH.constant;
             }
@@ -6503,7 +6503,7 @@ public class mtype {
             {
                 return MATCH.exact;
             }
-            if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeEnum)to).sym)) && MODimplicitConv(this.mod, to.mod))
+            if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, (((TypeEnum)to)).sym)) && MODimplicitConv(this.mod, to.mod))
             {
                 return MATCH.constant;
             }
@@ -6610,7 +6610,7 @@ public class mtype {
         public  boolean isBaseOf(Type t, Ptr<Integer> poffset) {
             if ((t != null) && ((t.ty & 0xFF) == ENUMTY.Tclass))
             {
-                ClassDeclaration cd = ((TypeClass)t).sym;
+                ClassDeclaration cd = (((TypeClass)t)).sym;
                 if (this.sym.isBaseOf(cd, poffset))
                 {
                     return true;
@@ -6675,7 +6675,7 @@ public class mtype {
             {
                 return MATCH.exact;
             }
-            if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, ((TypeClass)to).sym)) && MODimplicitConv(this.mod, to.mod))
+            if (((this.ty & 0xFF) == (to.ty & 0xFF)) && (pequals(this.sym, (((TypeClass)to)).sym)) && MODimplicitConv(this.mod, to.mod))
             {
                 return MATCH.constant;
             }
@@ -6772,30 +6772,30 @@ public class mtype {
     }
     public static class TypeTuple extends Type
     {
-        public Ptr<DArray<Parameter>> arguments = null;
+        public DArray<Parameter> arguments = null;
         // Erasure: __ctor<Ptr>
-        public  TypeTuple(Ptr<DArray<Parameter>> arguments) {
+        public  TypeTuple(DArray<Parameter> arguments) {
             super((byte)37);
             this.arguments = pcopy(arguments);
         }
 
         // Erasure: __ctor<Ptr>
-        public  TypeTuple(Ptr<DArray<Expression>> exps, ETag1 __tag) {
+        public  TypeTuple(DArray<Expression> exps, ETag1 __tag) {
             super((byte)37);
-            Ptr<DArray<Parameter>> arguments = refPtr(new DArray<Parameter>());
+            DArray<Parameter> arguments = new DArray<Parameter>();
             if (exps != null)
             {
-                (arguments.get()).setDim((exps.get()).length);
+                (arguments).setDim((exps).length);
                 {
                     int i = 0;
-                    for (; (i < (exps.get()).length);i++){
-                        Expression e = (exps.get()).get(i);
+                    for (; (i < (exps).length);i++){
+                        Expression e = (exps).get(i);
                         if (((e.type.value.ty & 0xFF) == ENUMTY.Ttuple))
                         {
                             e.error(new BytePtr("cannot form tuple of tuples"));
                         }
                         Parameter arg = new Parameter(0L, e.type.value, null, null, null);
-                        arguments.get().set(i, arg);
+                        arguments.set(i, arg);
                     }
                 }
             }
@@ -6803,29 +6803,29 @@ public class mtype {
         }
 
         // Erasure: create<Ptr>
-        public static TypeTuple create(Ptr<DArray<Parameter>> arguments) {
+        public static TypeTuple create(DArray<Parameter> arguments) {
             return new TypeTuple(arguments);
         }
 
         // Erasure: __ctor<>
         public  TypeTuple() {
             super((byte)37);
-            this.arguments = pcopy((refPtr(new DArray<Parameter>())));
+            this.arguments = pcopy(new DArray<Parameter>());
         }
 
         // Erasure: __ctor<Type>
         public  TypeTuple(Type t1) {
             super((byte)37);
-            this.arguments = pcopy((refPtr(new DArray<Parameter>())));
-            (this.arguments.get()).push(new Parameter(0L, t1, null, null, null));
+            this.arguments = pcopy(new DArray<Parameter>());
+            (this.arguments).push(new Parameter(0L, t1, null, null, null));
         }
 
         // Erasure: __ctor<Type, Type>
         public  TypeTuple(Type t1, Type t2) {
             super((byte)37);
-            this.arguments = pcopy((refPtr(new DArray<Parameter>())));
-            (this.arguments.get()).push(new Parameter(0L, t1, null, null, null));
-            (this.arguments.get()).push(new Parameter(0L, t2, null, null, null));
+            this.arguments = pcopy(new DArray<Parameter>());
+            (this.arguments).push(new Parameter(0L, t1, null, null, null));
+            (this.arguments).push(new Parameter(0L, t2, null, null, null));
         }
 
         // Erasure: kind<>
@@ -6835,7 +6835,7 @@ public class mtype {
 
         // Erasure: syntaxCopy<>
         public  Type syntaxCopy() {
-            Ptr<DArray<Parameter>> args = Parameter.arraySyntaxCopy(this.arguments);
+            DArray<Parameter> args = Parameter.arraySyntaxCopy(this.arguments);
             Type t = new TypeTuple(args);
             t.mod = this.mod;
             return t;
@@ -6843,7 +6843,7 @@ public class mtype {
 
         // Erasure: equals<RootObject>
         public  boolean equals(RootObject o) {
-            Type t = (Type)o;
+            Type t = ((Type)o);
             if ((pequals(this, t)))
             {
                 return true;
@@ -6852,13 +6852,13 @@ public class mtype {
                 TypeTuple tt = t.isTypeTuple();
                 if ((tt) != null)
                 {
-                    if (((this.arguments.get()).length == (tt.arguments.get()).length))
+                    if (((this.arguments).length == (tt.arguments).length))
                     {
                         {
                             int i = 0;
-                            for (; (i < (tt.arguments.get()).length);i++){
-                                Parameter arg1 = (this.arguments.get()).get(i);
-                                Parameter arg2 = (tt.arguments.get()).get(i);
+                            for (; (i < (tt.arguments).length);i++){
+                                Parameter arg1 = (this.arguments).get(i);
+                                Parameter arg2 = (tt.arguments).get(i);
                                 if (!arg1.type.equals(arg2.type))
                                 {
                                     return false;
@@ -7033,7 +7033,7 @@ public class mtype {
     }
     public static class ParameterList
     {
-        public Ptr<DArray<Parameter>> parameters = null;
+        public DArray<Parameter> parameters = null;
         public int varargs = VarArg.none;
         // Erasure: length<>
         public  int length() {
@@ -7052,7 +7052,7 @@ public class mtype {
             r.varargs = varargs;
             return r;
         }
-        public ParameterList(Ptr<DArray<Parameter>> parameters, int varargs) {
+        public ParameterList(DArray<Parameter> parameters, int varargs) {
             this.parameters = parameters;
             this.varargs = varargs;
         }
@@ -7087,7 +7087,7 @@ public class mtype {
 
         // Erasure: syntaxCopy<>
         public  Parameter syntaxCopy() {
-            return new Parameter(this.storageClass, this.type != null ? this.type.syntaxCopy() : null, this.ident, this.defaultArg != null ? this.defaultArg.syntaxCopy() : null, this.userAttribDecl != null ? (UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(null) : null);
+            return new Parameter(this.storageClass, this.type != null ? this.type.syntaxCopy() : null, this.ident, this.defaultArg != null ? this.defaultArg.syntaxCopy() : null, this.userAttribDecl != null ? ((UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(null)) : null);
         }
 
         // Erasure: isLazyArray<>
@@ -7095,7 +7095,7 @@ public class mtype {
             Type tb = this.type.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tsarray) || ((tb.ty & 0xFF) == ENUMTY.Tarray))
             {
-                Type tel = ((TypeArray)tb).next.value.toBasetype();
+                Type tel = (((TypeArray)tb)).next.value.toBasetype();
                 {
                     TypeDelegate td = tel.isTypeDelegate();
                     if ((td) != null)
@@ -7122,15 +7122,15 @@ public class mtype {
         }
 
         // Erasure: arraySyntaxCopy<Ptr>
-        public static Ptr<DArray<Parameter>> arraySyntaxCopy(Ptr<DArray<Parameter>> parameters) {
-            Ptr<DArray<Parameter>> params = null;
+        public static DArray<Parameter> arraySyntaxCopy(DArray<Parameter> parameters) {
+            DArray<Parameter> params = null;
             if (parameters != null)
             {
-                params = pcopy((refPtr(new DArray<Parameter>((parameters.get()).length))));
+                params = pcopy(new DArray<Parameter>((parameters).length));
                 {
                     int i = 0;
-                    for (; (i < (params.get()).length);i++) {
-                        params.get().set(i, (parameters.get()).get(i).syntaxCopy());
+                    for (; (i < (params).length);i++) {
+                        params.set(i, (parameters).get(i).syntaxCopy());
                     }
                 }
             }
@@ -7138,7 +7138,7 @@ public class mtype {
         }
 
         // Erasure: dim<Ptr>
-        public static int dim(Ptr<DArray<Parameter>> parameters) {
+        public static int dim(DArray<Parameter> parameters) {
             Ref<Integer> nargs = ref(0);
             Function2<Integer,Parameter,Integer> dimDg = new Function2<Integer,Parameter,Integer>() {
                 public Integer invoke(Integer n, Parameter p) {
@@ -7153,7 +7153,7 @@ public class mtype {
         }
 
         // Erasure: getNth<Ptr, int, Ptr>
-        public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth, Ptr<Integer> pn) {
+        public static Parameter getNth(DArray<Parameter> parameters, int nth, Ptr<Integer> pn) {
             Ref<Parameter> param = ref(null);
             Function2<Integer,Parameter,Integer> getNthParamDg = new Function2<Integer,Parameter,Integer>() {
                 public Integer invoke(Integer n, Parameter p) {
@@ -7172,12 +7172,12 @@ public class mtype {
         }
 
         // defaulted all parameters starting with #3
-        public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth) {
+        public static Parameter getNth(DArray<Parameter> parameters, int nth) {
             return getNth(parameters, nth, (Ptr<Integer>)null);
         }
 
         // Erasure: _foreach<Ptr, Function2, Ptr>
-        public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg, Ptr<Integer> pn) {
+        public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg, Ptr<Integer> pn) {
             assert(dg != null);
             if (parameters == null)
             {
@@ -7187,10 +7187,10 @@ public class mtype {
             int result = 0;
             {
                 int __key1547 = 0;
-                int __limit1548 = (parameters.get()).length;
+                int __limit1548 = (parameters).length;
                 for (; (__key1547 < __limit1548);__key1547 += 1) {
                     int i = __key1547;
-                    Parameter p = (parameters.get()).get(i);
+                    Parameter p = (parameters).get(i);
                     Type t = p.type.toBasetype();
                     {
                         TypeTuple tu = t.isTypeTuple();
@@ -7217,7 +7217,7 @@ public class mtype {
         }
 
         // defaulted all parameters starting with #3
-        public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg) {
+        public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg) {
             return _foreach(parameters, dg, (Ptr<Integer>)null);
         }
 
@@ -7415,11 +7415,11 @@ public class mtype {
         t = t.toBasetype();
         if (((t.ty & 0xFF) == ENUMTY.Tclass))
         {
-            return ((TypeClass)t).sym;
+            return (((TypeClass)t)).sym;
         }
         if (((t.ty & 0xFF) == ENUMTY.Tstruct))
         {
-            return ((TypeStruct)t).sym;
+            return (((TypeStruct)t)).sym;
         }
         return null;
     }

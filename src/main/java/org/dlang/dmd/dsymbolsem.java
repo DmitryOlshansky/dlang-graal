@@ -81,7 +81,7 @@ public class dsymbolsem {
             }
         }
         Slice<VarDeclaration> fieldsToDestroy = new RawSlice<VarDeclaration>().copy();
-        Ptr<DArray<Statement>> postblitCalls = refPtr(new DArray<Statement>());
+        DArray<Statement> postblitCalls = new DArray<Statement>();
         {
             int i = 0;
             for (; (i < sd.fields.length) && ((stc.value & 137438953472L) == 0);i++){
@@ -99,13 +99,13 @@ public class dsymbolsem {
                 {
                     continue;
                 }
-                StructDeclaration sdv = ((TypeStruct)tv).sym;
+                StructDeclaration sdv = (((TypeStruct)tv)).sym;
                 if (sdv.postblit == null)
                 {
                     continue;
                 }
                 assert(sdv.isUnionDeclaration() == null);
-                if ((fieldsToDestroy.getLength() > 0) && !((TypeFunction)sdv.postblit.type).isnothrow)
+                if ((fieldsToDestroy.getLength() > 0) && !(((TypeFunction)sdv.postblit.type)).isnothrow)
                 {
                     Slice<Expression> dtorCalls = new RawSlice<Expression>().copy();
                     {
@@ -126,7 +126,7 @@ public class dsymbolsem {
                                 {
                                     stc.value = stc.value & -8589934593L | 17179869184L;
                                 }
-                                StructDeclaration sfv = ((TypeStruct)sf.type.baseElemOf()).sym;
+                                StructDeclaration sfv = (((TypeStruct)sf.type.baseElemOf())).sym;
                                 ex = new DotVarExp(loc, ex, sfv.dtor, false);
                                 ex = new CallExp(loc, ex);
                                 dtorCalls.append(ex);
@@ -151,23 +151,23 @@ public class dsymbolsem {
                         }
                     }
                     fieldsToDestroy = slice(new VarDeclaration[]{}).copy();
-                    Ptr<DArray<Statement>> dtors = refPtr(new DArray<Statement>());
+                    DArray<Statement> dtors = new DArray<Statement>();
                     {
                         Slice<Expression> __r1154 = dtorCalls.copy();
                         int __key1155 = __r1154.getLength();
                         for (; __key1155-- != 0;) {
                             Expression dc = __r1154.get(__key1155);
-                            (dtors.get()).push(new ExpStatement(loc, dc));
+                            (dtors).push(new ExpStatement(loc, dc));
                         }
                     }
-                    (postblitCalls.get()).push(new ScopeGuardStatement(loc, TOK.onScopeFailure, new CompoundStatement(loc, dtors)));
+                    (postblitCalls).push(new ScopeGuardStatement(loc, TOK.onScopeFailure, new CompoundStatement(loc, dtors)));
                 }
                 sdv.postblit.functionSemantic();
                 stc.value = mergeFuncAttrs(stc.value, sdv.postblit);
                 stc.value = mergeFuncAttrs(stc.value, sdv.dtor);
                 if ((stc.value & 137438953472L) != 0)
                 {
-                    (postblitCalls.get()).setDim(0);
+                    (postblitCalls).setDim(0);
                     break;
                 }
                 Expression ex = null;
@@ -206,7 +206,7 @@ public class dsymbolsem {
                     se.lowerIsLessThanUpper = true;
                     ex = new CallExp(loc, new IdentifierExp(loc, Id.__ArrayPostblit), se);
                 }
-                (postblitCalls.get()).push(new ExpStatement(loc, ex));
+                (postblitCalls).push(new ExpStatement(loc, ex));
                 if (sdv.dtor != null)
                 {
                     sdv.dtor.functionSemantic();
@@ -225,7 +225,7 @@ public class dsymbolsem {
             }}
 
         };
-        if (((postblitCalls.get()).length != 0) || ((stc.value & 137438953472L) != 0))
+        if (((postblitCalls).length != 0) || ((stc.value & 137438953472L) != 0))
         {
             checkShared.invoke();
             PostBlitDeclaration dd = new PostBlitDeclaration(declLoc, Loc.initial, stc.value, Id.__fieldPostblit);
@@ -233,7 +233,7 @@ public class dsymbolsem {
             dd.storage_class |= 70368744177664L;
             dd.fbody.value = (stc.value & 137438953472L) != 0 ? null : new CompoundStatement(loc, postblitCalls);
             sd.postblits.shift(dd);
-            (sd.members.get()).push(dd);
+            (sd.members).push(dd);
             dsymbolSemantic(dd, sc);
         }
         FuncDeclaration xpostblit = null;
@@ -268,7 +268,7 @@ public class dsymbolsem {
             dd.generated = true;
             dd.storage_class |= 70368744177664L;
             dd.fbody.value = new ExpStatement(loc, e);
-            (sd.members.get()).push(dd);
+            (sd.members).push(dd);
             dsymbolSemantic(dd, sc);
             xpostblit = dd;
             break;
@@ -277,7 +277,7 @@ public class dsymbolsem {
         {
             AliasDeclaration _alias = new AliasDeclaration(Loc.initial, Id.__xpostblit, xpostblit);
             dsymbolSemantic(_alias, sc);
-            (sd.members.get()).push(_alias);
+            (sd.members).push(_alias);
             _alias.addMember(sc, sd);
         }
         return xpostblit;
@@ -285,9 +285,9 @@ public class dsymbolsem {
 
     // Erasure: generateCopyCtorDeclaration<StructDeclaration, long, long>
     public static CtorDeclaration generateCopyCtorDeclaration(StructDeclaration sd, long paramStc, long funcStc) {
-        Ptr<DArray<Parameter>> fparams = refPtr(new DArray<Parameter>());
+        DArray<Parameter> fparams = new DArray<Parameter>();
         Type structType = sd.type;
-        (fparams.get()).push(new Parameter(paramStc | 2097152L | 17592186044416L | 524288L, structType, Id.p, null, null));
+        (fparams).push(new Parameter(paramStc | 2097152L | 17592186044416L | 524288L, structType, Id.p, null, null));
         ParameterList pList = new ParameterList(fparams, VarArg.none).copy();
         TypeFunction tf = new TypeFunction(pList, structType, LINK.d, 2097152L);
         CtorDeclaration ccd = new CtorDeclaration(sd.loc, Loc.initial, 2097152L, tf, true);
@@ -439,7 +439,7 @@ public class dsymbolsem {
         CtorDeclaration ccd = generateCopyCtorDeclaration(sd, ModToStc(8), ModToStc(8));
         Statement copyCtorBody = generateCopyCtorBody(sd);
         ccd.fbody.value = copyCtorBody;
-        (sd.members.get()).push(ccd);
+        (sd.members).push(ccd);
         ccd.addMember(sc, sd);
         int errors = global.startGagging();
         Ptr<Scope> sc2 = (sc.get()).push();
@@ -535,7 +535,7 @@ public class dsymbolsem {
                     StringExp se = dd.msg.toStringExp();
                     if ((se) != null)
                     {
-                        dd.msgstr = pcopy((se.toStringz().getPtr(0)));
+                        dd.msgstr = pcopy(se.toStringz().getPtr(0));
                     }
                     else
                     {
@@ -811,21 +811,21 @@ public class dsymbolsem {
                     try {
                         if ((nelems > 0) && (ie != null))
                         {
-                            Ptr<DArray<Expression>> iexps = refPtr(new DArray<Expression>());
-                            (iexps.get()).push(ie);
-                            Ptr<DArray<Expression>> exps = refPtr(new DArray<Expression>());
+                            DArray<Expression> iexps = new DArray<Expression>();
+                            (iexps).push(ie);
+                            DArray<Expression> exps = new DArray<Expression>();
                             {
                                 int pos = 0;
                             L_outer1:
-                                for (; (pos < (iexps.get()).length);pos++){
+                                for (; (pos < (iexps).length);pos++){
                                     while(true) try {
                                     /*Lexpand1:*/
-                                        Expression e = (iexps.get()).get(pos);
+                                        Expression e = (iexps).get(pos);
                                         Parameter arg = Parameter.getNth(tt.arguments, pos, null);
                                         arg.type = typeSemantic(arg.type, dsym.loc, this.sc);
                                         if ((!pequals(e, ie)))
                                         {
-                                            if (((iexps.get()).length > nelems))
+                                            if (((iexps).length > nelems))
                                             {
                                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                             }
@@ -836,14 +836,14 @@ public class dsymbolsem {
                                         }
                                         if (((e.op & 0xFF) == 126))
                                         {
-                                            TupleExp te = (TupleExp)e;
-                                            if (((iexps.get()).length - 1 + (te.exps.get()).length > nelems))
+                                            TupleExp te = ((TupleExp)e);
+                                            if (((iexps).length - 1 + (te.exps).length > nelems))
                                             {
                                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                                             }
-                                            (iexps.get()).remove(pos);
-                                            (iexps.get()).insert(pos, te.exps);
-                                            iexps.get().set(pos, Expression.combine(te.e0.value, (iexps.get()).get(pos)));
+                                            (iexps).remove(pos);
+                                            (iexps).insert(pos, te.exps);
+                                            iexps.set(pos, Expression.combine(te.e0.value, (iexps).get(pos)));
                                             /*goto Lexpand1*/throw Dispatch0.INSTANCE;
                                         }
                                         else if (isAliasThisTuple(e) != null)
@@ -852,19 +852,19 @@ public class dsymbolsem {
                                             dsymbolSemantic(v, this.sc);
                                             VarExp ve = new VarExp(dsym.loc, v, true);
                                             ve.type.value = e.type.value;
-                                            (exps.get()).setDim(1);
-                                            exps.get().set(0, ve);
+                                            (exps).setDim(1);
+                                            exps.set(0, ve);
                                             expandAliasThisTuples(exps, 0);
                                             {
                                                 int u = 0;
                                             L_outer2:
-                                                for (; (u < (exps.get()).length);u++){
+                                                for (; (u < (exps).length);u++){
                                                     while(true) try {
                                                     /*Lexpand2:*/
-                                                        Expression ee = (exps.get()).get(u);
+                                                        Expression ee = (exps).get(u);
                                                         arg = Parameter.getNth(tt.arguments, pos + u, null);
                                                         arg.type = typeSemantic(arg.type, dsym.loc, this.sc);
-                                                        int iexps_dim = (iexps.get()).length - 1 + (exps.get()).length;
+                                                        int iexps_dim = (iexps).length - 1 + (exps).length;
                                                         if ((iexps_dim > nelems))
                                                         {
                                                             /*goto Lnomatch*/throw Dispatch0.INSTANCE;
@@ -881,13 +881,13 @@ public class dsymbolsem {
                                                     } catch(Dispatch0 __d){}
                                                 }
                                             }
-                                            if ((!pequals((exps.get()).get(0), ve)))
+                                            if ((!pequals((exps).get(0), ve)))
                                             {
-                                                Expression e0 = (exps.get()).get(0);
-                                                exps.get().set(0, new CommaExp(dsym.loc, new DeclarationExp(dsym.loc, v), e0, true));
-                                                (exps.get()).get(0).type.value = e0.type.value;
-                                                (iexps.get()).remove(pos);
-                                                (iexps.get()).insert(pos, exps);
+                                                Expression e0 = (exps).get(0);
+                                                exps.set(0, new CommaExp(dsym.loc, new DeclarationExp(dsym.loc, v), e0, true));
+                                                (exps).get(0).type.value = e0.type.value;
+                                                (iexps).remove(pos);
+                                                (iexps).insert(pos, exps);
                                                 /*goto Lexpand1*/throw Dispatch0.INSTANCE;
                                             }
                                         }
@@ -895,7 +895,7 @@ public class dsymbolsem {
                                     } catch(Dispatch0 __d){}
                                 }
                             }
-                            if (((iexps.get()).length < nelems))
+                            if (((iexps).length < nelems))
                             {
                                 /*goto Lnomatch*/throw Dispatch0.INSTANCE;
                             }
@@ -906,20 +906,20 @@ public class dsymbolsem {
                 /*Lnomatch:*/
                     if ((ie != null) && ((ie.op & 0xFF) == 126))
                     {
-                        TupleExp te = (TupleExp)ie;
-                        int tedim = (te.exps.get()).length;
+                        TupleExp te = ((TupleExp)ie);
+                        int tedim = (te.exps).length;
                         if ((tedim != nelems))
                         {
                             error(dsym.loc, new BytePtr("tuple of %d elements cannot be assigned to tuple of %d elements"), tedim, nelems);
                             {
                                 int u = tedim;
                                 for (; (u < nelems);u++) {
-                                    (te.exps.get()).push(new ErrorExp());
+                                    (te.exps).push(new ErrorExp());
                                 }
                             }
                         }
                     }
-                    Ptr<DArray<RootObject>> exps = refPtr(new DArray<RootObject>(nelems));
+                    DArray<RootObject> exps = new DArray<RootObject>(nelems);
                     {
                         int i = 0;
                         for (; (i < nelems);i++){
@@ -934,8 +934,8 @@ public class dsymbolsem {
                                     Expression einit = ie;
                                     if (((ie.op & 0xFF) == 126))
                                     {
-                                        TupleExp te = (TupleExp)ie;
-                                        einit = (te.exps.get()).get(i);
+                                        TupleExp te = ((TupleExp)ie);
+                                        einit = (te.exps).get(i);
                                         if ((i == 0))
                                         {
                                             einit = Expression.combine(te.e0.value, einit);
@@ -958,11 +958,11 @@ public class dsymbolsem {
                                 {
                                     if ((this.sc.get()).scopesym.members != null)
                                     {
-                                        ((this.sc.get()).scopesym.members.get()).push(v);
+                                        ((this.sc.get()).scopesym.members).push(v);
                                     }
                                 }
                                 Expression e = new DsymbolExp(dsym.loc, v, true);
-                                exps.get().set(i, e);
+                                exps.set(i, e);
                             }
                             finally {
                             }
@@ -1009,7 +1009,7 @@ public class dsymbolsem {
                     {
                         Ref<OutBuffer> buf = ref(new OutBuffer());
                         try {
-                            stcToBuffer(ptr(buf), stc);
+                            stcToBuffer(buf.value, stc);
                             dsym.error(new BytePtr("cannot be `%s`"), buf.value.peekChars());
                         }
                         finally {
@@ -1025,7 +1025,7 @@ public class dsymbolsem {
                 {
                     Ref<OutBuffer> buf = ref(new OutBuffer());
                     try {
-                        stcToBuffer(ptr(buf), stc);
+                        stcToBuffer(buf.value, stc);
                         dsym.error(new BytePtr("cannot be `scope` and `%s`"), buf.value.peekChars());
                     }
                     finally {
@@ -1116,7 +1116,7 @@ public class dsymbolsem {
                     {
                         FuncDeclaration fd = func;
                         for (; fd != null;fd = fd.toParentDecl().isFuncDeclaration()){
-                            if (((TypeFunction)fd.type).iswild != 0)
+                            if ((((TypeFunction)fd.type)).iswild != 0)
                             {
                                 isWild = true;
                                 break;
@@ -1129,7 +1129,7 @@ public class dsymbolsem {
                     }
                 }
             }
-            if (((dsym.storage_class & 343599480832L) == 0) && ((tbn.ty & 0xFF) == ENUMTY.Tstruct) && ((TypeStruct)tbn).sym.noDefaultCtor)
+            if (((dsym.storage_class & 343599480832L) == 0) && ((tbn.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)tbn)).sym.noDefaultCtor)
             {
                 if (dsym._init == null)
                 {
@@ -1213,7 +1213,7 @@ public class dsymbolsem {
                         dsym._init = new ExpInitializer(dsym.loc, e);
                         /*goto Ldtor*/throw Dispatch0.INSTANCE;
                     }
-                    if (((tv.ty & 0xFF) == ENUMTY.Tstruct) && ((TypeStruct)tv).sym.zeroInit)
+                    if (((tv.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)tv)).sym.zeroInit)
                     {
                         Expression e = new IntegerExp(dsym.loc, 0L, Type.tint32);
                         e = new BlitExp(dsym.loc, new VarExp(dsym.loc, dsym, true), e);
@@ -1299,18 +1299,18 @@ public class dsymbolsem {
                             {
                                 Expression ex = ei.exp;
                                 for (; ((ex.op & 0xFF) == 99);) {
-                                    ex = ((CommaExp)ex).e2.value;
+                                    ex = (((CommaExp)ex)).e2.value;
                                 }
                                 if (((ex.op & 0xFF) == 96) || ((ex.op & 0xFF) == 95))
                                 {
-                                    ex = ((AssignExp)ex).e2.value;
+                                    ex = (((AssignExp)ex)).e2.value;
                                 }
                                 if (((ex.op & 0xFF) == 22))
                                 {
-                                    NewExp ne = (NewExp)ex;
+                                    NewExp ne = ((NewExp)ex);
                                     if (((dsym.type.toBasetype().ty & 0xFF) == ENUMTY.Tclass))
                                     {
-                                        if ((ne.newargs != null) && ((ne.newargs.get()).length > 1))
+                                        if ((ne.newargs != null) && ((ne.newargs).length > 1))
                                         {
                                             dsym.mynew = true;
                                         }
@@ -1323,7 +1323,7 @@ public class dsymbolsem {
                                 }
                                 else if (((ex.op & 0xFF) == 161))
                                 {
-                                    FuncDeclaration f = ((FuncExp)ex).fd;
+                                    FuncDeclaration f = (((FuncExp)ex)).fd;
                                     f.tookAddressOf--;
                                 }
                             }
@@ -1340,7 +1340,7 @@ public class dsymbolsem {
                     }
                     else if (parent.isAggregateDeclaration() != null)
                     {
-                        dsym._scope = pcopy((scx != null ? scx : (this.sc.get()).copy()));
+                        dsym._scope = pcopy(scx != null ? scx : (this.sc.get()).copy());
                         (dsym._scope.get()).setNoFree();
                     }
                     else if (((dsym.storage_class & 9437188L) != 0) || dsym.type.isConst() || dsym.type.isImmutable())
@@ -1391,7 +1391,7 @@ public class dsymbolsem {
                         }
                         else
                         {
-                            dsym._scope = pcopy((scx != null ? scx : (this.sc.get()).copy()));
+                            dsym._scope = pcopy(scx != null ? scx : (this.sc.get()).copy());
                             (dsym._scope.get()).setNoFree();
                         }
                     }
@@ -1406,7 +1406,7 @@ public class dsymbolsem {
                 if (global.params.vsafe && ((dsym.storage_class & 1374397941856L) == 0) && !dsym.isDataseg() && !dsym.doNotInferScope && dsym.type.hasPointers())
                 {
                     Type tv = dsym.type.baseElemOf();
-                    if (((tv.ty & 0xFF) == ENUMTY.Tstruct) && ((((TypeStruct)tv).sym.dtor.storage_class & 524288L) != 0))
+                    if (((tv.ty & 0xFF) == ENUMTY.Tstruct) && (((((TypeStruct)tv)).sym.dtor.storage_class & 524288L) != 0))
                     {
                         dsym.storage_class |= 524288L;
                     }
@@ -1504,11 +1504,11 @@ public class dsymbolsem {
                         dmodule.Package p = imp.pkg.value;
                         scopesym.addAccessiblePackage(p, imp.protection);
                         {
-                            Slice<Identifier> __r1160 = (imp.packages.get()).opSlice(1, (imp.packages.get()).length).copy();
+                            Slice<Identifier> __r1160 = (imp.packages).opSlice(1, (imp.packages).length).copy();
                             int __key1161 = 0;
                             for (; (__key1161 < __r1160.getLength());__key1161 += 1) {
                                 Identifier id = __r1160.get(__key1161);
-                                p = (dmodule.Package)p.symtab.lookup(id);
+                                p = ((dmodule.Package)p.symtab.lookup(id));
                                 scopesym.addAccessiblePackage(p, imp.protection);
                             }
                         }
@@ -1558,45 +1558,45 @@ public class dsymbolsem {
             imp.semanticRun = PASS.semanticdone;
             if ((global.params.moduleDeps != null) && !((pequals(imp.id, Id.object)) && (pequals((this.sc.get())._module.ident, Id.object))) && (!pequals((this.sc.get())._module.ident, Id.entrypoint)) && (strcmp((this.sc.get())._module.ident.toChars(), new BytePtr("__main")) != 0))
             {
-                Ptr<OutBuffer> ob = global.params.moduleDeps;
+                OutBuffer ob = global.params.moduleDeps;
                 dmodule.Module imod = (this.sc.get()).instantiatingModule();
                 if (global.params.moduleDepsFile.getLength() == 0)
                 {
-                    (ob.get()).writestring(new ByteSlice("depsImport "));
+                    (ob).writestring(new ByteSlice("depsImport "));
                 }
-                (ob.get()).writestring(imod.toPrettyChars(false));
-                (ob.get()).writestring(new ByteSlice(" ("));
+                (ob).writestring(imod.toPrettyChars(false));
+                (ob).writestring(new ByteSlice(" ("));
                 escapePath(ob, imod.srcfile.toChars());
-                (ob.get()).writestring(new ByteSlice(") : "));
+                (ob).writestring(new ByteSlice(") : "));
                 protectionToBuffer(ob, imp.protection);
-                (ob.get()).writeByte(32);
+                (ob).writeByte(32);
                 if (imp.isstatic != 0)
                 {
                     stcToBuffer(ob, 1L);
-                    (ob.get()).writeByte(32);
+                    (ob).writeByte(32);
                 }
-                (ob.get()).writestring(new ByteSlice(": "));
+                (ob).writestring(new ByteSlice(": "));
                 if (imp.packages != null)
                 {
                     {
                         int i = 0;
-                        for (; (i < (imp.packages.get()).length);i++){
-                            Identifier pid = (imp.packages.get()).get(i);
-                            (ob.get()).printf(new BytePtr("%s."), pid.toChars());
+                        for (; (i < (imp.packages).length);i++){
+                            Identifier pid = (imp.packages).get(i);
+                            (ob).printf(new BytePtr("%s."), pid.toChars());
                         }
                     }
                 }
-                (ob.get()).writestring(imp.id.asString());
-                (ob.get()).writestring(new ByteSlice(" ("));
+                (ob).writestring(imp.id.asString());
+                (ob).writestring(new ByteSlice(" ("));
                 if (imp.mod != null)
                 {
                     escapePath(ob, imp.mod.srcfile.toChars());
                 }
                 else
                 {
-                    (ob.get()).writestring(new ByteSlice("???"));
+                    (ob).writestring(new ByteSlice("???"));
                 }
-                (ob.get()).writeByte(41);
+                (ob).writeByte(41);
                 {
                     Slice<Identifier> __r1163 = imp.names.opSlice().copy();
                     int __key1162 = 0;
@@ -1605,29 +1605,29 @@ public class dsymbolsem {
                         int i = __key1162;
                         if ((i == 0))
                         {
-                            (ob.get()).writeByte(58);
+                            (ob).writeByte(58);
                         }
                         else
                         {
-                            (ob.get()).writeByte(44);
+                            (ob).writeByte(44);
                         }
                         Identifier _alias = imp.aliases.get(i);
                         if (_alias == null)
                         {
-                            (ob.get()).printf(new BytePtr("%s"), name.toChars());
+                            (ob).printf(new BytePtr("%s"), name.toChars());
                             _alias = name;
                         }
                         else
                         {
-                            (ob.get()).printf(new BytePtr("%s=%s"), _alias.toChars(), name.toChars());
+                            (ob).printf(new BytePtr("%s=%s"), _alias.toChars(), name.toChars());
                         }
                     }
                 }
                 if (imp.aliasId != null)
                 {
-                    (ob.get()).printf(new BytePtr(" -> %s"), imp.aliasId.toChars());
+                    (ob).printf(new BytePtr(" -> %s"), imp.aliasId.toChars());
                 }
-                (ob.get()).writenl();
+                (ob).writenl();
             }
         }
 
@@ -1638,15 +1638,15 @@ public class dsymbolsem {
                 return ;
             }
             ad.semanticRun = PASS.semantic;
-            Ptr<DArray<Dsymbol>> d = ad.include(this.sc);
+            DArray<Dsymbol> d = ad.include(this.sc);
             if (d != null)
             {
                 Ptr<Scope> sc2 = ad.newScope(this.sc);
                 boolean errors = false;
                 {
                     int i = 0;
-                    for (; (i < (d.get()).length);i++){
-                        Dsymbol s = (d.get()).get(i);
+                    for (; (i < (d).length);i++){
+                        Dsymbol s = (d).get(i);
                         dsymbolSemantic(s, sc2);
                         (errors ? 1 : 0) |= (s.errors ? 1 : 0);
                     }
@@ -1684,8 +1684,8 @@ public class dsymbolsem {
                 (this.sc.get()).flags = 0;
                 {
                     int i = 0;
-                    for (; (i < (scd.decl.get()).length);i++){
-                        Dsymbol s = (scd.decl.get()).get(i);
+                    for (; (i < (scd.decl).length);i++){
+                        Dsymbol s = (scd.decl).get(i);
                         dsymbolSemantic(s, this.sc);
                     }
                 }
@@ -1701,18 +1701,18 @@ public class dsymbolsem {
                     {
                         if ((pequals(pd.ident, Id.linkerDirective)))
                         {
-                            if ((pd.args == null) || ((pd.args.get()).length != 1))
+                            if ((pd.args == null) || ((pd.args).length != 1))
                             {
                                 pd.error(new BytePtr("one string argument expected for pragma(linkerDirective)"));
                             }
                             else
                             {
-                                StringExp se = semanticString(this.sc, (pd.args.get()).get(0), new BytePtr("linker directive"));
+                                StringExp se = semanticString(this.sc, (pd.args).get(0), new BytePtr("linker directive"));
                                 if (se == null)
                                 {
                                     /*goto Lnodecl*/throw Dispatch1.INSTANCE;
                                 }
-                                pd.args.get().set(0, se);
+                                pd.args.set(0, se);
                                 if (global.params.verbose)
                                 {
                                     message(new BytePtr("linkopt   %.*s"), se.len, se.string);
@@ -1727,8 +1727,8 @@ public class dsymbolsem {
                         {
                             {
                                 int i = 0;
-                                for (; (i < (pd.args.get()).length);i++){
-                                    Expression e = (pd.args.get()).get(i);
+                                for (; (i < (pd.args).length);i++){
+                                    Expression e = (pd.args).get(i);
                                     this.sc = pcopy((this.sc.get()).startCTFE());
                                     e = expressionSemantic(e, this.sc);
                                     e = resolveProperties(this.sc, e);
@@ -1741,7 +1741,7 @@ public class dsymbolsem {
                                     e = ctfeInterpretForPragmaMsg(e);
                                     if (((e.op & 0xFF) == 127))
                                     {
-                                        errorSupplemental(pd.loc, new BytePtr("while evaluating `pragma(msg, %s)`"), (pd.args.get()).get(i).toChars());
+                                        errorSupplemental(pd.loc, new BytePtr("while evaluating `pragma(msg, %s)`"), (pd.args).get(i).toChars());
                                         return ;
                                     }
                                     StringExp se = e.toStringExp();
@@ -1762,18 +1762,18 @@ public class dsymbolsem {
                     }
                     else if ((pequals(pd.ident, Id.lib)))
                     {
-                        if ((pd.args == null) || ((pd.args.get()).length != 1))
+                        if ((pd.args == null) || ((pd.args).length != 1))
                         {
                             pd.error(new BytePtr("string expected for library name"));
                         }
                         else
                         {
-                            StringExp se = semanticString(this.sc, (pd.args.get()).get(0), new BytePtr("library name"));
+                            StringExp se = semanticString(this.sc, (pd.args).get(0), new BytePtr("library name"));
                             if (se == null)
                             {
                                 /*goto Lnodecl*/throw Dispatch1.INSTANCE;
                             }
-                            pd.args.get().set(0, se);
+                            pd.args.set(0, se);
                             ByteSlice name = xarraydup(se.string.slice(0,se.len)).copy();
                             if (global.params.verbose)
                             {
@@ -1781,15 +1781,15 @@ public class dsymbolsem {
                             }
                             if ((global.params.moduleDeps != null) && (global.params.moduleDepsFile.getLength() == 0))
                             {
-                                Ptr<OutBuffer> ob = global.params.moduleDeps;
+                                OutBuffer ob = global.params.moduleDeps;
                                 dmodule.Module imod = (this.sc.get()).instantiatingModule();
-                                (ob.get()).writestring(new ByteSlice("depsLib "));
-                                (ob.get()).writestring(imod.toPrettyChars(false));
-                                (ob.get()).writestring(new ByteSlice(" ("));
+                                (ob).writestring(new ByteSlice("depsLib "));
+                                (ob).writestring(imod.toPrettyChars(false));
+                                (ob).writestring(new ByteSlice(" ("));
                                 escapePath(ob, imod.srcfile.toChars());
-                                (ob.get()).writestring(new ByteSlice(") : "));
-                                (ob.get()).writestring(name);
-                                (ob.get()).writenl();
+                                (ob).writestring(new ByteSlice(") : "));
+                                (ob).writestring(name);
+                                (ob).writenl();
                             }
                             Mem.xfree(name.getPtr(0));
                         }
@@ -1797,17 +1797,17 @@ public class dsymbolsem {
                     }
                     else if ((pequals(pd.ident, Id.startaddress)))
                     {
-                        if ((pd.args == null) || ((pd.args.get()).length != 1))
+                        if ((pd.args == null) || ((pd.args).length != 1))
                         {
                             pd.error(new BytePtr("function name expected for start address"));
                         }
                         else
                         {
-                            Expression e = (pd.args.get()).get(0);
+                            Expression e = (pd.args).get(0);
                             this.sc = pcopy((this.sc.get()).startCTFE());
                             e = expressionSemantic(e, this.sc);
                             this.sc = pcopy((this.sc.get()).endCTFE());
-                            pd.args.get().set(0, e);
+                            pd.args.set(0, e);
                             Dsymbol sa = getDsymbol(e);
                             if ((sa == null) || (sa.isFuncDeclaration() == null))
                             {
@@ -1824,21 +1824,21 @@ public class dsymbolsem {
                     {
                         if (pd.args == null)
                         {
-                            pd.args = pcopy((refPtr(new DArray<Expression>())));
+                            pd.args = pcopy(new DArray<Expression>());
                         }
-                        if (((pd.args.get()).length != 1))
+                        if (((pd.args).length != 1))
                         {
                             pd.error(new BytePtr("string expected for mangled name"));
-                            (pd.args.get()).setDim(1);
-                            pd.args.get().set(0, new ErrorExp());
+                            (pd.args).setDim(1);
+                            pd.args.set(0, new ErrorExp());
                             /*goto Ldecl*/throw Dispatch0.INSTANCE;
                         }
-                        StringExp se = semanticString(this.sc, (pd.args.get()).get(0), new BytePtr("mangled name"));
+                        StringExp se = semanticString(this.sc, (pd.args).get(0), new BytePtr("mangled name"));
                         if (se == null)
                         {
                             /*goto Ldecl*/throw Dispatch0.INSTANCE;
                         }
-                        pd.args.get().set(0, se);
+                        pd.args.set(0, se);
                         if (se.len == 0)
                         {
                             pd.error(new BytePtr("zero-length string not allowed for mangled name"));
@@ -1885,7 +1885,7 @@ public class dsymbolsem {
                     }
                     else if ((pequals(pd.ident, Id.crt_constructor)) || (pequals(pd.ident, Id.crt_destructor)))
                     {
-                        if ((pd.args != null) && ((pd.args.get()).length != 0))
+                        if ((pd.args != null) && ((pd.args).length != 0))
                         {
                             pd.error(new BytePtr("takes no argument"));
                         }
@@ -1902,8 +1902,8 @@ public class dsymbolsem {
                                 {
                                     {
                                         int i = 0;
-                                        for (; (i < (pd.args.get()).length);i++){
-                                            Expression e = (pd.args.get()).get(i);
+                                        for (; (i < (pd.args).length);i++){
+                                            Expression e = (pd.args).get(i);
                                             this.sc = pcopy((this.sc.get()).startCTFE());
                                             e = expressionSemantic(e, this.sc);
                                             e = resolveProperties(this.sc, e);
@@ -1920,7 +1920,7 @@ public class dsymbolsem {
                                             buf.writestring(e.toChars());
                                         }
                                     }
-                                    if ((pd.args.get()).length != 0)
+                                    if ((pd.args).length != 0)
                                     {
                                         buf.writeByte(41);
                                     }
@@ -1944,14 +1944,14 @@ public class dsymbolsem {
                     Ptr<Scope> sc2 = pd.newScope(this.sc);
                     {
                         int i = 0;
-                        for (; (i < (pd.decl.get()).length);i++){
-                            Dsymbol s = (pd.decl.get()).get(i);
+                        for (; (i < (pd.decl).length);i++){
+                            Dsymbol s = (pd.decl).get(i);
                             dsymbolSemantic(s, sc2);
                             if ((pequals(pd.ident, Id.mangle)))
                             {
-                                assert((pd.args != null) && ((pd.args.get()).length == 1));
+                                assert((pd.args != null) && ((pd.args).length == 1));
                                 {
-                                    StringExp se = (pd.args.get()).get(0).toStringExp();
+                                    StringExp se = (pd.args).get(0).toStringExp();
                                     if ((se) != null)
                                     {
                                         ByteSlice name = xarraydup(se.string.slice(0,se.len)).copy();
@@ -1992,7 +1992,7 @@ public class dsymbolsem {
         }
 
         // Erasure: compileIt<CompileDeclaration>
-        public  Ptr<DArray<Dsymbol>> compileIt(CompileDeclaration cd) {
+        public  DArray<Dsymbol> compileIt(CompileDeclaration cd) {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
                 if (expressionsToString(buf, this.sc, cd.exps))
@@ -2007,7 +2007,7 @@ public class dsymbolsem {
                     ParserASTCodegen p = new ParserASTCodegen(cd.loc, (this.sc.get())._module, str, false, diagnosticReporter);
                     try {
                         p.nextToken();
-                        Ptr<DArray<Dsymbol>> d = p.parseDeclDefs(0, null, null);
+                        DArray<Dsymbol> d = p.parseDeclDefs(0, null, null);
                         if (p.errors())
                         {
                             assert((global.errors != errors));
@@ -2041,8 +2041,8 @@ public class dsymbolsem {
                 {
                     {
                         int i = 0;
-                        for (; (i < (cd.decl.get()).length);i++){
-                            Dsymbol s = (cd.decl.get()).get(i);
+                        for (; (i < (cd.decl).length);i++){
+                            Dsymbol s = (cd.decl).get(i);
                             s.setScope(cd._scope);
                         }
                     }
@@ -2086,10 +2086,10 @@ public class dsymbolsem {
                         CPPNamespaceDeclaration current = ns.namespace;
                         {
                             int d = 0;
-                            for (; (d < (te.exps.get()).length);d += 1){
-                                Expression exp = (te.exps.get()).get(d);
+                            for (; (d < (te.exps).length);d += 1){
+                                Expression exp = (te.exps).get(d);
                                 CPPNamespaceDeclaration prev = d != 0 ? current : ns.namespace;
-                                current = (d + 1 != (te.exps.get()).length) ? new CPPNamespaceDeclaration(exp, null) : ns;
+                                current = (d + 1 != (te.exps).length) ? new CPPNamespaceDeclaration(exp, null) : ns;
                                 current.exp = exp;
                                 current.namespace = prev;
                                 {
@@ -2258,10 +2258,10 @@ public class dsymbolsem {
                     TypeEnum te = ed.memtype.isTypeEnum();
                     if ((te) != null)
                     {
-                        EnumDeclaration sym = (EnumDeclaration)te.toDsymbol(this.sc);
+                        EnumDeclaration sym = ((EnumDeclaration)te.toDsymbol(this.sc));
                         if ((sym.memtype == null) || (sym.members == null) || (sym.symtab == null) || (sym._scope != null))
                         {
-                            ed._scope = pcopy((scx != null ? scx : (this.sc.get()).copy()));
+                            ed._scope = pcopy(scx != null ? scx : (this.sc.get()).copy());
                             (ed._scope.get()).setNoFree();
                             dmodule.Module.addDeferredSemantic(ed);
                             dmodule.Module.dprogress = dprogress_save;
@@ -2296,7 +2296,7 @@ public class dsymbolsem {
             {
                 return ;
             }
-            if (((ed.members.get()).length == 0))
+            if (((ed.members).length == 0))
             {
                 ed.error(new BytePtr("enum `%s` must have at least one member"), ed.toChars());
                 ed.errors = true;
@@ -2425,7 +2425,7 @@ public class dsymbolsem {
                 return ;
             }
             em.semanticRun = PASS.semantic;
-            em.protection.opAssign((em.ed.isAnonymous() ? em.ed.protection : new Prot(Prot.Kind.public_)).copy());
+            em.protection.opAssign(em.ed.isAnonymous() ? em.ed.protection : new Prot(Prot.Kind.public_).copy());
             em.linkage = LINK.d;
             em.storage_class |= 8388608L;
             if (em.ed.isAnonymous())
@@ -2439,7 +2439,7 @@ public class dsymbolsem {
                     em.userAttribDecl = em.ed.userAttribDecl;
                 }
             }
-            boolean first = pequals(em, (em.ed.members.get()).get(0));
+            boolean first = pequals(em, (em.ed.members).get(0));
             if (em.origType != null)
             {
                 em.origType = typeSemantic(em.origType, em.loc, this.sc);
@@ -2677,19 +2677,19 @@ public class dsymbolsem {
             (paramscope.get()).stc = 0L;
             if (global.params.doDocComments)
             {
-                tempdecl.origParameters = pcopy((refPtr(new DArray<TemplateParameter>((tempdecl.parameters.get()).length))));
+                tempdecl.origParameters = pcopy(new DArray<TemplateParameter>((tempdecl.parameters).length));
                 {
                     int i = 0;
-                    for (; (i < (tempdecl.parameters.get()).length);i++){
-                        TemplateParameter tp = (tempdecl.parameters.get()).get(i);
-                        tempdecl.origParameters.get().set(i, tp.syntaxCopy());
+                    for (; (i < (tempdecl.parameters).length);i++){
+                        TemplateParameter tp = (tempdecl.parameters).get(i);
+                        tempdecl.origParameters.set(i, tp.syntaxCopy());
                     }
                 }
             }
             {
                 int i = 0;
-                for (; (i < (tempdecl.parameters.get()).length);i++){
-                    TemplateParameter tp = (tempdecl.parameters.get()).get(i);
+                for (; (i < (tempdecl.parameters).length);i++){
+                    TemplateParameter tp = (tempdecl.parameters).get(i);
                     if (!tp.declareParameter(paramscope))
                     {
                         error(tp.loc, new BytePtr("parameter `%s` multiply defined"), tp.ident.toChars());
@@ -2699,7 +2699,7 @@ public class dsymbolsem {
                     {
                         tempdecl.errors = true;
                     }
-                    if ((i + 1 != (tempdecl.parameters.get()).length) && (tp.isTemplateTupleParameter() != null))
+                    if ((i + 1 != (tempdecl.parameters).length) && (tp.isTemplateTupleParameter() != null))
                     {
                         tempdecl.error(new BytePtr("template tuple parameter must be last one"));
                         tempdecl.errors = true;
@@ -2710,30 +2710,30 @@ public class dsymbolsem {
             try {
                 {
                     int i = 0;
-                    for (; (i < (tempdecl.parameters.get()).length);i++){
-                        TemplateParameter tp = (tempdecl.parameters.get()).get(i);
+                    for (; (i < (tempdecl.parameters).length);i++){
+                        TemplateParameter tp = (tempdecl.parameters).get(i);
                         tparams.value.set(0, tp);
                         {
                             int j = 0;
-                            for (; (j < (tempdecl.parameters.get()).length);j++){
+                            for (; (j < (tempdecl.parameters).length);j++){
                                 if ((i == j))
                                 {
                                     continue;
                                 }
                                 {
-                                    TemplateTypeParameter ttp = (tempdecl.parameters.get()).get(j).isTemplateTypeParameter();
+                                    TemplateTypeParameter ttp = (tempdecl.parameters).get(j).isTemplateTypeParameter();
                                     if ((ttp) != null)
                                     {
-                                        if (reliesOnTident(ttp.specType, ptr(tparams), 0))
+                                        if (reliesOnTident(ttp.specType, tparams.value, 0))
                                         {
                                             tp.dependent = true;
                                         }
                                     }
                                     else {
-                                        TemplateAliasParameter tap = (tempdecl.parameters.get()).get(j).isTemplateAliasParameter();
+                                        TemplateAliasParameter tap = (tempdecl.parameters).get(j).isTemplateAliasParameter();
                                         if ((tap) != null)
                                         {
-                                            if (reliesOnTident(tap.specType, ptr(tparams), 0) || reliesOnTident(isType(tap.specAlias), ptr(tparams), 0))
+                                            if (reliesOnTident(tap.specType, tparams.value, 0) || reliesOnTident(isType(tap.specAlias), tparams.value, 0))
                                             {
                                                 tp.dependent = true;
                                             }
@@ -2785,7 +2785,7 @@ public class dsymbolsem {
             {
                 if ((tm.semanticRun == PASS.init))
                 {
-                    tm._scope = pcopy((scx != null ? scx : (this.sc.get()).copy()));
+                    tm._scope = pcopy(scx != null ? scx : (this.sc.get()).copy());
                     (tm._scope.get()).setNoFree();
                     dmodule.Module.addDeferredSemantic(tm);
                     return ;
@@ -2830,7 +2830,7 @@ public class dsymbolsem {
                     {
                         continue L_outer3;
                     }
-                    if (((tm.tiargs.get()).length != (tmix.tiargs.get()).length))
+                    if (((tm.tiargs).length != (tmix.tiargs).length))
                     {
                         continue L_outer3;
                     }
@@ -2838,12 +2838,12 @@ public class dsymbolsem {
                         {
                             int i = 0;
                         L_outer4:
-                            for (; (i < (tm.tiargs.get()).length);i++){
-                                RootObject o = (tm.tiargs.get()).get(i);
+                            for (; (i < (tm.tiargs).length);i++){
+                                RootObject o = (tm.tiargs).get(i);
                                 Type ta = isType(o);
                                 Expression ea = isExpression(o);
                                 Dsymbol sa = isDsymbol(o);
-                                RootObject tmo = (tmix.tiargs.get()).get(i);
+                                RootObject tmo = (tmix.tiargs).get(i);
                                 if (ta != null)
                                 {
                                     Type tmta = isType(tmo);
@@ -3015,7 +3015,7 @@ public class dsymbolsem {
                 {
                     Nspace parentns = ns;
                     {
-                        Slice<Expression> __r1166 = (tup.exps.get()).opSlice().copy();
+                        Slice<Expression> __r1166 = (tup.exps).opSlice().copy();
                         int __key1165 = 0;
                         for (; (__key1165 < __r1166.getLength());__key1165 += 1) {
                             Expression exp = __r1166.get(__key1165);
@@ -3039,8 +3039,8 @@ public class dsymbolsem {
                             else
                             {
                                 Nspace childns = new Nspace(ns.loc, Identifier.idPool(ident), null, parentns.members);
-                                parentns.members = pcopy((refPtr(new DArray<Dsymbol>())));
-                                (parentns.members.get()).push(childns);
+                                parentns.members = pcopy(new DArray<Dsymbol>());
+                                (parentns.members).push(childns);
                                 parentns = childns;
                                 repopulateMembers = true;
                             }
@@ -3057,7 +3057,7 @@ public class dsymbolsem {
                 (this.sc.get()).linkage = LINK.cpp;
                 (this.sc.get()).parent.value = ns;
                 {
-                    Slice<Dsymbol> __r1167 = (ns.members.get()).opSlice().copy();
+                    Slice<Dsymbol> __r1167 = (ns.members).opSlice().copy();
                     int __key1168 = 0;
                     for (; (__key1168 < __r1167.getLength());__key1168 += 1) {
                         Dsymbol s = __r1167.get(__key1168);
@@ -3070,7 +3070,7 @@ public class dsymbolsem {
                     }
                 }
                 {
-                    Slice<Dsymbol> __r1169 = (ns.members.get()).opSlice().copy();
+                    Slice<Dsymbol> __r1169 = (ns.members).opSlice().copy();
                     int __key1170 = 0;
                     for (; (__key1170 < __r1169.getLength());__key1170 += 1) {
                         Dsymbol s = __r1169.get(__key1170);
@@ -3272,7 +3272,7 @@ public class dsymbolsem {
                 {
                     Ref<OutBuffer> buf = ref(new OutBuffer());
                     try {
-                        MODtoBuffer(ptr(buf), tf.mod);
+                        MODtoBuffer(buf.value, tf.mod);
                         funcdecl.error(new BytePtr("without `this` cannot be `%s`"), buf.value.peekChars());
                         tf.mod = (byte)0;
                     }
@@ -3326,7 +3326,7 @@ public class dsymbolsem {
                 tfo.trust = tfx.trust;
                 funcdecl.storage_class &= -4465259184133L;
             }
-            f = (TypeFunction)funcdecl.type;
+            f = ((TypeFunction)funcdecl.type);
             if (((funcdecl.storage_class & 256L) != 0) && !f.isref && !funcdecl.inferRetType)
             {
                 funcdecl.error(new BytePtr("storage class `auto` has no effect if return type is not inferred"));
@@ -3438,8 +3438,8 @@ public class dsymbolsem {
                         {
                             int i = 0;
                         L_outer5:
-                            for (; (i < (cd.baseclasses.get()).length);i++){
-                                Ptr<BaseClass> b = (cd.baseclasses.get()).get(i);
+                            for (; (i < (cd.baseclasses).length);i++){
+                                Ptr<BaseClass> b = (cd.baseclasses).get(i);
                                 ClassDeclaration cbd = (b.get()).type.toBasetype().isClassHandle();
                                 if (cbd == null)
                                 {
@@ -3470,7 +3470,7 @@ public class dsymbolsem {
                         {
                             funcdecl.error(new BytePtr("return type inference is not supported if may override base class function"));
                         }
-                        int vi = cd.baseClass != null ? funcdecl.findVtblIndex(ptr(cd.baseClass.vtbl), cd.baseClass.vtbl.value.length, true) : -1;
+                        int vi = cd.baseClass != null ? funcdecl.findVtblIndex(cd.baseClass.vtbl.value, cd.baseClass.vtbl.value.length, true) : -1;
                         boolean doesoverride = false;
                         try {
                             try {
@@ -3583,7 +3583,7 @@ public class dsymbolsem {
                                                 }
                                                 else
                                                 {
-                                                    int vi2 = funcdecl.findVtblIndex(ptr(cd.baseClass.vtbl), cd.baseClass.vtbl.value.length, false);
+                                                    int vi2 = funcdecl.findVtblIndex(cd.baseClass.vtbl.value, cd.baseClass.vtbl.value.length, false);
                                                     if ((vi2 < 0))
                                                     {
                                                         deprecation(funcdecl.loc, new BytePtr("cannot implicitly override base class method `%s` with `%s`; add `override` attribute"), fdv.toPrettyChars(false), funcdecl.toPrettyChars(false));
@@ -3649,7 +3649,7 @@ public class dsymbolsem {
                                 int __key1174 = 0;
                                 for (; (__key1174 < __r1173.getLength());__key1174 += 1) {
                                     Ptr<BaseClass> b = __r1173.get(__key1174);
-                                    vi = funcdecl.findVtblIndex(ptr((b.get()).sym.vtbl), (b.get()).sym.vtbl.value.length, true);
+                                    vi = funcdecl.findVtblIndex((b.get()).sym.vtbl.value, (b.get()).sym.vtbl.value.length, true);
                                     switch (vi)
                                     {
                                         case -1:
@@ -3658,7 +3658,7 @@ public class dsymbolsem {
                                             funcdecl.errors = true;
                                             return ;
                                         default:
-                                        FuncDeclaration fdv = (FuncDeclaration)(b.get()).sym.vtbl.value.get(vi);
+                                        FuncDeclaration fdv = ((FuncDeclaration)(b.get()).sym.vtbl.value.get(vi));
                                         Type ti = null;
                                         foundVtblMatch = true;
                                         funcdecl.foverrides.push(fdv);
@@ -3701,8 +3701,8 @@ public class dsymbolsem {
                                 Dsymbol s = null;
                                 {
                                     int i = 0;
-                                    for (; (i < (cd.baseclasses.get()).length);i++){
-                                        bc = pcopy((cd.baseclasses.get()).get(i));
+                                    for (; (i < (cd.baseclasses).length);i++){
+                                        bc = pcopy((cd.baseclasses).get(i));
                                         s = (bc.get()).sym.search_correct(funcdecl.ident);
                                         if (s != null)
                                         {
@@ -3716,13 +3716,13 @@ public class dsymbolsem {
                                     Ref<OutBuffer> buf = ref(new OutBuffer());
                                     try {
                                         FuncDeclaration fd = s.isFuncDeclaration();
-                                        functionToBufferFull((TypeFunction)funcdecl.type, ptr(buf), new Identifier(funcdecl.toPrettyChars(false)), ptr(hgs), null);
+                                        functionToBufferFull(((TypeFunction)funcdecl.type), buf.value, new Identifier(funcdecl.toPrettyChars(false)), ptr(hgs), null);
                                         BytePtr funcdeclToChars = pcopy(buf.value.peekChars());
                                         if (fd != null)
                                         {
                                             Ref<OutBuffer> buf1 = ref(new OutBuffer());
                                             try {
-                                                functionToBufferFull((TypeFunction)fd.type, ptr(buf1), new Identifier(fd.toPrettyChars(false)), ptr(hgs), null);
+                                                functionToBufferFull(((TypeFunction)fd.type), buf1.value, new Identifier(fd.toPrettyChars(false)), ptr(hgs), null);
                                                 error(funcdecl.loc, new BytePtr("function `%s` does not override any function, did you mean to override `%s`?"), funcdeclToChars, buf1.value.peekChars());
                                             }
                                             finally {
@@ -4089,17 +4089,17 @@ public class dsymbolsem {
             {
                 VarDeclaration v = new VarDeclaration(Loc.initial, Type.tint32, Id.gate, null, 0L);
                 v.storage_class = (STC.temp | (scd.isSharedStaticCtorDeclaration() != null ? STC.static_ : STC.tls));
-                Ptr<DArray<Statement>> sa = refPtr(new DArray<Statement>());
+                DArray<Statement> sa = new DArray<Statement>();
                 Statement s = new ExpStatement(Loc.initial, v);
-                (sa.get()).push(s);
+                (sa).push(s);
                 Expression e = new IdentifierExp(Loc.initial, v.ident);
                 e = new AddAssignExp(Loc.initial, e, literal_356A192B7913B04C());
                 e = new EqualExp(TOK.notEqual, Loc.initial, e, literal_356A192B7913B04C());
                 s = new IfStatement(Loc.initial, null, e, new ReturnStatement(Loc.initial, null), null, Loc.initial);
-                (sa.get()).push(s);
+                (sa).push(s);
                 if (scd.fbody.value != null)
                 {
-                    (sa.get()).push(scd.fbody.value);
+                    (sa).push(scd.fbody.value);
                 }
                 scd.fbody.value = new CompoundStatement(Loc.initial, sa);
             }
@@ -4144,17 +4144,17 @@ public class dsymbolsem {
             {
                 VarDeclaration v = new VarDeclaration(Loc.initial, Type.tint32, Id.gate, null, 0L);
                 v.storage_class = (STC.temp | (sdd.isSharedStaticDtorDeclaration() != null ? STC.static_ : STC.tls));
-                Ptr<DArray<Statement>> sa = refPtr(new DArray<Statement>());
+                DArray<Statement> sa = new DArray<Statement>();
                 Statement s = new ExpStatement(Loc.initial, v);
-                (sa.get()).push(s);
+                (sa).push(s);
                 Expression e = new IdentifierExp(Loc.initial, v.ident);
                 e = new AddAssignExp(Loc.initial, e, literal_7984B0A0E139CABA());
                 e = new EqualExp(TOK.notEqual, Loc.initial, e, literal_B6589FC6AB0DC82C());
                 s = new IfStatement(Loc.initial, null, e, new ReturnStatement(Loc.initial, null), null, Loc.initial);
-                (sa.get()).push(s);
+                (sa).push(s);
                 if (sdd.fbody.value != null)
                 {
-                    (sa.get()).push(sdd.fbody.value);
+                    (sa).push(sdd.fbody.value);
                 }
                 sdd.fbody.value = new CompoundStatement(Loc.initial, sa);
                 sdd.vgate = v;
@@ -4338,12 +4338,12 @@ public class dsymbolsem {
         public  void reinforceInvariant(AggregateDeclaration ad, Ptr<Scope> sc) {
             {
                 int i = 0;
-                for (; (i < (ad.members.get()).length);i++){
-                    if ((ad.members.get()).get(i) == null)
+                for (; (i < (ad.members).length);i++){
+                    if ((ad.members).get(i) == null)
                     {
                         continue;
                     }
-                    FuncDeclaration fd = (ad.members.get()).get(i).isFuncDeclaration();
+                    FuncDeclaration fd = (ad.members).get(i).isFuncDeclaration();
                     if ((fd == null) || fd.generated || (fd.semanticRun != PASS.semantic3done))
                     {
                         continue;
@@ -4358,7 +4358,7 @@ public class dsymbolsem {
                         }
                     }
                     dsymbolSemantic(fd_temp, sc);
-                    ad.members.get().set(i, fd_temp);
+                    ad.members.set(i, fd_temp);
                 }
             }
         }
@@ -4507,20 +4507,20 @@ public class dsymbolsem {
                         {
                             continue;
                         }
-                        StructDeclaration sdec = ((TypeStruct)tb).sym;
+                        StructDeclaration sdec = (((TypeStruct)tb)).sym;
                         if ((sdec.semanticRun >= PASS.semanticdone))
                         {
                             continue;
                         }
                         (sc2.get()).pop();
-                        sd._scope = pcopy((scx != null ? scx : (this.sc.get()).copy()));
+                        sd._scope = pcopy(scx != null ? scx : (this.sc.get()).copy());
                         (sd._scope.get()).setNoFree();
                         dmodule.Module.addDeferredSemantic(sd);
                         return ;
                     }
                 }
-                sd.aggNew = (NewDeclaration)sd.search(Loc.initial, Id.classNew, 8);
-                sd.aggDelete = (DeleteDeclaration)sd.search(Loc.initial, Id.classDelete, 8);
+                sd.aggNew = ((NewDeclaration)sd.search(Loc.initial, Id.classNew, 8));
+                sd.aggDelete = ((DeleteDeclaration)sd.search(Loc.initial, Id.classDelete, 8));
                 sd.ctor = sd.searchCtor();
                 sd.dtor = buildDtor(sd, sc2);
                 sd.tidtor = buildExternDDtor(sd, sc2);
@@ -4561,9 +4561,9 @@ public class dsymbolsem {
                         }
                     }
                 }
-                if (((sd.type.ty & 0xFF) == ENUMTY.Tstruct) && (!pequals(((TypeStruct)sd.type).sym, sd)))
+                if (((sd.type.ty & 0xFF) == ENUMTY.Tstruct) && (!pequals((((TypeStruct)sd.type)).sym, sd)))
                 {
-                    StructDeclaration sym = ((TypeStruct)sd.type).sym;
+                    StructDeclaration sym = (((TypeStruct)sd.type)).sym;
                     sd.error(new BytePtr("already exists at %s. Perhaps in another function with the same name?"), sym.loc.toChars(global.params.showColumns));
                 }
                 if ((global.errors != errors))
@@ -4587,14 +4587,14 @@ public class dsymbolsem {
 
         // Erasure: interfaceSemantic<ClassDeclaration>
         public  void interfaceSemantic(ClassDeclaration cd) {
-            cd.vtblInterfaces = pcopy((refPtr(new DArray<Ptr<BaseClass>>())));
-            (cd.vtblInterfaces.get()).reserve(cd.interfaces.getLength());
+            cd.vtblInterfaces = pcopy(new DArray<Ptr<BaseClass>>());
+            (cd.vtblInterfaces).reserve(cd.interfaces.getLength());
             {
                 Slice<Ptr<BaseClass>> __r1181 = cd.interfaces.copy();
                 int __key1182 = 0;
                 for (; (__key1182 < __r1181.getLength());__key1182 += 1) {
                     Ptr<BaseClass> b = __r1181.get(__key1182);
-                    (cd.vtblInterfaces.get()).push(b);
+                    (cd.vtblInterfaces).push(b);
                     (b.get()).copyBaseInterfaces(cd.vtblInterfaces);
                 }
             }
@@ -4717,8 +4717,8 @@ public class dsymbolsem {
                         cldec.baseok = Baseok.start;
                         {
                             int i = 0;
-                            for (; (i < (cldec.baseclasses.get()).length);){
-                                Ptr<BaseClass> b = (cldec.baseclasses.get()).get(i);
+                            for (; (i < (cldec.baseclasses).length);){
+                                Ptr<BaseClass> b = (cldec.baseclasses).get(i);
                                 Function0<Type> __dgliteral2 = new Function0<Type>() {
                                     public Type invoke() {
                                      {
@@ -4732,14 +4732,14 @@ public class dsymbolsem {
                                     TypeTuple tup = tb.isTypeTuple();
                                     if ((tup) != null)
                                     {
-                                        (cldec.baseclasses.get()).remove(i);
+                                        (cldec.baseclasses).remove(i);
                                         int dim = Parameter.dim(tup.arguments);
                                         {
                                             int j = 0;
                                             for (; (j < dim);j++){
                                                 Parameter arg = Parameter.getNth(tup.arguments, j, null);
-                                                b = pcopy((refPtr(new BaseClass(arg.type))));
-                                                (cldec.baseclasses.get()).insert(i + j, b);
+                                                b = pcopy(refPtr(new BaseClass(arg.type)));
+                                                (cldec.baseclasses).insert(i + j, b);
                                             }
                                         }
                                     }
@@ -4758,9 +4758,9 @@ public class dsymbolsem {
                             }
                             /*goto Lancestorsdone*/throw Dispatch0.INSTANCE;
                         }
-                        if ((cldec.baseclasses.get()).length != 0)
+                        if ((cldec.baseclasses).length != 0)
                         {
-                            Ptr<BaseClass> b = (cldec.baseclasses.get()).get(0);
+                            Ptr<BaseClass> b = (cldec.baseclasses).get(0);
                             Type tb = (b.get()).type.toBasetype();
                             TypeClass tc = tb.isTypeClass();
                             try {
@@ -4770,7 +4770,7 @@ public class dsymbolsem {
                                     {
                                         cldec.error(new BytePtr("base type must be `class` or `interface`, not `%s`"), (b.get()).type.toChars());
                                     }
-                                    (cldec.baseclasses.get()).remove(0);
+                                    (cldec.baseclasses).remove(0);
                                     /*goto L7*/throw Dispatch0.INSTANCE;
                                 }
                                 if (tc.sym.isDeprecated())
@@ -4792,7 +4792,7 @@ public class dsymbolsem {
                                         if ((pequals(cdb, cldec)))
                                         {
                                             cldec.error(new BytePtr("circular inheritance"));
-                                            (cldec.baseclasses.get()).remove(0);
+                                            (cldec.baseclasses).remove(0);
                                             /*goto L7*/throw Dispatch0.INSTANCE;
                                         }
                                     }
@@ -4826,8 +4826,8 @@ public class dsymbolsem {
                         boolean multiClassError = false;
                         {
                             int i = cldec.baseClass != null ? 1 : 0;
-                            for (; (i < (cldec.baseclasses.get()).length);){
-                                Ptr<BaseClass> b = (cldec.baseclasses.get()).get(i);
+                            for (; (i < (cldec.baseclasses).length);){
+                                Ptr<BaseClass> b = (cldec.baseclasses).get(i);
                                 Type tb = (b.get()).type.toBasetype();
                                 TypeClass tc = tb.isTypeClass();
                                 if ((tc == null) || (tc.sym.isInterfaceDeclaration() == null))
@@ -4852,17 +4852,17 @@ public class dsymbolsem {
                                     {
                                         error(cldec.loc, new BytePtr("`%s`: base type must be `interface`, not `%s`"), cldec.toPrettyChars(false), (b.get()).type.toChars());
                                     }
-                                    (cldec.baseclasses.get()).remove(i);
+                                    (cldec.baseclasses).remove(i);
                                     continue;
                                 }
                                 {
                                     int j = cldec.baseClass != null ? 1 : 0;
                                     for (; (j < i);j++){
-                                        Ptr<BaseClass> b2 = (cldec.baseclasses.get()).get(j);
+                                        Ptr<BaseClass> b2 = (cldec.baseclasses).get(j);
                                         if ((pequals((b2.get()).sym, tc.sym)))
                                         {
                                             cldec.error(new BytePtr("inherits from duplicate interface `%s`"), (b2.get()).sym.toChars());
-                                            (cldec.baseclasses.get()).remove(i);
+                                            (cldec.baseclasses).remove(i);
                                             continue;
                                         }
                                     }
@@ -4901,7 +4901,7 @@ public class dsymbolsem {
                         }
                         if ((cldec.baseok == Baseok.none))
                         {
-                            cldec._scope = pcopy((scx != null ? scx : (this.sc.get()).copy()));
+                            cldec._scope = pcopy(scx != null ? scx : (this.sc.get()).copy());
                             (cldec._scope.get()).setNoFree();
                             dmodule.Module.addDeferredSemantic(cldec);
                             return ;
@@ -4935,7 +4935,7 @@ public class dsymbolsem {
                             TypeClass tc = t.isTypeClass();
                             assert(tc != null);
                             Ptr<BaseClass> b = refPtr(new BaseClass(tc));
-                            (cldec.baseclasses.get()).shift(b);
+                            (cldec.baseclasses).shift(b);
                             cldec.baseClass = tc.sym;
                             assert(cldec.baseClass.isInterfaceDeclaration() == null);
                             (b.get()).sym = cldec.baseClass;
@@ -4961,7 +4961,7 @@ public class dsymbolsem {
                             cldec.enclosing = cldec.baseClass.enclosing;
                             cldec.storage_class |= cldec.baseClass.storage_class & 2685403140L;
                         }
-                        cldec.interfaces = (cldec.baseclasses.get()).tdata().slice(cldec.baseClass != null ? 1 : 0,(cldec.baseclasses.get()).length).copy();
+                        cldec.interfaces = (cldec.baseclasses).tdata().slice(cldec.baseClass != null ? 1 : 0,(cldec.baseclasses).length).copy();
                         {
                             Slice<Ptr<BaseClass>> __r1183 = cldec.interfaces.copy();
                             int __key1184 = 0;
@@ -5013,13 +5013,13 @@ public class dsymbolsem {
                 }
                 {
                     int i = 0;
-                    for (; (i < (cldec.baseclasses.get()).length);i++){
-                        Ptr<BaseClass> b = (cldec.baseclasses.get()).get(i);
+                    for (; (i < (cldec.baseclasses).length);i++){
+                        Ptr<BaseClass> b = (cldec.baseclasses).get(i);
                         Type tb = (b.get()).type.toBasetype();
                         TypeClass tc = tb.isTypeClass();
                         if ((tc.sym.semanticRun < PASS.semanticdone))
                         {
-                            cldec._scope = pcopy((scx != null ? scx : (this.sc.get()).copy()));
+                            cldec._scope = pcopy(scx != null ? scx : (this.sc.get()).copy());
                             (cldec._scope.get()).setNoFree();
                             if (tc.sym._scope != null)
                             {
@@ -5130,20 +5130,20 @@ public class dsymbolsem {
                         {
                             continue;
                         }
-                        StructDeclaration sd = ((TypeStruct)tb).sym;
+                        StructDeclaration sd = (((TypeStruct)tb)).sym;
                         if ((sd.semanticRun >= PASS.semanticdone))
                         {
                             continue;
                         }
                         (sc2.get()).pop();
-                        cldec._scope = pcopy((scx != null ? scx : (this.sc.get()).copy()));
+                        cldec._scope = pcopy(scx != null ? scx : (this.sc.get()).copy());
                         (cldec._scope.get()).setNoFree();
                         dmodule.Module.addDeferredSemantic(cldec);
                         return ;
                     }
                 }
-                cldec.aggNew = (NewDeclaration)cldec.search(Loc.initial, Id.classNew, 8);
-                cldec.aggDelete = (DeleteDeclaration)cldec.search(Loc.initial, Id.classDelete, 8);
+                cldec.aggNew = ((NewDeclaration)cldec.search(Loc.initial, Id.classNew, 8));
+                cldec.aggDelete = ((DeleteDeclaration)cldec.search(Loc.initial, Id.classDelete, 8));
                 cldec.ctor = cldec.searchCtor();
                 if ((cldec.ctor == null) && cldec.noDefaultCtor)
                 {
@@ -5176,8 +5176,8 @@ public class dsymbolsem {
                         tf.isnogc = btf.isnogc;
                         tf.trust = btf.trust;
                         CtorDeclaration ctor = new CtorDeclaration(cldec.loc, Loc.initial, 0L, tf, false);
-                        ctor.fbody.value = new CompoundStatement(Loc.initial, refPtr(new DArray<Statement>()));
-                        (cldec.members.get()).push(ctor);
+                        ctor.fbody.value = new CompoundStatement(Loc.initial, new DArray<Statement>());
+                        (cldec.members).push(ctor);
                         ctor.addMember(this.sc, cldec);
                         dsymbolSemantic(ctor, sc2);
                         cldec.ctor = ctor;
@@ -5227,9 +5227,9 @@ public class dsymbolsem {
                         cldec.error(new BytePtr("cannot infer `abstract` attribute due to circular dependencies"));
                     }
                 }
-                if (((cldec.type.ty & 0xFF) == ENUMTY.Tclass) && (!pequals(((TypeClass)cldec.type).sym, cldec)))
+                if (((cldec.type.ty & 0xFF) == ENUMTY.Tclass) && (!pequals((((TypeClass)cldec.type)).sym, cldec)))
                 {
-                    ClassDeclaration cd = ((TypeClass)cldec.type).sym;
+                    ClassDeclaration cd = (((TypeClass)cldec.type)).sym;
                     cldec.error(new BytePtr("already exists at %s. Perhaps in another function with the same name?"), cd.loc.toChars(global.params.showColumns));
                 }
                 if ((global.errors != errors))
@@ -5302,12 +5302,12 @@ public class dsymbolsem {
                 idec.type = Type.terror;
             }
             idec.type = typeSemantic(idec.type, idec.loc, this.sc);
-            if (((idec.type.ty & 0xFF) == ENUMTY.Tclass) && (!pequals(((TypeClass)idec.type).sym, idec)))
+            if (((idec.type.ty & 0xFF) == ENUMTY.Tclass) && (!pequals((((TypeClass)idec.type)).sym, idec)))
             {
-                TemplateInstance ti = ((TypeClass)idec.type).sym.isInstantiated();
+                TemplateInstance ti = (((TypeClass)idec.type)).sym.isInstantiated();
                 if ((ti != null) && isError(ti))
                 {
-                    ((TypeClass)idec.type).sym = idec;
+                    (((TypeClass)idec.type)).sym = idec;
                 }
             }
             Ungag ungag = idec.ungagSpeculative().copy();
@@ -5371,8 +5371,8 @@ public class dsymbolsem {
                         idec.baseok = Baseok.start;
                         {
                             int i = 0;
-                            for (; (i < (idec.baseclasses.get()).length);){
-                                Ptr<BaseClass> b = (idec.baseclasses.get()).get(i);
+                            for (; (i < (idec.baseclasses).length);){
+                                Ptr<BaseClass> b = (idec.baseclasses).get(i);
                                 Function0<Type> __dgliteral3 = new Function0<Type>() {
                                     public Type invoke() {
                                      {
@@ -5386,14 +5386,14 @@ public class dsymbolsem {
                                     TypeTuple tup = tb.isTypeTuple();
                                     if ((tup) != null)
                                     {
-                                        (idec.baseclasses.get()).remove(i);
+                                        (idec.baseclasses).remove(i);
                                         int dim = Parameter.dim(tup.arguments);
                                         {
                                             int j = 0;
                                             for (; (j < dim);j++){
                                                 Parameter arg = Parameter.getNth(tup.arguments, j, null);
-                                                b = pcopy((refPtr(new BaseClass(arg.type))));
-                                                (idec.baseclasses.get()).insert(i + j, b);
+                                                b = pcopy(refPtr(new BaseClass(arg.type)));
+                                                (idec.baseclasses).insert(i + j, b);
                                             }
                                         }
                                     }
@@ -5412,7 +5412,7 @@ public class dsymbolsem {
                             }
                             /*goto Lancestorsdone*/throw Dispatch0.INSTANCE;
                         }
-                        if (((idec.baseclasses.get()).length == 0) && ((this.sc.get()).linkage == LINK.cpp))
+                        if (((idec.baseclasses).length == 0) && ((this.sc.get()).linkage == LINK.cpp))
                         {
                             idec.classKind = ClassKind.cpp;
                         }
@@ -5424,27 +5424,27 @@ public class dsymbolsem {
                         }
                         {
                             int i = 0;
-                            for (; (i < (idec.baseclasses.get()).length);){
-                                Ptr<BaseClass> b = (idec.baseclasses.get()).get(i);
+                            for (; (i < (idec.baseclasses).length);){
+                                Ptr<BaseClass> b = (idec.baseclasses).get(i);
                                 Type tb = (b.get()).type.toBasetype();
-                                TypeClass tc = ((tb.ty & 0xFF) == ENUMTY.Tclass) ? (TypeClass)tb : null;
+                                TypeClass tc = ((tb.ty & 0xFF) == ENUMTY.Tclass) ? ((TypeClass)tb) : null;
                                 if ((tc == null) || (tc.sym.isInterfaceDeclaration() == null))
                                 {
                                     if ((!pequals((b.get()).type, Type.terror)))
                                     {
                                         idec.error(new BytePtr("base type must be `interface`, not `%s`"), (b.get()).type.toChars());
                                     }
-                                    (idec.baseclasses.get()).remove(i);
+                                    (idec.baseclasses).remove(i);
                                     continue;
                                 }
                                 {
                                     int j = 0;
                                     for (; (j < i);j++){
-                                        Ptr<BaseClass> b2 = (idec.baseclasses.get()).get(j);
+                                        Ptr<BaseClass> b2 = (idec.baseclasses).get(j);
                                         if ((pequals((b2.get()).sym, tc.sym)))
                                         {
                                             idec.error(new BytePtr("inherits from duplicate interface `%s`"), (b2.get()).sym.toChars());
-                                            (idec.baseclasses.get()).remove(i);
+                                            (idec.baseclasses).remove(i);
                                             continue;
                                         }
                                     }
@@ -5452,7 +5452,7 @@ public class dsymbolsem {
                                 if ((pequals(tc.sym, idec)) || idec.isBaseOf2(tc.sym))
                                 {
                                     idec.error(new BytePtr("circular inheritance of interface"));
-                                    (idec.baseclasses.get()).remove(i);
+                                    (idec.baseclasses).remove(i);
                                     continue;
                                 }
                                 if (tc.sym.isDeprecated())
@@ -5489,13 +5489,13 @@ public class dsymbolsem {
                         }
                         if ((idec.baseok == Baseok.none))
                         {
-                            idec._scope = pcopy((scx != null ? scx : (this.sc.get()).copy()));
+                            idec._scope = pcopy(scx != null ? scx : (this.sc.get()).copy());
                             (idec._scope.get()).setNoFree();
                             dmodule.Module.addDeferredSemantic(idec);
                             return ;
                         }
                         idec.baseok = Baseok.done;
-                        idec.interfaces = (idec.baseclasses.get()).tdata().slice(0,(idec.baseclasses.get()).length).copy();
+                        idec.interfaces = (idec.baseclasses).tdata().slice(0,(idec.baseclasses).length).copy();
                         {
                             Slice<Ptr<BaseClass>> __r1191 = idec.interfaces.copy();
                             int __key1192 = 0;
@@ -5527,13 +5527,13 @@ public class dsymbolsem {
                 }
                 {
                     int i = 0;
-                    for (; (i < (idec.baseclasses.get()).length);i++){
-                        Ptr<BaseClass> b = (idec.baseclasses.get()).get(i);
+                    for (; (i < (idec.baseclasses).length);i++){
+                        Ptr<BaseClass> b = (idec.baseclasses).get(i);
                         Type tb = (b.get()).type.toBasetype();
                         TypeClass tc = tb.isTypeClass();
                         if ((tc.sym.semanticRun < PASS.semanticdone))
                         {
-                            idec._scope = pcopy((scx != null ? scx : (this.sc.get()).copy()));
+                            idec._scope = pcopy(scx != null ? scx : (this.sc.get()).copy());
                             (idec._scope.get()).setNoFree();
                             if (tc.sym._scope != null)
                             {
@@ -5580,7 +5580,7 @@ public class dsymbolsem {
                                 }
                                 else
                                 {
-                                    idec.vtbl.value.append(ptr((b.get()).sym.vtbl));
+                                    idec.vtbl.value.append((b.get()).sym.vtbl.value);
                                 }
                             }
                             catch(Dispatch0 __d){}
@@ -5632,7 +5632,7 @@ public class dsymbolsem {
                 {
                     idec.type = Type.terror;
                 }
-                assert(((idec.type.ty & 0xFF) != ENUMTY.Tclass) || (pequals(((TypeClass)idec.type).sym, idec)));
+                assert(((idec.type.ty & 0xFF) != ENUMTY.Tclass) || (pequals((((TypeClass)idec.type)).sym, idec)));
                 if ((idec.storage_class & 524288L) != 0)
                 {
                     deprecation(idec.loc, new BytePtr("`scope` as a type constraint is deprecated.  Use `scope` at the usage site."));
@@ -5652,7 +5652,7 @@ public class dsymbolsem {
         }
     }
     // Erasure: templateInstanceSemantic<TemplateInstance, Ptr, Ptr>
-    public static void templateInstanceSemantic(TemplateInstance tempinst, Ptr<Scope> sc, Ptr<DArray<Expression>> fargs) {
+    public static void templateInstanceSemantic(TemplateInstance tempinst, Ptr<Scope> sc, DArray<Expression> fargs) {
         if (tempinst.inst != null)
         {
             return ;
@@ -5751,7 +5751,7 @@ public class dsymbolsem {
             }
             if (tempinst.minst != null)
             {
-                tempinst.minst.aimports.append(ptr(tempinst.inst.importedModules));
+                tempinst.minst.aimports.append(tempinst.inst.importedModules.value);
             }
             return ;
         }
@@ -5759,24 +5759,24 @@ public class dsymbolsem {
         tempinst.inst = tempinst;
         tempinst.parent.value = tempinst.enclosing != null ? tempinst.enclosing : tempdecl.parent.value;
         TemplateInstance tempdecl_instance_idx = tempdecl.addInstance(tempinst);
-        Ptr<DArray<Dsymbol>> target_symbol_list = tempinst.appendToModuleMember();
-        int target_symbol_list_idx = target_symbol_list != null ? (target_symbol_list.get()).length - 1 : 0;
+        DArray<Dsymbol> target_symbol_list = tempinst.appendToModuleMember();
+        int target_symbol_list_idx = target_symbol_list != null ? (target_symbol_list).length - 1 : 0;
         tempinst.members = pcopy(Dsymbol.arraySyntaxCopy(tempdecl.members));
         {
             int i = 0;
-            for (; (i < (tempdecl.parameters.get()).length);i++){
-                if (((tempdecl.parameters.get()).get(i).isTemplateThisParameter() == null))
+            for (; (i < (tempdecl.parameters).length);i++){
+                if (((tempdecl.parameters).get(i).isTemplateThisParameter() == null))
                 {
                     continue;
                 }
-                Type t = isType((tempinst.tiargs.get()).get(i));
+                Type t = isType((tempinst.tiargs).get(i));
                 assert(t != null);
                 {
                     long stc = ModToStc((t.mod & 0xFF));
                     if ((stc) != 0)
                     {
-                        Ptr<DArray<Dsymbol>> s = refPtr(new DArray<Dsymbol>());
-                        (s.get()).push(new StorageClassDeclaration(stc, tempinst.members));
+                        DArray<Dsymbol> s = new DArray<Dsymbol>();
+                        (s).push(new StorageClassDeclaration(stc, tempinst.members));
                         tempinst.members = pcopy(s);
                     }
                 }
@@ -5809,7 +5809,7 @@ public class dsymbolsem {
 
         };
         foreachDsymbol(tempinst.members, __lambda4);
-        if ((tempinst.members.get()).length != 0)
+        if ((tempinst.members).length != 0)
         {
             Ref<Dsymbol> s = ref(null);
             if (Dsymbol.oneMembers(tempinst.members, ptr(s), tempdecl.ident) && (s.value != null))
@@ -5843,7 +5843,7 @@ public class dsymbolsem {
         (sc2.get()).minst = tempinst.minst;
         tempinst.tryExpandMembers(sc2);
         tempinst.semanticRun = PASS.semanticdone;
-        if ((tempinst.members.get()).length != 0)
+        if ((tempinst.members).length != 0)
         {
             Ref<Dsymbol> s = ref(null);
             if (Dsymbol.oneMembers(tempinst.members, ptr(s), tempdecl.ident) && (s.value != null))
@@ -5893,7 +5893,7 @@ public class dsymbolsem {
             {
                 Ref<DArray<TemplateInstance>> deferred = ref(new DArray<TemplateInstance>());
                 try {
-                    tempinst.deferred = pcopy(ptr(deferred));
+                    tempinst.deferred = pcopy(deferred.value);
                     tempinst.trySemantic3(sc2);
                     {
                         int i = 0;
@@ -5946,8 +5946,8 @@ public class dsymbolsem {
                                     {
                                         continue;
                                     }
-                                    assert((td.members != null) && ((td.members.get()).length == 1));
-                                    s = (td.members.get()).get(0);
+                                    assert((td.members != null) && ((td.members).length == 1));
+                                    s = (td.members).get(0);
                                 }
                             }
                             {
@@ -5984,12 +5984,12 @@ public class dsymbolsem {
                     {
                         int i = 0;
                         for (; ;i++){
-                            if ((i == (ti.deferred.get()).length))
+                            if ((i == (ti.deferred).length))
                             {
-                                (ti.deferred.get()).push(tempinst);
+                                (ti.deferred).push(tempinst);
                                 break;
                             }
-                            if ((pequals((ti.deferred.get()).get(i), tempinst)))
+                            if ((pequals((ti.deferred).get(i), tempinst)))
                             {
                                 break;
                             }
@@ -6025,8 +6025,8 @@ public class dsymbolsem {
                 tempdecl.removeInstance(tempdecl_instance_idx);
                 if (target_symbol_list != null)
                 {
-                    assert((pequals((target_symbol_list.get()).get(target_symbol_list_idx), tempinst)));
-                    (target_symbol_list.get()).remove(target_symbol_list_idx);
+                    assert((pequals((target_symbol_list).get(target_symbol_list_idx), tempinst)));
+                    (target_symbol_list).remove(target_symbol_list_idx);
                     tempinst.memberOf = null;
                 }
                 tempinst.semanticRun = PASS.init;
@@ -6048,7 +6048,7 @@ public class dsymbolsem {
     public static void aliasSemantic(AliasDeclaration ds, Ptr<Scope> sc) {
         if ((ds.type != null) && ((ds.type.ty & 0xFF) == ENUMTY.TTraits))
         {
-            TypeTraits tt = (TypeTraits)ds.type;
+            TypeTraits tt = ((TypeTraits)ds.type);
             tt.inAliasDeclaration = true;
             {
                 Type t = typeSemantic(tt, tt.loc, sc);
@@ -6077,7 +6077,7 @@ public class dsymbolsem {
                 e = expressionSemantic(e, sc);
                 if (((e.op & 0xFF) == 161))
                 {
-                    FuncExp fe = (FuncExp)e;
+                    FuncExp fe = ((FuncExp)e);
                     ds.aliassym = fe.td != null ? fe.td : fe.fd;
                 }
                 else
@@ -6104,7 +6104,7 @@ public class dsymbolsem {
             }
             if (((ds.type.ty & 0xFF) == ENUMTY.Tident) && (ds._import == null))
             {
-                TypeIdentifier tident = (TypeIdentifier)ds.type;
+                TypeIdentifier tident = ((TypeIdentifier)ds.type);
                 if ((tident.ident == ds.ident) && (tident.idents.length == 0))
                 {
                     error(ds.loc, new BytePtr("`alias %s = %s;` cannot alias itself, use a qualified name to create an overload set"), ds.ident.toChars(), tident.ident.toChars());

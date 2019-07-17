@@ -67,8 +67,8 @@ public class denum {
             {
                 {
                     int i = 0;
-                    for (; (i < (this.members.get()).length);i++){
-                        EnumMember em = (this.members.get()).get(i).isEnumMember();
+                    for (; (i < (this.members).length);i++){
+                        EnumMember em = (this.members).get(i).isEnumMember();
                         em.ed = this;
                         em.addMember(sc, this.isAnonymous() ? scopesym : this);
                     }
@@ -155,7 +155,7 @@ public class denum {
             Function0<Expression> errorReturn = new Function0<Expression>() {
                 public Expression invoke() {
                  {
-                    pval.set(0, (new ErrorExp()));
+                    pval.set(0, new ErrorExp());
                     return pval.get();
                 }}
 
@@ -194,8 +194,8 @@ public class denum {
             boolean first = true;
             {
                 int i = 0;
-                for (; (i < (this.members.get()).length);i++){
-                    EnumMember em = (this.members.get()).get(i).isEnumMember();
+                for (; (i < (this.members).length);i++){
+                    EnumMember em = (this.members).get(i).isEnumMember();
                     if (em == null)
                     {
                         continue;
@@ -272,10 +272,10 @@ public class denum {
             }
             {
                 int __key941 = 0;
-                int __limit942 = (this.members.get()).length;
+                int __limit942 = (this.members).length;
                 for (; (__key941 < __limit942);__key941 += 1) {
                     int i = __key941;
-                    EnumMember em = (this.members.get()).get(i).isEnumMember();
+                    EnumMember em = (this.members).get(i).isEnumMember();
                     if (em != null)
                     {
                         this.defaultval = em.value();
@@ -373,7 +373,7 @@ public class denum {
     {
         // Erasure: value<>
         public  Expression value() {
-            return ((ExpInitializer)this._init).exp;
+            return (((ExpInitializer)this._init)).exp;
         }
 
         public Expression origValue = null;
@@ -397,7 +397,7 @@ public class denum {
         // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
             assert(s == null);
-            return new EnumMember(this.loc, this.ident, this.value() != null ? this.value().syntaxCopy() : null, this.origType != null ? this.origType.syntaxCopy() : null, this.storage_class, this.userAttribDecl != null ? (UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(s) : null, this.depdecl != null ? (DeprecatedDeclaration)this.depdecl.syntaxCopy(s) : null);
+            return new EnumMember(this.loc, this.ident, this.value() != null ? this.value().syntaxCopy() : null, this.origType != null ? this.origType.syntaxCopy() : null, this.storage_class, this.userAttribDecl != null ? ((UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(s)) : null, this.depdecl != null ? ((DeprecatedDeclaration)this.depdecl.syntaxCopy(s)) : null);
         }
 
         // Erasure: kind<>

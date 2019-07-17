@@ -65,7 +65,7 @@ public class typinf {
                 if (sc != null)
                 {
                     dmodule.Module m = (sc.get())._module.importedFrom;
-                    (m.members.get()).push(t.vtinfo);
+                    (m.members).push(t.vtinfo);
                 }
                 else
                 {
@@ -112,7 +112,7 @@ public class typinf {
             case 37:
                 return TypeInfoTupleDeclaration.create(t);
             case 7:
-                if (((TypeClass)t).sym.isInterfaceDeclaration() != null)
+                if ((((TypeClass)t)).sym.isInterfaceDeclaration() != null)
                 {
                     return TypeInfoInterfaceDeclaration.create(t);
                 }
@@ -190,7 +190,7 @@ public class typinf {
                 if (t.arguments != null)
                 {
                     {
-                        Slice<Parameter> __r1721 = (t.arguments.get()).opSlice().copy();
+                        Slice<Parameter> __r1721 = (t.arguments).opSlice().copy();
                         Ref<Integer> __key1722 = ref(0);
                         for (; (__key1722.value < __r1721.getLength());__key1722.value += 1) {
                             Parameter arg = __r1721.get(__key1722.value);

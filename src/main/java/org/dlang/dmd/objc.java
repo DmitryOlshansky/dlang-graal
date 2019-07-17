@@ -74,8 +74,8 @@ public class objc {
             Ptr<ObjcSelector> sel = ((Ptr<ObjcSelector>)(sv.get()).ptrvalue);
             if (sel == null)
             {
-                sel = pcopy((refPtr(new ObjcSelector((sv.get()).toDchars(), len, pcount))));
-                (sv.get()).ptrvalue = pcopy((toBytePtr(sel)));
+                sel = pcopy(refPtr(new ObjcSelector((sv.get()).toDchars(), len, pcount)));
+                (sv.get()).ptrvalue = pcopy(toBytePtr(sel));
             }
             return sel;
         }
@@ -85,10 +85,10 @@ public class objc {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
                 int pcount = 0;
-                TypeFunction ftype = (TypeFunction)fdecl.type;
+                TypeFunction ftype = ((TypeFunction)fdecl.type);
                 ByteSlice id = fdecl.ident.asString().copy();
                 try {
-                    if (ftype.isproperty && (ftype.parameterList.parameters != null) && ((ftype.parameterList.parameters.get()).length == 1))
+                    if (ftype.isproperty && (ftype.parameterList.parameters != null) && ((ftype.parameterList.parameters).length == 1))
                     {
                         byte firstChar = id.get(0);
                         if (((firstChar & 0xFF) >= 97) && ((firstChar & 0xFF) <= 122))
@@ -102,16 +102,16 @@ public class objc {
                         /*goto Lcomplete*/throw Dispatch0.INSTANCE;
                     }
                     buf.value.write(id.getPtr(0), id.getLength());
-                    if ((ftype.parameterList.parameters != null) && ((ftype.parameterList.parameters.get()).length != 0))
+                    if ((ftype.parameterList.parameters != null) && ((ftype.parameterList.parameters).length != 0))
                     {
                         buf.value.writeByte(95);
-                        Ptr<DArray<Parameter>> arguments = ftype.parameterList.parameters;
+                        DArray<Parameter> arguments = ftype.parameterList.parameters;
                         int dim = Parameter.dim(arguments);
                         {
                             int i = 0;
                             for (; (i < dim);i++){
                                 Parameter arg = Parameter.getNth(arguments, i, null);
-                                mangleToBuffer(arg.type, ptr(buf));
+                                mangleToBuffer(arg.type, buf.value);
                                 buf.value.writeByte(58);
                             }
                         }
@@ -160,11 +160,11 @@ public class objc {
         public Identifier identifier = null;
         public ClassDeclaration classDeclaration = null;
         public ClassDeclaration metaclass = null;
-        public Ptr<DArray<Dsymbol>> methodList = null;
+        public DArray<Dsymbol> methodList = null;
         // Erasure: __ctor<ClassDeclaration>
         public  ObjcClassDeclaration(ClassDeclaration classDeclaration) {
             this.classDeclaration = classDeclaration;
-            this.methodList = pcopy((refPtr(new DArray<Dsymbol>())));
+            this.methodList = pcopy(new DArray<Dsymbol>());
         }
 
         // Erasure: isRootClass<>
@@ -269,11 +269,11 @@ public class objc {
 
 
         // Erasure: addSymbols<>
-        public abstract void addSymbols(AttribDeclaration attribDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories);
+        public abstract void addSymbols(AttribDeclaration attribDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories);
 
 
         // Erasure: addSymbols<>
-        public abstract void addSymbols(ClassDeclaration classDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories, ETag1 __tag);
+        public abstract void addSymbols(ClassDeclaration classDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories, ETag1 __tag);
 
 
         // Erasure: checkOffsetof<>
@@ -360,11 +360,11 @@ public class objc {
         }
 
         // Erasure: addSymbols<AttribDeclaration, Ptr, Ptr>
-        public  void addSymbols(AttribDeclaration attribDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
+        public  void addSymbols(AttribDeclaration attribDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
         }
 
         // Erasure: addSymbols<ClassDeclaration, Ptr, Ptr>
-        public  void addSymbols(ClassDeclaration classDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
+        public  void addSymbols(ClassDeclaration classDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
         }
 
         // Erasure: checkOffsetof<Expression, AggregateDeclaration>
@@ -418,28 +418,28 @@ public class objc {
             {
                 return ;
             }
-            Ptr<DArray<Expression>> udas = fd.userAttribDecl.getAttributes();
+            DArray<Expression> udas = fd.userAttribDecl.getAttributes();
             arrayExpressionSemantic(udas, sc, true);
             {
                 int i = 0;
-                for (; (i < (udas.get()).length);i++){
-                    Expression uda = (udas.get()).get(i);
+                for (; (i < (udas).length);i++){
+                    Expression uda = (udas).get(i);
                     assert(uda != null);
                     if (((uda.op & 0xFF) != 126))
                     {
                         continue;
                     }
-                    Ptr<DArray<Expression>> exps = ((TupleExp)uda).exps;
+                    DArray<Expression> exps = (((TupleExp)uda)).exps;
                     {
                         int j = 0;
-                        for (; (j < (exps.get()).length);j++){
-                            Expression e = (exps.get()).get(j);
+                        for (; (j < (exps).length);j++){
+                            Expression e = (exps).get(j);
                             assert(e != null);
                             if (((e.op & 0xFF) != 49))
                             {
                                 continue;
                             }
-                            StructLiteralExp literal = (StructLiteralExp)e;
+                            StructLiteralExp literal = ((StructLiteralExp)e);
                             assert(literal.sd != null);
                             if (!this.isUdaSelector(literal.sd))
                             {
@@ -450,8 +450,8 @@ public class objc {
                                 fd.error(new BytePtr("can only have one Objective-C selector per method"));
                                 return ;
                             }
-                            assert(((literal.elements.get()).length == 1));
-                            StringExp se = (literal.elements.get()).get(0).toStringExp();
+                            assert(((literal.elements).length == 1));
+                            StringExp se = (literal.elements).get(0).toStringExp();
                             assert(se != null);
                             fd.selector = pcopy(ObjcSelector.lookup(se.toUTF8(sc).string));
                         }
@@ -466,8 +466,8 @@ public class objc {
             {
                 return ;
             }
-            TypeFunction tf = (TypeFunction)fd.type;
-            if (((fd.selector.get()).paramCount != (tf.parameterList.parameters.get()).length))
+            TypeFunction tf = ((TypeFunction)fd.type);
+            if (((fd.selector.get()).paramCount != (tf.parameterList.parameters).length))
             {
                 fd.error(new BytePtr("number of colons in Objective-C selector must match number of parameters"));
             }
@@ -538,7 +538,7 @@ public class objc {
                 return ;
             }
             assert(fd.isStatic() ? cd.objc.isMeta : !cd.objc.isMeta);
-            (cd.objc.methodList.get()).push(fd);
+            (cd.objc.methodList).push(fd);
         }
 
         // Erasure: isThis<FuncDeclaration>
@@ -580,8 +580,8 @@ public class objc {
         // Erasure: setMetaclass<InterfaceDeclaration, Ptr>
         public  void setMetaclass(InterfaceDeclaration interfaceDeclaration, Ptr<Scope> sc) {
             Supported __self = this;
-            Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration> newMetaclass = new Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,InterfaceDeclaration>() {
-                public InterfaceDeclaration invoke(Loc loc, Ptr<DArray<Ptr<BaseClass>>> metaBases) {
+            Function2<Loc,DArray<Ptr<BaseClass>>,InterfaceDeclaration> newMetaclass = new Function2<Loc,DArray<Ptr<BaseClass>>,InterfaceDeclaration>() {
+                public InterfaceDeclaration invoke(Loc loc, DArray<Ptr<BaseClass>> metaBases) {
                  {
                     return new InterfaceDeclaration(loc, null, metaBases);
                 }}
@@ -593,10 +593,10 @@ public class objc {
         // Erasure: setMetaclass<ClassDeclaration, Ptr>
         public  void setMetaclass(ClassDeclaration classDeclaration, Ptr<Scope> sc) {
             Supported __self = this;
-            Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration> newMetaclass = new Function2<Loc,Ptr<DArray<Ptr<BaseClass>>>,ClassDeclaration>() {
-                public ClassDeclaration invoke(Loc loc, Ptr<DArray<Ptr<BaseClass>>> metaBases) {
+            Function2<Loc,DArray<Ptr<BaseClass>>,ClassDeclaration> newMetaclass = new Function2<Loc,DArray<Ptr<BaseClass>>,ClassDeclaration>() {
+                public ClassDeclaration invoke(Loc loc, DArray<Ptr<BaseClass>> metaBases) {
                  {
-                    return new ClassDeclaration(loc, null, metaBases, refPtr(new DArray<Dsymbol>()), false);
+                    return new ClassDeclaration(loc, null, metaBases, new DArray<Dsymbol>(), false);
                 }}
 
             };
@@ -623,14 +623,14 @@ public class objc {
         }
 
         // Erasure: addSymbols<AttribDeclaration, Ptr, Ptr>
-        public  void addSymbols(AttribDeclaration attribDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
-            Ptr<DArray<Dsymbol>> symbols = attribDeclaration.include(null);
+        public  void addSymbols(AttribDeclaration attribDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
+            DArray<Dsymbol> symbols = attribDeclaration.include(null);
             if (symbols == null)
             {
                 return ;
             }
             {
-                Slice<Dsymbol> __r1555 = (symbols.get()).opSlice().copy();
+                Slice<Dsymbol> __r1555 = (symbols).opSlice().copy();
                 int __key1556 = 0;
                 for (; (__key1556 < __r1555.getLength());__key1556 += 1) {
                     Dsymbol symbol = __r1555.get(__key1556);
@@ -640,10 +640,10 @@ public class objc {
         }
 
         // Erasure: addSymbols<ClassDeclaration, Ptr, Ptr>
-        public  void addSymbols(ClassDeclaration classDeclaration, Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
+        public  void addSymbols(ClassDeclaration classDeclaration, DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
             if ((__withSym.classKind == ClassKind.objc) && !__withSym.objc.isExtern && !__withSym.objc.isMeta)
             {
-                (classes.get()).push(classDeclaration);
+                (classes).push(classDeclaration);
             }
         }
 
@@ -698,9 +698,9 @@ public class objc {
             {
                 __withSym.objc.identifier = classDeclaration.ident;
             }
-            Ptr<DArray<Ptr<BaseClass>>> metaBases = refPtr(new DArray<Ptr<BaseClass>>());
+            DArray<Ptr<BaseClass>> metaBases = new DArray<Ptr<BaseClass>>();
             {
-                Slice<Ptr<BaseClass>> __r1553 = (__withSym.baseclasses.get()).opSlice().copy();
+                Slice<Ptr<BaseClass>> __r1553 = (__withSym.baseclasses).opSlice().copy();
                 int __key1554 = 0;
                 for (; (__key1554 < __r1553.getLength());__key1554 += 1) {
                     Ptr<BaseClass> base = __r1553.get(__key1554);
@@ -713,7 +713,7 @@ public class objc {
                         assert(((baseCd.objc.metaclass.type.ty & 0xFF) == ENUMTY.Tclass));
                         Ptr<BaseClass> metaBase = refPtr(new BaseClass(baseCd.objc.metaclass.type));
                         (metaBase.get()).sym = baseCd.objc.metaclass;
-                        (metaBases.get()).push(metaBase);
+                        (metaBases).push(metaBase);
                     }
                     else
                     {
@@ -731,7 +731,7 @@ public class objc {
             {
                 __withSym.objc.metaclass.baseClass = __withSym.baseClass.objc.metaclass;
             }
-            (__withSym.members.get()).push(__withSym.objc.metaclass);
+            (__withSym.members).push(__withSym.objc.metaclass);
             __withSym.objc.metaclass.addMember(sc, classDeclaration);
             dsymbolSemantic(__withSym.objc.metaclass, sc);
         }
@@ -751,9 +751,9 @@ public class objc {
             {
                 __withSym.objc.identifier = classDeclaration.ident;
             }
-            Ptr<DArray<Ptr<BaseClass>>> metaBases = refPtr(new DArray<Ptr<BaseClass>>());
+            DArray<Ptr<BaseClass>> metaBases = new DArray<Ptr<BaseClass>>();
             {
-                Slice<Ptr<BaseClass>> __r1551 = (__withSym.baseclasses.get()).opSlice().copy();
+                Slice<Ptr<BaseClass>> __r1551 = (__withSym.baseclasses).opSlice().copy();
                 int __key1552 = 0;
                 for (; (__key1552 < __r1551.getLength());__key1552 += 1) {
                     Ptr<BaseClass> base = __r1551.get(__key1552);
@@ -766,7 +766,7 @@ public class objc {
                         assert(((baseCd.objc.metaclass.type.ty & 0xFF) == ENUMTY.Tclass));
                         Ptr<BaseClass> metaBase = refPtr(new BaseClass(baseCd.objc.metaclass.type));
                         (metaBase.get()).sym = baseCd.objc.metaclass;
-                        (metaBases.get()).push(metaBase);
+                        (metaBases).push(metaBase);
                     }
                     else
                     {
@@ -784,7 +784,7 @@ public class objc {
             {
                 __withSym.objc.metaclass.baseClass = __withSym.baseClass.objc.metaclass;
             }
-            (__withSym.members.get()).push(__withSym.objc.metaclass);
+            (__withSym.members).push(__withSym.objc.metaclass);
             __withSym.objc.metaclass.addMember(sc, classDeclaration);
             dsymbolSemantic(__withSym.objc.metaclass, sc);
         }

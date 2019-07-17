@@ -51,8 +51,8 @@ public class sapply {
         public  void visit(CompoundStatement s) {
             {
                 int i = 0;
-                for (; (i < (s.statements.get()).length);i++) {
-                    if (this.doCond((s.statements.get()).get(i)))
+                for (; (i < (s.statements).length);i++) {
+                    if (this.doCond((s.statements).get(i)))
                     {
                         return ;
                     }
@@ -65,8 +65,8 @@ public class sapply {
         public  void visit(UnrolledLoopStatement s) {
             {
                 int i = 0;
-                for (; (i < (s.statements.get()).length);i++) {
-                    if (this.doCond((s.statements.get()).get(i)))
+                for (; (i < (s.statements).length);i++) {
+                    if (this.doCond((s.statements).get(i)))
                     {
                         return ;
                     }
@@ -148,8 +148,8 @@ public class sapply {
             }
             {
                 int i = 0;
-                for (; (i < (s.catches.get()).length);i++) {
-                    if (this.doCond((s.catches.get()).get(i).handler.value))
+                for (; (i < (s.catches).length);i++) {
+                    if (this.doCond((s.catches).get(i).handler.value))
                     {
                         return ;
                     }

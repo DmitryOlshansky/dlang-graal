@@ -42,14 +42,14 @@ import static org.dlang.dmd.visitor.*;
 public class dsymbol {
 
     // Erasure: foreachDsymbol<Ptr, Function1>
-    public static int foreachDsymbol(Ptr<DArray<Dsymbol>> symbols, Function1<Dsymbol,Integer> dg) {
+    public static int foreachDsymbol(DArray<Dsymbol> symbols, Function1<Dsymbol,Integer> dg) {
         assert(dg != null);
         if (symbols != null)
         {
             {
                 int i = 0;
-                for (; (i < (symbols.get()).length);i += 1){
-                    Dsymbol s = (symbols.get()).get(i);
+                for (; (i < (symbols).length);i += 1){
+                    Dsymbol s = (symbols).get(i);
                     int result = dg.invoke(s);
                     if (result != 0)
                     {
@@ -62,14 +62,14 @@ public class dsymbol {
     }
 
     // Erasure: foreachDsymbol<Ptr, Runnable1>
-    public static void foreachDsymbol(Ptr<DArray<Dsymbol>> symbols, Runnable1<Dsymbol> dg) {
+    public static void foreachDsymbol(DArray<Dsymbol> symbols, Runnable1<Dsymbol> dg) {
         assert(dg != null);
         if (symbols != null)
         {
             {
                 int i = 0;
-                for (; (i < (symbols.get()).length);i += 1){
-                    Dsymbol s = (symbols.get()).get(i);
+                for (; (i < (symbols).length);i += 1){
+                    Dsymbol s = (symbols).get(i);
                     dg.invoke(s);
                 }
             }
@@ -276,7 +276,7 @@ public class dsymbol {
             {
                 return false;
             }
-            Dsymbol s = (Dsymbol)o;
+            Dsymbol s = ((Dsymbol)o);
             if ((s != null) && (this.ident != null) && (s.ident != null) && this.ident.equals(s.ident))
             {
                 return true;
@@ -335,7 +335,7 @@ public class dsymbol {
                 {
                     Dsymbol p = this;
                     for (; p != null;p = p.parent.value){
-                        message = pcopy((p.depdecl != null ? getMessage(p.depdecl) : null));
+                        message = pcopy(p.depdecl != null ? getMessage(p.depdecl) : null);
                         if (message != null)
                         {
                             break;
@@ -450,7 +450,7 @@ public class dsymbol {
                 return p;
             }
             TemplateInstance ti = p.isTemplateInstance();
-            if ((ti.tempdecl != null) && !localOnly || !((TemplateDeclaration)ti.tempdecl).isstatic)
+            if ((ti.tempdecl != null) && !localOnly || !(((TemplateDeclaration)ti.tempdecl)).isstatic)
             {
                 return ti.tempdecl.toParentDeclImpl(localOnly);
             }
@@ -505,15 +505,15 @@ public class dsymbol {
         }
 
         // Erasure: arraySyntaxCopy<Ptr>
-        public static Ptr<DArray<Dsymbol>> arraySyntaxCopy(Ptr<DArray<Dsymbol>> a) {
-            Ptr<DArray<Dsymbol>> b = null;
+        public static DArray<Dsymbol> arraySyntaxCopy(DArray<Dsymbol> a) {
+            DArray<Dsymbol> b = null;
             if (a != null)
             {
-                b = pcopy((a.get()).copy());
+                b = pcopy((a).copy());
                 {
                     int i = 0;
-                    for (; (i < (b.get()).length);i++){
-                        b.get().set(i, (b.get()).get(i).syntaxCopy(null));
+                    for (; (i < (b).length);i++){
+                        b.set(i, (b).get(i).syntaxCopy(null));
                     }
                 }
             }
@@ -727,10 +727,10 @@ public class dsymbol {
             switch (id.dyncast())
             {
                 case DYNCAST.identifier:
-                    sm = s.search(loc, (Identifier)id, flags);
+                    sm = s.search(loc, ((Identifier)id), flags);
                     break;
                 case DYNCAST.dsymbol:
-                    Dsymbol st = (Dsymbol)id;
+                    Dsymbol st = ((Dsymbol)id);
                     TemplateInstance ti = st.isTemplateInstance();
                     sm = s.search(loc, ti.name, 0);
                     if (sm == null)
@@ -872,14 +872,14 @@ public class dsymbol {
         }
 
         // Erasure: oneMembers<Ptr, Ptr, Identifier>
-        public static boolean oneMembers(Ptr<DArray<Dsymbol>> members, Ptr<Dsymbol> ps, Identifier ident) {
+        public static boolean oneMembers(DArray<Dsymbol> members, Ptr<Dsymbol> ps, Identifier ident) {
             Dsymbol s = null;
             if (members != null)
             {
                 {
                     int i = 0;
-                    for (; (i < (members.get()).length);i++){
-                        Dsymbol sx = (members.get()).get(i);
+                    for (; (i < (members).length);i++){
+                        Dsymbol sx = (members).get(i);
                         boolean x = sx.oneMember(ps, ident);
                         if (!x)
                         {
@@ -942,11 +942,11 @@ public class dsymbol {
         }
 
         // Erasure: addLocalClass<Ptr>
-        public  void addLocalClass(Ptr<DArray<ClassDeclaration>> _param_0) {
+        public  void addLocalClass(DArray<ClassDeclaration> _param_0) {
         }
 
         // Erasure: addObjcSymbols<Ptr, Ptr>
-        public  void addObjcSymbols(Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
+        public  void addObjcSymbols(DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
         }
 
         // Erasure: checkCtorConstInit<>
@@ -1263,10 +1263,10 @@ public class dsymbol {
     }
     public static class ScopeDsymbol extends Dsymbol
     {
-        public Ptr<DArray<Dsymbol>> members = null;
+        public DArray<Dsymbol> members = null;
         public DsymbolTable symtab = null;
         public int endlinnum = 0;
-        public Ptr<DArray<Dsymbol>> importedScopes = null;
+        public DArray<Dsymbol> importedScopes = null;
         public Ptr<Integer> prots = null;
         public Ref<BitArray> accessiblePackages = ref(new BitArray());
         public Ref<BitArray> privateAccessiblePackages = ref(new BitArray());
@@ -1287,7 +1287,7 @@ public class dsymbol {
 
         // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            ScopeDsymbol sds = s != null ? (ScopeDsymbol)s : new ScopeDsymbol(this.ident);
+            ScopeDsymbol sds = s != null ? ((ScopeDsymbol)s) : new ScopeDsymbol(this.ident);
             sds.members = pcopy(Dsymbol.arraySyntaxCopy(this.members));
             sds.endlinnum = this.endlinnum;
             return sds;
@@ -1311,13 +1311,13 @@ public class dsymbol {
             OverloadSet a = null;
             {
                 int i = 0;
-                for (; (i < (this.importedScopes.get()).length);i++){
+                for (; (i < (this.importedScopes).length);i++){
                     if (((flags & 1) != 0) && (this.prots.get(i) == Prot.Kind.private_))
                     {
                         continue;
                     }
                     int sflags = flags & 6;
-                    Dsymbol ss = (this.importedScopes.get()).get(i);
+                    Dsymbol ss = (this.importedScopes).get(i);
                     if (ss.isModule() != null)
                     {
                         if ((flags & 8) != 0)
@@ -1469,14 +1469,14 @@ public class dsymbol {
             {
                 if (this.importedScopes == null)
                 {
-                    this.importedScopes = pcopy((refPtr(new DArray<Dsymbol>())));
+                    this.importedScopes = pcopy(new DArray<Dsymbol>());
                 }
                 else
                 {
                     {
                         int i = 0;
-                        for (; (i < (this.importedScopes.get()).length);i++){
-                            Dsymbol ss = (this.importedScopes.get()).get(i);
+                        for (; (i < (this.importedScopes).length);i++){
+                            Dsymbol ss = (this.importedScopes).get(i);
                             if ((pequals(ss, s)))
                             {
                                 if ((protection.kind > this.prots.get(i)))
@@ -1488,9 +1488,9 @@ public class dsymbol {
                         }
                     }
                 }
-                (this.importedScopes.get()).push(s);
-                this.prots = pcopy((((Ptr<Integer>)Mem.xrealloc(this.prots, (this.importedScopes.get()).length * 4))));
-                this.prots.set(((this.importedScopes.get()).length - 1), protection.kind);
+                (this.importedScopes).push(s);
+                this.prots = pcopy(((Ptr<Integer>)Mem.xrealloc(this.prots, (this.importedScopes).length * 4)));
+                this.prots.set(((this.importedScopes).length - 1), protection.kind);
             }
         }
 
@@ -1515,7 +1515,7 @@ public class dsymbol {
                 return true;
             }
             {
-                Slice<Dsymbol> __r1149 = (this.importedScopes != null ? (this.importedScopes.get()).opSlice() : new RawSlice<Dsymbol>()).copy();
+                Slice<Dsymbol> __r1149 = (this.importedScopes != null ? (this.importedScopes).opSlice() : new RawSlice<Dsymbol>()).copy();
                 int __key1148 = 0;
                 for (; (__key1148 < __r1149.getLength());__key1148 += 1) {
                     Dsymbol ss = __r1149.get(__key1148);
@@ -1583,8 +1583,8 @@ public class dsymbol {
             {
                 {
                     int i = 0;
-                    for (; (i < (this.members.get()).length);i++){
-                        Dsymbol member = (this.members.get()).get(i);
+                    for (; (i < (this.members).length);i++){
+                        Dsymbol member = (this.members).get(i);
                         if (member.hasStaticCtorOrDtor())
                         {
                             return true;
@@ -1596,7 +1596,7 @@ public class dsymbol {
         }
 
         // Erasure: _foreach<Ptr, Ptr, Function2, Ptr>
-        public static int _foreach(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> members, Function2<Integer,Dsymbol,Integer> dg, Ptr<Integer> pn) {
+        public static int _foreach(Ptr<Scope> sc, DArray<Dsymbol> members, Function2<Integer,Dsymbol,Integer> dg, Ptr<Integer> pn) {
             assert(dg != null);
             if (members == null)
             {
@@ -1606,10 +1606,10 @@ public class dsymbol {
             int result = 0;
             {
                 int __key1150 = 0;
-                int __limit1151 = (members.get()).length;
+                int __limit1151 = (members).length;
                 for (; (__key1150 < __limit1151);__key1150 += 1) {
                     int i = __key1150;
-                    Dsymbol s = (members.get()).get(i);
+                    Dsymbol s = (members).get(i);
                     {
                         AttribDeclaration a = s.isAttribDeclaration();
                         if ((a) != null)
@@ -1648,7 +1648,7 @@ public class dsymbol {
         }
 
         // defaulted all parameters starting with #4
-        public static int _foreach(Ptr<Scope> sc, Ptr<DArray<Dsymbol>> members, Function2<Integer,Dsymbol,Integer> dg) {
+        public static int _foreach(Ptr<Scope> sc, DArray<Dsymbol> members, Function2<Integer,Dsymbol,Integer> dg) {
             return _foreach(sc, members, dg, (Ptr<Integer>)null);
         }
 
@@ -1711,7 +1711,7 @@ public class dsymbol {
                 for (; (!pequals(e, eold));e = resolveAliasThis(this._scope, e, false)){
                     if (((e.op & 0xFF) == 203))
                     {
-                        s = ((ScopeExp)e).sds;
+                        s = (((ScopeExp)e)).sds;
                     }
                     else if (((e.op & 0xFF) == 20))
                     {
@@ -1822,7 +1822,7 @@ public class dsymbol {
                 if (this.td != null)
                 {
                     VarDeclaration v = new VarDeclaration(loc, Type.tsize_t, Id.dollar, null, 0L);
-                    Expression e = new IntegerExp(Loc.initial, (long)(this.td.objects.get()).length, Type.tsize_t);
+                    Expression e = new IntegerExp(Loc.initial, (long)(this.td.objects).length, Type.tsize_t);
                     v._init = new ExpInitializer(Loc.initial, e);
                     v.storage_class |= 1099511627781L;
                     dsymbolSemantic(v, this.sc);
@@ -1831,7 +1831,7 @@ public class dsymbol {
                 if (this.type != null)
                 {
                     VarDeclaration v = new VarDeclaration(loc, Type.tsize_t, Id.dollar, null, 0L);
-                    Expression e = new IntegerExp(Loc.initial, (long)(this.type.arguments.get()).length, Type.tsize_t);
+                    Expression e = new IntegerExp(Loc.initial, (long)(this.type.arguments).length, Type.tsize_t);
                     v._init = new ExpInitializer(Loc.initial, e);
                     v.storage_class |= 1099511627781L;
                     dsymbolSemantic(v, this.sc);
@@ -1839,20 +1839,20 @@ public class dsymbol {
                 }
                 if (((this.exp.op & 0xFF) == 62))
                 {
-                    IndexExp ie = (IndexExp)this.exp;
-                    pvar = pcopy((ptr(ie.lengthVar)));
+                    IndexExp ie = ((IndexExp)this.exp);
+                    pvar = pcopy(ptr(ie.lengthVar));
                     ce = ie.e1.value;
                 }
                 else if (((this.exp.op & 0xFF) == 31))
                 {
-                    SliceExp se = (SliceExp)this.exp;
-                    pvar = pcopy((ptr(se.lengthVar)));
+                    SliceExp se = ((SliceExp)this.exp);
+                    pvar = pcopy(ptr(se.lengthVar));
                     ce = se.e1.value;
                 }
                 else if (((this.exp.op & 0xFF) == 17))
                 {
-                    ArrayExp ae = (ArrayExp)this.exp;
-                    pvar = pcopy((ptr(ae.lengthVar)));
+                    ArrayExp ae = ((ArrayExp)this.exp);
+                    pvar = pcopy(ptr(ae.lengthVar));
                     ce = ae.e1.value;
                 }
                 else
@@ -1860,14 +1860,14 @@ public class dsymbol {
                     return null;
                 }
                 for (; ((ce.op & 0xFF) == 99);) {
-                    ce = ((CommaExp)ce).e2.value;
+                    ce = (((CommaExp)ce)).e2.value;
                 }
                 if (((ce.op & 0xFF) == 20))
                 {
-                    Type t = ((TypeExp)ce).type.value;
+                    Type t = (((TypeExp)ce)).type.value;
                     if (((t.ty & 0xFF) == ENUMTY.Ttuple))
                     {
-                        this.type = (TypeTuple)t;
+                        this.type = ((TypeTuple)t);
                         /*goto L1*/throw Dispatch0.INSTANCE;
                     }
                 }
@@ -1877,7 +1877,7 @@ public class dsymbol {
                     Type t = null;
                     if (((ce.op & 0xFF) == 126))
                     {
-                        Expression e = new IntegerExp(Loc.initial, (long)(((TupleExp)ce).exps.get()).length, Type.tsize_t);
+                        Expression e = new IntegerExp(Loc.initial, (long)((((TupleExp)ce)).exps).length, Type.tsize_t);
                         v = new VarDeclaration(loc, Type.tsize_t, Id.dollar, new ExpInitializer(Loc.initial, e), 0L);
                         v.storage_class |= 1099511627781L;
                     }
@@ -1900,7 +1900,7 @@ public class dsymbol {
                                 long dim = 0L;
                                 if (((this.exp.op & 0xFF) == 17))
                                 {
-                                    dim = (long)((ArrayExp)this.exp).currentDimension;
+                                    dim = (long)(((ArrayExp)this.exp)).currentDimension;
                                 }
                                 else if (((this.exp.op & 0xFF) == 31))
                                 {
@@ -1910,15 +1910,15 @@ public class dsymbol {
                                 {
                                     throw new AssertionError("Unreachable code!");
                                 }
-                                Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
+                                DArray<RootObject> tiargs = new DArray<RootObject>();
                                 Expression edim = new IntegerExp(Loc.initial, dim, Type.tsize_t);
                                 edim = expressionSemantic(edim, this.sc);
-                                (tiargs.get()).push(edim);
+                                (tiargs).push(edim);
                                 e = new DotTemplateInstanceExp(loc, ce, td.ident, tiargs);
                             }
                             else
                             {
-                                if (((this.exp.op & 0xFF) == 17) && ((((ArrayExp)this.exp).arguments.get()).length != 1))
+                                if (((this.exp.op & 0xFF) == 17) && (((((ArrayExp)this.exp)).arguments).length != 1))
                                 {
                                     this.exp.error(new BytePtr("`%s` only defines opDollar for one dimension"), ad.toChars());
                                     return null;

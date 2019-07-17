@@ -99,8 +99,8 @@ public class optimize {
             this.expOptimize(e0, 0, false);
             {
                 int i = 0;
-                for (; (i < (e.exps.get()).length);i++){
-                    this.expOptimize((e.exps.get()).get(i), 0, false);
+                for (; (i < (e.exps).length);i++){
+                    this.expOptimize((e.exps).get(i), 0, false);
                 }
             }
         }
@@ -112,8 +112,8 @@ public class optimize {
                 this.expOptimize(basis, this.result & 1, false);
                 {
                     int i = 0;
-                    for (; (i < (e.elements.get()).length);i++){
-                        this.expOptimize((e.elements.get()).get(i), this.result & 1, false);
+                    for (; (i < (e.elements).length);i++){
+                        this.expOptimize((e.elements).get(i), this.result & 1, false);
                     }
                 }
             }
@@ -121,12 +121,12 @@ public class optimize {
 
         // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
-            assert(((e.keys.get()).length == (e.values.get()).length));
+            assert(((e.keys).length == (e.values).length));
             {
                 int i = 0;
-                for (; (i < (e.keys.get()).length);i++){
-                    this.expOptimize((e.keys.get()).get(i), this.result & 1, false);
-                    this.expOptimize((e.values.get()).get(i), this.result & 1, false);
+                for (; (i < (e.keys).length);i++){
+                    this.expOptimize((e.keys).get(i), this.result & 1, false);
+                    this.expOptimize((e.values).get(i), this.result & 1, false);
                 }
             }
         }
@@ -143,8 +143,8 @@ public class optimize {
             {
                 {
                     int i = 0;
-                    for (; (i < (e.elements.get()).length);i++){
-                        this.expOptimize((e.elements.get()).get(i), this.result & 1, false);
+                    for (; (i < (e.elements).length);i++){
+                        this.expOptimize((e.elements).get(i), this.result & 1, false);
                     }
                 }
             }
@@ -204,7 +204,7 @@ public class optimize {
         public  void visit(AddrExp e) {
             if (((e.e1.value.op & 0xFF) == 99))
             {
-                CommaExp ce = (CommaExp)e.e1.value;
+                CommaExp ce = ((CommaExp)e.e1.value);
                 AddrExp ae = new AddrExp(e.loc, ce.e2.value, e.type.value);
                 this.ret = new CommaExp(ce.loc, ce.e1.value, ae, true);
                 this.ret.type.value = e.type.value;
@@ -216,7 +216,7 @@ public class optimize {
             }
             if (((e.e1.value.op & 0xFF) == 24))
             {
-                Expression ex = ((PtrExp)e.e1.value).e1.value;
+                Expression ex = (((PtrExp)e.e1.value)).e1.value;
                 if (e.type.value.equals(ex.type.value))
                 {
                     this.ret = ex;
@@ -230,7 +230,7 @@ public class optimize {
             }
             if (((e.e1.value.op & 0xFF) == 26))
             {
-                VarExp ve = (VarExp)e.e1.value;
+                VarExp ve = ((VarExp)e.e1.value);
                 if (!ve.var.isOut() && !ve.var.isRef() && !ve.var.isImportedSymbol())
                 {
                     this.ret = new SymOffExp(e.loc, ve.var, 0L, ve.hasOverloads);
@@ -240,14 +240,14 @@ public class optimize {
             }
             if (((e.e1.value.op & 0xFF) == 62))
             {
-                IndexExp ae = (IndexExp)e.e1.value;
+                IndexExp ae = ((IndexExp)e.e1.value);
                 if (((ae.e2.value.op & 0xFF) == 135) && ((ae.e1.value.op & 0xFF) == 26))
                 {
                     long index = (long)ae.e2.value.toInteger();
-                    VarExp ve = (VarExp)ae.e1.value;
+                    VarExp ve = ((VarExp)ae.e1.value);
                     if (((ve.type.value.ty & 0xFF) == ENUMTY.Tsarray) && !ve.var.isImportedSymbol())
                     {
-                        TypeSArray ts = (TypeSArray)ve.type.value;
+                        TypeSArray ts = ((TypeSArray)ve.type.value);
                         long dim = (long)ts.dim.toInteger();
                         if ((index < 0L) || (index >= dim))
                         {
@@ -279,7 +279,7 @@ public class optimize {
             }
             if (((e.e1.value.op & 0xFF) == 19))
             {
-                Expression ex = ((AddrExp)e.e1.value).e1.value;
+                Expression ex = (((AddrExp)e.e1.value)).e1.value;
                 if (e.type.value.equals(ex.type.value))
                 {
                     this.ret = ex;
@@ -305,12 +305,12 @@ public class optimize {
             }
             if (((e.e1.value.op & 0xFF) == 25))
             {
-                SymOffExp se = (SymOffExp)e.e1.value;
+                SymOffExp se = ((SymOffExp)e.e1.value);
                 VarDeclaration v = se.var.isVarDeclaration();
                 Expression ex = expandVar(this.result, v);
                 if ((ex != null) && ((ex.op & 0xFF) == 49))
                 {
-                    StructLiteralExp sle = (StructLiteralExp)ex;
+                    StructLiteralExp sle = ((StructLiteralExp)ex);
                     ex = sle.getField(e.type.value, (int)se.offset);
                     if ((ex != null) && !CTFEExp.isCantExp(ex))
                     {
@@ -334,13 +334,13 @@ public class optimize {
             Expression ex = e.e1.value;
             if (((ex.op & 0xFF) == 26))
             {
-                VarExp ve = (VarExp)ex;
+                VarExp ve = ((VarExp)ex);
                 VarDeclaration v = ve.var.isVarDeclaration();
                 ex = expandVar(this.result, v);
             }
             if ((ex != null) && ((ex.op & 0xFF) == 49))
             {
-                StructLiteralExp sle = (StructLiteralExp)ex;
+                StructLiteralExp sle = ((StructLiteralExp)ex);
                 VarDeclaration vf = e.var.isVarDeclaration();
                 if ((vf != null) && !vf.overlapped)
                 {
@@ -361,8 +361,8 @@ public class optimize {
             {
                 {
                     int i = 0;
-                    for (; (i < (e.newargs.get()).length);i++){
-                        this.expOptimize((e.newargs.get()).get(i), 0, false);
+                    for (; (i < (e.newargs).length);i++){
+                        this.expOptimize((e.newargs).get(i), 0, false);
                     }
                 }
             }
@@ -370,8 +370,8 @@ public class optimize {
             {
                 {
                     int i = 0;
-                    for (; (i < (e.arguments.get()).length);i++){
-                        this.expOptimize((e.arguments.get()).get(i), 0, false);
+                    for (; (i < (e.arguments).length);i++){
+                        this.expOptimize((e.arguments).get(i), 0, false);
                     }
                 }
             }
@@ -391,13 +391,13 @@ public class optimize {
                     t1 = t1.nextOf();
                 }
                 assert(((t1.ty & 0xFF) == ENUMTY.Tfunction));
-                TypeFunction tf = (TypeFunction)t1;
+                TypeFunction tf = ((TypeFunction)t1);
                 {
                     int i = 0;
-                    for (; (i < (e.arguments.get()).length);i++){
+                    for (; (i < (e.arguments).length);i++){
                         Parameter p = tf.parameterList.get(i);
                         boolean keep = (p != null) && ((p.storageClass & 2101248L) != 0L);
-                        this.expOptimize((e.arguments.get()).get(i), 0, keep);
+                        this.expOptimize((e.arguments).get(i), 0, keep);
                     }
                 }
             }
@@ -785,7 +785,7 @@ public class optimize {
             }
             if (((e.e1.value.op & 0xFF) == 26))
             {
-                VarDeclaration v = ((VarExp)e.e1.value).var.isVarDeclaration();
+                VarDeclaration v = (((VarExp)e.e1.value)).var.isVarDeclaration();
                 if ((v != null) && ((v.storage_class & 1L) != 0) && ((v.storage_class & 1048576L) != 0) && (v._init != null))
                 {
                     {
@@ -981,7 +981,7 @@ public class optimize {
             }
             if (((e.e1.value.op & 0xFF) == 70))
             {
-                CatExp ce1 = (CatExp)e.e1.value;
+                CatExp ce1 = ((CatExp)e.e1.value);
                 CatExp cex = new CatExp(e.loc, ce1.e2.value, e.e2.value);
                 cex.type.value = e.type.value;
                 Expression ex = Expression_optimize(cex, this.result, false);
@@ -993,7 +993,7 @@ public class optimize {
             }
             if (((e.e1.value.op & 0xFF) == 31))
             {
-                SliceExp se1 = (SliceExp)e.e1.value;
+                SliceExp se1 = ((SliceExp)e.e1.value);
                 if (((se1.e1.value.op & 0xFF) == 121) && (se1.lwr.value == null))
                 {
                     e.e1.value = se1.e1.value;
@@ -1001,7 +1001,7 @@ public class optimize {
             }
             if (((e.e2.value.op & 0xFF) == 31))
             {
-                SliceExp se2 = (SliceExp)e.e2.value;
+                SliceExp se2 = ((SliceExp)e.e2.value);
                 if (((se2.e1.value.op & 0xFF) == 121) && (se2.lwr.value == null))
                 {
                     e.e2.value = se2.e1.value;
@@ -1106,7 +1106,7 @@ public class optimize {
                     }
                     if (((ei.op & 0xFF) == 95) || ((ei.op & 0xFF) == 96))
                     {
-                        AssignExp ae = (AssignExp)ei;
+                        AssignExp ae = ((AssignExp)ei);
                         ei = ae.e2.value;
                         if ((ei.isConst() == 1))
                         {
@@ -1163,12 +1163,12 @@ public class optimize {
         Expression e = e1;
         if (((e1.op & 0xFF) == 26))
         {
-            VarExp ve = (VarExp)e1;
+            VarExp ve = ((VarExp)e1);
             VarDeclaration v = ve.var.isVarDeclaration();
             e = expandVar(result, v);
             if (e != null)
             {
-                if (((e.op & 0xFF) == 99) && ((((CommaExp)e).e1.value.op & 0xFF) == 38))
+                if (((e.op & 0xFF) == 99) && (((((CommaExp)e)).e1.value.op & 0xFF) == 38))
                 {
                     e = e1;
                 }
@@ -1200,18 +1200,18 @@ public class optimize {
         int len = 0;
         if (((arr.op & 0xFF) == 121))
         {
-            len = ((StringExp)arr).len;
+            len = (((StringExp)arr)).len;
         }
         else if (((arr.op & 0xFF) == 47))
         {
-            len = (((ArrayLiteralExp)arr).elements.get()).length;
+            len = ((((ArrayLiteralExp)arr)).elements).length;
         }
         else
         {
             Type t = arr.type.value.toBasetype();
             if (((t.ty & 0xFF) == ENUMTY.Tsarray))
             {
-                len = (int)((TypeSArray)t).dim.toInteger();
+                len = (int)(((TypeSArray)t)).dim.toInteger();
             }
             else
             {
@@ -1237,7 +1237,7 @@ public class optimize {
         Type t = type.toBasetype();
         if (((t.ty & 0xFF) == ENUMTY.Tsarray))
         {
-            len = (int)((TypeSArray)t).dim.toInteger();
+            len = (int)(((TypeSArray)t)).dim.toInteger();
         }
         else
         {

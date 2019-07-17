@@ -107,8 +107,8 @@ public class lexer {
             this.scanloc.value = new Loc(filename, 1, 1);
             this.token.value.opAssign(new Token());
             this.base = pcopy(base);
-            this.end = pcopy((base.plus(endoffset)));
-            this.p.value = pcopy((base.plus(begoffset)));
+            this.end = pcopy(base.plus(endoffset));
+            this.p.value = pcopy(base.plus(begoffset));
             this.line = pcopy(this.p.value);
             this.doDocComment = doDocComment;
             this.commentToken = commentToken;
@@ -282,10 +282,10 @@ public class lexer {
                                 }
                                 this.p.value.postInc();
                                 BytePtr start = pcopy(this.p.value);
-                                Ptr<OutBuffer> hexString = refPtr(new OutBuffer(null, 0, 0, 0, false, false));
+                                OutBuffer hexString = new OutBuffer(null, 0, 0, 0, false, false);
                                 (t.get()).value = this.hexStringConstant(t);
-                                (hexString.get()).write(start, ((this.p.value.minus(start))));
-                                this.error(new BytePtr("Built-in hex string literals are obsolete, use `std.conv.hexString!%s` instead."), (hexString.get()).extractChars());
+                                (hexString).write(start, ((this.p.value.minus(start))));
+                                this.error(new BytePtr("Built-in hex string literals are obsolete, use `std.conv.hexString!%s` instead."), (hexString).extractChars());
                                 return ;
                             case 113:
                                 if (((this.p.value.get(1) & 0xFF) == 34))
@@ -417,7 +417,7 @@ public class lexer {
                                         }
                                         else if ((pequals(id, Id.VENDOR)))
                                         {
-                                            (t.get()).ustring = pcopy((xarraydup(global.vendor).getPtr(0)));
+                                            (t.get()).ustring = pcopy(xarraydup(global.vendor).getPtr(0));
                                             /*goto Lstr*//*unrolled goto*/
                                         /*Lstr:*/
                                             (t.get()).value = TOK.string_;

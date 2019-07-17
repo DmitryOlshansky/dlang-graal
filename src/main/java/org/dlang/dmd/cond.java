@@ -99,7 +99,7 @@ public class cond {
 
         // Erasure: syntaxCopy<>
         public  StaticForeach syntaxCopy() {
-            return new StaticForeach(this.loc, this.aggrfe != null ? (ForeachStatement)this.aggrfe.syntaxCopy() : null, this.rangefe != null ? (ForeachRangeStatement)this.rangefe.syntaxCopy() : null);
+            return new StaticForeach(this.loc, this.aggrfe != null ? ((ForeachStatement)this.aggrfe.syntaxCopy()) : null, this.rangefe != null ? ((ForeachRangeStatement)this.rangefe.syntaxCopy()) : null);
         }
 
         // Erasure: lowerArrayAggregate<Ptr>
@@ -114,7 +114,7 @@ public class cond {
             if (((el.op & 0xFF) == 135))
             {
                 long length = el.toInteger();
-                Ptr<DArray<Expression>> es = refPtr(new DArray<Expression>());
+                DArray<Expression> es = new DArray<Expression>();
                 {
                     long __key815 = 0L;
                     long __limit816 = length;
@@ -122,7 +122,7 @@ public class cond {
                         long i = __key815;
                         IntegerExp index = new IntegerExp(this.loc, i, Type.tsize_t);
                         IndexExp value = new IndexExp(aggr.loc, aggr, index);
-                        (es.get()).push(value);
+                        (es).push(value);
                     }
                 }
                 this.aggrfe.aggr.value = new TupleExp(aggr.loc, es);
@@ -141,59 +141,59 @@ public class cond {
             FuncLiteralDeclaration fd = new FuncLiteralDeclaration(loc, loc, tf, TOK.reserved, null, null);
             fd.fbody.value = s;
             FuncExp fe = new FuncExp(loc, fd);
-            CallExp ce = new CallExp(loc, fe, refPtr(new DArray<Expression>()));
+            CallExp ce = new CallExp(loc, fe, new DArray<Expression>());
             return ce;
         }
 
         // Erasure: createForeach<Loc, Ptr, Statement>
-        public  Statement createForeach(Loc loc, Ptr<DArray<Parameter>> parameters, Statement s) {
+        public  Statement createForeach(Loc loc, DArray<Parameter> parameters, Statement s) {
             if (this.aggrfe != null)
             {
                 return new ForeachStatement(loc, this.aggrfe.op, parameters, this.aggrfe.aggr.value.syntaxCopy(), s, loc);
             }
             else
             {
-                assert((this.rangefe != null) && ((parameters.get()).length == 1));
-                return new ForeachRangeStatement(loc, this.rangefe.op, (parameters.get()).get(0), this.rangefe.lwr.syntaxCopy(), this.rangefe.upr.syntaxCopy(), s, loc);
+                assert((this.rangefe != null) && ((parameters).length == 1));
+                return new ForeachRangeStatement(loc, this.rangefe.op, (parameters).get(0), this.rangefe.lwr.syntaxCopy(), this.rangefe.upr.syntaxCopy(), s, loc);
             }
         }
 
         // Erasure: createTupleType<Loc, Ptr, Ptr>
-        public  TypeStruct createTupleType(Loc loc, Ptr<DArray<Expression>> e, Ptr<Scope> sc) {
+        public  TypeStruct createTupleType(Loc loc, DArray<Expression> e, Ptr<Scope> sc) {
             Identifier sid = Identifier.generateId(new BytePtr("Tuple"));
             StructDeclaration sdecl = new StructDeclaration(loc, sid, false);
             sdecl.storage_class |= 1L;
-            sdecl.members = pcopy((refPtr(new DArray<Dsymbol>())));
+            sdecl.members = pcopy(new DArray<Dsymbol>());
             Identifier fid = Identifier.idPool(tupleFieldName.getPtr(0), 5);
             TypeTypeof ty = new TypeTypeof(loc, new TupleExp(loc, e));
-            (sdecl.members.get()).push(new VarDeclaration(loc, ty, fid, null, 0L));
-            TypeStruct r = (TypeStruct)sdecl.type;
+            (sdecl.members).push(new VarDeclaration(loc, ty, fid, null, 0L));
+            TypeStruct r = ((TypeStruct)sdecl.type);
             r.vtinfo = TypeInfoStructDeclaration.create(r);
             return r;
         }
 
         // Erasure: createTuple<Loc, TypeStruct, Ptr>
-        public  Expression createTuple(Loc loc, TypeStruct type, Ptr<DArray<Expression>> e) {
+        public  Expression createTuple(Loc loc, TypeStruct type, DArray<Expression> e) {
             return new CallExp(loc, new TypeExp(loc, type), e);
         }
 
         // Erasure: lowerNonArrayAggregate<Ptr>
         public  void lowerNonArrayAggregate(Ptr<Scope> sc) {
-            int nvars = this.aggrfe != null ? (this.aggrfe.parameters.get()).length : 1;
+            int nvars = this.aggrfe != null ? (this.aggrfe.parameters).length : 1;
             Loc aloc = this.aggrfe != null ? this.aggrfe.aggr.value.loc : this.rangefe.lwr.loc.copy();
-            Slice<Ptr<DArray<Parameter>>> pparams = slice(new Ptr<DArray<Parameter>>[]{refPtr(new DArray<Parameter>()), refPtr(new DArray<Parameter>()), refPtr(new DArray<Parameter>())});
+            Slice<DArray<Parameter>> pparams = slice(new DArray<Parameter>[]{new DArray<Parameter>(), new DArray<Parameter>(), new DArray<Parameter>()});
             {
                 int __key817 = 0;
                 int __limit818 = nvars;
                 for (; (__key817 < __limit818);__key817 += 1) {
                     int i = __key817;
                     {
-                        Slice<Ptr<DArray<Parameter>>> __r819 = pparams.copy();
+                        Slice<DArray<Parameter>> __r819 = pparams.copy();
                         int __key820 = 0;
                         for (; (__key820 < __r819.getLength());__key820 += 1) {
-                            Ptr<DArray<Parameter>> params = __r819.get(__key820);
-                            Parameter p = this.aggrfe != null ? (this.aggrfe.parameters.get()).get(i) : this.rangefe.prm;
-                            (params.get()).push(new Parameter(p.storageClass, p.type, p.ident, null, null));
+                            DArray<Parameter> params = __r819.get(__key820);
+                            Parameter p = this.aggrfe != null ? (this.aggrfe.parameters).get(i) : this.rangefe.prm;
+                            (params).push(new Parameter(p.storageClass, p.type, p.ident, null, null));
                         }
                     }
                 }
@@ -207,7 +207,7 @@ public class cond {
                     int __limit822 = 2;
                     for (; (__key821 < __limit822);__key821 += 1) {
                         int i = __key821;
-                        res.set((i), new IdentifierExp(aloc, (pparams.get(i).get()).get(0).ident));
+                        res.set((i), new IdentifierExp(aloc, (pparams.get(i)).get(0).ident));
                     }
                 }
             }
@@ -218,14 +218,14 @@ public class cond {
                     int __limit824 = 2;
                     for (; (__key823 < __limit824);__key823 += 1) {
                         int i = __key823;
-                        Ptr<DArray<Expression>> e = refPtr(new DArray<Expression>((pparams.get(0).get()).length));
+                        DArray<Expression> e = new DArray<Expression>((pparams.get(0)).length);
                         {
-                            Slice<Expression> __r826 = (e.get()).opSlice().copy();
+                            Slice<Expression> __r826 = (e).opSlice().copy();
                             int __key825 = 0;
                             for (; (__key825 < __r826.getLength());__key825 += 1) {
                                 Expression elem = __r826.get(__key825);
                                 int j = __key825;
-                                Parameter p = (pparams.get(i).get()).get(j);
+                                Parameter p = (pparams.get(i)).get(j);
                                 elem = new IdentifierExp(aloc, p.ident);
                             }
                         }
@@ -251,24 +251,24 @@ public class cond {
                 this.rangefe.upr = this.rangefe.upr.optimize(0, false);
                 this.rangefe.upr = this.rangefe.upr.ctfeInterpret();
             }
-            Ptr<DArray<Statement>> s1 = refPtr(new DArray<Statement>());
-            Ptr<DArray<Statement>> sfe = refPtr(new DArray<Statement>());
+            DArray<Statement> s1 = new DArray<Statement>();
+            DArray<Statement> sfe = new DArray<Statement>();
             if (tplty != null)
             {
-                (sfe.get()).push(new ExpStatement(this.loc, tplty.sym));
+                (sfe).push(new ExpStatement(this.loc, tplty.sym));
             }
-            (sfe.get()).push(new ReturnStatement(aloc, res.get(0)));
-            (s1.get()).push(this.createForeach(aloc, pparams.get(0), new CompoundStatement(aloc, sfe)));
-            (s1.get()).push(new ExpStatement(aloc, new AssertExp(aloc, new IntegerExp(aloc, 0L, Type.tint32), null)));
+            (sfe).push(new ReturnStatement(aloc, res.get(0)));
+            (s1).push(this.createForeach(aloc, pparams.get(0), new CompoundStatement(aloc, sfe)));
+            (s1).push(new ExpStatement(aloc, new AssertExp(aloc, new IntegerExp(aloc, 0L, Type.tint32), null)));
             TypeTypeof ety = new TypeTypeof(aloc, this.wrapAndCall(aloc, new CompoundStatement(aloc, s1)));
             Type aty = ety.arrayOf();
             Identifier idres = Identifier.generateId(new BytePtr("__res"));
             VarDeclaration vard = new VarDeclaration(aloc, aty, idres, null, 0L);
-            Ptr<DArray<Statement>> s2 = refPtr(new DArray<Statement>());
-            (s2.get()).push(new ExpStatement(aloc, vard));
+            DArray<Statement> s2 = new DArray<Statement>();
+            (s2).push(new ExpStatement(aloc, vard));
             CatAssignExp catass = new CatAssignExp(aloc, new IdentifierExp(aloc, idres), res.get(1));
-            (s2.get()).push(this.createForeach(aloc, pparams.get(1), new ExpStatement(aloc, catass)));
-            (s2.get()).push(new ReturnStatement(aloc, new IdentifierExp(aloc, idres)));
+            (s2).push(this.createForeach(aloc, pparams.get(1), new ExpStatement(aloc, catass)));
+            (s2).push(new ReturnStatement(aloc, new IdentifierExp(aloc, idres)));
             Expression aggr = this.wrapAndCall(aloc, new CompoundStatement(aloc, s2));
             sc = pcopy((sc.get()).startCTFE());
             aggr = expressionSemantic(aggr, sc);
@@ -398,9 +398,9 @@ public class cond {
                     {
                         if (this.mod.debugidsNot == null)
                         {
-                            this.mod.debugidsNot = pcopy((refPtr(new DArray<Identifier>())));
+                            this.mod.debugidsNot = pcopy(new DArray<Identifier>());
                         }
-                        (this.mod.debugidsNot.get()).push(this.ident);
+                        (this.mod.debugidsNot).push(this.ident);
                     }
                 }
                 else if ((this.level <= global.params.debuglevel) || (this.level <= this.mod.debuglevel))
@@ -606,9 +606,9 @@ public class cond {
                     {
                         if (this.mod.versionidsNot == null)
                         {
-                            this.mod.versionidsNot = pcopy((refPtr(new DArray<Identifier>())));
+                            this.mod.versionidsNot = pcopy(new DArray<Identifier>());
                         }
-                        (this.mod.versionidsNot.get()).push(this.ident);
+                        (this.mod.versionidsNot).push(this.ident);
                     }
                 }
                 else if ((this.level <= global.params.versionlevel) || (this.level <= this.mod.versionlevel))
@@ -731,11 +731,11 @@ public class cond {
         }
     }
     // Erasure: findCondition<Ptr, Identifier>
-    public static boolean findCondition(Ptr<DArray<Identifier>> ids, Identifier ident) {
+    public static boolean findCondition(DArray<Identifier> ids, Identifier ident) {
         if (ids != null)
         {
             {
-                Slice<Identifier> __r829 = (ids.get()).opSlice().copy();
+                Slice<Identifier> __r829 = (ids).opSlice().copy();
                 int __key830 = 0;
                 for (; (__key830 < __r829.getLength());__key830 += 1) {
                     Identifier id = __r829.get(__key830);
@@ -755,26 +755,26 @@ public class cond {
         {
             return ;
         }
-        Ptr<OutBuffer> ob = global.params.moduleDeps;
+        OutBuffer ob = global.params.moduleDeps;
         dmodule.Module imod = sc != null ? (sc.get()).instantiatingModule() : condition.mod;
         if (imod == null)
         {
             return ;
         }
-        (ob.get()).writestring(depType);
-        (ob.get()).writestring(imod.toPrettyChars(false));
-        (ob.get()).writestring(new ByteSlice(" ("));
+        (ob).writestring(depType);
+        (ob).writestring(imod.toPrettyChars(false));
+        (ob).writestring(new ByteSlice(" ("));
         escapePath(ob, imod.srcfile.toChars());
-        (ob.get()).writestring(new ByteSlice(") : "));
+        (ob).writestring(new ByteSlice(") : "));
         if (condition.ident != null)
         {
-            (ob.get()).writestring(condition.ident.asString());
+            (ob).writestring(condition.ident.asString());
         }
         else
         {
-            (ob.get()).print((long)condition.level);
+            (ob).print((long)condition.level);
         }
-        (ob.get()).writeByte(10);
+        (ob).writeByte(10);
     }
 
 }

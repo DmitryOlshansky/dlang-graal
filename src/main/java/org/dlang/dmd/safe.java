@@ -24,7 +24,7 @@ public class safe {
         {
             return false;
         }
-        DotVarExp dve = (DotVarExp)e;
+        DotVarExp dve = ((DotVarExp)e);
         {
             VarDeclaration v = dve.var.isVarDeclaration();
             if ((v) != null)
@@ -129,7 +129,7 @@ public class safe {
                 }
                 return false;
             }
-            if (((ttobn.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)ttobn).sym.members == null) || ((tfromn.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)tfromn).sym.members == null))
+            if (((ttobn.ty & 0xFF) == ENUMTY.Tstruct) && ((((TypeStruct)ttobn)).sym.members == null) || ((tfromn.ty & 0xFF) == ENUMTY.Tstruct) && ((((TypeStruct)tfromn)).sym.members == null))
             {
                 return false;
             }

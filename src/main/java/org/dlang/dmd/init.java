@@ -53,7 +53,7 @@ public class init {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
                 Ref<HdrGenState> hgs = ref(new HdrGenState());
-                toCBuffer(this, ptr(buf), ptr(hgs));
+                toCBuffer(this, buf.value, ptr(hgs));
                 return buf.value.extractChars();
             }
             finally {
@@ -262,11 +262,11 @@ public class init {
 
     // Erasure: hasNonConstPointers<Expression>
     public static boolean hasNonConstPointers(Expression e) {
-        Function1<Ptr<DArray<Expression>>,Boolean> checkArray = new Function1<Ptr<DArray<Expression>>,Boolean>() {
-            public Boolean invoke(Ptr<DArray<Expression>> elems) {
+        Function1<DArray<Expression>,Boolean> checkArray = new Function1<DArray<Expression>,Boolean>() {
+            public Boolean invoke(DArray<Expression> elems) {
              {
                 {
-                    Slice<Expression> __r1511 = (elems.get()).opSlice().copy();
+                    Slice<Expression> __r1511 = (elems).opSlice().copy();
                     Ref<Integer> __key1512 = ref(0);
                     for (; (__key1512.value < __r1511.getLength());__key1512.value += 1) {
                         Expression e = __r1511.get(__key1512.value);
@@ -314,7 +314,7 @@ public class init {
                 {
                     return true;
                 }
-                if (((TypeAArray)ae.type.value).index.hasPointers())
+                if ((((TypeAArray)ae.type.value)).index.hasPointers())
                 {
                     return checkArray.invoke(ae.keys);
                 }
@@ -414,11 +414,11 @@ public class init {
             case 1:
                 return inx;
             case 2:
-                return copyStruct.invoke((StructInitializer)inx);
+                return copyStruct.invoke(((StructInitializer)inx));
             case 3:
-                return copyArray.invoke((ArrayInitializer)inx);
+                return copyArray.invoke(((ArrayInitializer)inx));
             case 4:
-                return new ExpInitializer(inx.loc, ((ExpInitializer)inx).exp.syntaxCopy());
+                return new ExpInitializer(inx.loc, (((ExpInitializer)inx)).exp.syntaxCopy());
             default:
             throw SwitchError.INSTANCE;
         }

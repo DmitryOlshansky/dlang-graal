@@ -212,7 +212,7 @@ public class identifier {
             if (id == null)
             {
                 id = new Identifier((sv.get()).asString(), 120);
-                (sv.get()).ptrvalue = pcopy(((Object)id));
+                (sv.get()).ptrvalue = pcopy((Object)id);
             }
             return id;
         }
@@ -227,7 +227,7 @@ public class identifier {
             Ptr<StringValue> sv = stringtable.insert(s, null);
             assert(sv != null);
             Identifier id = new Identifier((sv.get()).asString(), value);
-            (sv.get()).ptrvalue = pcopy(((Object)id));
+            (sv.get()).ptrvalue = pcopy((Object)id);
             return id;
         }
 

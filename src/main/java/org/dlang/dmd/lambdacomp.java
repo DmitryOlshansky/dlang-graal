@@ -79,7 +79,7 @@ public class lambdacomp {
         // Erasure: visit<FuncLiteralDeclaration>
         public  void visit(FuncLiteralDeclaration fld) {
             assert(((fld.type.ty & 0xFF) != ENUMTY.Terror));
-            TypeFunction tf = (TypeFunction)fld.type;
+            TypeFunction tf = ((TypeFunction)fld.type);
             int dim = Parameter.dim(tf.parameterList.parameters);
             this.buf.printf(new BytePtr("%d:"), dim);
             this.arg_hash._init(dim + 1);
@@ -252,7 +252,7 @@ public class lambdacomp {
             }
             this.buf.writeByte(40);
             {
-                Slice<Expression> __r1523 = (exp.arguments.get()).opSlice().copy();
+                Slice<Expression> __r1523 = (exp.arguments).opSlice().copy();
                 int __key1524 = 0;
                 for (; (__key1524 < __r1523.getLength());__key1524 += 1) {
                     Expression arg = __r1523.get(__key1524);
@@ -330,7 +330,7 @@ public class lambdacomp {
             {
                 Ref<OutBuffer> mangledName = ref(new OutBuffer());
                 try {
-                    mangleToBuffer(s, ptr(mangledName));
+                    mangleToBuffer(s, mangledName.value);
                     this.buf.writestring(mangledName.value.peekSlice());
                     this.buf.writeByte(95);
                 }
@@ -385,7 +385,7 @@ public class lambdacomp {
 
         // Erasure: visit<Parameter>
         public  void visit(Parameter p) {
-            if (((p.type.ty & 0xFF) == ENUMTY.Tident) && (((TypeIdentifier)p.type).ident.asString().getLength() > 3) && (strncmp(((TypeIdentifier)p.type).ident.toChars(), new BytePtr("__T"), 3) == 0))
+            if (((p.type.ty & 0xFF) == ENUMTY.Tident) && ((((TypeIdentifier)p.type)).ident.asString().getLength() > 3) && (strncmp((((TypeIdentifier)p.type)).ident.toChars(), new BytePtr("__T"), 3) == 0))
             {
                 this.buf.writestring(new ByteSlice("none_"));
             }
@@ -397,17 +397,17 @@ public class lambdacomp {
 
         // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
-            TypeStruct ty = (TypeStruct)e.stype;
+            TypeStruct ty = ((TypeStruct)e.stype);
             if (ty != null)
             {
                 this.writeMangledName(ty.sym);
-                int dim = (e.elements.get()).length;
+                int dim = (e.elements).length;
                 {
                     int __key1529 = 0;
                     int __limit1530 = dim;
                     for (; (__key1529 < __limit1530);__key1529 += 1) {
                         int i = __key1529;
-                        Expression elem = (e.elements.get()).get(i);
+                        Expression elem = (e.elements).get(i);
                         if (elem != null)
                         {
                             elem.accept(this);

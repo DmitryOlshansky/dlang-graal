@@ -30,44 +30,44 @@ public class dmangle {
 
     static ByteSlice mangleChar = slice(initializer_0);
     // Erasure: tyToDecoBuffer<Ptr, int>
-    public static void tyToDecoBuffer(Ptr<OutBuffer> buf, int ty) {
+    public static void tyToDecoBuffer(OutBuffer buf, int ty) {
         byte c = mangleChar.get(ty);
-        (buf.get()).writeByte((c & 0xFF));
+        (buf).writeByte((c & 0xFF));
         if (((c & 0xFF) == 122))
         {
-            (buf.get()).writeByte((ty == ENUMTY.Tint128) ? 105 : 107);
+            (buf).writeByte((ty == ENUMTY.Tint128) ? 105 : 107);
         }
     }
 
     // Erasure: MODtoDecoBuffer<Ptr, byte>
-    public static void MODtoDecoBuffer(Ptr<OutBuffer> buf, byte mod) {
+    public static void MODtoDecoBuffer(OutBuffer buf, byte mod) {
         switch ((mod & 0xFF))
         {
             case 0:
                 break;
             case 1:
-                (buf.get()).writeByte(120);
+                (buf).writeByte(120);
                 break;
             case 4:
-                (buf.get()).writeByte(121);
+                (buf).writeByte(121);
                 break;
             case 2:
-                (buf.get()).writeByte(79);
+                (buf).writeByte(79);
                 break;
             case 3:
-                (buf.get()).writestring(new ByteSlice("Ox"));
+                (buf).writestring(new ByteSlice("Ox"));
                 break;
             case 8:
-                (buf.get()).writestring(new ByteSlice("Ng"));
+                (buf).writestring(new ByteSlice("Ng"));
                 break;
             case 9:
-                (buf.get()).writestring(new ByteSlice("Ngx"));
+                (buf).writestring(new ByteSlice("Ngx"));
                 break;
             case 10:
-                (buf.get()).writestring(new ByteSlice("ONg"));
+                (buf).writestring(new ByteSlice("ONg"));
                 break;
             case 11:
-                (buf.get()).writestring(new ByteSlice("ONgx"));
+                (buf).writestring(new ByteSlice("ONgx"));
                 break;
             default:
             throw new AssertionError("Unreachable code!");
@@ -78,15 +78,15 @@ public class dmangle {
     {
         public AA<Type,Integer> types = new AA<Type,Integer>();
         public AA<Identifier,Integer> idents = new AA<Identifier,Integer>();
-        public Ptr<OutBuffer> buf = null;
+        public OutBuffer buf = null;
         // Erasure: __ctor<Ptr>
-        public  Mangler(Ptr<OutBuffer> buf) {
+        public  Mangler(OutBuffer buf) {
             this.buf = pcopy(buf);
         }
 
         // Erasure: writeBackRef<int>
         public  void writeBackRef(int pos) {
-            (this.buf.get()).writeByte(81);
+            (this.buf).writeByte(81);
             int base = 26;
             int mul = 1;
             for (; (pos >= mul * 26);) {
@@ -94,11 +94,11 @@ public class dmangle {
             }
             for (; (mul >= 26);){
                 byte dig = (byte)(pos / mul);
-                (this.buf.get()).writeByte((65 + (dig & 0xFF)));
+                (this.buf).writeByte((65 + (dig & 0xFF)));
                 pos -= (dig & 0xFF) * mul;
                 mul /= 26;
             }
-            (this.buf.get()).writeByte((97 + ((byte)pos & 0xFF)));
+            (this.buf).writeByte((97 + ((byte)pos & 0xFF)));
         }
 
         // Erasure: backrefType<Type>
@@ -108,10 +108,10 @@ public class dmangle {
                 Ptr<Integer> p = pcopy(this.types.getLvalue(t));
                 if (p.get() != 0)
                 {
-                    this.writeBackRef((this.buf.get()).offset - p.get());
+                    this.writeBackRef((this.buf).offset - p.get());
                     return true;
                 }
-                p.set(0, (this.buf.get()).offset);
+                p.set(0, (this.buf).offset);
             }
             return false;
         }
@@ -121,10 +121,10 @@ public class dmangle {
             Ptr<Integer> p = pcopy(this.idents.getLvalue(id));
             if (p.get() != 0)
             {
-                this.writeBackRef((this.buf.get()).offset - p.get());
+                this.writeBackRef((this.buf).offset - p.get());
                 return true;
             }
-            p.set(0, (this.buf.get()).offset);
+            p.set(0, (this.buf).offset);
             return false;
         }
 
@@ -171,7 +171,7 @@ public class dmangle {
 
         // Erasure: visit<TypeVector>
         public  void visit(TypeVector t) {
-            (this.buf.get()).writestring(new ByteSlice("Nh"));
+            (this.buf).writestring(new ByteSlice("Nh"));
             this.visitWithMask(t.basetype, t.mod);
         }
 
@@ -180,7 +180,7 @@ public class dmangle {
             this.visit((Type)t);
             if (t.dim != null)
             {
-                (this.buf.get()).print(t.dim.toInteger());
+                (this.buf).print(t.dim.toInteger());
             }
             if (t.next.value != null)
             {
@@ -247,48 +247,48 @@ public class dmangle {
                 default:
                 throw SwitchError.INSTANCE;
             }
-            (this.buf.get()).writeByte((mc & 0xFF));
+            (this.buf).writeByte((mc & 0xFF));
             if (ta.purity != 0)
             {
-                (this.buf.get()).writestring(new ByteSlice("Na"));
+                (this.buf).writestring(new ByteSlice("Na"));
             }
             if (ta.isnothrow)
             {
-                (this.buf.get()).writestring(new ByteSlice("Nb"));
+                (this.buf).writestring(new ByteSlice("Nb"));
             }
             if (ta.isref)
             {
-                (this.buf.get()).writestring(new ByteSlice("Nc"));
+                (this.buf).writestring(new ByteSlice("Nc"));
             }
             if (ta.isproperty)
             {
-                (this.buf.get()).writestring(new ByteSlice("Nd"));
+                (this.buf).writestring(new ByteSlice("Nd"));
             }
             if (ta.isnogc)
             {
-                (this.buf.get()).writestring(new ByteSlice("Ni"));
+                (this.buf).writestring(new ByteSlice("Ni"));
             }
             if (ta.isreturn && !ta.isreturninferred)
             {
-                (this.buf.get()).writestring(new ByteSlice("Nj"));
+                (this.buf).writestring(new ByteSlice("Nj"));
             }
             else if (ta.isscope && !ta.isscopeinferred)
             {
-                (this.buf.get()).writestring(new ByteSlice("Nl"));
+                (this.buf).writestring(new ByteSlice("Nl"));
             }
             switch (ta.trust)
             {
                 case TRUST.trusted:
-                    (this.buf.get()).writestring(new ByteSlice("Ne"));
+                    (this.buf).writestring(new ByteSlice("Ne"));
                     break;
                 case TRUST.safe:
-                    (this.buf.get()).writestring(new ByteSlice("Nf"));
+                    (this.buf).writestring(new ByteSlice("Nf"));
                     break;
                 default:
                 break;
             }
             this.paramsToDecoBuffer(t.parameterList.parameters);
-            (this.buf.get()).writeByte((90 - t.parameterList.varargs));
+            (this.buf).writeByte((90 - t.parameterList.varargs));
             if ((tret != null))
             {
                 this.visitWithMask(tret, (byte)0);
@@ -300,8 +300,8 @@ public class dmangle {
         public  void visit(TypeIdentifier t) {
             this.visit((Type)t);
             ByteSlice name = t.ident.asString().copy();
-            (this.buf.get()).print((long)name.getLength());
-            (this.buf.get()).writestring(name);
+            (this.buf).print((long)name.getLength());
+            (this.buf).writestring(name);
         }
 
         // Erasure: visit<TypeEnum>
@@ -326,7 +326,7 @@ public class dmangle {
         public  void visit(TypeTuple t) {
             this.visit((Type)t);
             this.paramsToDecoBuffer(t.arguments);
-            (this.buf.get()).writeByte(90);
+            (this.buf).writeByte(90);
         }
 
         // Erasure: visit<TypeNull>
@@ -391,7 +391,7 @@ public class dmangle {
                 }
                 else
                 {
-                    (this.buf.get()).writeByte(48);
+                    (this.buf).writeByte(48);
                 }
             }
         }
@@ -400,11 +400,11 @@ public class dmangle {
         public  void mangleFunc(FuncDeclaration fd, boolean inParent) {
             if (fd.needThis() || fd.isNested())
             {
-                (this.buf.get()).writeByte(77);
+                (this.buf).writeByte(77);
             }
             if ((fd.type == null) || ((fd.type.ty & 0xFF) == ENUMTY.Terror))
             {
-                (this.buf.get()).writestring(new ByteSlice("9__error__FZ"));
+                (this.buf).writestring(new ByteSlice("9__error__FZ"));
             }
             else if (inParent)
             {
@@ -421,14 +421,14 @@ public class dmangle {
         // Erasure: toBuffer<Array, Dsymbol>
         public  void toBuffer(ByteSlice id, Dsymbol s) {
             int len = id.getLength();
-            if (((this.buf.get()).offset + len >= 8388608))
+            if (((this.buf).offset + len >= 8388608))
             {
-                s.error(new BytePtr("excessive length %llu for symbol, possible recursive expansion?"), (long)((this.buf.get()).offset + len));
+                s.error(new BytePtr("excessive length %llu for symbol, possible recursive expansion?"), (long)((this.buf).offset + len));
             }
             else
             {
-                (this.buf.get()).print((long)len);
-                (this.buf.get()).writestring(id);
+                (this.buf).print((long)len);
+                (this.buf).writestring(id);
             }
         }
 
@@ -465,11 +465,11 @@ public class dmangle {
                 ByteSlice id = externallyMangledIdentifier(d).copy();
                 if ((id).getLength() != 0)
                 {
-                    (this.buf.get()).writestring(id);
+                    (this.buf).writestring(id);
                     return ;
                 }
             }
-            (this.buf.get()).writestring(new ByteSlice("_D"));
+            (this.buf).writestring(new ByteSlice("_D"));
             this.mangleDecl(d);
         }
 
@@ -539,17 +539,17 @@ public class dmangle {
             assert(fd.isFuncAliasDeclaration() == null);
             if (fd.mangleOverride.getLength() != 0)
             {
-                (this.buf.get()).writestring(fd.mangleOverride);
+                (this.buf).writestring(fd.mangleOverride);
                 return ;
             }
             if (fd.isMain())
             {
-                (this.buf.get()).writestring(new ByteSlice("_Dmain"));
+                (this.buf).writestring(new ByteSlice("_Dmain"));
                 return ;
             }
             if (fd.isWinMain() || fd.isDllMain() || (pequals(fd.ident, Id.tls_get_addr)))
             {
-                (this.buf.get()).writestring(fd.ident.asString());
+                (this.buf).writestring(fd.ident.asString());
                 return ;
             }
             this.visit((Declaration)fd);
@@ -559,7 +559,7 @@ public class dmangle {
         public  void visit(VarDeclaration vd) {
             if (vd.mangleOverride.getLength() != 0)
             {
-                (this.buf.get()).writestring(vd.mangleOverride);
+                (this.buf).writestring(vd.mangleOverride);
                 return ;
             }
             this.visit((Declaration)vd);
@@ -605,26 +605,26 @@ public class dmangle {
             TemplateDeclaration tempdecl = ti.tempdecl.isTemplateDeclaration();
             assert(tempdecl != null);
             byte T = ti.members != null ? (byte)84 : (byte)85;
-            (this.buf.get()).printf(new BytePtr("__%c"), (T & 0xFF));
+            (this.buf).printf(new BytePtr("__%c"), (T & 0xFF));
             this.mangleIdentifier(tempdecl.ident, tempdecl);
-            Ptr<DArray<RootObject>> args = ti.tiargs;
-            int nparams = (tempdecl.parameters.get()).length - (tempdecl.isVariadic() != null ? 1 : 0);
+            DArray<RootObject> args = ti.tiargs;
+            int nparams = (tempdecl.parameters).length - (tempdecl.isVariadic() != null ? 1 : 0);
             {
                 int i = 0;
             L_outer1:
-                for (; (i < (args.get()).length);i++){
-                    RootObject o = (args.get()).get(i);
+                for (; (i < (args).length);i++){
+                    RootObject o = (args).get(i);
                     Type ta = isType(o);
                     Expression ea = isExpression(o);
                     Dsymbol sa = isDsymbol(o);
                     Tuple va = isTuple(o);
-                    if ((i < nparams) && ((tempdecl.parameters.get()).get(i).specialization() != null))
+                    if ((i < nparams) && ((tempdecl.parameters).get(i).specialization() != null))
                     {
-                        (this.buf.get()).writeByte(72);
+                        (this.buf).writeByte(72);
                     }
                     if (ta != null)
                     {
-                        (this.buf.get()).writeByte(84);
+                        (this.buf).writeByte(84);
                         this.visitWithMask(ta, (byte)0);
                     }
                     else if (ea != null)
@@ -653,7 +653,7 @@ public class dmangle {
                                         }
                                         if (d.mangleOverride.getLength() != 0)
                                         {
-                                            (this.buf.get()).writeByte(88);
+                                            (this.buf).writeByte(88);
                                             this.toBuffer(d.mangleOverride, d);
                                             continue L_outer1;
                                         }
@@ -661,7 +661,7 @@ public class dmangle {
                                             ByteSlice id = externallyMangledIdentifier(d).copy();
                                             if ((id).getLength() != 0)
                                             {
-                                                (this.buf.get()).writeByte(88);
+                                                (this.buf).writeByte(88);
                                                 this.toBuffer(id, d);
                                                 continue L_outer1;
                                             }
@@ -673,7 +673,7 @@ public class dmangle {
                                         }
                                     }
                                 }
-                                (this.buf.get()).writeByte(83);
+                                (this.buf).writeByte(83);
                                 this.mangleSymbol(sa);
                             }
                         }
@@ -699,7 +699,7 @@ public class dmangle {
                                         }
                                         if (d.mangleOverride.getLength() != 0)
                                         {
-                                            (this.buf.get()).writeByte(88);
+                                            (this.buf).writeByte(88);
                                             this.toBuffer(d.mangleOverride, d);
                                             continue L_outer1;
                                         }
@@ -707,7 +707,7 @@ public class dmangle {
                                             ByteSlice id = externallyMangledIdentifier(d).copy();
                                             if ((id).getLength() != 0)
                                             {
-                                                (this.buf.get()).writeByte(88);
+                                                (this.buf).writeByte(88);
                                                 this.toBuffer(id, d);
                                                 continue L_outer1;
                                             }
@@ -719,7 +719,7 @@ public class dmangle {
                                         }
                                     }
                                 }
-                                (this.buf.get()).writeByte(83);
+                                (this.buf).writeByte(83);
                                 this.mangleSymbol(sa);
                             }
                         }
@@ -752,7 +752,7 @@ public class dmangle {
                                         }
                                         if (d.mangleOverride.getLength() != 0)
                                         {
-                                            (this.buf.get()).writeByte(88);
+                                            (this.buf).writeByte(88);
                                             this.toBuffer(d.mangleOverride, d);
                                             continue L_outer1;
                                         }
@@ -760,7 +760,7 @@ public class dmangle {
                                             ByteSlice id = externallyMangledIdentifier(d).copy();
                                             if ((id).getLength() != 0)
                                             {
-                                                (this.buf.get()).writeByte(88);
+                                                (this.buf).writeByte(88);
                                                 this.toBuffer(id, d);
                                                 continue L_outer1;
                                             }
@@ -772,11 +772,11 @@ public class dmangle {
                                         }
                                     }
                                 }
-                                (this.buf.get()).writeByte(83);
+                                (this.buf).writeByte(83);
                                 this.mangleSymbol(sa);
                             }
                         }
-                        (this.buf.get()).writeByte(86);
+                        (this.buf).writeByte(86);
                         if (((ea.op & 0xFF) == 126))
                         {
                             ea.error(new BytePtr("tuple is not a valid template value argument"));
@@ -808,7 +808,7 @@ public class dmangle {
                                 }
                                 if (d.mangleOverride.getLength() != 0)
                                 {
-                                    (this.buf.get()).writeByte(88);
+                                    (this.buf).writeByte(88);
                                     this.toBuffer(d.mangleOverride, d);
                                     continue L_outer1;
                                 }
@@ -816,7 +816,7 @@ public class dmangle {
                                     ByteSlice id = externallyMangledIdentifier(d).copy();
                                     if ((id).getLength() != 0)
                                     {
-                                        (this.buf.get()).writeByte(88);
+                                        (this.buf).writeByte(88);
                                         this.toBuffer(id, d);
                                         continue L_outer1;
                                     }
@@ -828,13 +828,13 @@ public class dmangle {
                                 }
                             }
                         }
-                        (this.buf.get()).writeByte(83);
+                        (this.buf).writeByte(83);
                         this.mangleSymbol(sa);
                     }
                     else if (va != null)
                     {
-                        assert((i + 1 == (args.get()).length));
-                        args = pcopy((ptr(va.objects)));
+                        assert((i + 1 == (args).length));
+                        args = pcopy(va.objects.value);
                         i = -1;
                     }
                     else
@@ -843,7 +843,7 @@ public class dmangle {
                     }
                 }
             }
-            (this.buf.get()).writeByte(90);
+            (this.buf).writeByte(90);
         }
 
         // Erasure: visit<Dsymbol>
@@ -869,19 +869,19 @@ public class dmangle {
             long v = e.toInteger();
             if (((long)v < 0L))
             {
-                (this.buf.get()).writeByte(78);
-                (this.buf.get()).print(-v);
+                (this.buf).writeByte(78);
+                (this.buf).print(-v);
             }
             else
             {
-                (this.buf.get()).writeByte(105);
-                (this.buf.get()).print(v);
+                (this.buf).writeByte(105);
+                (this.buf).print(v);
             }
         }
 
         // Erasure: visit<RealExp>
         public  void visit(RealExp e) {
-            (this.buf.get()).writeByte(101);
+            (this.buf).writeByte(101);
             this.realToMangleBuffer(e.value);
         }
 
@@ -889,17 +889,17 @@ public class dmangle {
         public  void realToMangleBuffer(double value) {
             if (CTFloat.isNaN(value))
             {
-                (this.buf.get()).writestring(new ByteSlice("NAN"));
+                (this.buf).writestring(new ByteSlice("NAN"));
                 return ;
             }
             if ((value < CTFloat.zero))
             {
-                (this.buf.get()).writeByte(78);
+                (this.buf).writeByte(78);
                 value = -value;
             }
             if (CTFloat.isInfinity(value))
             {
-                (this.buf.get()).writestring(new ByteSlice("INF"));
+                (this.buf).writestring(new ByteSlice("INF"));
                 return ;
             }
             ByteSlice buffer = new ByteSlice(new byte[36]);
@@ -913,13 +913,13 @@ public class dmangle {
                     switch ((c & 0xFF))
                     {
                         case 45:
-                            (this.buf.get()).writeByte(78);
+                            (this.buf).writeByte(78);
                             break;
                         case 43:
                         case 46:
                             break;
                         default:
-                        (this.buf.get()).writeByte((c & 0xFF));
+                        (this.buf).writeByte((c & 0xFF));
                         break;
                     }
                 }
@@ -928,15 +928,15 @@ public class dmangle {
 
         // Erasure: visit<ComplexExp>
         public  void visit(ComplexExp e) {
-            (this.buf.get()).writeByte(99);
+            (this.buf).writeByte(99);
             this.realToMangleBuffer(e.toReal());
-            (this.buf.get()).writeByte(99);
+            (this.buf).writeByte(99);
             this.realToMangleBuffer(e.toImaginary());
         }
 
         // Erasure: visit<NullExp>
         public  void visit(NullExp e) {
-            (this.buf.get()).writeByte(110);
+            (this.buf).writeByte(110);
         }
 
         // Erasure: visit<StringExp>
@@ -993,13 +993,13 @@ public class dmangle {
                     default:
                     throw new AssertionError("Unreachable code!");
                 }
-                (this.buf.get()).reserve(12 + 2 * q.getLength());
-                (this.buf.get()).writeByte((m & 0xFF));
-                (this.buf.get()).print((long)q.getLength());
-                (this.buf.get()).writeByte(95);
+                (this.buf).reserve(12 + 2 * q.getLength());
+                (this.buf).writeByte((m & 0xFF));
+                (this.buf).print((long)q.getLength());
+                (this.buf).writeByte(95);
                 int qi = 0;
                 {
-                    BytePtr p = pcopy(toBytePtr(this.buf.get().data).plus((this.buf.get()).offset));
+                    BytePtr p = pcopy(toBytePtr(this.buf.data).plus((this.buf).offset));
                     BytePtr pend = pcopy(p.plus((2 * q.getLength())));
                     for (; (p.lessThan(pend));comma(p.plusAssign(2), qi += 1)){
                         byte hi = (byte)((q.get(qi) & 0xFF) >> 4 & 15);
@@ -1008,7 +1008,7 @@ public class dmangle {
                         p.set(1, ((lo & 0xFF) < 10) ? (byte)((lo & 0xFF) + 48) : (byte)((lo & 0xFF) - 10 + 97));
                     }
                 }
-                (this.buf.get()).offset += 2 * q.getLength();
+                (this.buf).offset += 2 * q.getLength();
             }
             finally {
             }
@@ -1016,9 +1016,9 @@ public class dmangle {
 
         // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
-            int dim = e.elements != null ? (e.elements.get()).length : 0;
-            (this.buf.get()).writeByte(65);
-            (this.buf.get()).print((long)dim);
+            int dim = e.elements != null ? (e.elements).length : 0;
+            (this.buf).writeByte(65);
+            (this.buf).print((long)dim);
             {
                 int __key1026 = 0;
                 int __limit1027 = dim;
@@ -1031,45 +1031,45 @@ public class dmangle {
 
         // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
-            int dim = (e.keys.get()).length;
-            (this.buf.get()).writeByte(65);
-            (this.buf.get()).print((long)dim);
+            int dim = (e.keys).length;
+            (this.buf).writeByte(65);
+            (this.buf).print((long)dim);
             {
                 int __key1028 = 0;
                 int __limit1029 = dim;
                 for (; (__key1028 < __limit1029);__key1028 += 1) {
                     int i = __key1028;
-                    (e.keys.get()).get(i).accept(this);
-                    (e.values.get()).get(i).accept(this);
+                    (e.keys).get(i).accept(this);
+                    (e.values).get(i).accept(this);
                 }
             }
         }
 
         // Erasure: visit<StructLiteralExp>
         public  void visit(StructLiteralExp e) {
-            int dim = e.elements != null ? (e.elements.get()).length : 0;
-            (this.buf.get()).writeByte(83);
-            (this.buf.get()).print((long)dim);
+            int dim = e.elements != null ? (e.elements).length : 0;
+            (this.buf).writeByte(83);
+            (this.buf).print((long)dim);
             {
                 int __key1030 = 0;
                 int __limit1031 = dim;
                 for (; (__key1030 < __limit1031);__key1030 += 1) {
                     int i = __key1030;
-                    Expression ex = (e.elements.get()).get(i);
+                    Expression ex = (e.elements).get(i);
                     if (ex != null)
                     {
                         ex.accept(this);
                     }
                     else
                     {
-                        (this.buf.get()).writeByte(118);
+                        (this.buf).writeByte(118);
                     }
                 }
             }
         }
 
         // Erasure: paramsToDecoBuffer<Ptr>
-        public  void paramsToDecoBuffer(Ptr<DArray<Parameter>> parameters) {
+        public  void paramsToDecoBuffer(DArray<Parameter> parameters) {
             Mangler __self = this;
             Function2<Integer,Parameter,Integer> paramsToDecoBufferDg = new Function2<Integer,Parameter,Integer>() {
                 public Integer invoke(Integer n, Parameter p) {
@@ -1086,11 +1086,11 @@ public class dmangle {
         public  void visit(Parameter p) {
             if (((p.storageClass & 524288L) != 0) && ((p.storageClass & 562949953421312L) == 0))
             {
-                (this.buf.get()).writeByte(77);
+                (this.buf).writeByte(77);
             }
             if (((p.storageClass & 17594333528064L) == 17592186044416L) && ((p.storageClass & 4503599627370496L) == 0))
             {
-                (this.buf.get()).writestring(new ByteSlice("Nk"));
+                (this.buf).writestring(new ByteSlice("Nk"));
             }
             switch ((int)p.storageClass & 2111488L)
             {
@@ -1098,13 +1098,13 @@ public class dmangle {
                 case (int)2048L:
                     break;
                 case (int)4096L:
-                    (this.buf.get()).writeByte(74);
+                    (this.buf).writeByte(74);
                     break;
                 case (int)2097152L:
-                    (this.buf.get()).writeByte(75);
+                    (this.buf).writeByte(75);
                     break;
                 case (int)8192L:
-                    (this.buf.get()).writeByte(76);
+                    (this.buf).writeByte(76);
                     break;
                 default:
                 throw new AssertionError("Unreachable code!");
@@ -1134,7 +1134,7 @@ public class dmangle {
         {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
-                Mangler v = new Mangler(ptr(buf));
+                Mangler v = new Mangler(buf.value);
                 v.mangleExact(fd);
                 fd.mangleString = pcopy(buf.value.extractChars());
             }
@@ -1145,10 +1145,10 @@ public class dmangle {
     }
 
     // Erasure: mangleToBuffer<Type, Ptr>
-    public static void mangleToBuffer(Type t, Ptr<OutBuffer> buf) {
+    public static void mangleToBuffer(Type t, OutBuffer buf) {
         if (t.deco != null)
         {
-            (buf.get()).writestring(t.deco);
+            (buf).writestring(t.deco);
         }
         else
         {
@@ -1158,19 +1158,19 @@ public class dmangle {
     }
 
     // Erasure: mangleToBuffer<Expression, Ptr>
-    public static void mangleToBuffer(Expression e, Ptr<OutBuffer> buf) {
+    public static void mangleToBuffer(Expression e, OutBuffer buf) {
         Mangler v = new Mangler(buf);
         e.accept(v);
     }
 
     // Erasure: mangleToBuffer<Dsymbol, Ptr>
-    public static void mangleToBuffer(Dsymbol s, Ptr<OutBuffer> buf) {
+    public static void mangleToBuffer(Dsymbol s, OutBuffer buf) {
         Mangler v = new Mangler(buf);
         s.accept(v);
     }
 
     // Erasure: mangleToBuffer<TemplateInstance, Ptr>
-    public static void mangleToBuffer(TemplateInstance ti, Ptr<OutBuffer> buf) {
+    public static void mangleToBuffer(TemplateInstance ti, OutBuffer buf) {
         Mangler v = new Mangler(buf);
         v.mangleTemplateInstance(ti);
     }
@@ -1179,8 +1179,8 @@ public class dmangle {
     public static void mangleToFuncSignature(OutBuffer buf, FuncDeclaration fd) {
         Ref<OutBuffer> buf_ref = ref(buf);
         TypeFunction tf = fd.type.isTypeFunction();
-        Mangler v = new Mangler(ptr(buf_ref));
-        MODtoDecoBuffer(ptr(buf_ref), tf.mod);
+        Mangler v = new Mangler(buf_ref.value);
+        MODtoDecoBuffer(buf_ref.value, tf.mod);
         v.paramsToDecoBuffer(tf.parameterList.parameters);
         buf_ref.value.writeByte((90 - tf.parameterList.varargs));
     }

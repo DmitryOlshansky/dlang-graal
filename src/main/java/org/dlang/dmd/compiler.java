@@ -169,7 +169,7 @@ public class compiler {
             {
                 Ref<DArray<Identifier>> empty = ref(new DArray<Identifier>());
                 try {
-                    if (includeImportedModuleCheck(new ModuleComponentRange((m.md != null) && ((m.md.get()).packages != null) ? (m.md.get()).packages : ptr(empty), m.ident, m.isPackageFile, 0)))
+                    if (includeImportedModuleCheck(new ModuleComponentRange((m.md != null) && ((m.md.get()).packages != null) ? (m.md.get()).packages : empty.value, m.ident, m.isPackageFile, 0)))
                     {
                         if (global.params.verbose)
                         {
@@ -196,13 +196,13 @@ public class compiler {
     }
     public static class ModuleComponentRange
     {
-        public Ptr<DArray<Identifier>> packages = null;
+        public DArray<Identifier> packages = null;
         public Identifier name = null;
         public boolean isPackageFile = false;
         public int index = 0;
         // Erasure: totalLength<>
         public  int totalLength() {
-            return (this.packages.get()).length + 1 + (this.isPackageFile ? 1 : 0);
+            return (this.packages).length + 1 + (this.isPackageFile ? 1 : 0);
         }
 
         // Erasure: empty<>
@@ -212,11 +212,11 @@ public class compiler {
 
         // Erasure: front<>
         public  Identifier front() {
-            if ((this.index < (this.packages.get()).length))
+            if ((this.index < (this.packages).length))
             {
-                return (this.packages.get()).get(this.index);
+                return (this.packages).get(this.index);
             }
-            if ((this.index == (this.packages.get()).length))
+            if ((this.index == (this.packages).length))
             {
                 return this.name;
             }
@@ -240,7 +240,7 @@ public class compiler {
             r.index = index;
             return r;
         }
-        public ModuleComponentRange(Ptr<DArray<Identifier>> packages, Identifier name, boolean isPackageFile, int index) {
+        public ModuleComponentRange(DArray<Identifier> packages, Identifier name, boolean isPackageFile, int index) {
             this.packages = packages;
             this.name = name;
             this.isPackageFile = isPackageFile;

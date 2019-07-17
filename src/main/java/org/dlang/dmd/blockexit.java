@@ -58,7 +58,7 @@ public class blockexit {
                 }
                 if (((s.exp.op & 0xFF) == 14))
                 {
-                    AssertExp a = (AssertExp)s.exp;
+                    AssertExp a = ((AssertExp)s.exp);
                     if (a.e1.value.isBool(false))
                     {
                         this.result = 16;
@@ -83,7 +83,7 @@ public class blockexit {
             this.result = 1;
             Statement slast = null;
             {
-                Slice<Statement> __r797 = (cs.statements.get()).opSlice().copy();
+                Slice<Statement> __r797 = (cs.statements).opSlice().copy();
                 int __key798 = 0;
                 for (; (__key798 < __r797.getLength());__key798 += 1) {
                     Statement s = __r797.get(__key798);
@@ -131,7 +131,7 @@ public class blockexit {
         public  void visit(UnrolledLoopStatement uls) {
             this.result = 1;
             {
-                Slice<Statement> __r799 = (uls.statements.get()).opSlice().copy();
+                Slice<Statement> __r799 = (uls.statements).opSlice().copy();
                 int __key800 = 0;
                 for (; (__key800 < __r799.getLength());__key800 += 1) {
                     Statement s = __r799.get(__key800);
@@ -384,7 +384,7 @@ public class blockexit {
             this.result = blockExit(s._body.value, this.func, false);
             int catchresult = 0;
             {
-                Slice<Catch> __r801 = (s.catches.get()).opSlice().copy();
+                Slice<Catch> __r801 = (s.catches).opSlice().copy();
                 int __key802 = 0;
                 for (; (__key802 < __r801.getLength());__key802 += 1) {
                     Catch c = __r801.get(__key802);

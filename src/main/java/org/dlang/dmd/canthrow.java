@@ -294,11 +294,11 @@ public class canthrow {
                         {
                             {
                                 int i = 0;
-                                for (; (i < (td.objects.get()).length);i++){
-                                    RootObject o = (td.objects.get()).get(i);
+                                for (; (i < (td.objects).length);i++){
+                                    RootObject o = (td.objects).get(i);
                                     if ((o.dyncast() == DYNCAST.expression))
                                     {
-                                        Expression eo = (Expression)o;
+                                        Expression eo = ((Expression)o);
                                         {
                                             DsymbolExp se = eo.isDsymbolExp();
                                             if ((se) != null)

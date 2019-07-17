@@ -21,7 +21,7 @@ import static org.dlang.dmd.visitor.*;
 public class templateparamsem {
 
     // Erasure: tpsemantic<TemplateParameter, Ptr, Ptr>
-    public static boolean tpsemantic(TemplateParameter tp, Ptr<Scope> sc, Ptr<DArray<TemplateParameter>> parameters) {
+    public static boolean tpsemantic(TemplateParameter tp, Ptr<Scope> sc, DArray<TemplateParameter> parameters) {
         TemplateParameterSemanticVisitor v = new TemplateParameterSemanticVisitor(sc, parameters);
         tp.accept(v);
         return v.result;
@@ -30,10 +30,10 @@ public class templateparamsem {
     public static class TemplateParameterSemanticVisitor extends Visitor
     {
         public Ptr<Scope> sc = null;
-        public Ptr<DArray<TemplateParameter>> parameters = null;
+        public DArray<TemplateParameter> parameters = null;
         public boolean result = false;
         // Erasure: __ctor<Ptr, Ptr>
-        public  TemplateParameterSemanticVisitor(Ptr<Scope> sc, Ptr<DArray<TemplateParameter>> parameters) {
+        public  TemplateParameterSemanticVisitor(Ptr<Scope> sc, DArray<TemplateParameter> parameters) {
             this.sc = pcopy(sc);
             this.parameters = pcopy(parameters);
         }
@@ -80,7 +80,7 @@ public class templateparamsem {
         }
     }
     // Erasure: aliasParameterSemantic<Loc, Ptr, RootObject, Ptr>
-    public static RootObject aliasParameterSemantic(Loc loc, Ptr<Scope> sc, RootObject o, Ptr<DArray<TemplateParameter>> parameters) {
+    public static RootObject aliasParameterSemantic(Loc loc, Ptr<Scope> sc, RootObject o, DArray<TemplateParameter> parameters) {
         if (o != null)
         {
             Expression ea = isExpression(o);

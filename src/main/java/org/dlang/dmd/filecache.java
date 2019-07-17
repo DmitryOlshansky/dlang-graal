@@ -17,14 +17,14 @@ public class filecache {
         public Ref<Slice<ByteSlice>> lines = ref(new RawSlice<ByteSlice>());
         // Erasure: __ctor<Array>
         public  FileAndLines(ByteSlice filename) {
-            this.file.value = pcopy((refPtr(new FileName(filename))));
+            this.file.value = pcopy(refPtr(new FileName(filename)));
             this.readAndSplit();
         }
 
         // Erasure: readAndSplit<>
         public  void readAndSplit() {
             File.ReadResult readResult = File.read((this.file.value.get()).toChars()).copy();
-            this.buffer.value = pcopy((refPtr(new FileBuffer(readResult.extractData()))));
+            this.buffer.value = pcopy(refPtr(new FileBuffer(readResult.extractData())));
             BytePtr buf = pcopy((this.buffer.value.get()).data.getPtr(0));
             for (; buf.get() != 0;){
                 BytePtr prevBuf = pcopy(buf);

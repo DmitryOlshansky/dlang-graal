@@ -78,9 +78,9 @@ public class dversion {
                     }
                     if (m.debugids == null)
                     {
-                        m.debugids = pcopy((refPtr(new DArray<Identifier>())));
+                        m.debugids = pcopy(new DArray<Identifier>());
                     }
-                    (m.debugids.get()).push(this.ident);
+                    (m.debugids).push(this.ident);
                 }
             }
             else
@@ -189,9 +189,9 @@ public class dversion {
                     }
                     if (m.versionids == null)
                     {
-                        m.versionids = pcopy((refPtr(new DArray<Identifier>())));
+                        m.versionids = pcopy(new DArray<Identifier>());
                     }
-                    (m.versionids.get()).push(this.ident);
+                    (m.versionids).push(this.ident);
                 }
             }
             else

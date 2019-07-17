@@ -116,7 +116,7 @@ public class escape {
                     e.basis.value.accept(this);
                 }
                 {
-                    Slice<Expression> __r1316 = (e.elements.get()).opSlice().copy();
+                    Slice<Expression> __r1316 = (e.elements).opSlice().copy();
                     int __key1317 = 0;
                     for (; (__key1317 < __r1316.getLength());__key1317 += 1) {
                         Expression el = __r1316.get(__key1317);
@@ -134,7 +134,7 @@ public class escape {
             if (e.elements != null)
             {
                 {
-                    Slice<Expression> __r1318 = (e.elements.get()).opSlice().copy();
+                    Slice<Expression> __r1318 = (e.elements).opSlice().copy();
                     int __key1319 = 0;
                     for (; (__key1319 < __r1318.getLength());__key1319 += 1) {
                         Expression ex = __r1318.get(__key1319);
@@ -153,7 +153,7 @@ public class escape {
             if (((tb.ty & 0xFF) == ENUMTY.Tstruct) && (e.member == null) && (e.arguments != null))
             {
                 {
-                    Slice<Expression> __r1320 = (e.arguments.get()).opSlice().copy();
+                    Slice<Expression> __r1320 = (e.arguments).opSlice().copy();
                     int __key1321 = 0;
                     for (; (__key1321 < __r1320.getLength());__key1321 += 1) {
                         Expression ex = __r1320.get(__key1321);
@@ -183,7 +183,7 @@ public class escape {
         public  void visit(SliceExp e) {
             if (((e.e1.value.op & 0xFF) == 26))
             {
-                VarDeclaration v = ((VarExp)e.e1.value).var.isVarDeclaration();
+                VarDeclaration v = (((VarExp)e.e1.value)).var.isVarDeclaration();
                 Type tb = e.type.value.toBasetype();
                 if (v != null)
                 {
@@ -259,24 +259,24 @@ public class escape {
             TypeDelegate dg = null;
             if (((t1.ty & 0xFF) == ENUMTY.Tdelegate))
             {
-                dg = (TypeDelegate)t1;
-                tf = (TypeFunction)((TypeDelegate)t1).next.value;
+                dg = ((TypeDelegate)t1);
+                tf = ((TypeFunction)(((TypeDelegate)t1)).next.value);
             }
             else if (((t1.ty & 0xFF) == ENUMTY.Tfunction))
             {
-                tf = (TypeFunction)t1;
+                tf = ((TypeFunction)t1);
             }
             else
             {
                 return ;
             }
-            if ((e.arguments != null) && ((e.arguments.get()).length != 0))
+            if ((e.arguments != null) && ((e.arguments).length != 0))
             {
                 int j = (((tf.linkage == LINK.d) && (tf.parameterList.varargs == VarArg.variadic)) ? 1 : 0);
                 {
                     int i = j;
-                    for (; (i < (e.arguments.get()).length);i += 1){
-                        Expression arg = (e.arguments.get()).get(i);
+                    for (; (i < (e.arguments).length);i += 1){
+                        Expression arg = (e.arguments).get(i);
                         int nparams = tf.parameterList.length();
                         if ((i - j < nparams) && (i >= j))
                         {
@@ -296,7 +296,7 @@ public class escape {
             }
             if (((e.e1.value.op & 0xFF) == 27) && ((t1.ty & 0xFF) == ENUMTY.Tfunction))
             {
-                DotVarExp dve = (DotVarExp)e.e1.value;
+                DotVarExp dve = ((DotVarExp)e.e1.value);
                 FuncDeclaration fd = dve.var.isFuncDeclaration();
                 AggregateDeclaration ad = null;
                 if (global.params.vsafe && tf.isreturn && (fd != null) && ((ad = fd.isThis()) != null))
@@ -338,7 +338,7 @@ public class escape {
             }
             if (((e.e1.value.op & 0xFF) == 26))
             {
-                VarExp ve = (VarExp)e.e1.value;
+                VarExp ve = ((VarExp)e.e1.value);
                 FuncDeclaration fd = ve.var.isFuncDeclaration();
                 if ((fd != null) && fd.isNested())
                 {
@@ -377,7 +377,7 @@ public class escape {
                         if ((ez) != null)
                         {
                             assert((ez.exp != null) && ((ez.exp.op & 0xFF) == 95));
-                            Expression ex = ((ConstructExp)ez.exp).e2.value;
+                            Expression ex = (((ConstructExp)ez.exp)).e2.value;
                             ex.accept(this);
                         }
                     }
@@ -411,7 +411,7 @@ public class escape {
             Type tb = e.e1.value.type.value.toBasetype();
             if (((e.e1.value.op & 0xFF) == 26))
             {
-                VarDeclaration v = ((VarExp)e.e1.value).var.isVarDeclaration();
+                VarDeclaration v = (((VarExp)e.e1.value)).var.isVarDeclaration();
                 if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
                 {
                     if ((v != null) && ((v.storage_class & 65536L) != 0))
@@ -436,7 +436,7 @@ public class escape {
             if (e.elements != null)
             {
                 {
-                    Slice<Expression> __r1322 = (e.elements.get()).opSlice().copy();
+                    Slice<Expression> __r1322 = (e.elements).opSlice().copy();
                     int __key1323 = 0;
                     for (; (__key1323 < __r1322.getLength());__key1323 += 1) {
                         Expression ex = __r1322.get(__key1323);
@@ -490,11 +490,11 @@ public class escape {
             TypeFunction tf = null;
             if (((t1.ty & 0xFF) == ENUMTY.Tdelegate))
             {
-                tf = (TypeFunction)((TypeDelegate)t1).next.value;
+                tf = ((TypeFunction)(((TypeDelegate)t1)).next.value);
             }
             else if (((t1.ty & 0xFF) == ENUMTY.Tfunction))
             {
-                tf = (TypeFunction)t1;
+                tf = ((TypeFunction)t1);
             }
             else
             {
@@ -502,13 +502,13 @@ public class escape {
             }
             if (tf.isref)
             {
-                if ((e.arguments != null) && ((e.arguments.get()).length != 0))
+                if ((e.arguments != null) && ((e.arguments).length != 0))
                 {
                     int j = (((tf.linkage == LINK.d) && (tf.parameterList.varargs == VarArg.variadic)) ? 1 : 0);
                     {
                         int i = j;
-                        for (; (i < (e.arguments.get()).length);i += 1){
-                            Expression arg = (e.arguments.get()).get(i);
+                        for (; (i < (e.arguments).length);i += 1){
+                            Expression arg = (e.arguments).get(i);
                             int nparams = tf.parameterList.length();
                             if ((i - j < nparams) && (i >= j))
                             {
@@ -522,7 +522,7 @@ public class escape {
                                 {
                                     if (((arg.op & 0xFF) == 160))
                                     {
-                                        DelegateExp de = (DelegateExp)arg;
+                                        DelegateExp de = ((DelegateExp)arg);
                                         if (de.func.isNested())
                                         {
                                             (this.er.get()).byexp.push(de);
@@ -539,7 +539,7 @@ public class escape {
                 }
                 if (((e.e1.value.op & 0xFF) == 27) && ((t1.ty & 0xFF) == ENUMTY.Tfunction))
                 {
-                    DotVarExp dve = (DotVarExp)e.e1.value;
+                    DotVarExp dve = ((DotVarExp)e.e1.value);
                     if (((dve.var.storage_class & 17592186044416L) != 0) || tf.isreturn)
                     {
                         if (((dve.var.storage_class & 524288L) != 0) || tf.isscope)
@@ -566,7 +566,7 @@ public class escape {
                 }
                 if (((e.e1.value.op & 0xFF) == 26))
                 {
-                    VarExp ve = (VarExp)e.e1.value;
+                    VarExp ve = ((VarExp)e.e1.value);
                     FuncDeclaration fd = ve.var.isFuncDeclaration();
                     if ((fd != null) && fd.isNested())
                     {
@@ -595,7 +595,7 @@ public class escape {
             errors = checkNewEscape(sc, ae.basis.value, gag);
         }
         {
-            Slice<Expression> __r1272 = (ae.elements.get()).opSlice().copy();
+            Slice<Expression> __r1272 = (ae.elements).opSlice().copy();
             int __key1273 = 0;
             for (; (__key1273 < __r1272.getLength());__key1273 += 1) {
                 Expression ex = __r1272.get(__key1273);
@@ -612,7 +612,7 @@ public class escape {
     public static boolean checkAssocArrayLiteralEscape(Ptr<Scope> sc, AssocArrayLiteralExp ae, boolean gag) {
         boolean errors = false;
         {
-            Slice<Expression> __r1274 = (ae.keys.get()).opSlice().copy();
+            Slice<Expression> __r1274 = (ae.keys).opSlice().copy();
             int __key1275 = 0;
             for (; (__key1275 < __r1274.getLength());__key1275 += 1) {
                 Expression ex = __r1274.get(__key1275);
@@ -623,7 +623,7 @@ public class escape {
             }
         }
         {
-            Slice<Expression> __r1276 = (ae.values.get()).opSlice().copy();
+            Slice<Expression> __r1276 = (ae.values).opSlice().copy();
             int __key1277 = 0;
             for (; (__key1277 < __r1276.getLength());__key1277 += 1) {
                 Expression ex = __r1276.get(__key1277);
@@ -740,7 +740,7 @@ public class escape {
                     FuncDeclaration fd = __r1282.get(__key1283);
                     Ref<DArray<VarDeclaration>> vars = ref(new DArray<VarDeclaration>());
                     try {
-                        findAllOuterAccessedVariables(fd, ptr(vars));
+                        findAllOuterAccessedVariables(fd, vars.value);
                         {
                             Slice<VarDeclaration> __r1284 = vars.value.opSlice().copy();
                             int __key1285 = 0;
@@ -810,25 +810,25 @@ public class escape {
         {
             return false;
         }
-        if ((ce.arguments == null) && ((ce.arguments.get()).length != 0))
+        if ((ce.arguments == null) && ((ce.arguments).length != 0))
         {
             return false;
         }
         assert(((ce.e1.value.op & 0xFF) == 27));
-        DotVarExp dve = (DotVarExp)ce.e1.value;
+        DotVarExp dve = ((DotVarExp)ce.e1.value);
         CtorDeclaration ctor = dve.var.isCtorDeclaration();
         assert(ctor != null);
         assert(((ctor.type.ty & 0xFF) == ENUMTY.Tfunction));
-        TypeFunction tf = (TypeFunction)ctor.type;
+        TypeFunction tf = ((TypeFunction)ctor.type);
         int nparams = tf.parameterList.length();
-        int n = (ce.arguments.get()).length;
+        int n = (ce.arguments).length;
         boolean j = (tf.linkage == LINK.d) && (tf.parameterList.varargs == VarArg.variadic);
         {
             int __key1288 = 0;
             int __limit1289 = n;
             for (; (__key1288 < __limit1289);__key1288 += 1) {
                 int i = __key1288;
-                Expression arg = (ce.arguments.get()).get(i);
+                Expression arg = (ce.arguments).get(i);
                 if (!arg.type.value.hasPointers())
                 {
                     return false;
@@ -861,7 +861,7 @@ public class escape {
         {
             return false;
         }
-        BinExp ae = (BinExp)e;
+        BinExp ae = ((BinExp)e);
         Expression e1 = ae.e1.value;
         Expression e2 = ae.e2.value;
         if (!e1.type.value.hasPointers())
@@ -899,7 +899,7 @@ public class escape {
             boolean inferScope = false;
             if ((va != null) && ((sc.get()).func != null) && ((sc.get()).func.type != null) && (((sc.get()).func.type.ty & 0xFF) == ENUMTY.Tfunction))
             {
-                inferScope = ((TypeFunction)(sc.get()).func.type).trust != TRUST.system;
+                inferScope = (((TypeFunction)(sc.get()).func.type)).trust != TRUST.system;
             }
             boolean vaIsRef = (va != null) && ((va.storage_class & 32L) != 0) && ((va.storage_class & 2101248L) != 0) || ((va.type.toBasetype().ty & 0xFF) == ENUMTY.Tclass);
             if (false)
@@ -917,7 +917,7 @@ public class escape {
                     FuncDeclaration fd = (sc.get()).func;
                     if ((pequals(p, fd)) && (fd.type != null) && ((fd.type.ty & 0xFF) == ENUMTY.Tfunction))
                     {
-                        TypeFunction tf = (TypeFunction)fd.type;
+                        TypeFunction tf = ((TypeFunction)fd.type);
                         if ((tf.nextOf() == null) || ((tf.nextOf().ty & 0xFF) != ENUMTY.Tvoid) && (fd.isCtorDeclaration() == null))
                         {
                             return false;
@@ -926,7 +926,7 @@ public class escape {
                         {
                             return true;
                         }
-                        if ((fd.parameters != null) && ((fd.parameters.get()).length != 0) && (pequals((fd.parameters.get()).get(0), va)))
+                        if ((fd.parameters != null) && ((fd.parameters).length != 0) && (pequals((fd.parameters).get(0), va)))
                         {
                             return true;
                         }
@@ -1162,7 +1162,7 @@ public class escape {
                     }
                     Ref<DArray<VarDeclaration>> vars = ref(new DArray<VarDeclaration>());
                     try {
-                        findAllOuterAccessedVariables(fd, ptr(vars));
+                        findAllOuterAccessedVariables(fd, vars.value);
                         if ((va != null) && va.isScope() && (fd.tookAddressOf != 0) && global.params.vsafe)
                         {
                             fd.tookAddressOf -= 1;
@@ -1397,7 +1397,7 @@ public class escape {
                             FuncDeclaration fd = p.isFuncDeclaration();
                             if ((fd != null) && (fd.type != null) && ((fd.type.ty & 0xFF) == ENUMTY.Tfunction))
                             {
-                                TypeFunction tf = (TypeFunction)fd.type;
+                                TypeFunction tf = ((TypeFunction)fd.type);
                                 if (tf.isref)
                                 {
                                     if (!gag)
@@ -1589,7 +1589,7 @@ public class escape {
                             FuncDeclaration fd = p.isFuncDeclaration();
                             if ((fd != null) && (fd.type != null) && ((fd.type.ty & 0xFF) == ENUMTY.Tfunction))
                             {
-                                TypeFunction tf = (TypeFunction)fd.type;
+                                TypeFunction tf = ((TypeFunction)fd.type);
                                 if (tf.isref)
                                 {
                                     if (!gag)
@@ -1629,7 +1629,7 @@ public class escape {
     // Erasure: inferReturn<FuncDeclaration, VarDeclaration>
     public static void inferReturn(FuncDeclaration fd, VarDeclaration v) {
         v.storage_class |= 4521191813414912L;
-        TypeFunction tf = (TypeFunction)fd.type;
+        TypeFunction tf = ((TypeFunction)fd.type);
         if ((pequals(v, fd.vthis)))
         {
             fd.storage_class |= 4521191813414912L;
@@ -1706,7 +1706,7 @@ public class escape {
         }
     }
     // Erasure: findAllOuterAccessedVariables<FuncDeclaration, Ptr>
-    public static void findAllOuterAccessedVariables(FuncDeclaration fd, Ptr<DArray<VarDeclaration>> vars) {
+    public static void findAllOuterAccessedVariables(FuncDeclaration fd, DArray<VarDeclaration> vars) {
         {
             Dsymbol p = fd.parent.value;
             for (; p != null;p = p.parent.value){
@@ -1725,7 +1725,7 @@ public class escape {
                                     FuncDeclaration fdv = __r1326.get(__key1327);
                                     if ((pequals(fdv, fd)))
                                     {
-                                        (vars.get()).push(v);
+                                        (vars).push(v);
                                     }
                                 }
                             }
@@ -1766,7 +1766,7 @@ public class escape {
                             if (va.maybes != null)
                             {
                                 {
-                                    Slice<VarDeclaration> __r1330 = (va.maybes.get()).opSlice().copy();
+                                    Slice<VarDeclaration> __r1330 = (va.maybes).opSlice().copy();
                                     int __key1331 = 0;
                                     for (; (__key1331 < __r1330.getLength());__key1331 += 1) {
                                         VarDeclaration v = __r1330.get(__key1331);

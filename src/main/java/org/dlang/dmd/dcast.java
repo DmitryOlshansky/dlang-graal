@@ -62,11 +62,11 @@ public class dcast {
                     int adMatch = MATCH.nomatch;
                     if (((ad.type.ty & 0xFF) == ENUMTY.Tstruct))
                     {
-                        adMatch = ((TypeStruct)ad.type).implicitConvToWithoutAliasThis(this.t);
+                        adMatch = (((TypeStruct)ad.type)).implicitConvToWithoutAliasThis(this.t);
                     }
                     else
                     {
-                        adMatch = ((TypeClass)ad.type).implicitConvToWithoutAliasThis(this.t);
+                        adMatch = (((TypeClass)ad.type)).implicitConvToWithoutAliasThis(this.t);
                     }
                     if (adMatch == 0)
                     {
@@ -122,7 +122,7 @@ public class dcast {
             this.visit((Expression)e);
             if (((this.result.op & 0xFF) == 121))
             {
-                ((StringExp)this.result).committed = e.committed;
+                (((StringExp)this.result)).committed = e.committed;
             }
         }
 
@@ -148,7 +148,7 @@ public class dcast {
             Type tb = this.result.type.value.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Tarray) && global.params.useTypeInfo && (Type.dtypeinfo != null))
             {
-                semanticTypeInfo(this.sc, ((TypeDArray)tb).next.value);
+                semanticTypeInfo(this.sc, (((TypeDArray)tb)).next.value);
             }
         }
 
@@ -159,15 +159,15 @@ public class dcast {
             {
                 return ;
             }
-            e = (SliceExp)this.result;
+            e = ((SliceExp)this.result);
             if (((e.e1.value.op & 0xFF) == 47))
             {
-                ArrayLiteralExp ale = (ArrayLiteralExp)e.e1.value;
+                ArrayLiteralExp ale = ((ArrayLiteralExp)e.e1.value);
                 Type tb = this.t.toBasetype();
                 Type tx = null;
                 if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    tx = tb.nextOf().sarrayOf(ale.elements != null ? (long)(ale.elements.get()).length : 0L);
+                    tx = tb.nextOf().sarrayOf(ale.elements != null ? (long)(ale.elements).length : 0L);
                 }
                 else
                 {
@@ -358,7 +358,7 @@ public class dcast {
             }
             if (((this.t.ty & 0xFF) == ENUMTY.Tvector))
             {
-                TypeVector tv = (TypeVector)this.t;
+                TypeVector tv = ((TypeVector)this.t);
                 TypeBasic tb = tv.elementType();
                 if (((tb.ty & 0xFF) == ENUMTY.Tvoid))
                 {
@@ -563,13 +563,13 @@ public class dcast {
             {
                 return ;
             }
-            if (((e.type.value.ty & 0xFF) == (this.t.ty & 0xFF)) && ((e.type.value.ty & 0xFF) == ENUMTY.Tstruct) && (pequals(((TypeStruct)e.type.value).sym, ((TypeStruct)this.t).sym)))
+            if (((e.type.value.ty & 0xFF) == (this.t.ty & 0xFF)) && ((e.type.value.ty & 0xFF) == ENUMTY.Tstruct) && (pequals((((TypeStruct)e.type.value)).sym, (((TypeStruct)this.t)).sym)))
             {
                 this.result = MATCH.constant;
                 {
                     int i = 0;
-                    for (; (i < (e.elements.get()).length);i++){
-                        Expression el = (e.elements.get()).get(i);
+                    for (; (i < (e.elements).length);i++){
+                        Expression el = (e.elements).get(i);
                         if (el == null)
                         {
                             continue;
@@ -610,7 +610,7 @@ public class dcast {
                         byte tynto = this.t.nextOf().ty;
                         if (((tynto & 0xFF) == (tyn & 0xFF)))
                         {
-                            if ((((TypeSArray)e.type.value).dim.toInteger() == ((TypeSArray)this.t).dim.toInteger()))
+                            if (((((TypeSArray)e.type.value)).dim.toInteger() == (((TypeSArray)this.t)).dim.toInteger()))
                             {
                                 this.result = MATCH.exact;
                             }
@@ -623,7 +623,7 @@ public class dcast {
                                 return ;
                             }
                             int fromlen = e.numberOfCodeUnits((tynto & 0xFF));
-                            int tolen = (int)((TypeSArray)this.t).dim.toInteger();
+                            int tolen = (int)(((TypeSArray)this.t)).dim.toInteger();
                             if ((tolen < fromlen))
                             {
                                 return ;
@@ -650,7 +650,7 @@ public class dcast {
                                 return ;
                             }
                             int fromlen_1 = e.numberOfCodeUnits((tynto_1 & 0xFF));
-                            int tolen_1 = (int)((TypeSArray)this.t).dim.toInteger();
+                            int tolen_1 = (int)(((TypeSArray)this.t)).dim.toInteger();
                             if ((tolen_1 < fromlen_1))
                             {
                                 return ;
@@ -710,7 +710,7 @@ public class dcast {
                                 this.result = m;
                                 return ;
                             case 9:
-                                if (((TypeEnum)tn).sym.isSpecial())
+                                if ((((TypeEnum)tn)).sym.isSpecial())
                                 {
                                     {
                                         TypeBasic tob = tn.toBasetype().isTypeBasic();
@@ -743,14 +743,14 @@ public class dcast {
                 Type typen = typeb.nextOf().toBasetype();
                 if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    TypeSArray tsa = (TypeSArray)tb;
-                    if (((long)(e.elements.get()).length != tsa.dim.toInteger()))
+                    TypeSArray tsa = ((TypeSArray)tb);
+                    if (((long)(e.elements).length != tsa.dim.toInteger()))
                     {
                         this.result = MATCH.nomatch;
                     }
                 }
                 Type telement = tb.nextOf();
-                if ((e.elements.get()).length == 0)
+                if ((e.elements).length == 0)
                 {
                     if (((typen.ty & 0xFF) != ENUMTY.Tvoid))
                     {
@@ -769,8 +769,8 @@ public class dcast {
                     }
                     {
                         int i = 0;
-                        for (; (i < (e.elements.get()).length);i++){
-                            Expression el = (e.elements.get()).get(i);
+                        for (; (i < (e.elements).length);i++){
+                            Expression el = (e.elements).get(i);
                             if ((this.result == MATCH.nomatch))
                             {
                                 break;
@@ -796,10 +796,10 @@ public class dcast {
             else if (((tb.ty & 0xFF) == ENUMTY.Tvector) && ((typeb.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.ty & 0xFF) == ENUMTY.Tsarray))
             {
                 this.result = MATCH.exact;
-                TypeVector tv = (TypeVector)tb;
-                TypeSArray tbase = (TypeSArray)tv.basetype;
+                TypeVector tv = ((TypeVector)tb);
+                TypeSArray tbase = ((TypeSArray)tv.basetype);
                 assert(((tbase.ty & 0xFF) == ENUMTY.Tsarray));
-                int edim = (e.elements.get()).length;
+                int edim = (e.elements).length;
                 long tbasedim = tbase.dim.toInteger();
                 if (((long)edim > tbasedim))
                 {
@@ -821,7 +821,7 @@ public class dcast {
                     int __limit914 = edim;
                     for (; (__key913 < __limit914);__key913 += 1) {
                         int i = __key913;
-                        Expression el = (e.elements.get()).get(i);
+                        Expression el = (e.elements).get(i);
                         int m = el.implicitConvTo(telement);
                         if ((m < this.result))
                         {
@@ -850,9 +850,9 @@ public class dcast {
             this.result = MATCH.exact;
             {
                 int i = 0;
-                for (; (i < (e.keys.get()).length);i++){
-                    Expression el = (e.keys.get()).get(i);
-                    int m = el.implicitConvTo(((TypeAArray)tb).index);
+                for (; (i < (e.keys).length);i++){
+                    Expression el = (e.keys).get(i);
+                    int m = el.implicitConvTo((((TypeAArray)tb)).index);
                     if ((m < this.result))
                     {
                         this.result = m;
@@ -861,7 +861,7 @@ public class dcast {
                     {
                         break;
                     }
-                    el = (e.values.get()).get(i);
+                    el = (e.values).get(i);
                     m = el.implicitConvTo(tb.nextOf());
                     if ((m < this.result))
                     {
@@ -898,7 +898,7 @@ public class dcast {
             {
                 return ;
             }
-            TypeFunction tf = (TypeFunction)tx;
+            TypeFunction tf = ((TypeFunction)tx);
             if ((tf.purity == PURE.impure))
             {
                 return ;
@@ -932,7 +932,7 @@ public class dcast {
             int j = (((tf.linkage == LINK.d) && (tf.parameterList.varargs == VarArg.variadic)) ? 1 : 0);
             if (((e.e1.value.op & 0xFF) == 27))
             {
-                DotVarExp dve = (DotVarExp)e.e1.value;
+                DotVarExp dve = ((DotVarExp)e.e1.value);
                 Type targ = dve.e1.value.type.value;
                 if ((targ.constConv(targ.castMod(mod)) == MATCH.nomatch))
                 {
@@ -941,8 +941,8 @@ public class dcast {
             }
             {
                 int i = j;
-                for (; (i < (e.arguments.get()).length);i += 1){
-                    Expression earg = (e.arguments.get()).get(i);
+                for (; (i < (e.arguments).length);i += 1){
+                    Expression earg = (e.arguments).get(i);
                     Type targ = earg.type.value.toBasetype();
                     if ((i - j < nparams))
                     {
@@ -985,7 +985,7 @@ public class dcast {
             Type typeb = e.type.value.toBasetype();
             if (((e.e1.value.op & 0xFF) == 214) && ((tb.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                OverExp eo = (OverExp)e.e1.value;
+                OverExp eo = ((OverExp)e.e1.value);
                 FuncDeclaration f = null;
                 {
                     int i = 0;
@@ -1181,7 +1181,7 @@ public class dcast {
                     {
                         return ;
                     }
-                    TypeFunction tf = (TypeFunction)fd.type;
+                    TypeFunction tf = ((TypeFunction)fd.type);
                     if ((tf.purity == PURE.impure))
                     {
                         return ;
@@ -1193,13 +1193,13 @@ public class dcast {
                             return ;
                         }
                     }
-                    Ptr<DArray<Expression>> args = (pequals(fd, e.allocator)) ? e.newargs : e.arguments;
+                    DArray<Expression> args = (pequals(fd, e.allocator)) ? e.newargs : e.arguments;
                     int nparams = tf.parameterList.length();
                     int j = (((tf.linkage == LINK.d) && (tf.parameterList.varargs == VarArg.variadic)) ? 1 : 0);
                     {
                         int i = j;
-                        for (; (i < (e.arguments.get()).length);i += 1){
-                            Expression earg = (args.get()).get(i);
+                        for (; (i < (e.arguments).length);i += 1){
+                            Expression earg = (args).get(i);
                             Type targ = earg.type.value.toBasetype();
                             if ((i - j < nparams))
                             {
@@ -1234,8 +1234,8 @@ public class dcast {
             {
                 {
                     int i = 0;
-                    for (; (i < (e.arguments.get()).length);i += 1){
-                        Expression earg = (e.arguments.get()).get(i);
+                    for (; (i < (e.arguments).length);i += 1){
+                        Expression earg = (e.arguments).get(i);
                         if (earg == null)
                         {
                             continue;
@@ -1255,7 +1255,7 @@ public class dcast {
             }
             if (((ntb.ty & 0xFF) == ENUMTY.Tstruct))
             {
-                StructDeclaration sd = ((TypeStruct)ntb).sym;
+                StructDeclaration sd = (((TypeStruct)ntb)).sym;
                 sd.size(e.loc);
                 if (sd.isNested())
                 {
@@ -1266,7 +1266,7 @@ public class dcast {
             {
                 if (((ntb.ty & 0xFF) == ENUMTY.Tclass))
                 {
-                    ClassDeclaration cd = ((TypeClass)ntb).sym;
+                    ClassDeclaration cd = (((TypeClass)ntb)).sym;
                     cd.size(e.loc);
                     if (cd.isNested())
                     {
@@ -1365,7 +1365,7 @@ public class dcast {
             }
             if (((e.op & 0xFF) == 26))
             {
-                VarDeclaration v = ((VarExp)e).var.isVarDeclaration();
+                VarDeclaration v = (((VarExp)e)).var.isVarDeclaration();
                 if ((v != null) && ((v.storage_class & 8388608L) != 0))
                 {
                     this.result = e.ctfeInterpret();
@@ -1414,7 +1414,7 @@ public class dcast {
                     }
                     else if (((tob.ty & 0xFF) == ENUMTY.Tvector) && ((t1b.ty & 0xFF) != ENUMTY.Tvector))
                     {
-                        TypeVector tv = (TypeVector)tob;
+                        TypeVector tv = ((TypeVector)tob);
                         this.result = new CastExp(e.loc, e, tv.elementType());
                         this.result = new VectorExp(e.loc, this.result, tob);
                         this.result = expressionSemantic(this.result, this.sc);
@@ -1500,7 +1500,7 @@ public class dcast {
                     {
                         long fsize = t1b.nextOf().size();
                         long tsize = tob.nextOf().size();
-                        if ((((TypeSArray)t1b).dim.toInteger() * fsize % tsize != 0L))
+                        if (((((TypeSArray)t1b)).dim.toInteger() * fsize % tsize != 0L))
                         {
                             e.error(new BytePtr("cannot cast expression `%s` of type `%s` to `%s` since sizes don't line up"), e.toChars(), e.type.value.toChars(), this.t.toChars());
                             this.result = new ErrorExp();
@@ -1639,7 +1639,7 @@ public class dcast {
             this.visit((Expression)e);
             if (((this.result.op & 0xFF) == 13))
             {
-                NullExp ex = (NullExp)this.result;
+                NullExp ex = ((NullExp)this.result);
                 ex.committed = (byte)1;
                 return ;
             }
@@ -1650,7 +1650,7 @@ public class dcast {
             this.visit((Expression)e);
             if (((this.result.op & 0xFF) == 49))
             {
-                ((StructLiteralExp)this.result).stype = this.t;
+                (((StructLiteralExp)this.result)).stype = this.t;
             }
         }
 
@@ -1666,7 +1666,7 @@ public class dcast {
             StringExp se = e;
             if (e.committed == 0)
             {
-                se = (StringExp)e.copy();
+                se = ((StringExp)e.copy());
                 se.committed = (byte)1;
                 copied = 1;
             }
@@ -1686,7 +1686,7 @@ public class dcast {
             {
                 if (copied == 0)
                 {
-                    se = (StringExp)e.copy();
+                    se = ((StringExp)e.copy());
                     copied = 1;
                 }
                 se.type.value = this.t;
@@ -1695,11 +1695,11 @@ public class dcast {
             }
             if ((e.committed != 0) && ((tb.ty & 0xFF) == ENUMTY.Tsarray) && ((typeb.ty & 0xFF) == ENUMTY.Tarray))
             {
-                se = (StringExp)e.copy();
+                se = ((StringExp)e.copy());
                 long szx = tb.nextOf().size();
                 assert((szx <= 255L));
                 se.sz = (byte)szx;
-                se.len = (int)((TypeSArray)tb).dim.toInteger();
+                se.len = (int)(((TypeSArray)tb)).dim.toInteger();
                 se.committed = (byte)1;
                 se.type.value = this.t;
                 int fullSize = (se.len + 1) * (se.sz & 0xFF);
@@ -1709,7 +1709,7 @@ public class dcast {
                     int srcSize = e.len * (e.sz & 0xFF);
                     memcpy((BytePtr)s, (se.string), srcSize);
                     memset(((BytePtr)s).plus(srcSize), 0, fullSize - srcSize);
-                    se.string = pcopy((((BytePtr)s)));
+                    se.string = pcopy(((BytePtr)s));
                 }
                 this.result = se;
                 return ;
@@ -1720,7 +1720,7 @@ public class dcast {
                     {
                         if (copied == 0)
                         {
-                            se = (StringExp)e.copy();
+                            se = ((StringExp)e.copy());
                             copied = 1;
                         }
                         /*goto Lcast*/throw Dispatch1.INSTANCE;
@@ -1729,7 +1729,7 @@ public class dcast {
                     {
                         if (copied == 0)
                         {
-                            se = (StringExp)e.copy();
+                            se = ((StringExp)e.copy());
                             copied = 1;
                         }
                         /*goto Lcast*/throw Dispatch1.INSTANCE;
@@ -1738,7 +1738,7 @@ public class dcast {
                     {
                         if (copied == 0)
                         {
-                            se = (StringExp)e.copy();
+                            se = ((StringExp)e.copy());
                             copied = 1;
                         }
                         if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
@@ -1894,7 +1894,7 @@ public class dcast {
                                         __dispatch4 = 0;
                                             if (copied == 0)
                                             {
-                                                se = (StringExp)e.copy();
+                                                se = ((StringExp)e.copy());
                                                 copied = 1;
                                             }
                                             se.string = pcopy(buffer.extractData());
@@ -1921,7 +1921,7 @@ public class dcast {
                 assert(copied != 0);
                 if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    int dim2 = (int)((TypeSArray)tb).dim.toInteger();
+                    int dim2 = (int)(((TypeSArray)tb)).dim.toInteger();
                     if ((dim2 != se.len))
                     {
                         int newsz = (se.sz & 0xFF);
@@ -1929,7 +1929,7 @@ public class dcast {
                         Object s = pcopy(Mem.xmalloc((dim2 + 1) * newsz));
                         memcpy((BytePtr)s, (se.string), (d * newsz));
                         memset(((BytePtr)s).plus((d * newsz)), 0, (dim2 + 1 - d) * newsz);
-                        se.string = pcopy((((BytePtr)s)));
+                        se.string = pcopy(((BytePtr)s));
                         se.len = dim2;
                     }
                 }
@@ -1956,7 +1956,7 @@ public class dcast {
             }
             if (((e.e1.value.op & 0xFF) == 214) && ((tb.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                OverExp eo = (OverExp)e.e1.value;
+                OverExp eo = ((OverExp)e.e1.value);
                 FuncDeclaration f = null;
                 {
                     int i = 0;
@@ -1988,7 +1988,7 @@ public class dcast {
             }
             if (((e.e1.value.op & 0xFF) == 26) && ((typeb.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && ((tb.ty & 0xFF) == ENUMTY.Tpointer) && ((tb.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
             {
-                VarExp ve = (VarExp)e.e1.value;
+                VarExp ve = ((VarExp)e.e1.value);
                 FuncDeclaration f = ve.var.isFuncDeclaration();
                 if (f != null)
                 {
@@ -2024,15 +2024,15 @@ public class dcast {
                 this.result = e;
                 return ;
             }
-            TupleExp te = (TupleExp)e.copy();
+            TupleExp te = ((TupleExp)e.copy());
             te.e0.value = e.e0.value != null ? e.e0.value.copy() : null;
-            te.exps = pcopy((e.exps.get()).copy());
+            te.exps = pcopy((e.exps).copy());
             {
                 int i = 0;
-                for (; (i < (te.exps.get()).length);i++){
-                    Expression ex = (te.exps.get()).get(i);
+                for (; (i < (te.exps).length);i++){
+                    Expression ex = (te.exps).get(i);
                     ex = ex.castTo(this.sc, this.t);
-                    te.exps.get().set(i, ex);
+                    te.exps.set(i, ex);
                 }
             }
             this.result = te;
@@ -2069,28 +2069,28 @@ public class dcast {
                     {
                         if (((tb.ty & 0xFF) == ENUMTY.Tsarray))
                         {
-                            TypeSArray tsa = (TypeSArray)tb;
-                            if (((long)(e.elements.get()).length != tsa.dim.toInteger()))
+                            TypeSArray tsa = ((TypeSArray)tb);
+                            if (((long)(e.elements).length != tsa.dim.toInteger()))
                             {
                                 /*goto L1*/throw Dispatch0.INSTANCE;
                             }
                         }
-                        ae = (ArrayLiteralExp)e.copy();
+                        ae = ((ArrayLiteralExp)e.copy());
                         if (e.basis.value != null)
                         {
                             ae.basis.value = e.basis.value.castTo(this.sc, tb.nextOf());
                         }
-                        ae.elements = pcopy((e.elements.get()).copy());
+                        ae.elements = pcopy((e.elements).copy());
                         {
                             int i = 0;
-                            for (; (i < (e.elements.get()).length);i++){
-                                Expression ex = (e.elements.get()).get(i);
+                            for (; (i < (e.elements).length);i++){
+                                Expression ex = (e.elements).get(i);
                                 if (ex == null)
                                 {
                                     continue;
                                 }
                                 ex = ex.castTo(this.sc, tb.nextOf());
-                                ae.elements.get().set(i, ex);
+                                ae.elements.set(i, ex);
                             }
                         }
                         ae.type.value = this.t;
@@ -2103,36 +2103,36 @@ public class dcast {
                     Type tp = typeb.nextOf().pointerTo();
                     if (!tp.equals(ae.type.value))
                     {
-                        ae = (ArrayLiteralExp)e.copy();
+                        ae = ((ArrayLiteralExp)e.copy());
                         ae.type.value = tp;
                     }
                 }
                 else if (((tb.ty & 0xFF) == ENUMTY.Tvector) && ((typeb.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    TypeVector tv = (TypeVector)tb;
-                    TypeSArray tbase = (TypeSArray)tv.basetype;
+                    TypeVector tv = ((TypeVector)tb);
+                    TypeSArray tbase = ((TypeSArray)tv.basetype);
                     assert(((tbase.ty & 0xFF) == ENUMTY.Tsarray));
-                    int edim = (e.elements.get()).length;
+                    int edim = (e.elements).length;
                     long tbasedim = tbase.dim.toInteger();
                     if (((long)edim > tbasedim))
                     {
                         /*goto L1*/throw Dispatch0.INSTANCE;
                     }
-                    ae = (ArrayLiteralExp)e.copy();
+                    ae = ((ArrayLiteralExp)e.copy());
                     ae.type.value = tbase;
-                    ae.elements = pcopy((e.elements.get()).copy());
+                    ae.elements = pcopy((e.elements).copy());
                     Type telement = tv.elementType();
                     {
                         int __key915 = 0;
                         int __limit916 = edim;
                         for (; (__key915 < __limit916);__key915 += 1) {
                             int i = __key915;
-                            Expression ex = (e.elements.get()).get(i);
+                            Expression ex = (e.elements).get(i);
                             ex = ex.castTo(this.sc, telement);
-                            ae.elements.get().set(i, ex);
+                            ae.elements.set(i, ex);
                         }
                     }
-                    (ae.elements.get()).setDim((int)tbasedim);
+                    (ae.elements).setDim((int)tbasedim);
                     {
                         int __key917 = edim;
                         int __limit918 = (int)tbasedim;
@@ -2140,7 +2140,7 @@ public class dcast {
                             int i = __key917;
                             Expression ex = typeb.nextOf().defaultInitLiteral(e.loc);
                             ex = ex.castTo(this.sc, telement);
-                            ae.elements.get().set(i, ex);
+                            ae.elements.set(i, ex);
                         }
                     }
                     Expression ev = new VectorExp(e.loc, ae, tb);
@@ -2165,19 +2165,19 @@ public class dcast {
             Type typeb = e.type.value.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Taarray) && ((typeb.ty & 0xFF) == ENUMTY.Taarray) && ((tb.nextOf().toBasetype().ty & 0xFF) != ENUMTY.Tvoid))
             {
-                AssocArrayLiteralExp ae = (AssocArrayLiteralExp)e.copy();
-                ae.keys = pcopy((e.keys.get()).copy());
-                ae.values = pcopy((e.values.get()).copy());
-                assert(((e.keys.get()).length == (e.values.get()).length));
+                AssocArrayLiteralExp ae = ((AssocArrayLiteralExp)e.copy());
+                ae.keys = pcopy((e.keys).copy());
+                ae.values = pcopy((e.values).copy());
+                assert(((e.keys).length == (e.values).length));
                 {
                     int i = 0;
-                    for (; (i < (e.keys.get()).length);i++){
-                        Expression ex = (e.values.get()).get(i);
+                    for (; (i < (e.keys).length);i++){
+                        Expression ex = (e.values).get(i);
                         ex = ex.castTo(this.sc, tb.nextOf());
-                        ae.values.get().set(i, ex);
-                        ex = (e.keys.get()).get(i);
-                        ex = ex.castTo(this.sc, ((TypeAArray)tb).index);
-                        ae.keys.get().set(i, ex);
+                        ae.values.set(i, ex);
+                        ex = (e.keys).get(i);
+                        ex = ex.castTo(this.sc, (((TypeAArray)tb)).index);
+                        ae.keys.set(i, ex);
                     }
                 }
                 ae.type.value = this.t;
@@ -2200,7 +2200,7 @@ public class dcast {
             {
                 this.result = e.copy();
                 this.result.type.value = this.t;
-                ((SymOffExp)this.result).hasOverloads = false;
+                (((SymOffExp)this.result)).hasOverloads = false;
                 return ;
             }
             if (e.hasOverloads && ((typeb.ty & 0xFF) == ENUMTY.Tpointer) && ((typeb.nextOf().ty & 0xFF) == ENUMTY.Tfunction) && ((tb.ty & 0xFF) == ENUMTY.Tpointer) || ((tb.ty & 0xFF) == ENUMTY.Tdelegate) && ((tb.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
@@ -2372,19 +2372,19 @@ public class dcast {
                 }
                 return ;
             }
-            TypeSArray tsa = (TypeSArray)toStaticArrayType(e);
+            TypeSArray tsa = ((TypeSArray)toStaticArrayType(e));
             if ((tsa != null) && (tsa.size(e.loc) == tb.size(e.loc)))
             {
                 this.result = e.copy();
                 this.result.type.value = this.t;
                 return ;
             }
-            if ((tsa != null) && tsa.dim.equals(((TypeSArray)tb).dim))
+            if ((tsa != null) && tsa.dim.equals((((TypeSArray)tb)).dim))
             {
                 Type t1b = e.e1.value.type.value.toBasetype();
                 if (((t1b.ty & 0xFF) == ENUMTY.Tsarray))
                 {
-                    t1b = tb.nextOf().sarrayOf(((TypeSArray)t1b).dim.toInteger());
+                    t1b = tb.nextOf().sarrayOf((((TypeSArray)t1b)).dim.toInteger());
                 }
                 else if (((t1b.ty & 0xFF) == ENUMTY.Tarray))
                 {
@@ -2402,7 +2402,7 @@ public class dcast {
                 {
                     Expression e1x = e.e1.value.implicitCastTo(this.sc, t1b);
                     assert(((e1x.op & 0xFF) != 127));
-                    e = (SliceExp)e.copy();
+                    e = ((SliceExp)e.copy());
                     e.e1.value = e1x;
                     e.type.value = this.t;
                     this.result = e;
@@ -2445,12 +2445,12 @@ public class dcast {
                 }
                 {
                     int i = 0;
-                    for (; (i < (ale.elements.get()).length);i++){
-                        Expression e = (ale.elements.get()).get(i);
+                    for (; (i < (ale.elements).length);i++){
+                        Expression e = (ale.elements).get(i);
                         if (e != null)
                         {
                             e = inferType(e, tn, this.flag);
-                            ale.elements.get().set(i, e);
+                            ale.elements.set(i, e);
                         }
                     }
                 }
@@ -2463,28 +2463,28 @@ public class dcast {
             Type tb = this.t.toBasetype();
             if (((tb.ty & 0xFF) == ENUMTY.Taarray))
             {
-                TypeAArray taa = (TypeAArray)tb;
+                TypeAArray taa = ((TypeAArray)tb);
                 Type ti = taa.index;
                 Type tv = taa.nextOf();
                 {
                     int i = 0;
-                    for (; (i < (aale.keys.get()).length);i++){
-                        Expression e = (aale.keys.get()).get(i);
+                    for (; (i < (aale.keys).length);i++){
+                        Expression e = (aale.keys).get(i);
                         if (e != null)
                         {
                             e = inferType(e, ti, this.flag);
-                            aale.keys.get().set(i, e);
+                            aale.keys.set(i, e);
                         }
                     }
                 }
                 {
                     int i = 0;
-                    for (; (i < (aale.values.get()).length);i++){
-                        Expression e = (aale.values.get()).get(i);
+                    for (; (i < (aale.values).length);i++){
+                        Expression e = (aale.values).get(i);
                         if (e != null)
                         {
                             e = inferType(e, tv, this.flag);
-                            aale.values.get().set(i, e);
+                            aale.values.set(i, e);
                         }
                     }
                 }
@@ -2812,8 +2812,8 @@ public class dcast {
 
     // Erasure: isVoidArrayLiteral<Expression, Type>
     public static boolean isVoidArrayLiteral(Expression e, Type other) {
-        for (; ((e.op & 0xFF) == 47) && ((e.type.value.ty & 0xFF) == ENUMTY.Tarray) && ((((ArrayLiteralExp)e).elements.get()).length == 1);){
-            ArrayLiteralExp ale = (ArrayLiteralExp)e;
+        for (; ((e.op & 0xFF) == 47) && ((e.type.value.ty & 0xFF) == ENUMTY.Tarray) && (((((ArrayLiteralExp)e)).elements).length == 1);){
+            ArrayLiteralExp ale = ((ArrayLiteralExp)e);
             e = ale.getElement(0);
             if (((other.ty & 0xFF) == ENUMTY.Tsarray) || ((other.ty & 0xFF) == ENUMTY.Tarray))
             {
@@ -2829,7 +2829,7 @@ public class dcast {
             return false;
         }
         Type t = e.type.value;
-        return ((e.op & 0xFF) == 47) && ((t.ty & 0xFF) == ENUMTY.Tarray) && ((t.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((((ArrayLiteralExp)e).elements.get()).length == 0);
+        return ((e.op & 0xFF) == 47) && ((t.ty & 0xFF) == ENUMTY.Tarray) && ((t.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && (((((ArrayLiteralExp)e)).elements).length == 0);
     }
 
     // Erasure: typeMerge<Ptr, byte, Ptr, Ptr, Ptr>
@@ -2900,7 +2900,7 @@ public class dcast {
         Type att1 = null;
         Type att2 = null;
         assert(t2 != null);
-        if (((t1.mod & 0xFF) != (t2.mod & 0xFF)) && ((t1.ty & 0xFF) == ENUMTY.Tenum) && ((t2.ty & 0xFF) == ENUMTY.Tenum) && (pequals(((TypeEnum)t1).sym, ((TypeEnum)t2).sym)))
+        if (((t1.mod & 0xFF) != (t2.mod & 0xFF)) && ((t1.ty & 0xFF) == ENUMTY.Tenum) && ((t2.ty & 0xFF) == ENUMTY.Tenum) && (pequals((((TypeEnum)t1)).sym, (((TypeEnum)t2)).sym)))
         {
             byte mod = MODmerge(t1.mod, t2.mod);
             t1 = t1.castMod(mod);
@@ -2972,11 +2972,11 @@ public class dcast {
                 }
                 else if (((t1n.ty & 0xFF) == ENUMTY.Tfunction) && ((t2n.ty & 0xFF) == ENUMTY.Tfunction))
                 {
-                    TypeFunction tf1 = (TypeFunction)t1n;
-                    TypeFunction tf2 = (TypeFunction)t2n;
+                    TypeFunction tf1 = ((TypeFunction)t1n);
+                    TypeFunction tf2 = ((TypeFunction)t2n);
                     tf1.purityLevel();
                     tf2.purityLevel();
-                    TypeFunction d = (TypeFunction)tf1.syntaxCopy();
+                    TypeFunction d = ((TypeFunction)tf1.syntaxCopy());
                     if ((tf1.purity != tf2.purity))
                     {
                         d.purity = PURE.impure;
@@ -3067,7 +3067,7 @@ public class dcast {
                     return Lincompatible.invoke();
                 }
             }
-            else if (((t1.ty & 0xFF) == ENUMTY.Tsarray) || ((t1.ty & 0xFF) == ENUMTY.Tarray) && ((e2.value.op & 0xFF) == 13) && ((t2.ty & 0xFF) == ENUMTY.Tpointer) && ((t2.nextOf().ty & 0xFF) == ENUMTY.Tvoid) || ((e2.value.op & 0xFF) == 47) && ((t2.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && (((TypeSArray)t2).dim.toInteger() == 0L) || isVoidArrayLiteral(e2.value, t1))
+            else if (((t1.ty & 0xFF) == ENUMTY.Tsarray) || ((t1.ty & 0xFF) == ENUMTY.Tarray) && ((e2.value.op & 0xFF) == 13) && ((t2.ty & 0xFF) == ENUMTY.Tpointer) && ((t2.nextOf().ty & 0xFF) == ENUMTY.Tvoid) || ((e2.value.op & 0xFF) == 47) && ((t2.ty & 0xFF) == ENUMTY.Tsarray) && ((t2.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((((TypeSArray)t2)).dim.toInteger() == 0L) || isVoidArrayLiteral(e2.value, t1))
             {
                 /*goto Lx1*//*unrolled goto*/
             /*Lx1:*/
@@ -3075,7 +3075,7 @@ public class dcast {
                 e1.value = e1.value.castTo(sc, t.value);
                 e2.value = e2.value.castTo(sc, t.value);
             }
-            else if (((t2.ty & 0xFF) == ENUMTY.Tsarray) || ((t2.ty & 0xFF) == ENUMTY.Tarray) && ((e1.value.op & 0xFF) == 13) && ((t1.ty & 0xFF) == ENUMTY.Tpointer) && ((t1.nextOf().ty & 0xFF) == ENUMTY.Tvoid) || ((e1.value.op & 0xFF) == 47) && ((t1.ty & 0xFF) == ENUMTY.Tsarray) && ((t1.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && (((TypeSArray)t1).dim.toInteger() == 0L) || isVoidArrayLiteral(e1.value, t2))
+            else if (((t2.ty & 0xFF) == ENUMTY.Tsarray) || ((t2.ty & 0xFF) == ENUMTY.Tarray) && ((e1.value.op & 0xFF) == 13) && ((t1.ty & 0xFF) == ENUMTY.Tpointer) && ((t1.nextOf().ty & 0xFF) == ENUMTY.Tvoid) || ((e1.value.op & 0xFF) == 47) && ((t1.ty & 0xFF) == ENUMTY.Tsarray) && ((t1.nextOf().ty & 0xFF) == ENUMTY.Tvoid) && ((((TypeSArray)t1)).dim.toInteger() == 0L) || isVoidArrayLiteral(e1.value, t2))
             {
                 /*goto Lx2*//*unrolled goto*/
             /*Lx2:*/
@@ -3201,8 +3201,8 @@ public class dcast {
                     }
                     else if (((t1.ty & 0xFF) == ENUMTY.Tclass) && ((t2.ty & 0xFF) == ENUMTY.Tclass))
                     {
-                        TypeClass tc1 = (TypeClass)t1;
-                        TypeClass tc2 = (TypeClass)t2;
+                        TypeClass tc1 = ((TypeClass)t1);
+                        TypeClass tc2 = ((TypeClass)t2);
                         ClassDeclaration cd1 = tc1.sym.baseClass;
                         ClassDeclaration cd2 = tc2.sym.baseClass;
                         if ((cd1 != null) && (cd2 != null))
@@ -3223,7 +3223,7 @@ public class dcast {
                             return Lincompatible.invoke();
                         }
                     }
-                    else if (((t1.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t1).sym.aliasthis != null))
+                    else if (((t1.ty & 0xFF) == ENUMTY.Tstruct) && ((((TypeStruct)t1)).sym.aliasthis != null))
                     {
                         if ((att1 != null) && (pequals(e1.value.type.value, att1)))
                         {
@@ -3237,7 +3237,7 @@ public class dcast {
                         t1 = e1.value.type.value;
                         continue;
                     }
-                    else if (((t2.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t2).sym.aliasthis != null))
+                    else if (((t2.ty & 0xFF) == ENUMTY.Tstruct) && ((((TypeStruct)t2)).sym.aliasthis != null))
                     {
                         if ((att2 != null) && (pequals(e2.value.type.value, att2)))
                         {
@@ -3271,8 +3271,8 @@ public class dcast {
                     t.value = t1;
                     /*goto Lagain*/throw Dispatch0.INSTANCE;
                 }
-                TypeStruct ts1 = (TypeStruct)t1;
-                TypeStruct ts2 = (TypeStruct)t2;
+                TypeStruct ts1 = ((TypeStruct)t1);
+                TypeStruct ts2 = ((TypeStruct)t2);
                 if ((!pequals(ts1.sym, ts2.sym)))
                 {
                     if ((ts1.sym.aliasthis == null) && (ts2.sym.aliasthis == null))
@@ -3337,7 +3337,7 @@ public class dcast {
             }
             else if (((t1.ty & 0xFF) == ENUMTY.Tstruct) || ((t2.ty & 0xFF) == ENUMTY.Tstruct))
             {
-                if (((t1.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t1).sym.aliasthis != null))
+                if (((t1.ty & 0xFF) == ENUMTY.Tstruct) && ((((TypeStruct)t1)).sym.aliasthis != null))
                 {
                     if ((att1 != null) && (pequals(e1.value.type.value, att1)))
                     {
@@ -3352,7 +3352,7 @@ public class dcast {
                     t.value = t1;
                     /*goto Lagain*/throw Dispatch0.INSTANCE;
                 }
-                if (((t2.ty & 0xFF) == ENUMTY.Tstruct) && (((TypeStruct)t2).sym.aliasthis != null))
+                if (((t2.ty & 0xFF) == ENUMTY.Tstruct) && ((((TypeStruct)t2)).sym.aliasthis != null))
                 {
                     if ((att2 != null) && (pequals(e2.value.type.value, att2)))
                     {
@@ -3393,8 +3393,8 @@ public class dcast {
             }
             else if (((t1.ty & 0xFF) == ENUMTY.Tvector) && ((t2.ty & 0xFF) == ENUMTY.Tvector))
             {
-                TypeVector tv1 = (TypeVector)t1;
-                TypeVector tv2 = (TypeVector)t2;
+                TypeVector tv1 = ((TypeVector)t1);
+                TypeVector tv2 = ((TypeVector)t2);
                 if (!tv1.basetype.equals(tv2.basetype))
                 {
                     return Lincompatible.invoke();

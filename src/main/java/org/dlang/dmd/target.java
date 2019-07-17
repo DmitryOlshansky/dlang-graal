@@ -407,7 +407,7 @@ public class target {
             {
                 return true;
             }
-            TypeVector tvec = (TypeVector)type;
+            TypeVector tvec = ((TypeVector)type);
             boolean supported = false;
             switch ((op & 0xFF))
             {
@@ -559,7 +559,7 @@ public class target {
                 tns = tns.baseElemOf();
                 if (((tns.ty & 0xFF) == ENUMTY.Tstruct))
                 {
-                    StructDeclaration sd = ((TypeStruct)tns).sym;
+                    StructDeclaration sd = (((TypeStruct)tns)).sym;
                     if ((tf.linkage == LINK.cpp) && needsThis)
                     {
                         return true;
@@ -619,7 +619,7 @@ public class target {
                 }
                 if (((tns.ty & 0xFF) == ENUMTY.Tstruct))
                 {
-                    StructDeclaration sd = ((TypeStruct)tns).sym;
+                    StructDeclaration sd = (((TypeStruct)tns)).sym;
                     if (global.params.isLinux && (tf.linkage != LINK.d) && !global.params.is64bit)
                     {
                         return true;
@@ -687,7 +687,7 @@ public class target {
             {
                 if (((t.ty & 0xFF) == ENUMTY.Tstruct))
                 {
-                    TypeStruct ts = (TypeStruct)t;
+                    TypeStruct ts = ((TypeStruct)t);
                     if (ts.sym.hasNoFields)
                     {
                         return 0L;

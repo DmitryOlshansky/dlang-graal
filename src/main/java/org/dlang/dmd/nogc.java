@@ -64,7 +64,7 @@ public class nogc {
 
         // Erasure: visit<ArrayLiteralExp>
         public  void visit(ArrayLiteralExp e) {
-            if (((e.type.value.ty & 0xFF) != ENUMTY.Tarray) || (e.elements == null) || ((e.elements.get()).length == 0))
+            if (((e.type.value.ty & 0xFF) != ENUMTY.Tarray) || (e.elements == null) || ((e.elements).length == 0))
             {
                 return ;
             }
@@ -79,7 +79,7 @@ public class nogc {
 
         // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(AssocArrayLiteralExp e) {
-            if ((e.keys.get()).length == 0)
+            if ((e.keys).length == 0)
             {
                 return ;
             }
@@ -123,7 +123,7 @@ public class nogc {
         public  void visit(DeleteExp e) {
             if (((e.e1.value.op & 0xFF) == 26))
             {
-                VarDeclaration v = ((VarExp)e.e1.value).var.isVarDeclaration();
+                VarDeclaration v = (((VarExp)e.e1.value)).var.isVarDeclaration();
                 if ((v != null) && v.onstack)
                 {
                     return ;
@@ -134,13 +134,13 @@ public class nogc {
             switch ((tb.ty & 0xFF))
             {
                 case 7:
-                    ad = ((TypeClass)tb).sym;
+                    ad = (((TypeClass)tb)).sym;
                     break;
                 case 3:
-                    tb = ((TypePointer)tb).next.value.toBasetype();
+                    tb = (((TypePointer)tb)).next.value.toBasetype();
                     if (((tb.ty & 0xFF) == ENUMTY.Tstruct))
                     {
-                        ad = ((TypeStruct)tb).sym;
+                        ad = (((TypeStruct)tb)).sym;
                     }
                     break;
                 default:
@@ -224,7 +224,7 @@ public class nogc {
     // Erasure: checkGC<Ptr, Expression>
     public static Expression checkGC(Ptr<Scope> sc, Expression e) {
         FuncDeclaration f = (sc.get()).func;
-        if ((e != null) && ((e.op & 0xFF) != 127) && (f != null) && ((sc.get()).intypeof != 1) && (((sc.get()).flags & 128) == 0) && ((f.type.ty & 0xFF) == ENUMTY.Tfunction) && ((TypeFunction)f.type).isnogc || ((f.flags & FUNCFLAG.nogcInprocess) != 0) || global.params.vgc && (((sc.get()).flags & 8) == 0))
+        if ((e != null) && ((e.op & 0xFF) != 127) && (f != null) && ((sc.get()).intypeof != 1) && (((sc.get()).flags & 128) == 0) && ((f.type.ty & 0xFF) == ENUMTY.Tfunction) && (((TypeFunction)f.type)).isnogc || ((f.flags & FUNCFLAG.nogcInprocess) != 0) || global.params.vgc && (((sc.get()).flags & 8) == 0))
         {
             NOGCVisitor gcv = new NOGCVisitor(f);
             walkPostorder(e, gcv);

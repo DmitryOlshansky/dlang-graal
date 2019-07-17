@@ -24,7 +24,7 @@ public class nspace {
     {
         public Expression identExp = null;
         // Erasure: __ctor<Loc, Identifier, Expression, Ptr>
-        public  Nspace(Loc loc, Identifier ident, Expression identExp, Ptr<DArray<Dsymbol>> members) {
+        public  Nspace(Loc loc, Identifier ident, Expression identExp, DArray<Dsymbol> members) {
             super(loc, ident);
             this.members = pcopy(members);
             this.identExp = identExp;

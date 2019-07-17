@@ -94,7 +94,7 @@ public class ctorflow {
                     for (; (__key906 < __r907.getLength());__key906 += 1) {
                         FieldInit u = __r907.get(__key906).copy();
                         int i = __key906;
-                        Ptr<FieldInit> fi = ptr(this.fieldinit.get(i));
+                        Ptr<FieldInit> fi = this.fieldinit.getPtr(i);
                         (fi.get()).csx.value |= u.csx.value;
                         if (((fi.get()).loc == new Loc(null, 0, 0)))
                         {

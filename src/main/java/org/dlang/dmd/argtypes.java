@@ -337,23 +337,23 @@ public class argtypes {
                             this.memory();
                             return ;
                         }
-                        int dim = (tup.arguments.get()).length;
+                        int dim = (tup.arguments).length;
                         Type ft1 = null;
                         Type ft2 = null;
                         switch (dim)
                         {
                             case 2:
-                                ft1 = (tup.arguments.get()).get(0).type;
-                                ft2 = (tup.arguments.get()).get(1).type;
+                                ft1 = (tup.arguments).get(0).type;
+                                ft2 = (tup.arguments).get(1).type;
                                 break;
                             case 1:
                                 if ((foffset.value < 8))
                                 {
-                                    ft1 = (tup.arguments.get()).get(0).type;
+                                    ft1 = (tup.arguments).get(0).type;
                                 }
                                 else
                                 {
-                                    ft2 = (tup.arguments.get()).get(0).type;
+                                    ft2 = (tup.arguments).get(0).type;
                                 }
                                 break;
                             default:
@@ -467,9 +467,9 @@ public class argtypes {
                     Ref<Integer> falignsize = ref(0);
                     Type ftype = getFieldInfo.invoke(0, foffset, falignsize);
                     TypeTuple tup = toArgTypes(ftype);
-                    if ((tup != null) && ((tup.arguments.get()).length == 1))
+                    if ((tup != null) && ((tup.arguments).length == 1))
                     {
-                        Type ft1 = (tup.arguments.get()).get(0).type;
+                        Type ft1 = (tup.arguments).get(0).type;
                         if (((ft1.ty & 0xFF) == ENUMTY.Tfloat32) || ((ft1.ty & 0xFF) == ENUMTY.Tfloat64))
                         {
                             this.oneType(ft1);

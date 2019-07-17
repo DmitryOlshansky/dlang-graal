@@ -68,7 +68,7 @@ public class cppmangle {
     public static BytePtr toCppMangleItanium(Dsymbol s) {
         Ref<OutBuffer> buf = ref(new OutBuffer());
         try {
-            CppMangleVisitor v = new CppMangleVisitor(ptr(buf), s.loc);
+            CppMangleVisitor v = new CppMangleVisitor(buf.value, s.loc);
             v.mangleOf(s);
             return buf.value.extractChars();
         }
@@ -81,7 +81,7 @@ public class cppmangle {
         Ref<OutBuffer> buf = ref(new OutBuffer());
         try {
             buf.value.writestring(new ByteSlice("_ZTI"));
-            CppMangleVisitor v = new CppMangleVisitor(ptr(buf), s.loc);
+            CppMangleVisitor v = new CppMangleVisitor(buf.value, s.loc);
             v.cpp_mangle_name(s, false);
             return buf.value.extractChars();
         }
@@ -146,10 +146,10 @@ public class cppmangle {
     {
         public Context context = new Context();
         public DArray<RootObject> components = new DArray<RootObject>();
-        public Ptr<OutBuffer> buf = null;
+        public OutBuffer buf = null;
         public Loc loc = new Loc();
         // Erasure: __ctor<Ptr, Loc>
-        public  CppMangleVisitor(Ptr<OutBuffer> buf, Loc loc) {
+        public  CppMangleVisitor(OutBuffer buf, Loc loc) {
             this.buf = pcopy(buf);
             this.loc.opAssign(loc.copy());
         }
@@ -179,7 +179,7 @@ public class cppmangle {
         // Erasure: mangleReturnType<TypeFunction>
         public  void mangleReturnType(TypeFunction preSemantic) {
             CppMangleVisitor __self = this;
-            TypeFunction tf = (TypeFunction)asFuncDecl(this.context.res).type;
+            TypeFunction tf = ((TypeFunction)asFuncDecl(this.context.res).type);
             Type rt = preSemantic.nextOf();
             if (tf.isref)
             {
@@ -216,7 +216,7 @@ public class cppmangle {
                             i_ref.value %= 36;
                         }
                         i_ref.value += (i_ref.value < 10) ? 48 : 55;
-                        (buf.get()).writeByte(((byte)i_ref.value & 0xFF));
+                        (buf).writeByte(((byte)i_ref.value & 0xFF));
                         return null;
                     }}
 
@@ -230,9 +230,9 @@ public class cppmangle {
             int i = this.find(p);
             if ((i >= 0))
             {
-                (this.buf.get()).writeByte(83);
+                (this.buf).writeByte(83);
                 this.writeSequenceFromIndex(i);
-                (this.buf.get()).writeByte(95);
+                (this.buf).writeByte(95);
                 return true;
             }
             return false;
@@ -268,8 +268,8 @@ public class cppmangle {
         // Erasure: writeIdentifier<Identifier>
         public  void writeIdentifier(Identifier ident) {
             ByteSlice name = ident.asString().copy();
-            (this.buf.get()).print((long)name.getLength());
-            (this.buf.get()).writestring(name);
+            (this.buf).print((long)name.getLength());
+            (this.buf).writestring(name);
         }
 
         // Erasure: isStd<Dsymbol>
@@ -329,9 +329,9 @@ public class cppmangle {
             CppMangleVisitor __self = this;
             TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
             assert(td != null);
-            TemplateParameter tp = (td.parameters.get()).get(arg);
-            RootObject o = (ti.tiargs.get()).get(arg);
-            Ptr<DArray<RootObject>> pctx = null;
+            TemplateParameter tp = (td.parameters).get(arg);
+            RootObject o = (ti.tiargs).get(arg);
+            DArray<RootObject> pctx = null;
             Function0<RootObject> __dgliteral4 = new Function0<RootObject>() {
                 public RootObject invoke() {
                  {
@@ -347,7 +347,7 @@ public class cppmangle {
                             {
                                 parentti = asType(context.res).toDsymbol(null).parent.value.isTemplateInstance();
                             }
-                            return (parentti.tiargs.get()).get(arg);
+                            return (parentti.tiargs).get(arg);
                         }}
 
                     };
@@ -371,16 +371,16 @@ public class cppmangle {
                         {
                             Expression e = isExpression(o);
                             assert(e != null);
-                            (this.buf.get()).writeByte(76);
+                            (this.buf).writeByte(76);
                             tv.valType.accept(this);
                             long val = e.toUInteger();
                             if (!tv.valType.isunsigned() && ((long)val < 0L))
                             {
                                 val = -val;
-                                (this.buf.get()).writeByte(110);
+                                (this.buf).writeByte(110);
                             }
-                            (this.buf.get()).print(val);
-                            (this.buf.get()).writeByte(69);
+                            (this.buf).print(val);
+                            (this.buf).writeByte(69);
                         }
                         else
                         {
@@ -394,16 +394,16 @@ public class cppmangle {
                         Expression e = isExpression(o);
                         if ((d != null) && (d.isFuncDeclaration() != null))
                         {
-                            (this.buf.get()).writestring(new ByteSlice("XadL"));
+                            (this.buf).writestring(new ByteSlice("XadL"));
                             this.mangle_function(d.isFuncDeclaration());
-                            (this.buf.get()).writestring(new ByteSlice("EE"));
+                            (this.buf).writestring(new ByteSlice("EE"));
                         }
-                        else if ((e != null) && ((e.op & 0xFF) == 26) && (((VarExp)e).var.isVarDeclaration() != null))
+                        else if ((e != null) && ((e.op & 0xFF) == 26) && ((((VarExp)e)).var.isVarDeclaration() != null))
                         {
-                            VarDeclaration vd = ((VarExp)e).var.isVarDeclaration();
-                            (this.buf.get()).writeByte(76);
+                            VarDeclaration vd = (((VarExp)e)).var.isVarDeclaration();
+                            (this.buf).writeByte(76);
                             this.mangle_variable(vd, true);
-                            (this.buf.get()).writeByte(69);
+                            (this.buf).writeByte(69);
                         }
                         else if ((d != null) && (d.isTemplateDeclaration() != null) && (d.isTemplateDeclaration().onemember != null))
                         {
@@ -436,42 +436,42 @@ public class cppmangle {
 
         // Erasure: template_args<TemplateInstance, int>
         public  boolean template_args(TemplateInstance ti, int firstArg) {
-            if ((ti == null) || ((ti.tiargs.get()).length <= firstArg))
+            if ((ti == null) || ((ti.tiargs).length <= firstArg))
             {
                 return false;
             }
-            (this.buf.get()).writeByte(73);
+            (this.buf).writeByte(73);
             {
                 int __key852 = firstArg;
-                int __limit853 = (ti.tiargs.get()).length;
+                int __limit853 = (ti.tiargs).length;
                 for (; (__key852 < __limit853);__key852 += 1) {
                     int i = __key852;
                     TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
                     assert(td != null);
-                    TemplateParameter tp = (td.parameters.get()).get(i);
+                    TemplateParameter tp = (td.parameters).get(i);
                     {
                         TemplateTupleParameter tt = tp.isTemplateTupleParameter();
                         if ((tt) != null)
                         {
-                            (this.buf.get()).writeByte(73);
+                            (this.buf).writeByte(73);
                             {
                                 int __key854 = i;
-                                int __limit855 = (ti.tiargs.get()).length;
+                                int __limit855 = (ti.tiargs).length;
                                 for (; (__key854 < __limit855);__key854 += 1) {
                                     int j = __key854;
-                                    Type t = isType((ti.tiargs.get()).get(j));
+                                    Type t = isType((ti.tiargs).get(j));
                                     assert(t != null);
                                     t.accept(this);
                                 }
                             }
-                            (this.buf.get()).writeByte(69);
+                            (this.buf).writeByte(69);
                             break;
                         }
                     }
                     this.template_arg(ti, i);
                 }
             }
-            (this.buf.get()).writeByte(69);
+            (this.buf).writeByte(69);
             return true;
         }
 
@@ -484,10 +484,10 @@ public class cppmangle {
         public  void writeChained(Dsymbol p, Runnable0 dg) {
             if ((p != null) && (p.isModule() == null))
             {
-                (this.buf.get()).writestring(new ByteSlice("N"));
+                (this.buf).writestring(new ByteSlice("N"));
                 this.source_name(p, true);
                 dg.invoke();
-                (this.buf.get()).writestring(new ByteSlice("E"));
+                (this.buf).writestring(new ByteSlice("E"));
             }
             else
             {
@@ -599,7 +599,7 @@ public class cppmangle {
             {
                 return false;
             }
-            Dsymbol s = ((TypeStruct)t).toDsymbol(null);
+            Dsymbol s = (((TypeStruct)t)).toDsymbol(null);
             if ((!pequals(s.ident, ident)))
             {
                 return false;
@@ -616,14 +616,14 @@ public class cppmangle {
             }
             Dsymbol q = getQualifier(ti);
             boolean inStd = isStd(q) || isStd(this.getTiNamespace(ti));
-            return inStd && ((ti.tiargs.get()).length == 1) && isChar((ti.tiargs.get()).get(0));
+            return inStd && ((ti.tiargs).length == 1) && isChar((ti.tiargs).get(0));
         }
 
         // Erasure: char_std_char_traits_char<TemplateInstance, Array>
         public  boolean char_std_char_traits_char(TemplateInstance ti, ByteSlice st) {
-            if (((ti.tiargs.get()).length == 2) && isChar((ti.tiargs.get()).get(0)) && this.isChar_traits_char((ti.tiargs.get()).get(1)))
+            if (((ti.tiargs).length == 2) && isChar((ti.tiargs).get(0)) && this.isChar_traits_char((ti.tiargs).get(1)))
             {
-                (this.buf.get()).writestring(st.getPtr(0));
+                (this.buf).writestring(st.getPtr(0));
                 return true;
             }
             return false;
@@ -637,7 +637,7 @@ public class cppmangle {
             }
             if (isStd(s))
             {
-                (this.buf.get()).writestring(new ByteSlice("St"));
+                (this.buf).writestring(new ByteSlice("St"));
                 return ;
             }
             Dsymbol si = getInstance(s);
@@ -657,7 +657,7 @@ public class cppmangle {
                         }
                         return ;
                     }
-                    (this.buf.get()).writestring(new ByteSlice("St"));
+                    (this.buf).writestring(new ByteSlice("St"));
                 }
                 else
                 {
@@ -684,18 +684,18 @@ public class cppmangle {
             }
             if ((pequals(ti.name, Id.allocator)))
             {
-                (this.buf.get()).writestring(new ByteSlice("Sa"));
+                (this.buf).writestring(new ByteSlice("Sa"));
                 needsTa.value = true;
                 return true;
             }
             if ((pequals(ti.name, Id.basic_string)))
             {
-                if (((ti.tiargs.get()).length == 3) && isChar((ti.tiargs.get()).get(0)) && this.isChar_traits_char((ti.tiargs.get()).get(1)) && this.isAllocator_char((ti.tiargs.get()).get(2)))
+                if (((ti.tiargs).length == 3) && isChar((ti.tiargs).get(0)) && this.isChar_traits_char((ti.tiargs).get(1)) && this.isAllocator_char((ti.tiargs).get(2)))
                 {
-                    (this.buf.get()).writestring(new ByteSlice("Ss"));
+                    (this.buf).writestring(new ByteSlice("Ss"));
                     return true;
                 }
-                (this.buf.get()).writestring(new ByteSlice("Sb"));
+                (this.buf).writestring(new ByteSlice("Sb"));
                 needsTa.value = true;
                 return true;
             }
@@ -735,17 +735,17 @@ public class cppmangle {
                     TemplateInstance ti = se.isTemplateInstance();
                     if ((pequals(s.ident, Id.allocator)))
                     {
-                        (this.buf.get()).writestring(new ByteSlice("Sa"));
+                        (this.buf).writestring(new ByteSlice("Sa"));
                         this.template_args(ti, 0);
                     }
                     else if ((pequals(s.ident, Id.basic_string)))
                     {
-                        if (((ti.tiargs.get()).length == 3) && isChar((ti.tiargs.get()).get(0)) && this.isChar_traits_char((ti.tiargs.get()).get(1)) && this.isAllocator_char((ti.tiargs.get()).get(2)))
+                        if (((ti.tiargs).length == 3) && isChar((ti.tiargs).get(0)) && this.isChar_traits_char((ti.tiargs).get(1)) && this.isAllocator_char((ti.tiargs).get(2)))
                         {
-                            (this.buf.get()).writestring(new ByteSlice("Ss"));
+                            (this.buf).writestring(new ByteSlice("Ss"));
                             return ;
                         }
-                        (this.buf.get()).writestring(new ByteSlice("Sb"));
+                        (this.buf).writestring(new ByteSlice("Sb"));
                         this.template_args(ti, 0);
                     }
                     else
@@ -771,18 +771,18 @@ public class cppmangle {
                                 return ;
                             }
                         }
-                        (this.buf.get()).writestring(new ByteSlice("St"));
+                        (this.buf).writestring(new ByteSlice("St"));
                         this.source_name(se, true);
                     }
                 }
                 else
                 {
-                    (this.buf.get()).writeByte(78);
+                    (this.buf).writeByte(78);
                     if (write_prefix)
                     {
                         if (isStd(p))
                         {
-                            (this.buf.get()).writestring(new ByteSlice("St"));
+                            (this.buf).writestring(new ByteSlice("St"));
                         }
                         else
                         {
@@ -790,7 +790,7 @@ public class cppmangle {
                         }
                     }
                     this.source_name(se, true);
-                    (this.buf.get()).writeByte(69);
+                    (this.buf).writeByte(69);
                 }
             }
             else
@@ -804,7 +804,7 @@ public class cppmangle {
         public  void CV_qualifiers(Type t) {
             if (t.isConst())
             {
-                (this.buf.get()).writeByte(75);
+                (this.buf).writeByte(75);
             }
         }
 
@@ -818,20 +818,20 @@ public class cppmangle {
             Dsymbol p = d.toParent();
             if ((p != null) && (p.isModule() == null))
             {
-                (this.buf.get()).writestring(new ByteSlice("_ZN"));
+                (this.buf).writestring(new ByteSlice("_ZN"));
                 this.prefix_name(p);
                 this.source_name(d, true);
-                (this.buf.get()).writeByte(69);
+                (this.buf).writeByte(69);
             }
             else
             {
                 if (!isNested)
                 {
-                    (this.buf.get()).writestring(d.ident.asString());
+                    (this.buf).writestring(d.ident.asString());
                 }
                 else
                 {
-                    (this.buf.get()).writestring(new ByteSlice("_Z"));
+                    (this.buf).writestring(new ByteSlice("_Z"));
                     this.source_name(d, false);
                 }
             }
@@ -839,8 +839,8 @@ public class cppmangle {
 
         // Erasure: mangle_function<FuncDeclaration>
         public  void mangle_function(FuncDeclaration d) {
-            TypeFunction tf = (TypeFunction)d.type;
-            (this.buf.get()).writestring(new ByteSlice("_Z"));
+            TypeFunction tf = ((TypeFunction)d.type);
+            (this.buf).writestring(new ByteSlice("_Z"));
             {
                 TemplateDeclaration ftd = getFuncTemplateDecl(d);
                 if ((ftd) != null)
@@ -859,34 +859,34 @@ public class cppmangle {
                             CtorDeclaration ctor = d.isCtorDeclaration();
                             if ((ctor) != null)
                             {
-                                (this.buf.get()).writestring(ctor.isCpCtor ? new ByteSlice("C2") : new ByteSlice("C1"));
+                                (this.buf).writestring(ctor.isCpCtor ? new ByteSlice("C2") : new ByteSlice("C1"));
                             }
                             else if (isPrimaryDtor(d))
                             {
-                                (this.buf.get()).writestring(new ByteSlice("D1"));
+                                (this.buf).writestring(new ByteSlice("D1"));
                             }
                             else if ((d.ident != null) && (pequals(d.ident, Id.assign)))
                             {
-                                (this.buf.get()).writestring(new ByteSlice("aS"));
+                                (this.buf).writestring(new ByteSlice("aS"));
                             }
                             else if ((d.ident != null) && (pequals(d.ident, Id.eq)))
                             {
-                                (this.buf.get()).writestring(new ByteSlice("eq"));
+                                (this.buf).writestring(new ByteSlice("eq"));
                             }
                             else if ((d.ident != null) && (pequals(d.ident, Id.index)))
                             {
-                                (this.buf.get()).writestring(new ByteSlice("ix"));
+                                (this.buf).writestring(new ByteSlice("ix"));
                             }
                             else if ((d.ident != null) && (pequals(d.ident, Id.call)))
                             {
-                                (this.buf.get()).writestring(new ByteSlice("cl"));
+                                (this.buf).writestring(new ByteSlice("cl"));
                             }
                             else
                             {
                                 this.source_name(d, true);
                             }
                         }
-                        (this.buf.get()).writeByte(69);
+                        (this.buf).writeByte(69);
                     }
                     else
                     {
@@ -923,7 +923,7 @@ public class cppmangle {
             {
                 if (!this.substitute(ns))
                 {
-                    (this.buf.get()).writestring(new ByteSlice("St"));
+                    (this.buf).writestring(new ByteSlice("St"));
                 }
                 runDg.invoke();
             }
@@ -931,7 +931,7 @@ public class cppmangle {
             {
                 if (!haveNE)
                 {
-                    (this.buf.get()).writestring(new ByteSlice("N"));
+                    (this.buf).writestring(new ByteSlice("N"));
                 }
                 if (!this.substitute(ns))
                 {
@@ -942,7 +942,7 @@ public class cppmangle {
                 dg.invoke();
                 if (!haveNE)
                 {
-                    (this.buf.get()).writestring(new ByteSlice("E"));
+                    (this.buf).writestring(new ByteSlice("E"));
                 }
             }
             else if (!this.substitute(ns))
@@ -967,7 +967,7 @@ public class cppmangle {
                 this.context.ti = ti;
                 this.context.fd = d;
                 this.context.res = d;
-                TypeFunction preSemantic = (TypeFunction)d.originalType;
+                TypeFunction preSemantic = ((TypeFunction)d.originalType);
                 Dsymbol nspace = ti.toParent();
                 if ((nspace != null) && (nspace.isNspace() != null))
                 {
@@ -992,11 +992,11 @@ public class cppmangle {
             this.mangleNestedFuncPrefix(tf, p);
             if (d.isCtorDeclaration() != null)
             {
-                (this.buf.get()).writestring(new ByteSlice("C1"));
+                (this.buf).writestring(new ByteSlice("C1"));
             }
             else if (isPrimaryDtor(d))
             {
-                (this.buf.get()).writestring(new ByteSlice("D1"));
+                (this.buf).writestring(new ByteSlice("D1"));
             }
             else
             {
@@ -1036,14 +1036,14 @@ public class cppmangle {
                             case CppOperator.OpAssign:
                                 TemplateDeclaration td = ti.tempdecl.isTemplateDeclaration();
                                 assert(td != null);
-                                assert(((ti.tiargs.get()).length >= 1));
-                                TemplateParameter tp = (td.parameters.get()).get(0);
+                                assert(((ti.tiargs).length >= 1));
+                                TemplateParameter tp = (td.parameters).get(0);
                                 TemplateValueParameter tv = tp.isTemplateValueParameter();
                                 if ((tv == null) || !tv.valType.isString())
                                 {
                                     break;
                                 }
-                                Expression exp = isExpression((ti.tiargs.get()).get(0));
+                                Expression exp = isExpression((ti.tiargs).get(0));
                                 StringExp str = exp.toStringExp();
                                 {
                                     int __dispatch1 = 0;
@@ -1190,14 +1190,14 @@ public class cppmangle {
                 }
                 else
                 {
-                    (this.buf.get()).writestring(symName);
+                    (this.buf).writestring(symName);
                     if (isConvertFunc)
                     {
                         this.template_arg(ti, 0);
                     }
                     appendReturnType = this.template_args(ti, firstTemplateArg) && appendReturnType;
                 }
-                (this.buf.get()).writeByte(69);
+                (this.buf).writeByte(69);
                 if (appendReturnType)
                 {
                     this.headOfType(tf.nextOf());
@@ -1207,7 +1207,7 @@ public class cppmangle {
         }
 
         // Erasure: mangleFunctionParameters<Ptr, int>
-        public  void mangleFunctionParameters(Ptr<DArray<Parameter>> parameters, int varargs) {
+        public  void mangleFunctionParameters(DArray<Parameter> parameters, int varargs) {
             CppMangleVisitor __self = this;
             Ref<Integer> numparams = ref(0);
             Function0<RootObject> __dgliteral4 = new Function0<RootObject>() {
@@ -1219,14 +1219,14 @@ public class cppmangle {
                             Ref<TypeFunction> tf = ref(null);
                             if (isDsymbol(context.res) != null)
                             {
-                                tf.value = (TypeFunction)asFuncDecl(context.res).type;
+                                tf.value = ((TypeFunction)asFuncDecl(context.res).type);
                             }
                             else
                             {
                                 tf.value = asType(context.res).isTypeFunction();
                             }
                             assert(tf.value != null);
-                            return (tf.value.parameterList.parameters.get()).get(n).type;
+                            return (tf.value.parameterList.parameters).get(n).type;
                         }}
 
                     };
@@ -1261,11 +1261,11 @@ public class cppmangle {
             }
             if ((varargs == VarArg.variadic))
             {
-                (this.buf.get()).writeByte(122);
+                (this.buf).writeByte(122);
             }
             else if (numparams.value == 0)
             {
-                (this.buf.get()).writeByte(118);
+                (this.buf).writeByte(118);
             }
         }
 
@@ -1293,7 +1293,7 @@ public class cppmangle {
             CppMangleVisitor __self = this;
             if (((t.ty & 0xFF) == ENUMTY.Tclass))
             {
-                this.mangleTypeClass((TypeClass)t, true);
+                this.mangleTypeClass(((TypeClass)t), true);
             }
             else
             {
@@ -1330,9 +1330,9 @@ public class cppmangle {
             this.CV_qualifiers(t);
             if (p != 0)
             {
-                (this.buf.get()).writeByte((p & 0xFF));
+                (this.buf).writeByte((p & 0xFF));
             }
-            (this.buf.get()).writeByte((c & 0xFF));
+            (this.buf).writeByte((c & 0xFF));
         }
 
         // Erasure: doSymbol<Type>
@@ -1346,7 +1346,7 @@ public class cppmangle {
                 BytePtr tm = pcopy(target.cppTypeMangle(t));
                 if ((tm) != null)
                 {
-                    (this.buf.get()).writestring(tm);
+                    (this.buf).writestring(tm);
                 }
                 else
                 {
@@ -1386,7 +1386,7 @@ public class cppmangle {
             {
                 this.CV_qualifiers(t);
             }
-            (this.buf.get()).writeByte(80);
+            (this.buf).writeByte(80);
             this.CV_qualifiers(t);
             {
                 Dsymbol s = t.toDsymbol(null);
@@ -1412,7 +1412,7 @@ public class cppmangle {
 
         // Erasure: mangleNestedFuncPrefix<TypeFunction, Dsymbol>
         public  void mangleNestedFuncPrefix(TypeFunction tf, Dsymbol parent) {
-            (this.buf.get()).writeByte(78);
+            (this.buf).writeByte(78);
             this.CV_qualifiers(tf);
             this.prefix_name(parent);
         }
@@ -1421,21 +1421,21 @@ public class cppmangle {
         public  void writeTemplateArgIndex(int idx, TemplateParameter param) {
             if (param.isTemplateValueParameter() != null)
             {
-                (this.buf.get()).writeByte(88);
+                (this.buf).writeByte(88);
             }
-            (this.buf.get()).writeByte(84);
+            (this.buf).writeByte(84);
             this.writeSequenceFromIndex(idx);
-            (this.buf.get()).writeByte(95);
+            (this.buf).writeByte(95);
             if (param.isTemplateValueParameter() != null)
             {
-                (this.buf.get()).writeByte(69);
+                (this.buf).writeByte(69);
             }
         }
 
         // Erasure: templateParamIndex<Identifier, Ptr>
-        public static int templateParamIndex(Identifier ident, Ptr<DArray<TemplateParameter>> params) {
+        public static int templateParamIndex(Identifier ident, DArray<TemplateParameter> params) {
             {
-                Slice<TemplateParameter> __r857 = (params.get()).opSlice().copy();
+                Slice<TemplateParameter> __r857 = (params).opSlice().copy();
                 int __key856 = 0;
                 for (; (__key856 < __r857.getLength());__key856 += 1) {
                     TemplateParameter param = __r857.get(__key856);
@@ -1446,7 +1446,7 @@ public class cppmangle {
                     }
                 }
             }
-            return (params.get()).length;
+            return (params).length;
         }
 
         // Erasure: writeQualified<TemplateInstance, Runnable0>
@@ -1477,7 +1477,7 @@ public class cppmangle {
                     dg.invoke();
                     return ;
                 }
-                (this.buf.get()).writestring(new ByteSlice("St"));
+                (this.buf).writestring(new ByteSlice("St"));
                 this.writeIdentifier(t.name);
                 this.append(t);
                 dg.invoke();
@@ -1485,7 +1485,7 @@ public class cppmangle {
             }
             else if (sym2 != null)
             {
-                (this.buf.get()).writestring(new ByteSlice("N"));
+                (this.buf).writestring(new ByteSlice("N"));
                 if (!this.substitute(sym2))
                 {
                     sym2.accept(this);
@@ -1504,7 +1504,7 @@ public class cppmangle {
             this.writeNamespace(sym1.namespace, __lambda3, false);
             if (sym2 != null)
             {
-                (this.buf.get()).writestring(new ByteSlice("E"));
+                (this.buf).writestring(new ByteSlice("E"));
             }
         }
 
@@ -1541,7 +1541,7 @@ public class cppmangle {
                         }
                     }
                     this.CV_qualifiers(t);
-                    (this.buf.get()).writestring(tm);
+                    (this.buf).writestring(tm);
                     return ;
                 }
             }
@@ -1653,13 +1653,13 @@ public class cppmangle {
                 BytePtr tm = pcopy(target.cppTypeMangle(t));
                 if ((tm) != null)
                 {
-                    (this.buf.get()).writestring(tm);
+                    (this.buf).writestring(tm);
                 }
                 else
                 {
                     assert((t.basetype != null) && ((t.basetype.ty & 0xFF) == ENUMTY.Tsarray));
-                    assert(((TypeSArray)t.basetype).dim != null);
-                    (this.buf.get()).writestring(new ByteSlice("U8__vector"));
+                    assert((((TypeSArray)t.basetype)).dim != null);
+                    (this.buf).writestring(new ByteSlice("U8__vector"));
                     t.basetype.nextOf().accept(this);
                 }
             }
@@ -1677,9 +1677,9 @@ public class cppmangle {
                 this.append(t);
             }
             this.CV_qualifiers(t);
-            (this.buf.get()).writeByte(65);
-            (this.buf.get()).print(t.dim != null ? t.dim.toInteger() : 0L);
-            (this.buf.get()).writeByte(95);
+            (this.buf).writeByte(65);
+            (this.buf).print(t.dim != null ? t.dim.toInteger() : 0L);
+            (this.buf).writeByte(95);
             t.next.value.accept(this);
         }
 
@@ -1696,7 +1696,7 @@ public class cppmangle {
             {
                 return ;
             }
-            (this.buf.get()).writeByte(80);
+            (this.buf).writeByte(80);
             Function0<RootObject> __dgliteral2 = new Function0<RootObject>() {
                 public RootObject invoke() {
                  {
@@ -1721,7 +1721,7 @@ public class cppmangle {
             {
                 return ;
             }
-            (this.buf.get()).writeByte(82);
+            (this.buf).writeByte(82);
             Function0<RootObject> __dgliteral2 = new Function0<RootObject>() {
                 public RootObject invoke() {
                  {
@@ -1745,10 +1745,10 @@ public class cppmangle {
             {
                 return ;
             }
-            (this.buf.get()).writeByte(70);
+            (this.buf).writeByte(70);
             if ((t.linkage == LINK.c))
             {
-                (this.buf.get()).writeByte(89);
+                (this.buf).writeByte(89);
             }
             Type tn = t.next.value;
             if (t.isref)
@@ -1757,7 +1757,7 @@ public class cppmangle {
             }
             tn.accept(this);
             this.mangleFunctionParameters(t.parameterList.parameters, t.parameterList.varargs);
-            (this.buf.get()).writeByte(69);
+            (this.buf).writeByte(69);
             this.append(t);
         }
 
@@ -1814,15 +1814,15 @@ public class cppmangle {
 
         // Erasure: visit<TypeIdentifier>
         public  void visit(TypeIdentifier t) {
-            TemplateDeclaration decl = (TemplateDeclaration)this.context.ti.tempdecl;
+            TemplateDeclaration decl = ((TemplateDeclaration)this.context.ti.tempdecl);
             assert((decl.parameters != null));
             int idx = templateParamIndex(t.ident, decl.parameters);
-            if ((idx >= (decl.parameters.get()).length))
+            if ((idx >= (decl.parameters).length))
             {
                 visitObjectCppMangleVisitor(this.context.res, this);
                 return ;
             }
-            TemplateParameter param = (decl.parameters.get()).get(idx);
+            TemplateParameter param = (decl.parameters).get(idx);
             {
                 Type type = isType(this.context.res);
                 if ((type) != null)
@@ -1850,30 +1850,30 @@ public class cppmangle {
             Runnable0 writeArgs = new Runnable0() {
                 public Void invoke() {
                  {
-                    (buf.get()).writeByte(73);
+                    (buf).writeByte(73);
                     TemplateInstance analyzed_ti = asType(context.res).toDsymbol(null).isInstantiated();
                     Ref<Context> prev = ref(context.copy());
                     try {
                         {
-                            Slice<RootObject> __r859 = (t.tiargs.get()).opSlice().copy();
+                            Slice<RootObject> __r859 = (t.tiargs).opSlice().copy();
                             Ref<Integer> __key858 = ref(0);
                             for (; (__key858.value < __r859.getLength());__key858.value += 1) {
                                 RootObject o = __r859.get(__key858.value);
                                 int idx = __key858.value;
-                                context.res = (analyzed_ti.tiargs.get()).get(idx);
+                                context.res = (analyzed_ti.tiargs).get(idx);
                                 visitObjectCppMangleVisitor(o, __self);
                             }
                         }
-                        if (((analyzed_ti.tiargs.get()).length > (t.tiargs.get()).length))
+                        if (((analyzed_ti.tiargs).length > (t.tiargs).length))
                         {
-                            Ptr<DArray<TemplateParameter>> oparams = ((TemplateDeclaration)analyzed_ti.tempdecl).origParameters;
+                            DArray<TemplateParameter> oparams = (((TemplateDeclaration)analyzed_ti.tempdecl)).origParameters;
                             {
-                                Slice<TemplateParameter> __r861 = ((oparams.get()).opSlice((t.tiargs.get()).length, (oparams.get()).opSlice.getLength())).copy();
+                                Slice<TemplateParameter> __r861 = ((oparams).opSlice((t.tiargs).length, (oparams).opSlice.getLength())).copy();
                                 Ref<Integer> __key860 = ref(0);
                                 for (; (__key860.value < __r861.getLength());__key860.value += 1) {
                                     TemplateParameter arg = __r861.get(__key860.value);
                                     int idx = __key860.value;
-                                    context.res = (analyzed_ti.tiargs.get()).get(idx + (t.tiargs.get()).length);
+                                    context.res = (analyzed_ti.tiargs).get(idx + (t.tiargs).length);
                                     {
                                         TemplateTypeParameter ttp = arg.isTemplateTypeParameter();
                                         if ((ttp) != null)
@@ -1909,7 +1909,7 @@ public class cppmangle {
                                 }
                             }
                         }
-                        (buf.get()).writeByte(69);
+                        (buf).writeByte(69);
                     }
                     finally {
                         context.pop(prev);
@@ -1920,11 +1920,11 @@ public class cppmangle {
             assert((t.name != null));
             assert((t.tiargs != null));
             Ref<Boolean> needsTa = ref(false);
-            TemplateDeclaration decl = (TemplateDeclaration)this.context.ti.tempdecl;
+            TemplateDeclaration decl = ((TemplateDeclaration)this.context.ti.tempdecl);
             int idx = templateParamIndex(t.name, decl.parameters);
-            if ((idx < (decl.parameters.get()).length))
+            if ((idx < (decl.parameters).length))
             {
-                TemplateParameter param = (decl.parameters.get()).get(idx);
+                TemplateParameter param = (decl.parameters).get(idx);
                 {
                     Type type = t.getType();
                     if ((type) != null)
@@ -1955,10 +1955,10 @@ public class cppmangle {
 
         // Erasure: visit<IntegerExp>
         public  void visit(IntegerExp t) {
-            (this.buf.get()).writeByte(76);
+            (this.buf).writeByte(76);
             t.type.value.accept(this);
-            (this.buf.get()).print(t.getInteger());
-            (this.buf.get()).writeByte(69);
+            (this.buf).print(t.getInteger());
+            (this.buf).writeByte(69);
         }
 
         // Erasure: visit<Nspace>
@@ -1972,7 +1972,7 @@ public class cppmangle {
             }
             if (isStd((Dsymbol)t))
             {
-                (this.buf.get()).writestring(new ByteSlice("St"));
+                (this.buf).writestring(new ByteSlice("St"));
             }
             else
             {
@@ -2130,13 +2130,13 @@ public class cppmangle {
                     {
                         case DYNCAST.dsymbol:
                             {
-                                Nspace ns = ((Dsymbol)base).isNspace();
+                                Nspace ns = (((Dsymbol)base)).isNspace();
                                 if ((ns) != null)
                                 {
                                     this.namespace = ns;
                                 }
                                 else {
-                                    CPPNamespaceDeclaration ns = ((Dsymbol)base).isCPPNamespaceDeclaration();
+                                    CPPNamespaceDeclaration ns = (((Dsymbol)base)).isCPPNamespaceDeclaration();
                                     if ((ns) != null)
                                     {
                                         this.namespace2 = ns;
@@ -2149,18 +2149,18 @@ public class cppmangle {
                             }
                             break;
                         case DYNCAST.type:
-                            Type t = (Type)base;
+                            Type t = ((Type)base);
                             if (((t.ty & 0xFF) == ENUMTY.Tpointer))
                             {
-                                this.tpointer = (TypePointer)t;
+                                this.tpointer = ((TypePointer)t);
                             }
                             else if (((t.ty & 0xFF) == ENUMTY.Treference))
                             {
-                                this.tref = (TypeReference)t;
+                                this.tref = ((TypeReference)t);
                             }
                             else if (((t.ty & 0xFF) == ENUMTY.Tident))
                             {
-                                this.tident = (TypeIdentifier)t;
+                                this.tident = ((TypeIdentifier)t);
                             }
                             else
                             {

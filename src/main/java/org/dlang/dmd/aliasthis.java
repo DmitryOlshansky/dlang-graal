@@ -95,7 +95,7 @@ public class aliasthis {
                             if (((e.op & 0xFF) == 26))
                             {
                                 {
-                                    FuncDeclaration fd = ((VarExp)e).var.isFuncDeclaration();
+                                    FuncDeclaration fd = (((VarExp)e)).var.isFuncDeclaration();
                                     if ((fd) != null)
                                     {
                                         Ref<Boolean> hasOverloads = ref(false);

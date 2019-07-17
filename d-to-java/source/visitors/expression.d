@@ -170,6 +170,13 @@ string refType(Type at, ExprOpts opts) {
     return "Ref<" ~ toJava(t, opts, Boxing.yes) ~ ">";
 }
 
+bool referenceType(Type t) {
+    auto ts = t.isTypeStruct;
+    if (ts && ts.sym.ident.symbol.startsWith("DArray")) return true;
+    else if(ts && ts.sym.ident.symbol == "OutBuffer") return true;
+    else return false;
+}
+
 private bool isJavaByte(Type t) {
     return t.ty == Tchar || t.ty == Tint8 || t.ty == Tuns8;
 }
@@ -496,7 +503,8 @@ public:
             expToBuffer(e.thisexp, PREC.primary, buf, opts);
             buf.put('.');
         }
-        if (e.type.isTypePointer) buf.put("refPtr(");
+        auto refPtr = e.type.isTypePointer && !referenceType(e.type.nextOf);
+        if (refPtr) buf.put("refPtr(");
         buf.put("new ");
         typeToBuffer(e.newtype, buf, opts);
         buf.put('(');
@@ -511,7 +519,7 @@ public:
             argsToBuffer(e.arguments, buf, opts);
         }
         buf.put(')');
-        if (e.type.isTypePointer) buf.put(")");
+        if (refPtr) buf.put(")");
     }
 
     override void visit(NewAnonClassExp e)
@@ -557,8 +565,12 @@ public:
         else if(e.var.type.isTypeSArray) {
             buf.fmt("%s%s.ptr()", printParent(e.var, opts), e.var.varName(opts));
         }
-        else {
+        else if (!referenceType(e.var.type)) {
             buf.fmt("ptr(%s%s)", printParent(e.var, opts), e.var.varName(opts));
+        }
+        else {
+            buf.fmt("%s%s", printParent(e.var, opts), e.var.varName(opts));
+            if (e.var in opts.refParams.top) buf.put(".value");
         }
     }
 
@@ -709,7 +721,7 @@ public:
                 buf.put(e.toJavaBool(opts, precedence[e.op]));
             }
             else if (e.op == TOK.address) {
-                if (e.e1.type.isTypeFunction)
+                if (e.e1.type.isTypeFunction || referenceType(e.e1.type))
                     expToBuffer(e.e1, precedence[e.op], buf, opts);
                 else {
                     buf.put("ptr(");
@@ -723,9 +735,18 @@ public:
             }
         }
         else if(e.op == TOK.address) {
-            buf.put("ptr(");
-            refExpr(e.e1, precedence[e.op]);
-            buf.put(")");
+            if (auto ie = e.e1.isIndexExp) {
+                refExpr(ie.e1, PREC.primary);
+                buf.fmt(".getPtr(%s)", ie.e2.toJava(opts));
+            }
+            else if (!referenceType(e.e1.type)) {
+                buf.put("ptr(");
+                refExpr(e.e1, precedence[e.op]);
+                buf.put(")");
+            }
+            else {
+                expToBuffer(e.e1, precedence[e.op], buf, opts);
+            }
         }
         else if(e.op == TOK.not) {
             buf.put(e.toJavaBool(opts, precedence[e.op]));
@@ -1107,7 +1128,7 @@ public:
     override void visit(PtrExp e)
     {
         expToBuffer(e.e1, precedence[e.op], buf, opts);
-        if (e.e1.type.nextOf.ty != Tfunction) 
+        if (e.e1.type.nextOf.ty != Tfunction && !referenceType(e.e1.type.nextOf)) 
             buf.put(".get()");
     }
 
@@ -1266,13 +1287,13 @@ public:
             buf.put(")");
             return;
         }
-        if (e.e1.type.isTypePointer) buf.put("(");
+        if (e.e1.type.isTypePointer || e.e1.type.isTypeClass) buf.put("(");
         // simple casts
         buf.put("(");
         typeToBuffer(e.to, buf, opts);
         buf.put(")");
         expToBuffer(e.e1, precedence[e.op], buf, opts);
-        if (e.e1.type.isTypePointer) buf.put(")");
+        if (e.e1.type.isTypePointer || e.e1.type.isTypeClass) buf.put(")");
     }
 
     override void visit(VectorExp e)
@@ -1386,16 +1407,16 @@ public:
         else if(auto pt = e.e1.isPtrExp()) {
             expToBuffer(pt.e1, PREC.primary, buf, opts);
             buf.put(".set(0, ");
-            expToBuffer(e.e2, PREC.primary, buf, opts);
+            expToBuffer(e.e2, PREC.assign, buf, opts);
             buf.put(')');
         }
         else if (e.e1.type.ty == Tpointer && e.e2.type.ty == Tpointer) {
             expToBuffer(e.e1, PREC.primary, buf, opts);
             buf.put(" = ");
-            if (e.e2.isNullExp()) expToBuffer(e.e2, PREC.primary, buf, opts);
+            if (e.e2.isNullExp()) expToBuffer(e.e2, PREC.assign, buf, opts);
             else {
                 buf.put("pcopy(");
-                expToBuffer(e.e2, PREC.primary, buf, opts);
+                expToBuffer(e.e2, PREC.assign, buf, opts);
                 buf.put(")");
             }
         }
@@ -1405,14 +1426,14 @@ public:
         else if(e.e1.type.ty == Tstruct && e.e2.type.ty == Tstruct) {
             expToBuffer(e.e1, PREC.primary, buf, opts);
             buf.put(".opAssign(");
-            expToBuffer(e.e2, PREC.primary, buf, opts);
+            expToBuffer(e.e2, PREC.assign, buf, opts);
             if (!e.e2.isStructLiteralExp) buf.put(".copy()");
             buf.put(")");
         }
         else if (e.e1.type.ty == Tarray && e.e2.type.ty == Tarray) {
             expToBuffer(e.e1, PREC.primary, buf, opts);
             buf.put(" = ");
-            expToBuffer(e.e2, PREC.primary, buf, opts);
+            expToBuffer(e.e2, PREC.assign, buf, opts);
             buf.put(".copy()");
         }
         else
@@ -1937,6 +1958,8 @@ private void typeToBufferx(Type t, TextBuffer buf, ExprOpts opts, Boxing boxing 
             else if(auto struc = t.isTypeStruct) {
                 if (struc.sym.ident.symbol == "__va_list_tag")
                     return buf.put("Slice<Object>");
+                else if(referenceType(t))
+                   return typeToBufferx(t, buf, opts, boxing);
             }
             buf.put("Ptr<");
             typeToBufferx(t, buf, opts, Boxing.yes);

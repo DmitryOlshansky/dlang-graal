@@ -55,7 +55,7 @@ public class declaration {
                 Type tb = vd.type.baseElemOf();
                 if (((tb.ty & 0xFF) == ENUMTY.Tstruct))
                 {
-                    (result ? 1 : 0) |= (checkFrameAccess(loc, sc, ((TypeStruct)tb).sym, 0) ? 1 : 0);
+                    (result ? 1 : 0) |= (checkFrameAccess(loc, sc, (((TypeStruct)tb)).sym, 0) ? 1 : 0);
                 }
             }
         }
@@ -98,7 +98,7 @@ public class declaration {
                         }
                     }
                     assert((i < dim));
-                    Ptr<FieldInit> fieldInit = ptr((sc.get()).ctorflow.fieldinit.get(i));
+                    Ptr<FieldInit> fieldInit = (sc.get()).ctorflow.fieldinit.getPtr(i);
                     int fi = (fieldInit.get()).csx.value;
                     if ((fi & 1) != 0)
                     {
@@ -333,7 +333,7 @@ public class declaration {
                             {
                                 {
                                     FuncDeclaration ovl = fd;
-                                    for (; ovl != null;ovl = (FuncDeclaration)ovl.overnext) {
+                                    for (; ovl != null;ovl = ((FuncDeclaration)ovl.overnext)) {
                                         if ((ovl.storage_class & 137438953472L) == 0)
                                         {
                                             return false;
@@ -381,7 +381,7 @@ public class declaration {
             }
             if ((e1 != null) && ((e1.op & 0xFF) == 123) && this.isField())
             {
-                VarDeclaration vthis = ((ThisExp)e1).var;
+                VarDeclaration vthis = (((ThisExp)e1)).var;
                 {
                     Ptr<Scope> scx = sc;
                     for (; scx != null;scx = pcopy((scx.get()).enclosing)){
@@ -568,11 +568,11 @@ public class declaration {
     }
     public static class TupleDeclaration extends Declaration
     {
-        public Ptr<DArray<RootObject>> objects = null;
+        public DArray<RootObject> objects = null;
         public boolean isexp = false;
         public TypeTuple tupletype = null;
         // Erasure: __ctor<Loc, Identifier, Ptr>
-        public  TupleDeclaration(Loc loc, Identifier ident, Ptr<DArray<RootObject>> objects) {
+        public  TupleDeclaration(Loc loc, Identifier ident, DArray<RootObject> objects) {
             super(loc, ident);
             this.objects = pcopy(objects);
         }
@@ -597,25 +597,25 @@ public class declaration {
             {
                 {
                     int i = 0;
-                    for (; (i < (this.objects.get()).length);i++){
-                        RootObject o = (this.objects.get()).get(i);
+                    for (; (i < (this.objects).length);i++){
+                        RootObject o = (this.objects).get(i);
                         if ((o.dyncast() != DYNCAST.type))
                         {
                             return null;
                         }
                     }
                 }
-                Ptr<DArray<Type>> types = ((Ptr<DArray<Type>>)this.objects);
-                Ptr<DArray<Parameter>> args = refPtr(new DArray<Parameter>((this.objects.get()).length));
+                DArray<Type> types = ((DArray<Type>)this.objects);
+                DArray<Parameter> args = new DArray<Parameter>((this.objects).length);
                 OutBuffer buf = new OutBuffer();
                 try {
                     int hasdeco = 1;
                     {
                         int i = 0;
-                        for (; (i < (types.get()).length);i++){
-                            Type t = (types.get()).get(i);
+                        for (; (i < (types).length);i++){
+                            Type t = (types).get(i);
                             Parameter arg = new Parameter(0L, t, null, null, null);
-                            args.get().set(i, arg);
+                            args.set(i, arg);
                             if (t.deco == null)
                             {
                                 hasdeco = 0;
@@ -638,14 +638,14 @@ public class declaration {
         public  Dsymbol toAlias2() {
             {
                 int i = 0;
-                for (; (i < (this.objects.get()).length);i++){
-                    RootObject o = (this.objects.get()).get(i);
+                for (; (i < (this.objects).length);i++){
+                    RootObject o = (this.objects).get(i);
                     {
                         Dsymbol s = isDsymbol(o);
                         if ((s) != null)
                         {
                             s = s.toAlias2();
-                            this.objects.get().set(i, s);
+                            this.objects.set(i, s);
                         }
                     }
                 }
@@ -657,14 +657,14 @@ public class declaration {
         public  boolean needThis() {
             {
                 int i = 0;
-                for (; (i < (this.objects.get()).length);i++){
-                    RootObject o = (this.objects.get()).get(i);
+                for (; (i < (this.objects).length);i++){
+                    RootObject o = (this.objects).get(i);
                     if ((o.dyncast() == DYNCAST.expression))
                     {
-                        Expression e = (Expression)o;
+                        Expression e = ((Expression)o);
                         if (((e.op & 0xFF) == 41))
                         {
-                            DsymbolExp ve = (DsymbolExp)e;
+                            DsymbolExp ve = ((DsymbolExp)e);
                             Declaration d = ve.s.isDeclaration();
                             if ((d != null) && d.needThis())
                             {
@@ -1194,7 +1194,7 @@ public class declaration {
         public int ctfeAdrOnStack = 0;
         public Expression edtor = null;
         public Ptr<IntRange> range = null;
-        public Ptr<DArray<VarDeclaration>> maybes = null;
+        public DArray<VarDeclaration> maybes = null;
         public boolean _isAnonymous = false;
         // Erasure: __ctor<Loc, Type, Identifier, Initializer, long>
         public  VarDeclaration(Loc loc, Type type, Identifier ident, Initializer _init, long storage_class) {
@@ -1243,12 +1243,12 @@ public class declaration {
                 assert(v2 != null);
                 {
                     int i = 0;
-                    for (; (i < (v2.objects.get()).length);i++){
-                        RootObject o = (v2.objects.get()).get(i);
+                    for (; (i < (v2.objects).length);i++){
+                        RootObject o = (v2.objects).get(i);
                         assert((o.dyncast() == DYNCAST.expression));
-                        Expression e = (Expression)o;
+                        Expression e = ((Expression)o);
                         assert(((e.op & 0xFF) == 41));
-                        DsymbolExp se = (DsymbolExp)e;
+                        DsymbolExp se = ((DsymbolExp)e);
                         se.s.setFieldOffset(ad, poffset, isunion);
                     }
                 }
@@ -1282,7 +1282,7 @@ public class declaration {
             Type tv = t.baseElemOf();
             if (((tv.ty & 0xFF) == ENUMTY.Tstruct))
             {
-                TypeStruct ts = (TypeStruct)tv;
+                TypeStruct ts = ((TypeStruct)tv);
                 assert((!pequals(ts.sym, ad)));
                 if (!ts.sym.determineSize(this.loc))
                 {
@@ -1426,7 +1426,7 @@ public class declaration {
             Type tv = this.type.baseElemOf();
             if (((tv.ty & 0xFF) == ENUMTY.Tstruct))
             {
-                StructDeclaration sd = ((TypeStruct)tv).sym;
+                StructDeclaration sd = (((TypeStruct)tv)).sym;
                 if ((sd.dtor == null) || sd.errors)
                 {
                     return null;
@@ -1452,8 +1452,8 @@ public class declaration {
                     assert((sdsz != -1L) && (sdsz != 0L));
                     long n = sz / sdsz;
                     e = new SliceExp(this.loc, e, new IntegerExp(this.loc, 0L, Type.tsize_t), new IntegerExp(this.loc, n, Type.tsize_t));
-                    ((SliceExp)e).upperIsInBounds = true;
-                    ((SliceExp)e).lowerIsLessThanUpper = true;
+                    (((SliceExp)e)).upperIsInBounds = true;
+                    (((SliceExp)e)).lowerIsLessThanUpper = true;
                     e.type.value = sd.type.arrayOf();
                     e = new CallExp(this.loc, new IdentifierExp(this.loc, Id.__ArrayDtor), e);
                 }
@@ -1609,7 +1609,7 @@ public class declaration {
                 Expression e = ez.exp;
                 if (((e.op & 0xFF) == 95) || ((e.op & 0xFF) == 96))
                 {
-                    e = ((AssignExp)e).e2.value;
+                    e = (((AssignExp)e)).e2.value;
                 }
                 return lambdaCheckForNestedRef(e, sc);
             }
@@ -1646,9 +1646,9 @@ public class declaration {
         public  void addMaybe(VarDeclaration v) {
             if (this.maybes == null)
             {
-                this.maybes = pcopy((refPtr(new DArray<VarDeclaration>())));
+                this.maybes = pcopy(new DArray<VarDeclaration>());
             }
-            (this.maybes.get()).push(v);
+            (this.maybes).push(v);
         }
 
 

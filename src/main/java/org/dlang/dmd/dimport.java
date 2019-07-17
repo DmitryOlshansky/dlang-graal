@@ -24,7 +24,7 @@ public class dimport {
 
     public static class Import extends Dsymbol
     {
-        public Ptr<DArray<Identifier>> packages = null;
+        public DArray<Identifier> packages = null;
         public Identifier id = null;
         public Identifier aliasId = null;
         public int isstatic = 0;
@@ -35,27 +35,25 @@ public class dimport {
         public Ref<dmodule.Package> pkg = ref(null);
         public DArray<AliasDeclaration> aliasdecls = new DArray<AliasDeclaration>();
         // Erasure: __ctor<Loc, Ptr, Identifier, Identifier, int>
-        public  Import(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Identifier aliasId, int isstatic) {
-            Import __self = this;
-            Function0<Identifier> selectIdent = new Function0<Identifier>() {
+        public  Import(Loc loc, DArray<Identifier> packages, Identifier id, Identifier aliasId, int isstatic) {
+            super(loc, new Function0<Identifier>() {
                 public Identifier invoke() {
-                 {
-                    if (aliasId != null)
                     {
-                        return aliasId;
-                    }
-                    else if ((packages != null) && ((packages.get()).length != 0))
-                    {
-                        return (packages.get()).get(0);
-                    }
-                    else
-                    {
-                        return id;
-                    }
-                }}
+                        if (aliasId != null)
+                        {
+                            return aliasId;
+                        }
+                        else if ((packages != null) && ((packages).length != 0))
+                        {
+                            return (packages).get(0);
+                        }
+                        else
+                        {
+                            return id;
+                        }
+                    }}
 
-            };
-            super(loc, selectIdent.invoke());
+            }.invoke());
             assert(id != null);
             this.packages = pcopy(packages);
             this.id = id;
@@ -110,7 +108,7 @@ public class dimport {
             {
                 if (s.isModule() != null)
                 {
-                    this.mod = (dmodule.Module)s;
+                    this.mod = ((dmodule.Module)s);
                 }
                 else
                 {

@@ -17,7 +17,7 @@ public class statement_rewrite_walker {
         public Ptr<Statement> ps = null;
         // Erasure: visitStmt<Statement>
         public  void visitStmt(Ref<Statement> s) {
-            this.ps = pcopy((ptr(s)));
+            this.ps = pcopy(ptr(s));
             s.value.accept(this);
         }
 
@@ -36,14 +36,14 @@ public class statement_rewrite_walker {
 
         // Erasure: visit<CompoundStatement>
         public  void visit(CompoundStatement s) {
-            if ((s.statements != null) && ((s.statements.get()).length != 0))
+            if ((s.statements != null) && ((s.statements).length != 0))
             {
                 {
                     int i = 0;
-                    for (; (i < (s.statements.get()).length);i++){
-                        if ((s.statements.get()).get(i) != null)
+                    for (; (i < (s.statements).length);i++){
+                        if ((s.statements).get(i) != null)
                         {
-                            this.visitStmt((s.statements.get()).get(i));
+                            this.visitStmt((s.statements).get(i));
                         }
                     }
                 }
@@ -57,14 +57,14 @@ public class statement_rewrite_walker {
 
         // Erasure: visit<UnrolledLoopStatement>
         public  void visit(UnrolledLoopStatement s) {
-            if ((s.statements != null) && ((s.statements.get()).length != 0))
+            if ((s.statements != null) && ((s.statements).length != 0))
             {
                 {
                     int i = 0;
-                    for (; (i < (s.statements.get()).length);i++){
-                        if ((s.statements.get()).get(i) != null)
+                    for (; (i < (s.statements).length);i++){
+                        if ((s.statements).get(i) != null)
                         {
-                            this.visitStmt((s.statements.get()).get(i));
+                            this.visitStmt((s.statements).get(i));
                         }
                     }
                 }
@@ -189,12 +189,12 @@ public class statement_rewrite_walker {
             {
                 this.visitStmt(_body);
             }
-            if ((s.catches != null) && ((s.catches.get()).length != 0))
+            if ((s.catches != null) && ((s.catches).length != 0))
             {
                 {
                     int i = 0;
-                    for (; (i < (s.catches.get()).length);i++){
-                        Catch c = (s.catches.get()).get(i);
+                    for (; (i < (s.catches).length);i++){
+                        Catch c = (s.catches).get(i);
                         if ((c != null) && (c.handler.value != null))
                         {
                             this.visitStmt(handler);

@@ -145,7 +145,7 @@ public class dstruct {
                 if (t.arguments != null)
                 {
                     {
-                        Slice<Parameter> __r1127 = (t.arguments.get()).opSlice().copy();
+                        Slice<Parameter> __r1127 = (t.arguments).opSlice().copy();
                         Ref<Integer> __key1128 = ref(0);
                         for (; (__key1128.value < __r1127.getLength());__key1128.value += 1) {
                             Parameter arg = __r1127.get(__key1128.value);
@@ -237,7 +237,7 @@ public class dstruct {
 
         // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            StructDeclaration sd = s != null ? (StructDeclaration)s : new StructDeclaration(this.loc, this.ident, false);
+            StructDeclaration sd = s != null ? ((StructDeclaration)s) : new StructDeclaration(this.loc, this.ident, false);
             return this.syntaxCopy(sd);
         }
 
@@ -317,8 +317,8 @@ public class dstruct {
             boolean isunion = this.isUnionDeclaration() != null;
             {
                 int i = 0;
-                for (; (i < (this.members.get()).length);i++){
-                    Dsymbol s = (this.members.get()).get(i);
+                for (; (i < (this.members).length);i++){
+                    Dsymbol s = (this.members).get(i);
                     s.setFieldOffset(this, ptr(offset), isunion);
                 }
             }
@@ -382,20 +382,20 @@ public class dstruct {
                 }
             }
             TypeTuple tt = target.toArgTypes(this.type);
-            int dim = tt != null ? (tt.arguments.get()).length : 0;
+            int dim = tt != null ? (tt.arguments).length : 0;
             if ((dim >= 1))
             {
                 assert((dim <= 2));
-                this.arg1type = (tt.arguments.get()).get(0).type;
+                this.arg1type = (tt.arguments).get(0).type;
                 if ((dim == 2))
                 {
-                    this.arg2type = (tt.arguments.get()).get(1).type;
+                    this.arg2type = (tt.arguments).get(1).type;
                 }
             }
         }
 
         // Erasure: fit<Loc, Ptr, Ptr, Type>
-        public  boolean fit(Loc loc, Ptr<Scope> sc, Ptr<DArray<Expression>> elements, Type stype) {
+        public  boolean fit(Loc loc, Ptr<Scope> sc, DArray<Expression> elements, Type stype) {
             if (elements == null)
             {
                 return true;
@@ -405,8 +405,8 @@ public class dstruct {
             {
                 int i = 0;
             L_outer1:
-                for (; (i < (elements.get()).length);i++){
-                    Expression e = (elements.get()).get(i);
+                for (; (i < (elements).length);i++){
+                    Expression e = (elements).get(i);
                     if (e == null)
                     {
                         continue L_outer1;
@@ -452,10 +452,10 @@ public class dstruct {
                     try {
                         if (((e.op & 0xFF) == 121) && ((tb.ty & 0xFF) == ENUMTY.Tsarray))
                         {
-                            StringExp se = (StringExp)e;
+                            StringExp se = ((StringExp)e);
                             Type typeb = se.type.value.toBasetype();
                             byte tynto = tb.nextOf().ty;
-                            if ((se.committed == 0) && ((typeb.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.ty & 0xFF) == ENUMTY.Tsarray) && ((tynto & 0xFF) == ENUMTY.Tchar) || ((tynto & 0xFF) == ENUMTY.Twchar) || ((tynto & 0xFF) == ENUMTY.Tdchar) && ((long)se.numberOfCodeUnits((tynto & 0xFF)) < ((TypeSArray)tb).dim.toInteger()))
+                            if ((se.committed == 0) && ((typeb.ty & 0xFF) == ENUMTY.Tarray) || ((typeb.ty & 0xFF) == ENUMTY.Tsarray) && ((tynto & 0xFF) == ENUMTY.Tchar) || ((tynto & 0xFF) == ENUMTY.Twchar) || ((tynto & 0xFF) == ENUMTY.Tdchar) && ((long)se.numberOfCodeUnits((tynto & 0xFF)) < (((TypeSArray)tb)).dim.toInteger()))
                             {
                                 e = se.castTo(sc, t);
                                 /*goto L1*/throw Dispatch0.INSTANCE;
@@ -477,7 +477,7 @@ public class dstruct {
                     {
                         return false;
                     }
-                    elements.get().set(i, doCopyOrMove(sc, e, null));
+                    elements.set(i, doCopyOrMove(sc, e, null));
                 }
             }
             return true;
@@ -506,7 +506,7 @@ public class dstruct {
                     Type tv = v.type.baseElemOf();
                     if (((tv.ty & 0xFF) == ENUMTY.Tstruct))
                     {
-                        TypeStruct ts = (TypeStruct)tv;
+                        TypeStruct ts = ((TypeStruct)tv);
                         StructDeclaration sd = ts.sym;
                         if (!sd.isPOD())
                         {
@@ -612,7 +612,7 @@ public class dstruct {
             case 16:
                 return true;
             case 49:
-                StructLiteralExp sle = (StructLiteralExp)exp;
+                StructLiteralExp sle = ((StructLiteralExp)exp);
                 {
                     int __key1131 = 0;
                     int __limit1132 = sle.sd.fields.length;
@@ -621,7 +621,7 @@ public class dstruct {
                         VarDeclaration field = sle.sd.fields.get(i);
                         if (field.type.size(field.loc) != 0)
                         {
-                            Expression e = (sle.elements.get()).get(i);
+                            Expression e = (sle.elements).get(i);
                             if (e != null ? !_isZeroInit(e) : !field.type.isZeroInit(field.loc))
                             {
                                 return false;
@@ -631,8 +631,8 @@ public class dstruct {
                 }
                 return true;
             case 47:
-                ArrayLiteralExp ale = (ArrayLiteralExp)exp;
-                int dim = ale.elements != null ? (ale.elements.get()).length : 0;
+                ArrayLiteralExp ale = ((ArrayLiteralExp)exp);
+                int dim = ale.elements != null ? (ale.elements).length : 0;
                 if (((ale.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
                 {
                     return dim == 0;
@@ -650,7 +650,7 @@ public class dstruct {
                 }
                 return true;
             case 121:
-                StringExp se = (StringExp)exp;
+                StringExp se = ((StringExp)exp);
                 if (((se.type.value.toBasetype().ty & 0xFF) == ENUMTY.Tarray))
                 {
                     return se.len == 0;
@@ -668,7 +668,7 @@ public class dstruct {
                 }
                 return true;
             case 229:
-                VectorExp ve = (VectorExp)exp;
+                VectorExp ve = ((VectorExp)exp);
                 return _isZeroInit(ve.e1.value);
             case 140:
             case 147:

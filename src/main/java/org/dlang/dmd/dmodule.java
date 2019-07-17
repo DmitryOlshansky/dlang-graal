@@ -87,8 +87,8 @@ public class dmodule {
                 }
                 {
                     int i = 0;
-                    for (; (i < (global.path.get()).length);i++){
-                        ByteSlice p = toDString((global.path.get()).get(i)).copy();
+                    for (; (i < (global.path).length);i++){
+                        ByteSlice p = toDString((global.path).get(i)).copy();
                         ByteSlice n = FileName.combine(p, sdi).copy();
                         if ((FileName.exists(n) == 1))
                         {
@@ -155,9 +155,9 @@ public class dmodule {
     }
 
     // Erasure: getFilename<Ptr, Identifier>
-    public static ByteSlice getFilename(Ptr<DArray<Identifier>> packages, Identifier ident) {
+    public static ByteSlice getFilename(DArray<Identifier> packages, Identifier ident) {
         ByteSlice filename = ident.asString().copy();
-        if ((packages == null) || ((packages.get()).length == 0))
+        if ((packages == null) || ((packages).length == 0))
         {
             return filename;
         }
@@ -165,13 +165,13 @@ public class dmodule {
         try {
             OutBuffer dotmods = new OutBuffer();
             try {
-                Ptr<DArray<BytePtr>> modAliases = ptr(global.params.modFileAliasStrings);
+                DArray<BytePtr> modAliases = global.params.modFileAliasStrings.value;
                 Runnable1<ByteSlice> checkModFileAlias = new Runnable1<ByteSlice>() {
                     public Void invoke(ByteSlice p) {
                      {
                         dotmods.writestring(p);
                         {
-                            Slice<BytePtr> __r1034 = (modAliases.get()).opSlice().copy();
+                            Slice<BytePtr> __r1034 = (modAliases).opSlice().copy();
                             int __key1035 = __r1034.getLength();
                             for (; __key1035-- != 0;) {
                                 BytePtr m = pcopy(__r1034.get(__key1035));
@@ -196,13 +196,13 @@ public class dmodule {
 
                 };
                 {
-                    Slice<Identifier> __r1036 = (packages.get()).opSlice().copy();
+                    Slice<Identifier> __r1036 = (packages).opSlice().copy();
                     int __key1037 = 0;
                     for (; (__key1037 < __r1036.getLength());__key1037 += 1) {
                         Identifier pid = __r1036.get(__key1037);
                         ByteSlice p = pid.asString().copy();
                         buf.writestring(p);
-                        if ((modAliases.get()).length != 0)
+                        if ((modAliases).length != 0)
                         {
                             checkModFileAlias.invoke(p);
                         }
@@ -211,7 +211,7 @@ public class dmodule {
                     }
                 }
                 buf.writestring(filename);
-                if ((modAliases.get()).length != 0)
+                if ((modAliases).length != 0)
                 {
                     checkModFileAlias.invoke(filename);
                 }
@@ -251,7 +251,7 @@ public class dmodule {
         }
 
         // Erasure: resolve<Ptr, Ptr, Ptr>
-        public static DsymbolTable resolve(Ptr<DArray<Identifier>> packages, Ptr<Dsymbol> pparent, Ptr<Package> ppkg) {
+        public static DsymbolTable resolve(DArray<Identifier> packages, Ptr<Dsymbol> pparent, Ptr<Package> ppkg) {
             DsymbolTable dst = Module.modules;
             Dsymbol parent = null;
             if (ppkg != null)
@@ -262,8 +262,8 @@ public class dmodule {
             {
                 {
                     int i = 0;
-                    for (; (i < (packages.get()).length);i++){
-                        Identifier pid = (packages.get()).get(i);
+                    for (; (i < (packages).length);i++){
+                        Identifier pid = (packages).get(i);
                         Package pkg = null;
                         Dsymbol p = dst.lookup(pid);
                         if (p == null)
@@ -376,9 +376,9 @@ public class dmodule {
                         packages.value.insert(0, s.ident);
                     }
                 }
-                if (lookForSourceFile(getFilename(ptr(packages), this.ident)).getLength() != 0)
+                if (lookForSourceFile(getFilename(packages.value, this.ident)).getLength() != 0)
                 {
-                    Module.load(new Loc(null, 0, 0), ptr(packages), this.ident);
+                    Module.load(new Loc(null, 0, 0), packages.value, this.ident);
                 }
                 else
                 {
@@ -515,14 +515,14 @@ public class dmodule {
         public Dsymbol searchCacheSymbol = null;
         public int searchCacheFlags = 0;
         public Module importedFrom = null;
-        public Ptr<DArray<Dsymbol>> decldefs = null;
+        public DArray<Dsymbol> decldefs = null;
         public DArray<Module> aimports = new DArray<Module>();
         public int debuglevel = 0;
-        public Ptr<DArray<Identifier>> debugids = null;
-        public Ptr<DArray<Identifier>> debugidsNot = null;
+        public DArray<Identifier> debugids = null;
+        public DArray<Identifier> debugidsNot = null;
         public int versionlevel = 0;
-        public Ptr<DArray<Identifier>> versionids = null;
-        public Ptr<DArray<Identifier>> versionidsNot = null;
+        public DArray<Identifier> versionids = null;
+        public DArray<Identifier> versionidsNot = null;
         public Ref<Ptr<Macro>> macrotable = ref(null);
         public Ptr<Escape> escapetable = null;
         public int nameoffset = 0;
@@ -553,7 +553,7 @@ public class dmodule {
             {
                 this.hdrfile.opAssign(this.setOutfilename(global.params.hdrname, global.params.hdrdir, this.arg, toByteSlice(global.hdr_ext)).copy());
             }
-            this.escapetable = pcopy((refPtr(new Escape(new ByteSlice()))));
+            this.escapetable = pcopy(refPtr(new Escape(new ByteSlice())));
         }
 
         // Erasure: __ctor<Array, Identifier, int, int>
@@ -572,7 +572,7 @@ public class dmodule {
         }
 
         // Erasure: load<Loc, Ptr, Identifier>
-        public static Module load(Loc loc, Ptr<DArray<Identifier>> packages, Identifier ident) {
+        public static Module load(Loc loc, DArray<Identifier> packages, Identifier ident) {
             ByteSlice filename = getFilename(packages, ident).copy();
             {
                 ByteSlice result = lookForSourceFile(filename).copy();
@@ -592,7 +592,7 @@ public class dmodule {
                 if (packages != null)
                 {
                     {
-                        Slice<Identifier> __r1038 = (packages.get()).opSlice().copy();
+                        Slice<Identifier> __r1038 = (packages).opSlice().copy();
                         int __key1039 = 0;
                         for (; (__key1039 < __r1038.getLength());__key1039 += 1) {
                             Identifier pid = __r1038.get(__key1039);
@@ -669,7 +669,7 @@ public class dmodule {
 
         // Erasure: loadSourceBuffer<Loc, ReadResult>
         public  boolean loadSourceBuffer(Loc loc, File.ReadResult readResult) {
-            this.srcBuffer.value = pcopy((refPtr(new FileBuffer(readResult.extractData()))));
+            this.srcBuffer.value = pcopy(refPtr(new FileBuffer(readResult.extractData())));
             if (readResult.success)
             {
                 return true;
@@ -698,7 +698,7 @@ public class dmodule {
                 if (global.path != null)
                 {
                     {
-                        Slice<BytePtr> __r1041 = (global.path.get()).opSlice().copy();
+                        Slice<BytePtr> __r1041 = (global.path).opSlice().copy();
                         int __key1040 = 0;
                         for (; (__key1040 < __r1041.getLength());__key1040 += 1) {
                             BytePtr p = pcopy(__r1041.get(__key1040));
@@ -761,7 +761,7 @@ public class dmodule {
                             int __limit1053 = eBuf.getLength();
                             for (; (__key1052 < __limit1053);__key1052 += 1) {
                                 int i = __key1052;
-                                int u = Port.readlongLE0(ptr(eBuf.get(i)));
+                                int u = Port.readlongLE0(eBuf.getPtr(i));
                                 if ((u & -128) != 0)
                                 {
                                     if ((u > 1114111))
@@ -804,7 +804,7 @@ public class dmodule {
                             int __limit1055 = eBuf.getLength();
                             for (; (__key1054 < __limit1055);__key1054 += 1) {
                                 int i = __key1054;
-                                int u = Port.readlongBE1(ptr(eBuf.get(i)));
+                                int u = Port.readlongBE1(eBuf.getPtr(i));
                                 if ((u & -128) != 0)
                                 {
                                     if ((u > 1114111))
@@ -846,7 +846,7 @@ public class dmodule {
                             int __key1048 = 0;
                             int __limit1049 = eBuf.getLength();
                             for (; (__key1048 < __limit1049);__key1048 += 1) {
-                                int u = Port.readwordLE0(ptr(eBuf.get(__key1048)));
+                                int u = Port.readwordLE0(eBuf.getPtr(__key1048));
                                 if ((u & -128) != 0)
                                 {
                                     if ((55296 <= u) && (u < 56320))
@@ -857,7 +857,7 @@ public class dmodule {
                                             error(new BytePtr("surrogate UTF-16 high value %04x at end of file"), u);
                                             fatal();
                                         }
-                                        int u2 = Port.readwordLE0(ptr(eBuf.get(__key1048)));
+                                        int u2 = Port.readwordLE0(eBuf.getPtr(__key1048));
                                         if ((u2 < 56320) || (57344 <= u2))
                                         {
                                             error(new BytePtr("surrogate UTF-16 low value %04x out of range"), u2);
@@ -910,7 +910,7 @@ public class dmodule {
                             int __key1050 = 0;
                             int __limit1051 = eBuf.getLength();
                             for (; (__key1050 < __limit1051);__key1050 += 1) {
-                                int u = Port.readwordBE1(ptr(eBuf.get(__key1050)));
+                                int u = Port.readwordBE1(eBuf.getPtr(__key1050));
                                 if ((u & -128) != 0)
                                 {
                                     if ((55296 <= u) && (u < 56320))
@@ -921,7 +921,7 @@ public class dmodule {
                                             error(new BytePtr("surrogate UTF-16 high value %04x at end of file"), u);
                                             fatal();
                                         }
-                                        int u2 = Port.readwordBE1(ptr(eBuf.get(__key1050)));
+                                        int u2 = Port.readwordBE1(eBuf.getPtr(__key1050));
                                         if ((u2 < 56320) || (57344 <= u2))
                                         {
                                             error(new BytePtr("surrogate UTF-16 low value %04x out of range"), u2);
@@ -1042,16 +1042,16 @@ public class dmodule {
             {
                 if ((sourceEncoding == SourceEncoding.utf16))
                 {
-                    buf = ((endian == Endian.little) ? UTF16ToUTF80.invoke(buf) : UTF16ToUTF81.invoke(buf)).copy();
+                    buf = (endian == Endian.little) ? UTF16ToUTF80.invoke(buf) : UTF16ToUTF81.invoke(buf).copy();
                 }
                 else
                 {
-                    buf = ((endian == Endian.little) ? UTF32ToUTF80.invoke(buf) : UTF32ToUTF81.invoke(buf)).copy();
+                    buf = (endian == Endian.little) ? UTF32ToUTF80.invoke(buf) : UTF32ToUTF81.invoke(buf).copy();
                 }
             }
             if ((buf.getLength() >= 4) && __equals(buf.slice(0,4), new ByteSlice("Ddoc")))
             {
-                this.comment = pcopy((buf.getPtr(0).plus(4)));
+                this.comment = pcopy(buf.getPtr(0).plus(4));
                 this.isDocFile = true;
                 if (!this.docfile.opCast())
                 {
@@ -1061,7 +1061,7 @@ public class dmodule {
             }
             if (FileName.equalsExt(this.arg, new ByteSlice("dd")))
             {
-                this.comment = pcopy((buf.getPtr(0)));
+                this.comment = pcopy(buf.getPtr(0));
                 this.isDocFile = true;
                 if (!this.docfile.opCast())
                 {
@@ -1191,18 +1191,18 @@ public class dmodule {
             {
                 (this.md.get()).msg = semanticString(sc, (this.md.get()).msg, new BytePtr("deprecation message"));
             }
-            if (((this.members.get()).length == 0) || (!pequals((this.members.get()).get(0).ident, Id.object)) || ((this.members.get()).get(0).isImport() == null))
+            if (((this.members).length == 0) || (!pequals((this.members).get(0).ident, Id.object)) || ((this.members).get(0).isImport() == null))
             {
                 Import im = new Import(Loc.initial, null, Id.object, null, 0);
-                (this.members.get()).shift(im);
+                (this.members).shift(im);
             }
             if (this.symtab == null)
             {
                 this.symtab = new DsymbolTable();
                 {
                     int i = 0;
-                    for (; (i < (this.members.get()).length);i++){
-                        Dsymbol s = (this.members.get()).get(i);
+                    for (; (i < (this.members).length);i++){
+                        Dsymbol s = (this.members).get(i);
                         s.addMember(sc, (sc.get()).scopesym);
                     }
                 }
@@ -1210,15 +1210,15 @@ public class dmodule {
             this.setScope(sc);
             {
                 int i = 0;
-                for (; (i < (this.members.get()).length);i++){
-                    Dsymbol s = (this.members.get()).get(i);
+                for (; (i < (this.members).length);i++){
+                    Dsymbol s = (this.members).get(i);
                     s.setScope(sc);
                 }
             }
             {
                 int i = 0;
-                for (; (i < (this.members.get()).length);i++){
-                    Dsymbol s = (this.members.get()).get(i);
+                for (; (i < (this.members).length);i++){
+                    Dsymbol s = (this.members).get(i);
                     s.importAll(sc);
                 }
             }
@@ -1349,7 +1349,7 @@ public class dmodule {
                     }
                     else
                     {
-                        todo = pcopy((((Ptr<Dsymbol>)malloc(len * 4))));
+                        todo = pcopy(((Ptr<Dsymbol>)malloc(len * 4)));
                         assert(todo != null);
                         todoalloc = pcopy(todo);
                     }
@@ -1374,11 +1374,11 @@ public class dmodule {
         // Erasure: runDeferredSemantic2<>
         public static void runDeferredSemantic2() {
             runDeferredSemantic();
-            Ptr<DArray<Dsymbol>> a = ptr(deferred2);
+            DArray<Dsymbol> a = deferred2.value;
             {
                 int i = 0;
-                for (; (i < (a.get()).length);i++){
-                    Dsymbol s = (a.get()).get(i);
+                for (; (i < (a).length);i++){
+                    Dsymbol s = (a).get(i);
                     semantic2(s, null);
                     if (global.errors != 0)
                     {
@@ -1386,17 +1386,17 @@ public class dmodule {
                     }
                 }
             }
-            (a.get()).setDim(0);
+            (a).setDim(0);
         }
 
         // Erasure: runDeferredSemantic3<>
         public static void runDeferredSemantic3() {
             runDeferredSemantic2();
-            Ptr<DArray<Dsymbol>> a = ptr(deferred3);
+            DArray<Dsymbol> a = deferred3.value;
             {
                 int i = 0;
-                for (; (i < (a.get()).length);i++){
-                    Dsymbol s = (a.get()).get(i);
+                for (; (i < (a).length);i++){
+                    Dsymbol s = (a).get(i);
                     semantic3(s, null);
                     if (global.errors != 0)
                     {
@@ -1404,7 +1404,7 @@ public class dmodule {
                     }
                 }
             }
-            (a.get()).setDim(0);
+            (a).setDim(0);
         }
 
         // Erasure: clearCache<>
@@ -1563,11 +1563,11 @@ public class dmodule {
     {
         public Ref<Loc> loc = ref(new Loc());
         public Identifier id = null;
-        public Ptr<DArray<Identifier>> packages = null;
+        public DArray<Identifier> packages = null;
         public boolean isdeprecated = false;
         public Expression msg = null;
         // Erasure: __ctor<Loc, Ptr, Identifier, Expression, boolean>
-        public  ModuleDeclaration(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Expression msg, boolean isdeprecated) {
+        public  ModuleDeclaration(Loc loc, DArray<Identifier> packages, Identifier id, Expression msg, boolean isdeprecated) {
             this.loc.value.opAssign(loc.copy());
             this.packages = pcopy(packages);
             this.id = id;
@@ -1579,10 +1579,10 @@ public class dmodule {
         public  BytePtr toChars() {
             OutBuffer buf = new OutBuffer();
             try {
-                if ((this.packages != null) && ((this.packages.get()).length != 0))
+                if ((this.packages != null) && ((this.packages).length != 0))
                 {
                     {
-                        Slice<Identifier> __r1056 = (this.packages.get()).opSlice().copy();
+                        Slice<Identifier> __r1056 = (this.packages).opSlice().copy();
                         int __key1057 = 0;
                         for (; (__key1057 < __r1056.getLength());__key1057 += 1) {
                             Identifier pid = __r1056.get(__key1057);

@@ -126,7 +126,7 @@ public class dscope {
             Ptr<Scope> s = this.copy();
             assert((this.flags & 32768) == 0);
             (s.get()).scopesym = null;
-            (s.get()).enclosing = pcopy((ptr(this)));
+            (s.get()).enclosing = pcopy(ptr(this));
             (s.get()).slabel = null;
             (s.get()).nofree = false;
             (s.get()).ctorflow.fieldinit = arraydup(this.ctorflow.fieldinit).copy();
@@ -154,7 +154,7 @@ public class dscope {
             if (!this.nofree)
             {
                 this.enclosing = pcopy(freelist);
-                freelist = pcopy((ptr(this)));
+                freelist = pcopy(ptr(this));
                 this.flags |= 32768;
             }
             return enc;
@@ -203,7 +203,7 @@ public class dscope {
                         VarDeclaration v = __r1118.get(__key1117);
                         int i = __key1117;
                         boolean mustInit = ((v.storage_class & 549755813888L) != 0) || v.type.needsNested();
-                        Ptr<FieldInit> fieldInit = ptr(this.ctorflow.fieldinit.get(i));
+                        Ptr<FieldInit> fieldInit = this.ctorflow.fieldinit.getPtr(i);
                         FieldInit fiesCurrent = fies.get(i).copy();
                         if (((fieldInit.get()).loc == new Loc(null, 0, 0)))
                         {
@@ -271,18 +271,18 @@ public class dscope {
                     switch ((t.ty & 0xFF))
                     {
                         case 8:
-                            ts.value = (TypeStruct)t;
+                            ts.value = ((TypeStruct)t);
                             sds.value = ts.value.sym;
                             break;
                         case 7:
-                            tc.value = (TypeClass)t;
+                            tc.value = ((TypeClass)t);
                             sds.value = tc.value.sym;
                             break;
                         case 35:
-                            sds.value = ((TypeInstance)t).tempinst;
+                            sds.value = (((TypeInstance)t)).tempinst;
                             break;
                         case 9:
-                            sds.value = ((TypeEnum)t).sym;
+                            sds.value = (((TypeEnum)t)).sym;
                             break;
                         default:
                         break;
@@ -294,8 +294,8 @@ public class dscope {
                     Dsymbol ret = sds.value.search(loc, ident, flags);
                     if (ret != null)
                     {
-                        exp.set(0, (new DotIdExp(loc, exp.get(), ad.aliasthis.ident)));
-                        exp.set(0, (new DotIdExp(loc, exp.get(), ident)));
+                        exp.set(0, new DotIdExp(loc, exp.get(), ad.aliasthis.ident));
+                        exp.set(0, new DotIdExp(loc, exp.get(), ident));
                         return ret;
                     }
                     if ((ts.value == null) && (tc.value == null))
@@ -303,7 +303,7 @@ public class dscope {
                         return null;
                     }
                     Ref<Dsymbol> s = ref(null);
-                    exp.set(0, (new DotIdExp(loc, exp.get(), ad.aliasthis.ident)));
+                    exp.set(0, new DotIdExp(loc, exp.get(), ad.aliasthis.ident));
                     if ((ts.value != null) && ((ts.value.att.value & AliasThisRec.tracing) == 0))
                     {
                         ts.value.att.value = ts.value.att.value | AliasThisRec.tracing;
@@ -359,7 +359,7 @@ public class dscope {
                                 {
                                     if (pscopesym != null)
                                     {
-                                        pscopesym.set(0, (new ExpressionDsymbol(exp.value)));
+                                        pscopesym.set(0, new ExpressionDsymbol(exp.value));
                                     }
                                     return aliasSym;
                                 }
@@ -634,7 +634,7 @@ public class dscope {
         public  boolean isDeprecated() {
             {
                 Ptr<Dsymbol> sp = pcopy(ptr(this.parent));
-                for (; sp.get() != null;sp = pcopy((ptr(sp.get().parent)))){
+                for (; sp.get() != null;sp = pcopy(ptr(sp.get().parent))){
                     if ((sp.get()).isDeprecated())
                     {
                         return true;

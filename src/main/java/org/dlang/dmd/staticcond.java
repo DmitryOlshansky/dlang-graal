@@ -27,7 +27,7 @@ public class staticcond {
     public static boolean evalStaticCondition(Ptr<Scope> sc, Expression exp, Expression e, Ref<Boolean> errors) {
         if (((e.op & 0xFF) == 101) || ((e.op & 0xFF) == 102))
         {
-            LogicalExp aae = (LogicalExp)e;
+            LogicalExp aae = ((LogicalExp)e);
             boolean result = evalStaticCondition(sc, exp, aae.e1.value, errors);
             if (errors.value)
             {
@@ -52,7 +52,7 @@ public class staticcond {
         }
         if (((e.op & 0xFF) == 100))
         {
-            CondExp ce = (CondExp)e;
+            CondExp ce = ((CondExp)e);
             boolean result = evalStaticCondition(sc, exp, ce.econd.value, errors);
             if (errors.value)
             {

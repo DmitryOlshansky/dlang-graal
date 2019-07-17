@@ -67,30 +67,30 @@ public class dtool {
 
     public static class LispyPrint extends ParseTimeTransitiveVisitorASTBase
     {
-        public Ptr<OutBuffer> buf = null;
+        public OutBuffer buf = null;
         // Erasure: open<Ptr>
         public  void open(BytePtr format, Object... ap) {
             Ref<BytePtr> format_ref = ref(format);
-            (this.buf.get()).writestring(new ByteSlice("( "));
-            (this.buf.get()).vprintf(format_ref.value, new RawSlice<>(ap));
-            (this.buf.get()).level++;
-            (this.buf.get()).writenl();
+            (this.buf).writestring(new ByteSlice("( "));
+            (this.buf).vprintf(format_ref.value, new RawSlice<>(ap));
+            (this.buf).level++;
+            (this.buf).writenl();
         }
 
         // Erasure: close<>
         public  void close() {
-            (this.buf.get()).level--;
-            (this.buf.get()).writenl();
-            (this.buf.get()).printf(new BytePtr(")"));
-            (this.buf.get()).writenl();
+            (this.buf).level--;
+            (this.buf).writenl();
+            (this.buf).printf(new BytePtr(")"));
+            (this.buf).writenl();
         }
 
         // Erasure: visitDecls<Ptr>
-        public  void visitDecls(Ptr<DArray<ASTBase.Dsymbol>> decls) {
+        public  void visitDecls(DArray<ASTBase.Dsymbol> decls) {
             if (decls != null)
             {
                 {
-                    Slice<ASTBase.Dsymbol> __r284 = (decls.get()).opSlice().copy();
+                    Slice<ASTBase.Dsymbol> __r284 = (decls).opSlice().copy();
                     int __key285 = 0;
                     for (; (__key285 < __r284.getLength());__key285 += 1) {
                         ASTBase.Dsymbol m = __r284.get(__key285);
@@ -101,18 +101,18 @@ public class dtool {
         }
 
         // Erasure: visitExps<Ptr>
-        public  void visitExps(Ptr<DArray<ASTBase.Expression>> exps) {
+        public  void visitExps(DArray<ASTBase.Expression> exps) {
             if (exps != null)
             {
                 {
-                    Slice<ASTBase.Expression> __r287 = (exps.get()).opSlice().copy();
+                    Slice<ASTBase.Expression> __r287 = (exps).opSlice().copy();
                     int __key286 = 0;
                     for (; (__key286 < __r287.getLength());__key286 += 1) {
                         ASTBase.Expression e = __r287.get(__key286);
                         int i = __key286;
                         if (i != 0)
                         {
-                            (this.buf.get()).printf(new BytePtr(" "));
+                            (this.buf).printf(new BytePtr(" "));
                         }
                         e.accept(this);
                     }
@@ -121,17 +121,17 @@ public class dtool {
         }
 
         // Erasure: visitStatements<Ptr>
-        public  void visitStatements(Ptr<DArray<ASTBase.Statement>> statements) {
+        public  void visitStatements(DArray<ASTBase.Statement> statements) {
             if (statements != null)
             {
-                Slice<ASTBase.Statement> __r289 = (statements.get()).opSlice().copy();
+                Slice<ASTBase.Statement> __r289 = (statements).opSlice().copy();
                 int __key288 = 0;
                 for (; (__key288 < __r289.getLength());__key288 += 1) {
                     ASTBase.Statement st = __r289.get(__key288);
                     int i = __key288;
                     if (i != 0)
                     {
-                        (this.buf.get()).writenl();
+                        (this.buf).writenl();
                     }
                     st.accept(this);
                 }
@@ -139,28 +139,28 @@ public class dtool {
         }
 
         // Erasure: visitTiargs<Ptr>
-        public  void visitTiargs(Ptr<DArray<RootObject>> tiargs) {
+        public  void visitTiargs(DArray<RootObject> tiargs) {
             if (tiargs != null)
             {
-                Slice<RootObject> __r291 = (tiargs.get()).opSlice().copy();
+                Slice<RootObject> __r291 = (tiargs).opSlice().copy();
                 int __key290 = 0;
                 for (; (__key290 < __r291.getLength());__key290 += 1) {
                     RootObject m = __r291.get(__key290);
                     int i = __key290;
                     if (i != 0)
                     {
-                        (this.buf.get()).printf(new BytePtr(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     }
                     switch (m.dyncast())
                     {
                         case DYNCAST.expression:
-                            ((ASTBase.Expression)m).accept(this);
+                            (((ASTBase.Expression)m)).accept(this);
                             break;
                         case DYNCAST.type:
-                            ((ASTBase.Type)m).accept(this);
+                            (((ASTBase.Type)m)).accept(this);
                             break;
                         default:
-                        (this.buf.get()).printf(new BytePtr("%s"), m.toChars());
+                        (this.buf).printf(new BytePtr("%s"), m.toChars());
                     }
                 }
             }
@@ -168,7 +168,7 @@ public class dtool {
 
         // Erasure: visit<Dsymbol>
         public  void visit(ASTBase.Dsymbol s) {
-            (this.buf.get()).printf(new BytePtr("%s"), s.toChars());
+            (this.buf).printf(new BytePtr("%s"), s.toChars());
         }
 
         // Erasure: visit<AliasThis>
@@ -178,17 +178,17 @@ public class dtool {
 
         // Erasure: visit<Declaration>
         public  void visit(ASTBase.Declaration d) {
-            (this.buf.get()).printf(new BytePtr("%s"), d.toChars());
+            (this.buf).printf(new BytePtr("%s"), d.toChars());
         }
 
         // Erasure: visit<ScopeDsymbol>
         public  void visit(ASTBase.ScopeDsymbol scd) {
-            (this.buf.get()).printf(new BytePtr("%s"), scd.toChars());
+            (this.buf).printf(new BytePtr("%s"), scd.toChars());
         }
 
         // Erasure: visit<Import>
         public  void visit(ASTBase.Import imp) {
-            (this.buf.get()).printf(new BytePtr("import %s"), imp.toChars());
+            (this.buf).printf(new BytePtr("import %s"), imp.toChars());
         }
 
         // Erasure: visit<AttribDeclaration>
@@ -207,12 +207,12 @@ public class dtool {
 
         // Erasure: visit<DebugSymbol>
         public  void visit(ASTBase.DebugSymbol sym) {
-            (this.buf.get()).printf(new BytePtr("debug"));
+            (this.buf).printf(new BytePtr("debug"));
         }
 
         // Erasure: visit<VersionSymbol>
         public  void visit(ASTBase.VersionSymbol ver) {
-            (this.buf.get()).printf(new BytePtr("version"));
+            (this.buf).printf(new BytePtr("version"));
         }
 
         // Erasure: visit<VarDeclaration>
@@ -224,7 +224,7 @@ public class dtool {
             }
             if (d._init != null)
             {
-                (this.buf.get()).printf(new BytePtr(" "));
+                (this.buf).printf(new BytePtr(" "));
                 d._init.accept(this);
             }
             this.close();
@@ -250,7 +250,7 @@ public class dtool {
             if (d.aliassym != null)
             {
                 d.aliassym.accept(this);
-                (this.buf.get()).printf(new BytePtr(" "));
+                (this.buf).printf(new BytePtr(" "));
             }
             if (d.type != null)
             {
@@ -398,7 +398,7 @@ public class dtool {
             this.open(new BytePtr("enum "));
             if (d.ident != null)
             {
-                (this.buf.get()).printf(new BytePtr("%s"), d.ident.toChars());
+                (this.buf).printf(new BytePtr("%s"), d.ident.toChars());
             }
             this.visitDecls(d.members);
             this.close();
@@ -465,7 +465,7 @@ public class dtool {
         public  void visit(ASTBase.AlignDeclaration d) {
             this.open(new BytePtr("align "));
             super.visit(d.ealign);
-            (this.buf.get()).printf(new BytePtr(" "));
+            (this.buf).printf(new BytePtr(" "));
             this.visitDecls(d.decl);
             this.close();
         }
@@ -488,17 +488,17 @@ public class dtool {
         public  void visit(ASTBase.PragmaDeclaration d) {
             this.open(new BytePtr("pragma %s"), d.ident.toChars());
             this.visitExps(d.args);
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             this.visitDecls(d.decl);
             this.close();
         }
 
         // Erasure: visit<StorageClassDeclaration>
         public  void visit(ASTBase.StorageClassDeclaration d) {
-            (this.buf.get()).printf(new BytePtr("( "));
+            (this.buf).printf(new BytePtr("( "));
             ASTBase.stcToBuffer(this.buf, d.stc);
-            (this.buf.get()).level++;
-            (this.buf.get()).writenl();
+            (this.buf).level++;
+            (this.buf).writenl();
             this.visitDecls(d.decl);
             this.close();
         }
@@ -507,11 +507,11 @@ public class dtool {
         public  void visit(ASTBase.ConditionalDeclaration ver) {
             this.open(new BytePtr("version %s "), ver.ident != null ? ver.ident.toChars() : new BytePtr(""));
             ver.condition.accept(this);
-            (this.buf.get()).printf(new BytePtr(" "));
-            (this.buf.get()).writenl();
+            (this.buf).printf(new BytePtr(" "));
+            (this.buf).writenl();
             this.visitDecls(ver.decl);
-            (this.buf.get()).printf(new BytePtr(" else "));
-            (this.buf.get()).writenl();
+            (this.buf).printf(new BytePtr(" else "));
+            (this.buf).writenl();
             this.visitDecls(ver.elsedecl);
             this.close();
         }
@@ -527,21 +527,21 @@ public class dtool {
         public  void visit(ASTBase.StaticIfDeclaration sif) {
             this.open(new BytePtr("static if"));
             this.visitDecls(sif.decl);
-            (this.buf.get()).printf(new BytePtr("else"));
-            (this.buf.get()).writenl();
+            (this.buf).printf(new BytePtr("else"));
+            (this.buf).writenl();
             this.visitDecls(sif.elsedecl);
             this.close();
         }
 
         // Erasure: visit<EnumMember>
         public  void visit(ASTBase.EnumMember em) {
-            (this.buf.get()).printf(new BytePtr("( %s "), em.ident.toChars());
+            (this.buf).printf(new BytePtr("( %s "), em.ident.toChars());
             if (em._init != null)
             {
-                (this.buf.get()).printf(new BytePtr(" "));
+                (this.buf).printf(new BytePtr(" "));
                 em._init.accept(this);
             }
-            (this.buf.get()).printf(new BytePtr(" )"));
+            (this.buf).printf(new BytePtr(" )"));
         }
 
         // Erasure: visit<Module>
@@ -569,19 +569,19 @@ public class dtool {
             if (d.baseclasses != null)
             {
                 {
-                    Slice<Ptr<ASTBase.BaseClass>> __r293 = (d.baseclasses.get()).opSlice().copy();
+                    Slice<Ptr<ASTBase.BaseClass>> __r293 = (d.baseclasses).opSlice().copy();
                     int __key292 = 0;
                     for (; (__key292 < __r293.getLength());__key292 += 1) {
                         Ptr<ASTBase.BaseClass> c = __r293.get(__key292);
                         int i = __key292;
                         if (i != 0)
                         {
-                            (this.buf.get()).printf(new BytePtr(" "));
+                            (this.buf).printf(new BytePtr(" "));
                         }
                         (c.get()).type.accept(this);
                     }
                 }
-                (this.buf.get()).writenl();
+                (this.buf).writenl();
             }
             this.visitDecls(d.members);
             this.close();
@@ -603,7 +603,7 @@ public class dtool {
 
         // Erasure: visit<Parameter>
         public  void visit(ASTBase.Parameter p) {
-            (this.buf.get()).printf(new BytePtr("%s "), p.ident != null ? p.ident.toChars() : new BytePtr("anonymous"));
+            (this.buf).printf(new BytePtr("%s "), p.ident != null ? p.ident.toChars() : new BytePtr("anonymous"));
             if (p.type != null)
             {
                 p.type.accept(this);
@@ -634,12 +634,12 @@ public class dtool {
 
         // Erasure: visit<ReturnStatement>
         public  void visit(ASTBase.ReturnStatement r) {
-            (this.buf.get()).printf(new BytePtr("(return "));
+            (this.buf).printf(new BytePtr("(return "));
             if (r.exp != null)
             {
                 r.exp.accept(this);
             }
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<LabelStatement>
@@ -671,7 +671,7 @@ public class dtool {
             {
                 st.condition.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st._body != null)
             {
                 st._body.accept(this);
@@ -686,17 +686,17 @@ public class dtool {
             {
                 st._init.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st.condition != null)
             {
                 st.condition.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st.increment != null)
             {
                 st.increment.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st._body != null)
             {
                 st._body.accept(this);
@@ -711,7 +711,7 @@ public class dtool {
             {
                 st._body.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st.condition != null)
             {
                 st.condition.accept(this);
@@ -726,21 +726,21 @@ public class dtool {
             {
                 st.prm.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st.lwr != null)
             {
                 st.lwr.accept(this);
             }
             if (st.upr != null)
             {
-                (this.buf.get()).printf(new BytePtr(".."));
+                (this.buf).printf(new BytePtr(".."));
                 st.upr.accept(this);
             }
             if (st._body != null)
             {
                 st._body.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             this.close();
         }
 
@@ -750,7 +750,7 @@ public class dtool {
             if (st.parameters != null)
             {
                 {
-                    Slice<ASTBase.Parameter> __r294 = (st.parameters.get()).opSlice().copy();
+                    Slice<ASTBase.Parameter> __r294 = (st.parameters).opSlice().copy();
                     int __key295 = 0;
                     for (; (__key295 < __r294.getLength());__key295 += 1) {
                         ASTBase.Parameter prm = __r294.get(__key295);
@@ -758,17 +758,17 @@ public class dtool {
                     }
                 }
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st.aggr != null)
             {
                 st.aggr.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st._body != null)
             {
                 st._body.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             this.close();
         }
 
@@ -779,17 +779,17 @@ public class dtool {
             {
                 st.prm.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st.condition != null)
             {
                 st.condition.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st.ifbody != null)
             {
                 st.ifbody.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st.elsebody != null)
             {
                 this.open(new BytePtr("else"));
@@ -816,12 +816,12 @@ public class dtool {
             {
                 st.condition.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st.ifbody != null)
             {
                 st.ifbody.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (st.elsebody != null)
             {
                 this.open(new BytePtr("else"));
@@ -833,9 +833,9 @@ public class dtool {
 
         // Erasure: visit<PragmaStatement>
         public  void visit(ASTBase.PragmaStatement st) {
-            (this.buf.get()).printf(new BytePtr("( pragma %s"), st.ident.toChars());
+            (this.buf).printf(new BytePtr("( pragma %s"), st.ident.toChars());
             this.visitExps(st.args);
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<SwitchStatement>
@@ -852,10 +852,10 @@ public class dtool {
         public  void visit(ASTBase.CaseRangeStatement st) {
             this.open(new BytePtr("case "));
             st.first.accept(this);
-            (this.buf.get()).printf(new BytePtr(" .. "));
-            (this.buf.get()).printf(new BytePtr(" "));
+            (this.buf).printf(new BytePtr(" .. "));
+            (this.buf).printf(new BytePtr(" "));
             st.last.accept(this);
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             st.statement.accept(this);
             this.close();
         }
@@ -864,7 +864,7 @@ public class dtool {
         public  void visit(ASTBase.CaseStatement ct) {
             this.open(new BytePtr("case "));
             ct.exp.accept(this);
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (ct.statement != null)
             {
                 ct.statement.accept(this);
@@ -884,37 +884,37 @@ public class dtool {
 
         // Erasure: visit<BreakStatement>
         public  void visit(ASTBase.BreakStatement brk) {
-            (this.buf.get()).printf(new BytePtr("( break %s )"), brk.ident != null ? brk.ident.toChars() : new BytePtr(""));
-            (this.buf.get()).writenl();
+            (this.buf).printf(new BytePtr("( break %s )"), brk.ident != null ? brk.ident.toChars() : new BytePtr(""));
+            (this.buf).writenl();
         }
 
         // Erasure: visit<ContinueStatement>
         public  void visit(ASTBase.ContinueStatement cont) {
-            (this.buf.get()).printf(new BytePtr("( continue %s )"), cont.ident != null ? cont.ident.toChars() : new BytePtr(""));
-            (this.buf.get()).writenl();
+            (this.buf).printf(new BytePtr("( continue %s )"), cont.ident != null ? cont.ident.toChars() : new BytePtr(""));
+            (this.buf).writenl();
         }
 
         // Erasure: visit<GotoDefaultStatement>
         public  void visit(ASTBase.GotoDefaultStatement gds) {
-            (this.buf.get()).printf(new BytePtr("( goto default )"));
-            (this.buf.get()).writenl();
+            (this.buf).printf(new BytePtr("( goto default )"));
+            (this.buf).writenl();
         }
 
         // Erasure: visit<GotoCaseStatement>
         public  void visit(ASTBase.GotoCaseStatement gcs) {
-            (this.buf.get()).printf(new BytePtr("( goto case "));
+            (this.buf).printf(new BytePtr("( goto case "));
             if (gcs.exp != null)
             {
                 gcs.exp.accept(this);
             }
-            (this.buf.get()).printf(new BytePtr(")"));
-            (this.buf.get()).writenl();
+            (this.buf).printf(new BytePtr(")"));
+            (this.buf).writenl();
         }
 
         // Erasure: visit<GotoStatement>
         public  void visit(ASTBase.GotoStatement gs) {
-            (this.buf.get()).printf(new BytePtr("( goto %s)"), gs.ident.toChars());
-            (this.buf.get()).writenl();
+            (this.buf).printf(new BytePtr("( goto %s)"), gs.ident.toChars());
+            (this.buf).writenl();
         }
 
         // Erasure: visit<SynchronizedStatement>
@@ -934,7 +934,7 @@ public class dtool {
             {
                 w.exp.accept(this);
             }
-            (this.buf.get()).writenl();
+            (this.buf).writenl();
             if (w._body != null)
             {
                 w._body.accept(this);
@@ -951,7 +951,7 @@ public class dtool {
             }
             if (tc.catches != null)
             {
-                Slice<ASTBase.Catch> __r296 = (tc.catches.get()).opSlice().copy();
+                Slice<ASTBase.Catch> __r296 = (tc.catches).opSlice().copy();
                 int __key297 = 0;
                 for (; (__key297 < __r296.getLength());__key297 += 1) {
                     ASTBase.Catch c = __r296.get(__key297);
@@ -959,13 +959,13 @@ public class dtool {
                     if (c.type != null)
                     {
                         c.type.accept(this);
-                        (this.buf.get()).printf(new BytePtr(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     }
                     if (c.ident != null)
                     {
-                        (this.buf.get()).printf(new BytePtr("%s"), c.ident.toChars());
+                        (this.buf).printf(new BytePtr("%s"), c.ident.toChars());
                     }
-                    (this.buf.get()).writenl();
+                    (this.buf).writenl();
                     if (c.handler != null)
                     {
                         c.handler.accept(this);
@@ -1003,20 +1003,20 @@ public class dtool {
         public  void visit(ASTBase.AsmStatement ast) {
             Ptr<Token> t = ast.tokens;
             for (; t != null;){
-                (this.buf.get()).printf(new BytePtr("%s"), (t.get()).toChars());
+                (this.buf).printf(new BytePtr("%s"), (t.get()).toChars());
                 t = pcopy((t.get()).next.value);
             }
         }
 
         // Erasure: visit<ExpStatement>
         public  void visit(ASTBase.ExpStatement s) {
-            (this.buf.get()).printf(new BytePtr("( expr "));
-            (this.buf.get()).writenl();
-            (this.buf.get()).level++;
+            (this.buf).printf(new BytePtr("( expr "));
+            (this.buf).writenl();
+            (this.buf).level++;
             s.exp.accept(this);
-            (this.buf.get()).level--;
-            (this.buf.get()).writenl();
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).level--;
+            (this.buf).writenl();
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<CompoundStatement>
@@ -1051,65 +1051,65 @@ public class dtool {
 
         // Erasure: visit<TypeBasic>
         public  void visit(ASTBase.TypeBasic t) {
-            (this.buf.get()).printf(new BytePtr("%s %s"), modToChars((t.mod & 0xFF)), t.dstring);
+            (this.buf).printf(new BytePtr("%s %s"), modToChars((t.mod & 0xFF)), t.dstring);
         }
 
         // Erasure: visit<TypeError>
         public  void visit(ASTBase.TypeError _param_0) {
-            (this.buf.get()).printf(new BytePtr("terror"));
+            (this.buf).printf(new BytePtr("terror"));
         }
 
         // Erasure: visit<TypeNull>
         public  void visit(ASTBase.TypeNull _param_0) {
-            (this.buf.get()).printf(new BytePtr("typeof(null)"));
+            (this.buf).printf(new BytePtr("typeof(null)"));
         }
 
         // Erasure: visit<TypeVector>
         public  void visit(ASTBase.TypeVector t) {
-            (this.buf.get()).printf(new BytePtr("( __vector "));
+            (this.buf).printf(new BytePtr("( __vector "));
             if (t.basetype != null)
             {
                 t.basetype.accept(this);
             }
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<TypeEnum>
         public  void visit(ASTBase.TypeEnum t) {
-            (this.buf.get()).printf(new BytePtr("enum %s "), t.sym.toChars());
+            (this.buf).printf(new BytePtr("enum %s "), t.sym.toChars());
             t.sym.memtype.accept(this);
         }
 
         // Erasure: visit<TypeTuple>
         public  void visit(ASTBase.TypeTuple t) {
-            (this.buf.get()).printf(new BytePtr("( typetuple "));
+            (this.buf).printf(new BytePtr("( typetuple "));
             if (t.arguments != null)
             {
                 {
-                    Slice<ASTBase.Parameter> __r299 = (t.arguments.get()).opSlice().copy();
+                    Slice<ASTBase.Parameter> __r299 = (t.arguments).opSlice().copy();
                     int __key298 = 0;
                     for (; (__key298 < __r299.getLength());__key298 += 1) {
                         ASTBase.Parameter a = __r299.get(__key298);
                         int i = __key298;
                         if (i != 0)
                         {
-                            (this.buf.get()).printf(new BytePtr(" "));
+                            (this.buf).printf(new BytePtr(" "));
                         }
                         super.visit(a);
                     }
                 }
             }
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<TypeClass>
         public  void visit(ASTBase.TypeClass tc) {
-            (this.buf.get()).printf(new BytePtr("%s"), tc.sym.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), tc.sym.ident.toChars());
         }
 
         // Erasure: visit<TypeStruct>
         public  void visit(ASTBase.TypeStruct ts) {
-            (this.buf.get()).printf(new BytePtr("%s"), ts.sym.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), ts.sym.ident.toChars());
         }
 
         // Erasure: visit<TypeNext>
@@ -1119,24 +1119,24 @@ public class dtool {
 
         // Erasure: visit<TypeReference>
         public  void visit(ASTBase.TypeReference t) {
-            (this.buf.get()).printf(new BytePtr("ref "));
+            (this.buf).printf(new BytePtr("ref "));
             super.visit(t.next.value);
         }
 
         // Erasure: visit<TypeSlice>
         public  void visit(ASTBase.TypeSlice ts) {
-            (this.buf.get()).printf(new BytePtr("( slice "));
+            (this.buf).printf(new BytePtr("( slice "));
             ts.lwr.accept(this);
-            (this.buf.get()).printf(new BytePtr(" "));
+            (this.buf).printf(new BytePtr(" "));
             ts.upr.accept(this);
-            (this.buf.get()).printf(new BytePtr(" "));
+            (this.buf).printf(new BytePtr(" "));
             ts.next.value.accept(this);
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<TypeDelegate>
         public  void visit(ASTBase.TypeDelegate td) {
-            (this.buf.get()).printf(new BytePtr("delegate "));
+            (this.buf).printf(new BytePtr("delegate "));
             if (td.next.value != null)
             {
                 td.next.value.accept(this);
@@ -1146,7 +1146,7 @@ public class dtool {
         // Erasure: visit<TypePointer>
         public  void visit(ASTBase.TypePointer tp) {
             tp.next.value.accept(this);
-            (this.buf.get()).printf(new BytePtr("*"));
+            (this.buf).printf(new BytePtr("*"));
         }
 
         // Erasure: visit<TypeFunction>
@@ -1154,17 +1154,17 @@ public class dtool {
             if (tf.next.value != null)
             {
                 tf.next.value.accept(this);
-                (this.buf.get()).printf(new BytePtr(" "));
+                (this.buf).printf(new BytePtr(" "));
             }
             {
-                Slice<ASTBase.Parameter> __r301 = (tf.parameterList.parameters.get()).opSlice().copy();
+                Slice<ASTBase.Parameter> __r301 = (tf.parameterList.parameters).opSlice().copy();
                 int __key300 = 0;
                 for (; (__key300 < __r301.getLength());__key300 += 1) {
                     ASTBase.Parameter p = __r301.get(__key300);
                     int i = __key300;
                     if (i != 0)
                     {
-                        (this.buf.get()).printf(new BytePtr(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     }
                     p.accept(this);
                 }
@@ -1179,23 +1179,23 @@ public class dtool {
         // Erasure: visit<TypeDArray>
         public  void visit(ASTBase.TypeDArray d) {
             d.next.value.accept(this);
-            (this.buf.get()).printf(new BytePtr("[]"));
+            (this.buf).printf(new BytePtr("[]"));
         }
 
         // Erasure: visit<TypeAArray>
         public  void visit(ASTBase.TypeAArray ta) {
             ta.next.value.accept(this);
-            (this.buf.get()).printf(new BytePtr("["));
+            (this.buf).printf(new BytePtr("["));
             ta.index.accept(this);
-            (this.buf.get()).printf(new BytePtr("]"));
+            (this.buf).printf(new BytePtr("]"));
         }
 
         // Erasure: visit<TypeSArray>
         public  void visit(ASTBase.TypeSArray tsa) {
             tsa.next.value.accept(this);
-            (this.buf.get()).printf(new BytePtr("["));
+            (this.buf).printf(new BytePtr("["));
             tsa.dim.accept(this);
-            (this.buf.get()).printf(new BytePtr("]"));
+            (this.buf).printf(new BytePtr("]"));
         }
 
         // Erasure: visit<TypeQualified>
@@ -1205,36 +1205,36 @@ public class dtool {
 
         // Erasure: visit<TypeTraits>
         public  void visit(ASTBase.TypeTraits tt) {
-            (this.buf.get()).printf(new BytePtr("type __traits("));
+            (this.buf).printf(new BytePtr("type __traits("));
             tt.exp.accept(this);
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<TypeIdentifier>
         public  void visit(ASTBase.TypeIdentifier d) {
-            (this.buf.get()).printf(new BytePtr("%s"), d.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), d.ident.toChars());
         }
 
         // Erasure: visit<TypeReturn>
         public  void visit(ASTBase.TypeReturn _param_0) {
-            (this.buf.get()).printf(new BytePtr("typeof(return)"));
+            (this.buf).printf(new BytePtr("typeof(return)"));
         }
 
         // Erasure: visit<TypeTypeof>
         public  void visit(ASTBase.TypeTypeof tt) {
-            (this.buf.get()).printf(new BytePtr("typeof("));
+            (this.buf).printf(new BytePtr("typeof("));
             if (tt.exp != null)
             {
                 tt.exp.accept(this);
             }
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<TypeInstance>
         public  void visit(ASTBase.TypeInstance ti) {
-            (this.buf.get()).printf(new BytePtr("%s!("), ti.tempinst.tempdecl != null ? ti.tempinst.tempdecl.toChars() : ti.tempinst.name.toChars());
+            (this.buf).printf(new BytePtr("%s!("), ti.tempinst.tempdecl != null ? ti.tempinst.tempdecl.toChars() : ti.tempinst.name.toChars());
             this.visitTiargs(ti.tempinst.tiargs);
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<Expression>
@@ -1252,23 +1252,23 @@ public class dtool {
 
         // Erasure: visit<IntegerExp>
         public  void visit(ASTBase.IntegerExp e) {
-            (this.buf.get()).printf(new BytePtr("%lld"), (long)e.value);
+            (this.buf).printf(new BytePtr("%lld"), (long)e.value);
         }
 
         // Erasure: visit<NewAnonClassExp>
         public  void visit(ASTBase.NewAnonClassExp nc) {
-            (this.buf.get()).printf(new BytePtr("( new anonclass %s "), nc.cd.ident.toChars());
+            (this.buf).printf(new BytePtr("( new anonclass %s "), nc.cd.ident.toChars());
             this.visitExps(nc.arguments);
             nc.cd.accept(this);
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<IsExp>
         public  void visit(ASTBase.IsExp ie) {
-            (this.buf.get()).printf(new BytePtr("( is %s"), Token.toChars(ie.tok));
+            (this.buf).printf(new BytePtr("( is %s"), Token.toChars(ie.tok));
             if (ie.id != null)
             {
-                (this.buf.get()).printf(new BytePtr("%s "), ie.id.toChars());
+                (this.buf).printf(new BytePtr("%s "), ie.id.toChars());
             }
             if (ie.type != null)
             {
@@ -1278,12 +1278,12 @@ public class dtool {
 
         // Erasure: visit<RealExp>
         public  void visit(ASTBase.RealExp r) {
-            (this.buf.get()).printf(new BytePtr("%llf"), r.value);
+            (this.buf).printf(new BytePtr("%llf"), r.value);
         }
 
         // Erasure: visit<NullExp>
         public  void visit(ASTBase.NullExp _param_0) {
-            (this.buf.get()).printf(new BytePtr("null"));
+            (this.buf).printf(new BytePtr("null"));
         }
 
         // Erasure: visit<TypeidExp>
@@ -1291,42 +1291,42 @@ public class dtool {
             switch (tie.obj.dyncast())
             {
                 case DYNCAST.expression:
-                    ((ASTBase.Expression)tie.obj).accept(this);
+                    (((ASTBase.Expression)tie.obj)).accept(this);
                     return ;
                 case DYNCAST.dsymbol:
-                    ((ASTBase.Dsymbol)tie.obj).accept(this);
+                    (((ASTBase.Dsymbol)tie.obj)).accept(this);
                     return ;
                 case DYNCAST.type:
-                    ((ASTBase.Type)tie.obj).accept(this);
+                    (((ASTBase.Type)tie.obj)).accept(this);
                     return ;
                 default:
-                (this.buf.get()).printf(new BytePtr("<typeid>"));
+                (this.buf).printf(new BytePtr("<typeid>"));
             }
         }
 
         // Erasure: visit<TraitsExp>
         public  void visit(ASTBase.TraitsExp te) {
-            (this.buf.get()).printf(new BytePtr("( __traits %s "), te.ident.toChars());
+            (this.buf).printf(new BytePtr("( __traits %s "), te.ident.toChars());
             if (te.args != null)
             {
                 {
-                    Slice<RootObject> __r302 = (te.args.get()).opSlice().copy();
+                    Slice<RootObject> __r302 = (te.args).opSlice().copy();
                     int __key303 = 0;
                     for (; (__key303 < __r302.getLength());__key303 += 1) {
                         RootObject arg = __r302.get(__key303);
                         switch (arg.dyncast())
                         {
                             case DYNCAST.expression:
-                                ((ASTBase.Expression)arg).accept(this);
+                                (((ASTBase.Expression)arg)).accept(this);
                                 return ;
                             case DYNCAST.dsymbol:
-                                ((ASTBase.Dsymbol)arg).accept(this);
+                                (((ASTBase.Dsymbol)arg)).accept(this);
                                 return ;
                             case DYNCAST.type:
-                                ((ASTBase.Type)arg).accept(this);
+                                (((ASTBase.Type)arg)).accept(this);
                                 return ;
                             default:
-                            (this.buf.get()).printf(new BytePtr("%s"), arg.toChars());
+                            (this.buf).printf(new BytePtr("%s"), arg.toChars());
                         }
                     }
                 }
@@ -1341,61 +1341,61 @@ public class dtool {
             }
             if (((exp.sz & 0xFF) == 1))
             {
-                (this.buf.get()).printf(new BytePtr("\"\"\"%.*s\"\"\""), exp.len, exp.string);
+                (this.buf).printf(new BytePtr("\"\"\"%.*s\"\"\""), exp.len, exp.string);
             }
             else if (((exp.sz & 0xFF) == 2))
             {
-                (this.buf.get()).printf(new BytePtr("\"\"\"%.*s\"\"\""), exp.len, exp.wstring);
+                (this.buf).printf(new BytePtr("\"\"\"%.*s\"\"\""), exp.len, exp.wstring);
             }
             else if (((exp.sz & 0xFF) == 4))
             {
-                (this.buf.get()).printf(new BytePtr("\"\"\"%.*s\"\"\""), exp.len, exp.dstring);
+                (this.buf).printf(new BytePtr("\"\"\"%.*s\"\"\""), exp.len, exp.dstring);
             }
         }
 
         // Erasure: visit<NewExp>
         public  void visit(ASTBase.NewExp ne) {
-            (this.buf.get()).printf(new BytePtr("( new "));
+            (this.buf).printf(new BytePtr("( new "));
             this.visitExps(ne.arguments);
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<AssocArrayLiteralExp>
         public  void visit(ASTBase.AssocArrayLiteralExp aa) {
-            (this.buf.get()).printf(new BytePtr("( key[value] "));
+            (this.buf).printf(new BytePtr("( key[value] "));
             if (aa.keys != null)
             {
-                Slice<ASTBase.Expression> __r305 = (aa.keys.get()).opSlice().copy();
+                Slice<ASTBase.Expression> __r305 = (aa.keys).opSlice().copy();
                 int __key304 = 0;
                 for (; (__key304 < __r305.getLength());__key304 += 1) {
                     ASTBase.Expression key = __r305.get(__key304);
                     int i = __key304;
                     if (i != 0)
                     {
-                        (this.buf.get()).printf(new BytePtr(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     }
-                    ASTBase.Expression v = (aa.values.get()).get(i);
+                    ASTBase.Expression v = (aa.values).get(i);
                     key.accept(this);
-                    (this.buf.get()).printf(new BytePtr(" "));
+                    (this.buf).printf(new BytePtr(" "));
                     v.accept(this);
                 }
             }
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<ArrayLiteralExp>
         public  void visit(ASTBase.ArrayLiteralExp ae) {
-            (this.buf.get()).printf(new BytePtr("( [] "));
+            (this.buf).printf(new BytePtr("( [] "));
             if (ae.elements != null)
             {
-                Slice<ASTBase.Expression> __r307 = (ae.elements.get()).opSlice().copy();
+                Slice<ASTBase.Expression> __r307 = (ae.elements).opSlice().copy();
                 int __key306 = 0;
                 for (; (__key306 < __r307.getLength());__key306 += 1) {
                     ASTBase.Expression el = __r307.get(__key306);
                     int i = __key306;
                     if (i != 0)
                     {
-                        (this.buf.get()).printf(new BytePtr(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     }
                     ASTBase.Expression e = el != null ? el : ae.basis;
                     if (e != null)
@@ -1404,7 +1404,7 @@ public class dtool {
                     }
                 }
             }
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<FuncExp>
@@ -1424,14 +1424,14 @@ public class dtool {
         // Erasure: visit<IntervalExp>
         public  void visit(ASTBase.IntervalExp ival) {
             ival.lwr.accept(this);
-            (this.buf.get()).printf(new BytePtr(" .. "));
+            (this.buf).printf(new BytePtr(" .. "));
             if (ival.upr != null)
             {
                 ival.upr.accept(this);
             }
             else
             {
-                (this.buf.get()).printf(new BytePtr("$"));
+                (this.buf).printf(new BytePtr("$"));
             }
         }
 
@@ -1455,12 +1455,12 @@ public class dtool {
 
         // Erasure: visit<IdentifierExp>
         public  void visit(ASTBase.IdentifierExp e) {
-            (this.buf.get()).printf(new BytePtr("%s"), e.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), e.ident.toChars());
         }
 
         // Erasure: visit<UnaExp>
         public  void visit(ASTBase.UnaExp e) {
-            (this.buf.get()).printf(new BytePtr("%s"), Token.toChars(e.op));
+            (this.buf).printf(new BytePtr("%s"), Token.toChars(e.op));
             e.e1.accept(this);
         }
 
@@ -1470,21 +1470,21 @@ public class dtool {
             {
                 ie.type.accept(this);
             }
-            (this.buf.get()).printf(new BytePtr(" init"));
+            (this.buf).printf(new BytePtr(" init"));
         }
 
         // Erasure: visit<BinExp>
         public  void visit(ASTBase.BinExp e) {
-            (this.buf.get()).printf(new BytePtr("( %s "), Token.toChars(e.op));
+            (this.buf).printf(new BytePtr("( %s "), Token.toChars(e.op));
             e.e1.accept(this);
-            (this.buf.get()).printf(new BytePtr(" "));
+            (this.buf).printf(new BytePtr(" "));
             e.e2.accept(this);
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<DsymbolExp>
         public  void visit(ASTBase.DsymbolExp e) {
-            (this.buf.get()).printf(new BytePtr("%s"), e.s.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), e.s.ident.toChars());
         }
 
         // Erasure: visit<TemplateExp>
@@ -1494,18 +1494,18 @@ public class dtool {
 
         // Erasure: visit<SymbolExp>
         public  void visit(ASTBase.SymbolExp e) {
-            (this.buf.get()).printf(new BytePtr("( symbol "));
+            (this.buf).printf(new BytePtr("( symbol "));
             e.type.accept(this);
-            (this.buf.get()).printf(new BytePtr(" %s"), e.var.ident.toChars());
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(" %s"), e.var.ident.toChars());
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<VarExp>
         public  void visit(ASTBase.VarExp e) {
-            (this.buf.get()).printf(new BytePtr("( var "));
+            (this.buf).printf(new BytePtr("( var "));
             e.type.accept(this);
-            (this.buf.get()).printf(new BytePtr(" %s"), e.var.ident.toChars());
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(" %s"), e.var.ident.toChars());
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<TupleExp>
@@ -1517,17 +1517,17 @@ public class dtool {
 
         // Erasure: visit<DollarExp>
         public  void visit(ASTBase.DollarExp e) {
-            (this.buf.get()).printf(new BytePtr("$"));
+            (this.buf).printf(new BytePtr("$"));
         }
 
         // Erasure: visit<ThisExp>
         public  void visit(ASTBase.ThisExp e) {
-            (this.buf.get()).printf(new BytePtr("this"));
+            (this.buf).printf(new BytePtr("this"));
         }
 
         // Erasure: visit<SuperExp>
         public  void visit(ASTBase.SuperExp e) {
-            (this.buf.get()).printf(new BytePtr("super"));
+            (this.buf).printf(new BytePtr("super"));
         }
 
         // Erasure: visit<AddrExp>
@@ -1572,53 +1572,53 @@ public class dtool {
 
         // Erasure: visit<CastExp>
         public  void visit(ASTBase.CastExp e) {
-            (this.buf.get()).printf(new BytePtr("( cast "));
+            (this.buf).printf(new BytePtr("( cast "));
             if (e.to != null)
             {
                 e.to.accept(this);
-                (this.buf.get()).printf(new BytePtr(" "));
+                (this.buf).printf(new BytePtr(" "));
             }
             e.e1.accept(this);
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<CallExp>
         public  void visit(ASTBase.CallExp call) {
-            (this.buf.get()).printf(new BytePtr("( call "));
+            (this.buf).printf(new BytePtr("( call "));
             if (call.e1 != null)
             {
                 call.e1.accept(this);
-                (this.buf.get()).printf(new BytePtr(" "));
+                (this.buf).printf(new BytePtr(" "));
             }
             this.visitExps(call.arguments);
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<DotIdExp>
         public  void visit(ASTBase.DotIdExp e) {
-            (this.buf.get()).printf(new BytePtr("( . "));
+            (this.buf).printf(new BytePtr("( . "));
             e.e1.accept(this);
-            (this.buf.get()).printf(new BytePtr(" %s"), e.ident.toChars());
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(" %s"), e.ident.toChars());
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<AssertExp>
         public  void visit(ASTBase.AssertExp e) {
-            (this.buf.get()).printf(new BytePtr("( assert "));
+            (this.buf).printf(new BytePtr("( assert "));
             e.e1.accept(this);
             if (e.msg != null)
             {
-                (this.buf.get()).printf(new BytePtr(" "));
+                (this.buf).printf(new BytePtr(" "));
                 e.msg.accept(this);
             }
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<CompileExp>
         public  void visit(ASTBase.CompileExp c) {
-            (this.buf.get()).printf(new BytePtr("( mixin "));
+            (this.buf).printf(new BytePtr("( mixin "));
             this.visitExps(c.exps);
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<ImportExp>
@@ -1628,10 +1628,10 @@ public class dtool {
 
         // Erasure: visit<DotTemplateInstanceExp>
         public  void visit(ASTBase.DotTemplateInstanceExp e) {
-            (this.buf.get()).printf(new BytePtr("( . "));
+            (this.buf).printf(new BytePtr("( . "));
             e.e1.accept(this);
-            (this.buf.get()).printf(new BytePtr(" %s"), e.ti.ident != null ? e.ti.ident.toChars() : e.ti.name.toChars());
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(" %s"), e.ti.ident != null ? e.ti.ident.toChars() : e.ti.name.toChars());
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<ArrayExp>
@@ -1642,7 +1642,7 @@ public class dtool {
             }
             if (arr.arguments != null)
             {
-                Slice<ASTBase.Expression> __r308 = (arr.arguments.get()).opSlice().copy();
+                Slice<ASTBase.Expression> __r308 = (arr.arguments).opSlice().copy();
                 int __key309 = 0;
                 for (; (__key309 < __r308.getLength());__key309 += 1) {
                     ASTBase.Expression arg = __r308.get(__key309);
@@ -1653,31 +1653,31 @@ public class dtool {
 
         // Erasure: visit<FuncInitExp>
         public  void visit(ASTBase.FuncInitExp e) {
-            (this.buf.get()).printf(new BytePtr("func-init "));
+            (this.buf).printf(new BytePtr("func-init "));
             this.visit((ASTBase.DefaultInitExp)e);
         }
 
         // Erasure: visit<PrettyFuncInitExp>
         public  void visit(ASTBase.PrettyFuncInitExp e) {
-            (this.buf.get()).printf(new BytePtr("pretty-init "));
+            (this.buf).printf(new BytePtr("pretty-init "));
             this.visit((ASTBase.DefaultInitExp)e);
         }
 
         // Erasure: visit<FileInitExp>
         public  void visit(ASTBase.FileInitExp e) {
-            (this.buf.get()).printf(new BytePtr("file-init "));
+            (this.buf).printf(new BytePtr("file-init "));
             this.visit((ASTBase.DefaultInitExp)e);
         }
 
         // Erasure: visit<LineInitExp>
         public  void visit(ASTBase.LineInitExp e) {
-            (this.buf.get()).printf(new BytePtr("line-init "));
+            (this.buf).printf(new BytePtr("line-init "));
             this.visit((ASTBase.DefaultInitExp)e);
         }
 
         // Erasure: visit<ModuleInitExp>
         public  void visit(ASTBase.ModuleInitExp e) {
-            (this.buf.get()).printf(new BytePtr("module-init "));
+            (this.buf).printf(new BytePtr("module-init "));
             this.visit((ASTBase.DefaultInitExp)e);
         }
 
@@ -1783,7 +1783,7 @@ public class dtool {
 
         // Erasure: visit<CondExp>
         public  void visit(ASTBase.CondExp e) {
-            (this.buf.get()).printf(new BytePtr("( ? "));
+            (this.buf).printf(new BytePtr("( ? "));
             if (e.econd != null)
             {
                 e.econd.accept(this);
@@ -1796,7 +1796,7 @@ public class dtool {
             {
                 e.e2.accept(this);
             }
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<AssignExp>
@@ -1881,7 +1881,7 @@ public class dtool {
 
         // Erasure: visit<TemplateAliasParameter>
         public  void visit(ASTBase.TemplateAliasParameter tp) {
-            (this.buf.get()).printf(new BytePtr("alias %s"), tp.ident.toChars());
+            (this.buf).printf(new BytePtr("alias %s"), tp.ident.toChars());
         }
 
         // Erasure: visit<TemplateTypeParameter>
@@ -1890,28 +1890,28 @@ public class dtool {
 
         // Erasure: visit<TemplateTupleParameter>
         public  void visit(ASTBase.TemplateTupleParameter tp) {
-            (this.buf.get()).printf(new BytePtr("alias %s"), tp.ident.toChars());
+            (this.buf).printf(new BytePtr("alias %s"), tp.ident.toChars());
         }
 
         // Erasure: visit<TemplateValueParameter>
         public  void visit(ASTBase.TemplateValueParameter tv) {
-            (this.buf.get()).printf(new BytePtr("template-value "));
+            (this.buf).printf(new BytePtr("template-value "));
             tv.valType.accept(this);
             if (tv.specValue != null)
             {
-                (this.buf.get()).printf(new BytePtr(" "));
+                (this.buf).printf(new BytePtr(" "));
                 tv.specValue.accept(this);
             }
             if (tv.defaultValue != null)
             {
-                (this.buf.get()).printf(new BytePtr(" default "));
+                (this.buf).printf(new BytePtr(" default "));
                 tv.specValue.accept(this);
             }
         }
 
         // Erasure: visit<TemplateThisParameter>
         public  void visit(ASTBase.TemplateThisParameter tp) {
-            (this.buf.get()).printf(new BytePtr("template-this"));
+            (this.buf).printf(new BytePtr("template-this"));
         }
 
         // Erasure: visit<Condition>
@@ -1943,12 +1943,12 @@ public class dtool {
 
         // Erasure: visit<DebugCondition>
         public  void visit(ASTBase.DebugCondition d) {
-            (this.buf.get()).printf(new BytePtr("debug %s"), d.ident != null ? d.ident.toChars() : new BytePtr(""));
+            (this.buf).printf(new BytePtr("debug %s"), d.ident != null ? d.ident.toChars() : new BytePtr(""));
         }
 
         // Erasure: visit<VersionCondition>
         public  void visit(ASTBase.VersionCondition ver) {
-            (this.buf.get()).printf(new BytePtr("%s"), ver.ident.toChars());
+            (this.buf).printf(new BytePtr("%s"), ver.ident.toChars());
         }
 
         // Erasure: visit<Initializer>
@@ -1966,7 +1966,7 @@ public class dtool {
 
         // Erasure: visit<StructInitializer>
         public  void visit(ASTBase.StructInitializer si) {
-            (this.buf.get()).printf(new BytePtr("( struct-init "));
+            (this.buf).printf(new BytePtr("( struct-init "));
             {
                 Slice<Identifier> __r311 = si.field.opSlice().copy();
                 int __key310 = 0;
@@ -1975,12 +1975,12 @@ public class dtool {
                     int i = __key310;
                     if (i != 0)
                     {
-                        (this.buf.get()).printf(new BytePtr(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     }
                     if (id != null)
                     {
-                        (this.buf.get()).writestring(id.asString());
-                        (this.buf.get()).writeByte(58);
+                        (this.buf).writestring(id.asString());
+                        (this.buf).writeByte(58);
                     }
                     {
                         ASTBase.Initializer iz = si.value.get(i);
@@ -1991,12 +1991,12 @@ public class dtool {
                     }
                 }
             }
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<ArrayInitializer>
         public  void visit(ASTBase.ArrayInitializer ai) {
-            (this.buf.get()).printf(new BytePtr("( array-init "));
+            (this.buf).printf(new BytePtr("( array-init "));
             {
                 Slice<ASTBase.Initializer> __r313 = ai.value.opSlice().copy();
                 int __key312 = 0;
@@ -2005,7 +2005,7 @@ public class dtool {
                     int i = __key312;
                     if (i != 0)
                     {
-                        (this.buf.get()).printf(new BytePtr(" "));
+                        (this.buf).printf(new BytePtr(" "));
                     }
                     if (v != null)
                     {
@@ -2013,16 +2013,16 @@ public class dtool {
                     }
                     else
                     {
-                        (this.buf.get()).printf(new BytePtr("null"));
+                        (this.buf).printf(new BytePtr("null"));
                     }
                 }
             }
-            (this.buf.get()).printf(new BytePtr(")"));
+            (this.buf).printf(new BytePtr(")"));
         }
 
         // Erasure: visit<VoidInitializer>
         public  void visit(ASTBase.VoidInitializer _param_0) {
-            (this.buf.get()).printf(new BytePtr("void"));
+            (this.buf).printf(new BytePtr("void"));
         }
 
 
@@ -2076,21 +2076,21 @@ public class dtool {
     // Erasure: lex<Ptr, Array>
     public static ByteSlice lex(BytePtr argz, ByteSlice buf) {
         Lexer lexer = new Lexer(argz, buf.getPtr(0), 0, buf.getLength(), true, true, new StderrDiagnosticReporter(DiagnosticReporting.error));
-        Ptr<OutBuffer> output = refPtr(new OutBuffer(null, 0, 0, 0, false, false));
+        OutBuffer output = new OutBuffer(null, 0, 0, 0, false, false);
         int i = 0;
         for (; ((lexer.nextToken() & 0xFF) != 11);){
-            (output.get()).printf(new BytePtr("%4d"), (lexer.token.value.value & 0xFF));
+            (output).printf(new BytePtr("%4d"), (lexer.token.value.value & 0xFF));
             if (((i += 1) == 20))
             {
-                (output.get()).printf(new BytePtr(" | Line %5d |\n"), lexer.token.value.loc.linnum);
+                (output).printf(new BytePtr(" | Line %5d |\n"), lexer.token.value.loc.linnum);
                 i = 0;
             }
         }
         if ((i != 0))
         {
-            (output.get()).printf(new BytePtr(" | Line %5d |\n"), lexer.token.value.loc.linnum);
+            (output).printf(new BytePtr(" | Line %5d |\n"), lexer.token.value.loc.linnum);
         }
-        return (output.get()).extractSlice();
+        return (output).extractSlice();
     }
 
     // Erasure: lispy<Ptr, Array>
@@ -2101,19 +2101,19 @@ public class dtool {
             ParserASTBase p = new ParserASTBase(mod, buf, true, diagnosticReporter);
             try {
                 p.nextToken();
-                Ptr<DArray<ASTBase.Dsymbol>> decls = p.parseModule();
+                DArray<ASTBase.Dsymbol> decls = p.parseModule();
                 LispyPrint lispPrint = new LispyPrint();
-                lispPrint.buf = pcopy((refPtr(new OutBuffer(null, 0, 0, 0, false, false))));
-                (lispPrint.buf.get()).doindent = true;
+                lispPrint.buf = pcopy(new OutBuffer(null, 0, 0, 0, false, false));
+                (lispPrint.buf).doindent = true;
                 {
-                    Slice<ASTBase.Dsymbol> __r513 = (decls.get()).opSlice().copy();
+                    Slice<ASTBase.Dsymbol> __r513 = (decls).opSlice().copy();
                     int __key514 = 0;
                     for (; (__key514 < __r513.getLength());__key514 += 1) {
                         ASTBase.Dsymbol d = __r513.get(__key514);
                         d.accept(lispPrint);
                     }
                 }
-                return (lispPrint.buf.get()).extractSlice();
+                return (lispPrint.buf).extractSlice();
             }
             finally {
             }

@@ -138,7 +138,7 @@ public class access {
         }
         if (((e.type.value.ty & 0xFF) == ENUMTY.Tclass))
         {
-            ClassDeclaration cd = ((TypeClass)e.type.value).sym;
+            ClassDeclaration cd = (((TypeClass)e.type.value)).sym;
             if (((e.op & 0xFF) == 124))
             {
                 {
@@ -153,7 +153,7 @@ public class access {
         }
         else if (((e.type.value.ty & 0xFF) == ENUMTY.Tstruct))
         {
-            StructDeclaration cd = ((TypeStruct)e.type.value).sym;
+            StructDeclaration cd = (((TypeStruct)e.type.value)).sym;
             return checkAccess((AggregateDeclaration)cd, loc, sc, (Dsymbol)d);
         }
         return false;

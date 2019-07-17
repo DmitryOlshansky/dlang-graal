@@ -188,7 +188,7 @@ public class aggregate {
                     {
                         return 0;
                     }
-                    if ((pequals(ad, ((TypeStruct)tv).sym)))
+                    if ((pequals(ad, (((TypeStruct)tv)).sym)))
                     {
                         BytePtr psz = pcopy(((v.type.toBasetype().ty & 0xFF) == ENUMTY.Tsarray) ? new BytePtr("static array of ") : new BytePtr(""));
                         ad.error(new BytePtr("cannot have field `%s` with %ssame struct type"), v.toChars(), psz);
@@ -202,8 +202,8 @@ public class aggregate {
             };
             {
                 int i = 0;
-                for (; (i < (this.members.get()).length);i++){
-                    Dsymbol s = (this.members.get()).get(i);
+                for (; (i < (this.members).length);i++){
+                    Dsymbol s = (this.members).get(i);
                     if (s.apply(func, this) != 0)
                     {
                         if ((this.sizeok != Sizeok.none))
@@ -381,19 +381,19 @@ public class aggregate {
         }
 
         // Erasure: fill<Loc, Ptr, boolean>
-        public  boolean fill(Loc loc, Ptr<DArray<Expression>> elements, boolean ctorinit) {
+        public  boolean fill(Loc loc, DArray<Expression> elements, boolean ctorinit) {
             assert((this.sizeok == Sizeok.done));
             assert(elements != null);
             int nfields = this.nonHiddenFields();
             boolean errors = false;
-            int dim = (elements.get()).length;
-            (elements.get()).setDim(nfields);
+            int dim = (elements).length;
+            (elements).setDim(nfields);
             {
                 int __key701 = dim;
                 int __limit702 = nfields;
                 for (; (__key701 < __limit702);__key701 += 1) {
                     int i = __key701;
-                    elements.get().set(i, null);
+                    elements.set(i, null);
                 }
             }
             {
@@ -401,7 +401,7 @@ public class aggregate {
                 int __limit704 = nfields;
                 for (; (__key703 < __limit704);__key703 += 1) {
                     int i = __key703;
-                    if ((elements.get()).get(i) != null)
+                    if ((elements).get(i) != null)
                     {
                         continue;
                     }
@@ -426,7 +426,7 @@ public class aggregate {
                             {
                                 continue;
                             }
-                            if ((elements.get()).get(j) != null)
+                            if ((elements).get(j) != null)
                             {
                                 vx = null;
                                 break;
@@ -478,7 +478,7 @@ public class aggregate {
                             if (((telem.ty & 0xFF) == ENUMTY.Tsarray))
                             {
                                 for (; ((telem.toBasetype().ty & 0xFF) == ENUMTY.Tsarray);) {
-                                    telem = ((TypeSArray)telem.toBasetype()).next.value;
+                                    telem = (((TypeSArray)telem.toBasetype())).next.value;
                                 }
                                 if (((telem.ty & 0xFF) == ENUMTY.Tvoid))
                                 {
@@ -494,12 +494,12 @@ public class aggregate {
                                 e = telem.defaultInitLiteral(loc);
                             }
                         }
-                        elements.get().set(fieldi, e);
+                        elements.set(fieldi, e);
                     }
                 }
             }
             {
-                Slice<Expression> __r707 = (elements.get()).opSlice().copy();
+                Slice<Expression> __r707 = (elements).opSlice().copy();
                 int __key708 = 0;
                 for (; (__key708 < __r707.getLength());__key708 += 1) {
                     Expression e = __r707.get(__key708);
@@ -520,11 +520,11 @@ public class aggregate {
                     break;
                 case -1:
                     assert((size > 0) && ((size & size - 1) == 0));
-                    poffset.set(0, (poffset.get() + size - 1 & ~(size - 1)));
+                    poffset.set(0, poffset.get() + size - 1 & ~(size - 1));
                     break;
                 default:
                 assert((alignment > 0) && ((alignment & alignment - 1) == 0));
-                poffset.set(0, (poffset.get() + alignment - 1 & ~(alignment - 1)));
+                poffset.set(0, poffset.get() + alignment - 1 & ~(alignment - 1));
                 break;
             }
         }
@@ -639,7 +639,7 @@ public class aggregate {
                 }
                 assert(this.vthis == null);
                 this.vthis = new ThisDeclaration(this.loc, t);
-                (this.members.get()).push(this.vthis);
+                (this.members).push(this.vthis);
                 this.vthis.storage_class |= 64L;
                 this.vthis.parent.value = this;
                 this.vthis.protection.opAssign(new Prot(Prot.Kind.public_).copy());
@@ -688,7 +688,7 @@ public class aggregate {
             ClassDeclaration cd = s.isClassDeclaration();
             Type t = cd != null ? cd.type : Type.tvoidptr;
             this.vthis2 = new ThisDeclaration(this.loc, t);
-            (this.members.get()).push(this.vthis2);
+            (this.members).push(this.vthis2);
             this.vthis2.storage_class |= 64L;
             this.vthis2.parent.value = this;
             this.vthis2.protection.opAssign(new Prot(Prot.Kind.public_).copy());
@@ -726,8 +726,8 @@ public class aggregate {
             {
                 {
                     int i = 0;
-                    for (; (i < (this.members.get()).length);i++){
-                        Dsymbol sm = (this.members.get()).get(i);
+                    for (; (i < (this.members).length);i++){
+                        Dsymbol sm = (this.members).get(i);
                         sm.apply(SearchCtor::fp, null);
                     }
                 }

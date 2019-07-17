@@ -41,7 +41,7 @@ public class clone {
             return s1;
         }
         long s2 = f.storage_class & 137438953472L;
-        TypeFunction tf = (TypeFunction)f.type;
+        TypeFunction tf = ((TypeFunction)f.type);
         if ((tf.trust == TRUST.safe))
         {
             s2 |= 8589934592L;
@@ -104,11 +104,11 @@ public class clone {
                 (sc.get()).tinst = null;
                 (sc.get()).minst = null;
                 a.value.set(0, er);
-                FuncDeclaration f = resolveFuncCall(ad.loc, sc, assign, null, ad.type, ptr(a), FuncResolveFlag.quiet);
+                FuncDeclaration f = resolveFuncCall(ad.loc, sc, assign, null, ad.type, a.value, FuncResolveFlag.quiet);
                 if (f == null)
                 {
                     a.value.set(0, el);
-                    f = resolveFuncCall(ad.loc, sc, assign, null, ad.type, ptr(a), FuncResolveFlag.quiet);
+                    f = resolveFuncCall(ad.loc, sc, assign, null, ad.type, a.value, FuncResolveFlag.quiet);
                 }
                 sc = pcopy((sc.get()).pop());
                 global.endGagging(errors);
@@ -169,7 +169,7 @@ public class clone {
                 Type tv = v.type.baseElemOf();
                 if (((tv.ty & 0xFF) == ENUMTY.Tstruct))
                 {
-                    TypeStruct ts = (TypeStruct)tv;
+                    TypeStruct ts = ((TypeStruct)tv);
                     if (ts.sym.isUnionDeclaration() != null)
                     {
                         continue;
@@ -219,7 +219,7 @@ public class clone {
                 {
                     continue;
                 }
-                StructDeclaration sdv = ((TypeStruct)tv).sym;
+                StructDeclaration sdv = (((TypeStruct)tv)).sym;
                 stc = mergeFuncAttrs(stc, hasIdentityOpAssign(sdv, sc));
             }
         }
@@ -235,8 +235,8 @@ public class clone {
                 stc = stc & -8589934593L | 17179869184L;
             }
         }
-        Ptr<DArray<Parameter>> fparams = refPtr(new DArray<Parameter>());
-        (fparams.get()).push(new Parameter(16777216L, sd.type, Id.p, null, null));
+        DArray<Parameter> fparams = new DArray<Parameter>();
+        (fparams).push(new Parameter(16777216L, sd.type, Id.p, null, null));
         TypeFunction tf = new TypeFunction(new ParameterList(fparams, VarArg.none), sd.handleType(), LINK.d, stc | 2097152L);
         FuncDeclaration fop = new FuncDeclaration(declLoc, Loc.initial, Id.assign, stc, tf);
         fop.storage_class |= 70368744177664L;
@@ -248,7 +248,7 @@ public class clone {
         }
         else if (sd.dtor != null)
         {
-            TypeFunction tdtor = (TypeFunction)sd.dtor.type;
+            TypeFunction tdtor = ((TypeFunction)sd.dtor.type);
             assert(((tdtor.ty & 0xFF) == ENUMTY.Tfunction));
             Identifier idswap = Identifier.generateId(new BytePtr("__swap"));
             VarDeclaration swap = new VarDeclaration(loc, sd.type, idswap, new VoidInitializer(loc), 0L);
@@ -288,7 +288,7 @@ public class clone {
             fop.fbody.value = new CompoundStatement(loc, slice(new Statement[]{s1, s2}));
             tf.isreturn = true;
         }
-        (sd.members.get()).push(fop);
+        (sd.members).push(fop);
         fop.addMember(sc, sd);
         sd.hasIdentityAssign = true;
         int errors = global.startGagging();
@@ -335,7 +335,7 @@ public class clone {
                         Type tvbase = tv.baseElemOf();
                         if (((tvbase.ty & 0xFF) == ENUMTY.Tstruct))
                         {
-                            TypeStruct ts = (TypeStruct)tvbase;
+                            TypeStruct ts = ((TypeStruct)tvbase);
                             if (ts.sym.isUnionDeclaration() != null)
                             {
                                 continue L_outer1;
@@ -425,7 +425,7 @@ public class clone {
                                 int j = __key811;
                                 a.value.set(0, (j == 0) ? er : el);
                                 a.value.get(0).type.value = tthis;
-                                f = resolveFuncCall(ad.loc, sc, eq, null, tthis, ptr(a), FuncResolveFlag.quiet);
+                                f = resolveFuncCall(ad.loc, sc, eq, null, tthis, a.value, FuncResolveFlag.quiet);
                                 if (f != null)
                                 {
                                     break;
@@ -477,11 +477,11 @@ public class clone {
                         TypeFunction tfeqptr = null;
                         {
                             Ref<Scope> scx = ref(new Scope().copy());
-                            Ptr<DArray<Parameter>> parameters = refPtr(new DArray<Parameter>());
-                            (parameters.get()).push(new Parameter(2097156L, sd.type, null, null, null));
+                            DArray<Parameter> parameters = new DArray<Parameter>();
+                            (parameters).push(new Parameter(2097156L, sd.type, null, null, null));
                             tfeqptr = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tbool, LINK.d, 0L);
                             tfeqptr.mod = (byte)1;
-                            tfeqptr = (TypeFunction)typeSemantic(tfeqptr, Loc.initial, ptr(scx));
+                            tfeqptr = ((TypeFunction)typeSemantic(tfeqptr, Loc.initial, ptr(scx)));
                         }
                         fd = fd.overloadExactMatch(tfeqptr);
                         if (fd != null)
@@ -505,8 +505,8 @@ public class clone {
         }
         Loc declLoc = new Loc();
         Loc loc = new Loc();
-        Ptr<DArray<Parameter>> parameters = refPtr(new DArray<Parameter>());
-        (parameters.get()).push(new Parameter(2097156L, sd.type, Id.p, null, null)).push(new Parameter(2097156L, sd.type, Id.q, null, null));
+        DArray<Parameter> parameters = new DArray<Parameter>();
+        (parameters).push(new Parameter(2097156L, sd.type, Id.p, null, null)).push(new Parameter(2097156L, sd.type, Id.q, null, null));
         TypeFunction tf = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tbool, LINK.d, 0L);
         Identifier id = Id.xopEquals;
         FuncDeclaration fop = new FuncDeclaration(declLoc, Loc.initial, id, 1L, tf);
@@ -542,11 +542,11 @@ public class clone {
                         TypeFunction tfcmpptr = null;
                         {
                             Ref<Scope> scx = ref(new Scope().copy());
-                            Ptr<DArray<Parameter>> parameters = refPtr(new DArray<Parameter>());
-                            (parameters.get()).push(new Parameter(2097156L, sd.type, null, null, null));
+                            DArray<Parameter> parameters = new DArray<Parameter>();
+                            (parameters).push(new Parameter(2097156L, sd.type, null, null, null));
                             tfcmpptr = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tint32, LINK.d, 0L);
                             tfcmpptr.mod = (byte)1;
-                            tfcmpptr = (TypeFunction)typeSemantic(tfcmpptr, Loc.initial, ptr(scx));
+                            tfcmpptr = ((TypeFunction)typeSemantic(tfcmpptr, Loc.initial, ptr(scx)));
                         }
                         fd = fd.overloadExactMatch(tfcmpptr);
                         if (fd != null)
@@ -574,9 +574,9 @@ public class clone {
         }
         Loc declLoc = new Loc();
         Loc loc = new Loc();
-        Ptr<DArray<Parameter>> parameters = refPtr(new DArray<Parameter>());
-        (parameters.get()).push(new Parameter(2097156L, sd.type, Id.p, null, null));
-        (parameters.get()).push(new Parameter(2097156L, sd.type, Id.q, null, null));
+        DArray<Parameter> parameters = new DArray<Parameter>();
+        (parameters).push(new Parameter(2097156L, sd.type, Id.p, null, null));
+        (parameters).push(new Parameter(2097156L, sd.type, Id.q, null, null));
         TypeFunction tf = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.tint32, LINK.d, 0L);
         Identifier id = Id.xopCmp;
         FuncDeclaration fop = new FuncDeclaration(declLoc, Loc.initial, id, 1L, tf);
@@ -628,7 +628,7 @@ public class clone {
                         Type tvbase = tv.baseElemOf();
                         if (((tvbase.ty & 0xFF) == ENUMTY.Tstruct))
                         {
-                            TypeStruct ts = (TypeStruct)tvbase;
+                            TypeStruct ts = ((TypeStruct)tvbase);
                             if (ts.sym.isUnionDeclaration() != null)
                             {
                                 continue L_outer2;
@@ -680,7 +680,7 @@ public class clone {
                 {
                     clone.buildXtoHashtftohash = new TypeFunction(new ParameterList(null, VarArg.none), Type.thash_t, LINK.d, 0L);
                     clone.buildXtoHashtftohash.mod = (byte)1;
-                    clone.buildXtoHashtftohash = (TypeFunction)merge(clone.buildXtoHashtftohash);
+                    clone.buildXtoHashtftohash = ((TypeFunction)merge(clone.buildXtoHashtftohash));
                 }
                 {
                     FuncDeclaration fd = s.isFuncDeclaration();
@@ -701,8 +701,8 @@ public class clone {
         }
         Loc declLoc = new Loc();
         Loc loc = new Loc();
-        Ptr<DArray<Parameter>> parameters = refPtr(new DArray<Parameter>());
-        (parameters.get()).push(new Parameter(2097156L, sd.type, Id.p, null, null));
+        DArray<Parameter> parameters = new DArray<Parameter>();
+        (parameters).push(new Parameter(2097156L, sd.type, Id.p, null, null));
         TypeFunction tf = new TypeFunction(new ParameterList(parameters, VarArg.none), Type.thash_t, LINK.d, 17213423616L);
         Identifier id = Id.xtoHash;
         FuncDeclaration fop = new FuncDeclaration(declLoc, Loc.initial, id, 1L, tf);
@@ -748,7 +748,7 @@ public class clone {
                     {
                         continue;
                     }
-                    StructDeclaration sdv = ((TypeStruct)tv).sym;
+                    StructDeclaration sdv = (((TypeStruct)tv)).sym;
                     if (sdv.dtor == null)
                     {
                         continue;
@@ -790,8 +790,8 @@ public class clone {
                             stc = stc & -8589934593L | 17179869184L;
                         }
                         ex = new SliceExp(loc, ex, new IntegerExp(loc, 0L, Type.tsize_t), new IntegerExp(loc, (long)n, Type.tsize_t));
-                        ((SliceExp)ex).upperIsInBounds = true;
-                        ((SliceExp)ex).lowerIsLessThanUpper = true;
+                        (((SliceExp)ex)).upperIsInBounds = true;
+                        (((SliceExp)ex)).lowerIsLessThanUpper = true;
                         ex = new CallExp(loc, new IdentifierExp(loc, Id.__ArrayDtor), ex);
                     }
                     e = Expression.combine(ex, e);
@@ -822,7 +822,7 @@ public class clone {
                 dd.storage_class |= 70368744177664L;
                 dd.fbody.value = new ExpStatement(loc, e);
                 ad.dtors.shift(dd);
-                (ad.members.get()).push(dd);
+                (ad.members).push(dd);
                 dsymbolSemantic(dd, sc);
                 ad.fieldDtor = dd;
             }
@@ -860,7 +860,7 @@ public class clone {
             dd.generated = true;
             dd.storage_class |= 70368744177664L;
             dd.fbody.value = new ExpStatement(loc, e);
-            (ad.members.get()).push(dd);
+            (ad.members).push(dd);
             dsymbolSemantic(dd, sc);
             xdtor = dd;
             break;
@@ -874,7 +874,7 @@ public class clone {
         {
             AliasDeclaration _alias = new AliasDeclaration(Loc.initial, Id.__xdtor, xdtor);
             dsymbolSemantic(_alias, sc);
-            (ad.members.get()).push(_alias);
+            (ad.members).push(_alias);
             _alias.addMember(sc, ad);
         }
         return xdtor;
@@ -888,26 +888,26 @@ public class clone {
             return dtor;
         }
         Parameter delparam = new Parameter(0L, Type.tuns32, Identifier.idPool(new ByteSlice("del")), new IntegerExp(dtor.loc, 0L, Type.tuns32), null);
-        Ptr<DArray<Parameter>> params = refPtr(new DArray<Parameter>());
-        (params.get()).push(delparam);
+        DArray<Parameter> params = new DArray<Parameter>();
+        (params).push(delparam);
         TypeFunction ftype = new TypeFunction(new ParameterList(params, VarArg.none), Type.tvoidptr, LINK.cpp, dtor.storage_class);
         DtorDeclaration func = new DtorDeclaration(dtor.loc, dtor.loc, dtor.storage_class, Id.cppdtor);
         func.type = ftype;
         if (dtor.fbody.value != null)
         {
             Loc loc = dtor.loc.copy();
-            Ptr<DArray<Statement>> stmts = refPtr(new DArray<Statement>());
+            DArray<Statement> stmts = new DArray<Statement>();
             CallExp call = new CallExp(loc, dtor, null);
             call.directcall = true;
-            (stmts.get()).push(new ExpStatement(loc, call));
-            (stmts.get()).push(new ReturnStatement(loc, new CastExp(loc, new ThisExp(loc), Type.tvoidptr)));
+            (stmts).push(new ExpStatement(loc, call));
+            (stmts).push(new ReturnStatement(loc, new CastExp(loc, new ThisExp(loc), Type.tvoidptr)));
             func.fbody.value = new CompoundStatement(loc, stmts);
             func.generated = true;
         }
         Ptr<Scope> sc2 = (sc.get()).push();
         (sc2.get()).stc &= -2L;
         (sc2.get()).linkage = LINK.cpp;
-        (ad.members.get()).push(func);
+        (ad.members).push(func);
         func.addMember(sc2, ad);
         dsymbolSemantic(func, sc2);
         (sc2.get()).pop();
@@ -936,7 +936,7 @@ public class clone {
         Ptr<Scope> sc2 = (sc.get()).push();
         (sc2.get()).stc &= -2L;
         (sc2.get()).linkage = LINK.d;
-        (ad.members.get()).push(func);
+        (ad.members).push(func);
         func.addMember(sc2, ad);
         dsymbolSemantic(func, sc2);
         func.functionSemantic();
@@ -986,7 +986,7 @@ public class clone {
                         }
                     }
                     InvariantDeclaration inv_1 = new InvariantDeclaration(ad.loc, Loc.initial, stc | stcx, Id.classInvariant, new ExpStatement(Loc.initial, e));
-                    (ad.members.get()).push(inv_1);
+                    (ad.members).push(inv_1);
                     dsymbolSemantic(inv_1, sc);
                     return inv_1;
                 }

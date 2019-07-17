@@ -565,12 +565,12 @@ public class intrange {
             if (hasNegRange.value)
             {
                 negRange.imin.opAssign(this.imin.copy());
-                negRange.imax.opAssign((this.imax.negative ? this.imax : new SignExtendedNumber(-1L, true)).copy());
+                negRange.imax.opAssign(this.imax.negative ? this.imax : new SignExtendedNumber(-1L, true).copy());
             }
             hasNonNegRange.value = !this.imax.negative;
             if (hasNonNegRange.value)
             {
-                nonNegRange.imin.opAssign((this.imin.negative ? new SignExtendedNumber(0L, false) : this.imin).copy());
+                nonNegRange.imin.opAssign(this.imin.negative ? new SignExtendedNumber(0L, false) : this.imin.copy());
                 nonNegRange.imax.opAssign(this.imax.copy());
             }
         }

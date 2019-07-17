@@ -513,7 +513,7 @@ public class astbase {
         }
         public static class ScopeDsymbol extends Dsymbol
         {
-            public Ptr<DArray<Dsymbol>> members = null;
+            public DArray<Dsymbol> members = null;
             // Erasure: __ctor<>
             public  ScopeDsymbol() {
                 super();
@@ -544,7 +544,7 @@ public class astbase {
         }
         public static class Import extends Dsymbol
         {
-            public Ptr<DArray<Identifier>> packages = null;
+            public DArray<Identifier> packages = null;
             public Identifier id = null;
             public Identifier aliasId = null;
             public int isstatic = 0;
@@ -552,7 +552,7 @@ public class astbase {
             public DArray<Identifier> names = new DArray<Identifier>();
             public DArray<Identifier> aliases = new DArray<Identifier>();
             // Erasure: __ctor<Loc, Ptr, Identifier, Identifier, int>
-            public  Import(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Identifier aliasId, int isstatic) {
+            public  Import(Loc loc, DArray<Identifier> packages, Identifier id, Identifier aliasId, int isstatic) {
                 super(null);
                 this.loc.opAssign(loc.copy());
                 this.packages = pcopy(packages);
@@ -564,9 +564,9 @@ public class astbase {
                 {
                     this.ident = aliasId;
                 }
-                else if ((packages != null) && ((packages.get()).length != 0))
+                else if ((packages != null) && ((packages).length != 0))
                 {
-                    this.ident = (packages.get()).get(0);
+                    this.ident = (packages).get(0);
                 }
                 else
                 {
@@ -616,9 +616,9 @@ public class astbase {
         }
         public static abstract class AttribDeclaration extends Dsymbol
         {
-            public Ptr<DArray<Dsymbol>> decl = null;
+            public DArray<Dsymbol> decl = null;
             // Erasure: __ctor<Ptr>
-            public  AttribDeclaration(Ptr<DArray<Dsymbol>> decl) {
+            public  AttribDeclaration(DArray<Dsymbol> decl) {
                 super();
                 this.decl = pcopy(decl);
             }
@@ -820,8 +820,8 @@ public class astbase {
         public static class FuncDeclaration extends Declaration
         {
             public Statement fbody = null;
-            public Ptr<DArray<Statement>> frequires = null;
-            public Ptr<DArray<Ensure>> fensures = null;
+            public DArray<Statement> frequires = null;
+            public DArray<Ensure> fensures = null;
             public Loc endloc = new Loc();
             public long storage_class = 0L;
             public Type type = null;
@@ -937,9 +937,9 @@ public class astbase {
         }
         public static class TupleDeclaration extends Declaration
         {
-            public Ptr<DArray<RootObject>> objects = null;
+            public DArray<RootObject> objects = null;
             // Erasure: __ctor<Loc, Identifier, Ptr>
-            public  TupleDeclaration(Loc loc, Identifier id, Ptr<DArray<RootObject>> objects) {
+            public  TupleDeclaration(Loc loc, Identifier id, DArray<RootObject> objects) {
                 super(id);
                 this.loc.opAssign(loc.copy());
                 this.objects = pcopy(objects);
@@ -1234,10 +1234,10 @@ public class astbase {
         }
         public static class NewDeclaration extends FuncDeclaration
         {
-            public Ptr<DArray<Parameter>> parameters = null;
+            public DArray<Parameter> parameters = null;
             public int varargs = 0;
             // Erasure: __ctor<Loc, Loc, long, Ptr, int>
-            public  NewDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams, int varargs) {
+            public  NewDeclaration(Loc loc, Loc endloc, long stc, DArray<Parameter> fparams, int varargs) {
                 super(loc, endloc, Id.classNew, 1L | stc, null);
                 this.parameters = pcopy(fparams);
                 this.varargs = varargs;
@@ -1279,9 +1279,9 @@ public class astbase {
         }
         public static class DeleteDeclaration extends FuncDeclaration
         {
-            public Ptr<DArray<Parameter>> parameters = null;
+            public DArray<Parameter> parameters = null;
             // Erasure: __ctor<Loc, Loc, long, Ptr>
-            public  DeleteDeclaration(Loc loc, Loc endloc, long stc, Ptr<DArray<Parameter>> fparams) {
+            public  DeleteDeclaration(Loc loc, Loc endloc, long stc, DArray<Parameter> fparams) {
                 super(loc, endloc, Id.classDelete, 1L | stc, null);
                 this.parameters = pcopy(fparams);
             }
@@ -1587,8 +1587,8 @@ public class astbase {
         }
         public static class TemplateDeclaration extends ScopeDsymbol
         {
-            public Ptr<DArray<TemplateParameter>> parameters = null;
-            public Ptr<DArray<TemplateParameter>> origParameters = null;
+            public DArray<TemplateParameter> parameters = null;
+            public DArray<TemplateParameter> origParameters = null;
             public Expression constraint = null;
             public boolean literal = false;
             public boolean ismixin = false;
@@ -1596,7 +1596,7 @@ public class astbase {
             public Prot protection = new Prot();
             public Dsymbol onemember = null;
             // Erasure: __ctor<Loc, Identifier, Ptr, Expression, Ptr, boolean, boolean>
-            public  TemplateDeclaration(Loc loc, Identifier id, Ptr<DArray<TemplateParameter>> parameters, Expression constraint, Ptr<DArray<Dsymbol>> decldefs, boolean ismixin, boolean literal) {
+            public  TemplateDeclaration(Loc loc, Identifier id, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs, boolean ismixin, boolean literal) {
                 super(id);
                 this.loc.opAssign(loc.copy());
                 this.parameters = pcopy(parameters);
@@ -1609,7 +1609,7 @@ public class astbase {
                 if ((this.members != null) && (this.ident != null))
                 {
                     Ref<Dsymbol> s = ref(null);
-                    if (Dsymbol.oneMembers(this.members.get(), ptr(s), this.ident) && (s.value != null))
+                    if (Dsymbol.oneMembers(this.members, ptr(s), this.ident) && (s.value != null))
                     {
                         this.onemember = s.value;
                         s.value.parent = this;
@@ -1618,12 +1618,12 @@ public class astbase {
             }
 
             // defaulted all parameters starting with #7
-            public  TemplateDeclaration(Loc loc, Identifier id, Ptr<DArray<TemplateParameter>> parameters, Expression constraint, Ptr<DArray<Dsymbol>> decldefs, boolean ismixin) {
+            public  TemplateDeclaration(Loc loc, Identifier id, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs, boolean ismixin) {
                 this(loc, id, parameters, constraint, decldefs, ismixin, false);
             }
 
             // defaulted all parameters starting with #6
-            public  TemplateDeclaration(Loc loc, Identifier id, Ptr<DArray<TemplateParameter>> parameters, Expression constraint, Ptr<DArray<Dsymbol>> decldefs) {
+            public  TemplateDeclaration(Loc loc, Identifier id, DArray<TemplateParameter> parameters, Expression constraint, DArray<Dsymbol> decldefs) {
                 this(loc, id, parameters, constraint, decldefs, false, false);
             }
 
@@ -1668,13 +1668,13 @@ public class astbase {
         public static class TemplateInstance extends ScopeDsymbol
         {
             public Identifier name = null;
-            public Ptr<DArray<RootObject>> tiargs = null;
+            public DArray<RootObject> tiargs = null;
             public Dsymbol tempdecl = null;
             public boolean semantictiargsdone = false;
             public boolean havetempdecl = false;
             public TemplateInstance inst = null;
             // Erasure: __ctor<Loc, Identifier, Ptr>
-            public  TemplateInstance(Loc loc, Identifier ident, Ptr<DArray<RootObject>> tiargs) {
+            public  TemplateInstance(Loc loc, Identifier ident, DArray<RootObject> tiargs) {
                 super(null);
                 this.loc.opAssign(loc.copy());
                 this.name = ident;
@@ -1682,7 +1682,7 @@ public class astbase {
             }
 
             // Erasure: __ctor<Loc, TemplateDeclaration, Ptr>
-            public  TemplateInstance(Loc loc, TemplateDeclaration td, Ptr<DArray<RootObject>> tiargs) {
+            public  TemplateInstance(Loc loc, TemplateDeclaration td, DArray<RootObject> tiargs) {
                 super(null);
                 this.loc.opAssign(loc.copy());
                 this.name = td.ident;
@@ -1697,16 +1697,16 @@ public class astbase {
             }
 
             // Erasure: arraySyntaxCopy<Ptr>
-            public  Ptr<DArray<RootObject>> arraySyntaxCopy(Ptr<DArray<RootObject>> objs) {
-                Ptr<DArray<RootObject>> a = null;
+            public  DArray<RootObject> arraySyntaxCopy(DArray<RootObject> objs) {
+                DArray<RootObject> a = null;
                 if (objs != null)
                 {
-                    a = pcopy((refPtr(new DArray<RootObject>())));
-                    (a.get()).setDim((objs.get()).length);
+                    a = pcopy(new DArray<RootObject>());
+                    (a).setDim((objs).length);
                     {
                         int i = 0;
-                        for (; (i < (objs.get()).length);i++) {
-                            a.get().set(i, this.objectSyntaxCopy((objs.get()).get(i)));
+                        for (; (i < (objs).length);i++) {
+                            a.set(i, this.objectSyntaxCopy((objs).get(i)));
                         }
                     }
                 }
@@ -1738,7 +1738,7 @@ public class astbase {
 
             // Erasure: syntaxCopy<Dsymbol>
             public  Dsymbol syntaxCopy(Dsymbol s) {
-                TemplateInstance ti = s != null ? (TemplateInstance)s : new TemplateInstance(this.loc, this.name, null);
+                TemplateInstance ti = s != null ? ((TemplateInstance)s) : new TemplateInstance(this.loc, this.name, null);
                 ti.tiargs = pcopy(this.arraySyntaxCopy(this.tiargs));
                 TemplateDeclaration td = null;
                 if ((this.inst != null) && (this.tempdecl != null) && ((td = this.tempdecl.isTemplateDeclaration()) != null))
@@ -1782,7 +1782,7 @@ public class astbase {
         {
             public Expression identExp = null;
             // Erasure: __ctor<Loc, Identifier, Expression, Ptr>
-            public  Nspace(Loc loc, Identifier ident, Expression identExp, Ptr<DArray<Dsymbol>> members) {
+            public  Nspace(Loc loc, Identifier ident, Expression identExp, DArray<Dsymbol> members) {
                 super(ident);
                 this.loc.opAssign(loc.copy());
                 this.members = pcopy(members);
@@ -1812,9 +1812,9 @@ public class astbase {
         }
         public static class CompileDeclaration extends AttribDeclaration
         {
-            public Ptr<DArray<Expression>> exps = null;
+            public DArray<Expression> exps = null;
             // Erasure: __ctor<Loc, Ptr>
-            public  CompileDeclaration(Loc loc, Ptr<DArray<Expression>> exps) {
+            public  CompileDeclaration(Loc loc, DArray<Expression> exps) {
                 super(null);
                 this.loc.opAssign(loc.copy());
                 this.exps = pcopy(exps);
@@ -1843,29 +1843,29 @@ public class astbase {
         }
         public static class UserAttributeDeclaration extends AttribDeclaration
         {
-            public Ptr<DArray<Expression>> atts = null;
+            public DArray<Expression> atts = null;
             // Erasure: __ctor<Ptr, Ptr>
-            public  UserAttributeDeclaration(Ptr<DArray<Expression>> atts, Ptr<DArray<Dsymbol>> decl) {
+            public  UserAttributeDeclaration(DArray<Expression> atts, DArray<Dsymbol> decl) {
                 super(decl);
                 this.atts = pcopy(atts);
             }
 
             // Erasure: concat<Ptr, Ptr>
-            public static Ptr<DArray<Expression>> concat(Ptr<DArray<Expression>> udas1, Ptr<DArray<Expression>> udas2) {
-                Ptr<DArray<Expression>> udas = null;
-                if ((udas1 == null) || ((udas1.get()).length == 0))
+            public static DArray<Expression> concat(DArray<Expression> udas1, DArray<Expression> udas2) {
+                DArray<Expression> udas = null;
+                if ((udas1 == null) || ((udas1).length == 0))
                 {
                     udas = pcopy(udas2);
                 }
-                else if ((udas2 == null) || ((udas2.get()).length == 0))
+                else if ((udas2 == null) || ((udas2).length == 0))
                 {
                     udas = pcopy(udas1);
                 }
                 else
                 {
-                    udas = pcopy((refPtr(new DArray<Expression>(2))));
-                    udas.get().set(0, new TupleExp(Loc.initial, udas1));
-                    udas.get().set(1, new TupleExp(Loc.initial, udas2));
+                    udas = pcopy(new DArray<Expression>(2));
+                    udas.set(0, new TupleExp(Loc.initial, udas1));
+                    udas.set(1, new TupleExp(Loc.initial, udas2));
                 }
                 return udas;
             }
@@ -1895,7 +1895,7 @@ public class astbase {
         {
             public int linkage = 0;
             // Erasure: __ctor<int, Ptr>
-            public  LinkDeclaration(int p, Ptr<DArray<Dsymbol>> decl) {
+            public  LinkDeclaration(int p, DArray<Dsymbol> decl) {
                 super(decl);
                 this.linkage = p;
             }
@@ -1925,7 +1925,7 @@ public class astbase {
         {
             public boolean isunion = false;
             // Erasure: __ctor<Loc, boolean, Ptr>
-            public  AnonDeclaration(Loc loc, boolean isunion, Ptr<DArray<Dsymbol>> decl) {
+            public  AnonDeclaration(Loc loc, boolean isunion, DArray<Dsymbol> decl) {
                 super(decl);
                 this.loc.opAssign(loc.copy());
                 this.isunion = isunion;
@@ -1956,7 +1956,7 @@ public class astbase {
         {
             public Expression ealign = null;
             // Erasure: __ctor<Loc, Expression, Ptr>
-            public  AlignDeclaration(Loc loc, Expression ealign, Ptr<DArray<Dsymbol>> decl) {
+            public  AlignDeclaration(Loc loc, Expression ealign, DArray<Dsymbol> decl) {
                 super(decl);
                 this.loc.opAssign(loc.copy());
                 this.ealign = ealign;
@@ -1987,7 +1987,7 @@ public class astbase {
         {
             public int cppmangle = 0;
             // Erasure: __ctor<int, Ptr>
-            public  CPPMangleDeclaration(int p, Ptr<DArray<Dsymbol>> decl) {
+            public  CPPMangleDeclaration(int p, DArray<Dsymbol> decl) {
                 super(decl);
                 this.cppmangle = p;
             }
@@ -2017,13 +2017,13 @@ public class astbase {
         {
             public Expression exp = null;
             // Erasure: __ctor<Identifier, Ptr>
-            public  CPPNamespaceDeclaration(Identifier ident, Ptr<DArray<Dsymbol>> decl) {
+            public  CPPNamespaceDeclaration(Identifier ident, DArray<Dsymbol> decl) {
                 super(decl);
                 this.ident = ident;
             }
 
             // Erasure: __ctor<Expression, Ptr>
-            public  CPPNamespaceDeclaration(Expression exp, Ptr<DArray<Dsymbol>> decl) {
+            public  CPPNamespaceDeclaration(Expression exp, DArray<Dsymbol> decl) {
                 super(decl);
                 this.exp = exp;
             }
@@ -2052,16 +2052,16 @@ public class astbase {
         public static class ProtDeclaration extends AttribDeclaration
         {
             public Prot protection = new Prot();
-            public Ptr<DArray<Identifier>> pkg_identifiers = null;
+            public DArray<Identifier> pkg_identifiers = null;
             // Erasure: __ctor<Loc, Prot, Ptr>
-            public  ProtDeclaration(Loc loc, Prot p, Ptr<DArray<Dsymbol>> decl) {
+            public  ProtDeclaration(Loc loc, Prot p, DArray<Dsymbol> decl) {
                 super(decl);
                 this.loc.opAssign(loc.copy());
                 this.protection.opAssign(p.copy());
             }
 
             // Erasure: __ctor<Loc, Ptr, Ptr>
-            public  ProtDeclaration(Loc loc, Ptr<DArray<Identifier>> pkg_identifiers, Ptr<DArray<Dsymbol>> decl) {
+            public  ProtDeclaration(Loc loc, DArray<Identifier> pkg_identifiers, DArray<Dsymbol> decl) {
                 super(decl);
                 this.loc.opAssign(loc.copy());
                 this.protection.kind = Prot.Kind.package_;
@@ -2093,9 +2093,9 @@ public class astbase {
         }
         public static class PragmaDeclaration extends AttribDeclaration
         {
-            public Ptr<DArray<Expression>> args = null;
+            public DArray<Expression> args = null;
             // Erasure: __ctor<Loc, Identifier, Ptr, Ptr>
-            public  PragmaDeclaration(Loc loc, Identifier ident, Ptr<DArray<Expression>> args, Ptr<DArray<Dsymbol>> decl) {
+            public  PragmaDeclaration(Loc loc, Identifier ident, DArray<Expression> args, DArray<Dsymbol> decl) {
                 super(decl);
                 this.loc.opAssign(loc.copy());
                 this.ident = ident;
@@ -2127,7 +2127,7 @@ public class astbase {
         {
             public long stc = 0L;
             // Erasure: __ctor<long, Ptr>
-            public  StorageClassDeclaration(long stc, Ptr<DArray<Dsymbol>> decl) {
+            public  StorageClassDeclaration(long stc, DArray<Dsymbol> decl) {
                 super(decl);
                 this.stc = stc;
             }
@@ -2156,9 +2156,9 @@ public class astbase {
         public static class ConditionalDeclaration extends AttribDeclaration
         {
             public Condition condition = null;
-            public Ptr<DArray<Dsymbol>> elsedecl = null;
+            public DArray<Dsymbol> elsedecl = null;
             // Erasure: __ctor<Condition, Ptr, Ptr>
-            public  ConditionalDeclaration(Condition condition, Ptr<DArray<Dsymbol>> decl, Ptr<DArray<Dsymbol>> elsedecl) {
+            public  ConditionalDeclaration(Condition condition, DArray<Dsymbol> decl, DArray<Dsymbol> elsedecl) {
                 super(decl);
                 this.condition = condition;
                 this.elsedecl = pcopy(elsedecl);
@@ -2190,7 +2190,7 @@ public class astbase {
         {
             public Expression msg = null;
             // Erasure: __ctor<Expression, Ptr>
-            public  DeprecatedDeclaration(Expression msg, Ptr<DArray<Dsymbol>> decl) {
+            public  DeprecatedDeclaration(Expression msg, DArray<Dsymbol> decl) {
                 super(1024L, decl);
                 this.msg = msg;
             }
@@ -2220,7 +2220,7 @@ public class astbase {
         public static class StaticIfDeclaration extends ConditionalDeclaration
         {
             // Erasure: __ctor<Condition, Ptr, Ptr>
-            public  StaticIfDeclaration(Condition condition, Ptr<DArray<Dsymbol>> decl, Ptr<DArray<Dsymbol>> elsedecl) {
+            public  StaticIfDeclaration(Condition condition, DArray<Dsymbol> decl, DArray<Dsymbol> elsedecl) {
                 super(condition, decl, elsedecl);
             }
 
@@ -2250,7 +2250,7 @@ public class astbase {
         {
             public StaticForeach sfe = null;
             // Erasure: __ctor<StaticForeach, Ptr>
-            public  StaticForeachDeclaration(StaticForeach sfe, Ptr<DArray<Dsymbol>> decl) {
+            public  StaticForeachDeclaration(StaticForeach sfe, DArray<Dsymbol> decl) {
                 super(decl);
                 this.sfe = sfe;
             }
@@ -2282,7 +2282,7 @@ public class astbase {
             public Type origType = null;
             // Erasure: value<>
             public  Expression value() {
-                return ((ExpInitializer)this._init).exp;
+                return (((ExpInitializer)this._init)).exp;
             }
 
             // Erasure: __ctor<Loc, Identifier, Expression, Type>
@@ -2448,10 +2448,10 @@ public class astbase {
             public static ClassDeclaration exception = null;
             public static ClassDeclaration errorException = null;
             public static ClassDeclaration cpp_type_info_ptr = null;
-            public Ptr<DArray<Ptr<BaseClass>>> baseclasses = null;
+            public DArray<Ptr<BaseClass>> baseclasses = null;
             public int baseok = 0;
             // Erasure: __ctor<Loc, Identifier, Ptr, Ptr, boolean>
-            public  ClassDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses, Ptr<DArray<Dsymbol>> members, boolean inObject) {
+            public  ClassDeclaration(Loc loc, Identifier id, DArray<Ptr<BaseClass>> baseclasses, DArray<Dsymbol> members, boolean inObject) {
                 super(loc, id == null ? Identifier.generateId(new BytePtr("__anonclass")) : id );
                 if (baseclasses != null)
                 {
@@ -2459,7 +2459,7 @@ public class astbase {
                 }
                 else
                 {
-                    this.baseclasses = pcopy((refPtr(new DArray<Ptr<BaseClass>>())));
+                    this.baseclasses = pcopy(new DArray<Ptr<BaseClass>>());
                 }
                 this.members = pcopy(members);
                 this.type = new TypeClass(this);
@@ -2681,7 +2681,7 @@ public class astbase {
         public static class InterfaceDeclaration extends ClassDeclaration
         {
             // Erasure: __ctor<Loc, Identifier, Ptr>
-            public  InterfaceDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses) {
+            public  InterfaceDeclaration(Loc loc, Identifier id, DArray<Ptr<BaseClass>> baseclasses) {
                 super(loc, id, baseclasses, null, false);
             }
 
@@ -2714,8 +2714,8 @@ public class astbase {
         {
             public TypeQualified tqual = null;
             // Erasure: __ctor<Loc, Identifier, TypeQualified, Ptr>
-            public  TemplateMixin(Loc loc, Identifier ident, TypeQualified tqual, Ptr<DArray<RootObject>> tiargs) {
-                super(loc, tqual.idents.length != 0 ? (Identifier)tqual.idents.get(tqual.idents.length - 1) : ((TypeIdentifier)tqual).ident, tiargs != null ? tiargs : refPtr(new DArray<RootObject>()));
+            public  TemplateMixin(Loc loc, Identifier ident, TypeQualified tqual, DArray<RootObject> tiargs) {
+                super(loc, tqual.idents.length != 0 ? ((Identifier)tqual.idents.get(tqual.idents.length - 1)) : (((TypeIdentifier)tqual)).ident, tiargs != null ? tiargs : new DArray<RootObject>());
                 this.ident = ident;
                 this.tqual = tqual;
             }
@@ -2749,7 +2749,7 @@ public class astbase {
         }
         public static class ParameterList
         {
-            public Ptr<DArray<Parameter>> parameters = null;
+            public DArray<Parameter> parameters = null;
             public int varargs = VarArg.none;
             public ParameterList(){ }
             public ParameterList copy(){
@@ -2758,7 +2758,7 @@ public class astbase {
                 r.varargs = varargs;
                 return r;
             }
-            public ParameterList(Ptr<DArray<Parameter>> parameters, int varargs) {
+            public ParameterList(DArray<Parameter> parameters, int varargs) {
                 this.parameters = parameters;
                 this.varargs = varargs;
             }
@@ -2787,7 +2787,7 @@ public class astbase {
             }
 
             // Erasure: dim<Ptr>
-            public static int dim(Ptr<DArray<Parameter>> parameters) {
+            public static int dim(DArray<Parameter> parameters) {
                 Ref<Integer> nargs = ref(0);
                 Function2<Integer,Parameter,Integer> dimDg = new Function2<Integer,Parameter,Integer>() {
                     public Integer invoke(Integer n, Parameter p) {
@@ -2802,7 +2802,7 @@ public class astbase {
             }
 
             // Erasure: getNth<Ptr, int, Ptr>
-            public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth, Ptr<Integer> pn) {
+            public static Parameter getNth(DArray<Parameter> parameters, int nth, Ptr<Integer> pn) {
                 Ref<Parameter> param = ref(null);
                 Function2<Integer,Parameter,Integer> getNthParamDg = new Function2<Integer,Parameter,Integer>() {
                     public Integer invoke(Integer n, Parameter p) {
@@ -2821,12 +2821,12 @@ public class astbase {
             }
 
             // defaulted all parameters starting with #3
-            public static Parameter getNth(Ptr<DArray<Parameter>> parameters, int nth) {
+            public static Parameter getNth(DArray<Parameter> parameters, int nth) {
                 return getNth(parameters, nth, (Ptr<Integer>)null);
             }
 
             // Erasure: _foreach<Ptr, Function2, Ptr>
-            public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg, Ptr<Integer> pn) {
+            public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg, Ptr<Integer> pn) {
                 assert(dg != null);
                 if (parameters == null)
                 {
@@ -2836,14 +2836,14 @@ public class astbase {
                 int result = 0;
                 {
                     int __key146 = 0;
-                    int __limit147 = (parameters.get()).length;
+                    int __limit147 = (parameters).length;
                     for (; (__key146 < __limit147);__key146 += 1) {
                         int i = __key146;
-                        Parameter p = (parameters.get()).get(i);
+                        Parameter p = (parameters).get(i);
                         Type t = p.type.toBasetype();
                         if (((t.ty & 0xFF) == ENUMTY.Ttuple))
                         {
-                            TypeTuple tu = (TypeTuple)t;
+                            TypeTuple tu = ((TypeTuple)t);
                             result = _foreach(tu.arguments, dg, ptr(n));
                         }
                         else
@@ -2864,13 +2864,13 @@ public class astbase {
             }
 
             // defaulted all parameters starting with #3
-            public static int _foreach(Ptr<DArray<Parameter>> parameters, Function2<Integer,Parameter,Integer> dg) {
+            public static int _foreach(DArray<Parameter> parameters, Function2<Integer,Parameter,Integer> dg) {
                 return _foreach(parameters, dg, (Ptr<Integer>)null);
             }
 
             // Erasure: syntaxCopy<>
             public  Parameter syntaxCopy() {
-                return new Parameter(this.storageClass, this.type != null ? this.type.syntaxCopy() : null, this.ident, this.defaultArg != null ? this.defaultArg.syntaxCopy() : null, this.userAttribDecl != null ? (UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(null) : null);
+                return new Parameter(this.storageClass, this.type != null ? this.type.syntaxCopy() : null, this.ident, this.defaultArg != null ? this.defaultArg.syntaxCopy() : null, this.userAttribDecl != null ? ((UserAttributeDeclaration)this.userAttribDecl.syntaxCopy(null)) : null);
             }
 
             // Erasure: accept<ParseTimeVisitor>
@@ -2879,16 +2879,16 @@ public class astbase {
             }
 
             // Erasure: arraySyntaxCopy<Ptr>
-            public static Ptr<DArray<Parameter>> arraySyntaxCopy(Ptr<DArray<Parameter>> parameters) {
-                Ptr<DArray<Parameter>> params = null;
+            public static DArray<Parameter> arraySyntaxCopy(DArray<Parameter> parameters) {
+                DArray<Parameter> params = null;
                 if (parameters != null)
                 {
-                    params = pcopy((refPtr(new DArray<Parameter>())));
-                    (params.get()).setDim((parameters.get()).length);
+                    params = pcopy(new DArray<Parameter>());
+                    (params).setDim((parameters).length);
                     {
                         int i = 0;
-                        for (; (i < (params.get()).length);i++) {
-                            params.get().set(i, (parameters.get()).get(i).syntaxCopy());
+                        for (; (i < (params).length);i++) {
+                            params.set(i, (parameters).get(i).syntaxCopy());
                         }
                     }
                 }
@@ -2944,9 +2944,9 @@ public class astbase {
         }
         public static class ImportStatement extends Statement
         {
-            public Ptr<DArray<Dsymbol>> imports = null;
+            public DArray<Dsymbol> imports = null;
             // Erasure: __ctor<Loc, Ptr>
-            public  ImportStatement(Loc loc, Ptr<DArray<Dsymbol>> imports) {
+            public  ImportStatement(Loc loc, DArray<Dsymbol> imports) {
                 super(loc);
                 this.imports = pcopy(imports);
             }
@@ -3075,9 +3075,9 @@ public class astbase {
         }
         public static class CompileStatement extends Statement
         {
-            public Ptr<DArray<Expression>> exps = null;
+            public DArray<Expression> exps = null;
             // Erasure: __ctor<Loc, Ptr>
-            public  CompileStatement(Loc loc, Ptr<DArray<Expression>> exps) {
+            public  CompileStatement(Loc loc, DArray<Expression> exps) {
                 super(loc);
                 this.exps = pcopy(exps);
             }
@@ -3235,12 +3235,12 @@ public class astbase {
         public static class ForeachStatement extends Statement
         {
             public byte op = 0;
-            public Ptr<DArray<Parameter>> parameters = null;
+            public DArray<Parameter> parameters = null;
             public Expression aggr = null;
             public Statement _body = null;
             public Loc endloc = new Loc();
             // Erasure: __ctor<Loc, byte, Ptr, Expression, Statement, Loc>
-            public  ForeachStatement(Loc loc, byte op, Ptr<DArray<Parameter>> parameters, Expression aggr, Statement _body, Loc endloc) {
+            public  ForeachStatement(Loc loc, byte op, DArray<Parameter> parameters, Expression aggr, Statement _body, Loc endloc) {
                 super(loc);
                 this.op = op;
                 this.parameters = pcopy(parameters);
@@ -3390,10 +3390,10 @@ public class astbase {
         public static class PragmaStatement extends Statement
         {
             public Identifier ident = null;
-            public Ptr<DArray<Expression>> args = null;
+            public DArray<Expression> args = null;
             public Statement _body = null;
             // Erasure: __ctor<Loc, Identifier, Ptr, Statement>
-            public  PragmaStatement(Loc loc, Identifier ident, Ptr<DArray<Expression>> args, Statement _body) {
+            public  PragmaStatement(Loc loc, Identifier ident, DArray<Expression> args, Statement _body) {
                 super(loc);
                 this.ident = ident;
                 this.args = pcopy(args);
@@ -3705,9 +3705,9 @@ public class astbase {
         public static class TryCatchStatement extends Statement
         {
             public Statement _body = null;
-            public Ptr<DArray<Catch>> catches = null;
+            public DArray<Catch> catches = null;
             // Erasure: __ctor<Loc, Statement, Ptr>
-            public  TryCatchStatement(Loc loc, Statement _body, Ptr<DArray<Catch>> catches) {
+            public  TryCatchStatement(Loc loc, Statement _body, DArray<Catch> catches) {
                 super(loc);
                 this._body = _body;
                 this.catches = pcopy(catches);
@@ -3885,9 +3885,9 @@ public class astbase {
         }
         public static class CompoundStatement extends Statement
         {
-            public Ptr<DArray<Statement>> statements = null;
+            public DArray<Statement> statements = null;
             // Erasure: __ctor<Loc, Ptr>
-            public  CompoundStatement(Loc loc, Ptr<DArray<Statement>> statements) {
+            public  CompoundStatement(Loc loc, DArray<Statement> statements) {
                 super(loc);
                 this.statements = pcopy(statements);
             }
@@ -3895,14 +3895,14 @@ public class astbase {
             // Erasure: __ctor<Loc, Array>
             public  CompoundStatement(Loc loc, Slice<Statement> sts) {
                 super(loc);
-                this.statements = pcopy((refPtr(new DArray<Statement>())));
-                (this.statements.get()).reserve(sts.getLength());
+                this.statements = pcopy(new DArray<Statement>());
+                (this.statements).reserve(sts.getLength());
                 {
                     Slice<Statement> __r148 = sts.copy();
                     int __key149 = 0;
                     for (; (__key149 < __r148.getLength());__key149 += 1) {
                         Statement s = __r148.get(__key149);
-                        (this.statements.get()).push(s);
+                        (this.statements).push(s);
                     }
                 }
             }
@@ -3930,7 +3930,7 @@ public class astbase {
         public static class CompoundDeclarationStatement extends CompoundStatement
         {
             // Erasure: __ctor<Loc, Ptr>
-            public  CompoundDeclarationStatement(Loc loc, Ptr<DArray<Statement>> statements) {
+            public  CompoundDeclarationStatement(Loc loc, DArray<Statement> statements) {
                 super(loc, statements);
             }
 
@@ -3953,7 +3953,7 @@ public class astbase {
         {
             public long stc = 0L;
             // Erasure: __ctor<Loc, Ptr, long>
-            public  CompoundAsmStatement(Loc loc, Ptr<DArray<Statement>> s, long stc) {
+            public  CompoundAsmStatement(Loc loc, DArray<Statement> s, long stc) {
                 super(loc, s);
                 this.stc = stc;
             }
@@ -4195,11 +4195,11 @@ public class astbase {
                 t.swcto = null;
                 if (((t.ty & 0xFF) == ENUMTY.Tstruct))
                 {
-                    ((TypeStruct)t).att = AliasThisRec.fwdref;
+                    (((TypeStruct)t)).att = AliasThisRec.fwdref;
                 }
                 if (((t.ty & 0xFF) == ENUMTY.Tclass))
                 {
-                    ((TypeClass)t).att = AliasThisRec.fwdref;
+                    (((TypeClass)t)).att = AliasThisRec.fwdref;
                 }
                 return t;
             }
@@ -4310,7 +4310,7 @@ public class astbase {
                 {
                     return this;
                 }
-                if (((this.ty & 0xFF) == ENUMTY.Taarray) && (((TypeAArray)this).index.merge().deco == null))
+                if (((this.ty & 0xFF) == ENUMTY.Taarray) && ((((TypeAArray)this)).index.merge().deco == null))
                 {
                     return this;
                 }
@@ -5145,30 +5145,30 @@ public class astbase {
         }
         public static class TypeTuple extends Type
         {
-            public Ptr<DArray<Parameter>> arguments = null;
+            public DArray<Parameter> arguments = null;
             // Erasure: __ctor<Ptr>
-            public  TypeTuple(Ptr<DArray<Parameter>> arguments) {
+            public  TypeTuple(DArray<Parameter> arguments) {
                 super((byte)37);
                 this.arguments = pcopy(arguments);
             }
 
             // Erasure: __ctor<Ptr>
-            public  TypeTuple(Ptr<DArray<Expression>> exps, ETag1 __tag) {
+            public  TypeTuple(DArray<Expression> exps, ETag1 __tag) {
                 super((byte)37);
-                Ptr<DArray<Parameter>> arguments = refPtr(new DArray<Parameter>());
+                DArray<Parameter> arguments = new DArray<Parameter>();
                 if (exps != null)
                 {
-                    (arguments.get()).setDim((exps.get()).length);
+                    (arguments).setDim((exps).length);
                     {
                         int i = 0;
-                        for (; (i < (exps.get()).length);i++){
-                            Expression e = (exps.get()).get(i);
+                        for (; (i < (exps).length);i++){
+                            Expression e = (exps).get(i);
                             if (((e.type.ty & 0xFF) == ENUMTY.Ttuple))
                             {
                                 e.error(new BytePtr("cannot form tuple of tuples"));
                             }
                             Parameter arg = new Parameter(0L, e.type, null, null, null);
-                            arguments.get().set(i, arg);
+                            arguments.set(i, arg);
                         }
                     }
                 }
@@ -5177,7 +5177,7 @@ public class astbase {
 
             // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
-                Ptr<DArray<Parameter>> args = Parameter.arraySyntaxCopy(this.arguments);
+                DArray<Parameter> args = Parameter.arraySyntaxCopy(this.arguments);
                 Type t = new TypeTuple(args);
                 t.mod = this.mod;
                 return t;
@@ -5535,7 +5535,7 @@ public class astbase {
             public int trust = 0;
             public int purity = PURE.impure;
             public byte iswild = 0;
-            public Ptr<DArray<Expression>> fargs = null;
+            public DArray<Expression> fargs = null;
             // Erasure: __ctor<ParameterList, Type, int, long>
             public  TypeFunction(ParameterList pl, Type treturn, int linkage, long stc) {
                 super((byte)5, treturn);
@@ -5593,7 +5593,7 @@ public class astbase {
             // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
                 Type treturn = this.next.value != null ? this.next.value.syntaxCopy() : null;
-                Ptr<DArray<Parameter>> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
+                DArray<Parameter> params = Parameter.arraySyntaxCopy(this.parameterList.parameters);
                 TypeFunction t = new TypeFunction(new ParameterList(params, this.parameterList.varargs), treturn, this.linkage, 0L);
                 t.mod = this.mod;
                 t.isnothrow = this.isnothrow;
@@ -5895,19 +5895,19 @@ public class astbase {
                         RootObject id = t.idents.get(i);
                         if ((id.dyncast() == DYNCAST.dsymbol))
                         {
-                            TemplateInstance ti = (TemplateInstance)id;
-                            ti = (TemplateInstance)ti.syntaxCopy(null);
+                            TemplateInstance ti = ((TemplateInstance)id);
+                            ti = ((TemplateInstance)ti.syntaxCopy(null));
                             id = ti;
                         }
                         else if ((id.dyncast() == DYNCAST.expression))
                         {
-                            Expression e = (Expression)id;
+                            Expression e = ((Expression)id);
                             e = e.syntaxCopy();
                             id = e;
                         }
                         else if ((id.dyncast() == DYNCAST.type))
                         {
-                            Type tx = (Type)id;
+                            Type tx = ((Type)id);
                             tx = tx.syntaxCopy();
                             id = tx;
                         }
@@ -5923,18 +5923,18 @@ public class astbase {
                     switch (id.dyncast())
                     {
                         case DYNCAST.identifier:
-                            e = new DotIdExp(e.loc, e, (Identifier)id);
+                            e = new DotIdExp(e.loc, e, ((Identifier)id));
                             break;
                         case DYNCAST.dsymbol:
-                            TemplateInstance ti = ((Dsymbol)id).isTemplateInstance();
+                            TemplateInstance ti = (((Dsymbol)id)).isTemplateInstance();
                             assert(ti != null);
                             e = new DotTemplateInstanceExp(e.loc, e, ti.name, ti.tiargs);
                             break;
                         case DYNCAST.type:
-                            e = new ArrayExp(this.loc, e, new TypeExp(this.loc, (Type)id));
+                            e = new ArrayExp(this.loc, e, new TypeExp(this.loc, ((Type)id)));
                             break;
                         case DYNCAST.expression:
-                            e = new ArrayExp(this.loc, e, (Expression)id);
+                            e = new ArrayExp(this.loc, e, ((Expression)id));
                             break;
                         default:
                         throw new AssertionError("Unreachable code!");
@@ -5977,7 +5977,7 @@ public class astbase {
 
             // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
-                TraitsExp te = (TraitsExp)this.exp.syntaxCopy();
+                TraitsExp te = ((TraitsExp)this.exp.syntaxCopy());
                 TypeTraits tt = new TypeTraits(this.loc, te);
                 tt.mod = this.mod;
                 return tt;
@@ -6162,7 +6162,7 @@ public class astbase {
 
             // Erasure: syntaxCopy<>
             public  Type syntaxCopy() {
-                TypeInstance t = new TypeInstance(this.loc, (TemplateInstance)this.tempinst.syntaxCopy(null));
+                TypeInstance t = new TypeInstance(this.loc, ((TemplateInstance)this.tempinst.syntaxCopy(null)));
                 t.syntaxCopyHelper(this);
                 t.mod = this.mod;
                 return t;
@@ -6384,11 +6384,11 @@ public class astbase {
         public static class NewAnonClassExp extends Expression
         {
             public Expression thisexp = null;
-            public Ptr<DArray<Expression>> newargs = null;
+            public DArray<Expression> newargs = null;
             public ClassDeclaration cd = null;
-            public Ptr<DArray<Expression>> arguments = null;
+            public DArray<Expression> arguments = null;
             // Erasure: __ctor<Loc, Expression, Ptr, ClassDeclaration, Ptr>
-            public  NewAnonClassExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, ClassDeclaration cd, Ptr<DArray<Expression>> arguments) {
+            public  NewAnonClassExp(Loc loc, Expression thisexp, DArray<Expression> newargs, ClassDeclaration cd, DArray<Expression> arguments) {
                 super(loc, TOK.newAnonymousClass, 40);
                 this.thisexp = thisexp;
                 this.newargs = pcopy(newargs);
@@ -6423,11 +6423,11 @@ public class astbase {
             public Type targ = null;
             public Identifier id = null;
             public Type tspec = null;
-            public Ptr<DArray<TemplateParameter>> parameters = null;
+            public DArray<TemplateParameter> parameters = null;
             public byte tok = 0;
             public byte tok2 = 0;
             // Erasure: __ctor<Loc, Type, Identifier, byte, Type, byte, Ptr>
-            public  IsExp(Loc loc, Type targ, Identifier id, byte tok, Type tspec, byte tok2, Ptr<DArray<TemplateParameter>> parameters) {
+            public  IsExp(Loc loc, Type targ, Identifier id, byte tok, Type tspec, byte tok2, DArray<TemplateParameter> parameters) {
                 super(loc, TOK.is_, 42);
                 this.targ = targ;
                 this.id = id;
@@ -6552,9 +6552,9 @@ public class astbase {
         public static class TraitsExp extends Expression
         {
             public Identifier ident = null;
-            public Ptr<DArray<RootObject>> args = null;
+            public DArray<RootObject> args = null;
             // Erasure: __ctor<Loc, Identifier, Ptr>
-            public  TraitsExp(Loc loc, Identifier ident, Ptr<DArray<RootObject>> args) {
+            public  TraitsExp(Loc loc, Identifier ident, DArray<RootObject> args) {
                 super(loc, TOK.traits, 32);
                 this.ident = ident;
                 this.args = pcopy(args);
@@ -6599,7 +6599,7 @@ public class astbase {
             // Erasure: __ctor<Loc, Ptr, int>
             public  StringExp(Loc loc, Object string, int len) {
                 super(loc, TOK.string_, 34);
-                this.string = pcopy((((BytePtr)string)));
+                this.string = pcopy(((BytePtr)string));
                 this.len = len;
                 this.sz = (byte)1;
             }
@@ -6607,7 +6607,7 @@ public class astbase {
             // Erasure: __ctor<Loc, Ptr, int, byte>
             public  StringExp(Loc loc, Object string, int len, byte postfix) {
                 super(loc, TOK.string_, 34);
-                this.string = pcopy((((BytePtr)string)));
+                this.string = pcopy(((BytePtr)string));
                 this.len = len;
                 this.postfix = postfix;
                 this.sz = (byte)1;
@@ -6687,11 +6687,11 @@ public class astbase {
         public static class NewExp extends Expression
         {
             public Expression thisexp = null;
-            public Ptr<DArray<Expression>> newargs = null;
+            public DArray<Expression> newargs = null;
             public Type newtype = null;
-            public Ptr<DArray<Expression>> arguments = null;
+            public DArray<Expression> arguments = null;
             // Erasure: __ctor<Loc, Expression, Ptr, Type, Ptr>
-            public  NewExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, Type newtype, Ptr<DArray<Expression>> arguments) {
+            public  NewExp(Loc loc, Expression thisexp, DArray<Expression> newargs, Type newtype, DArray<Expression> arguments) {
                 super(loc, TOK.new_, 40);
                 this.thisexp = thisexp;
                 this.newargs = pcopy(newargs);
@@ -6723,12 +6723,12 @@ public class astbase {
         }
         public static class AssocArrayLiteralExp extends Expression
         {
-            public Ptr<DArray<Expression>> keys = null;
-            public Ptr<DArray<Expression>> values = null;
+            public DArray<Expression> keys = null;
+            public DArray<Expression> values = null;
             // Erasure: __ctor<Loc, Ptr, Ptr>
-            public  AssocArrayLiteralExp(Loc loc, Ptr<DArray<Expression>> keys, Ptr<DArray<Expression>> values) {
+            public  AssocArrayLiteralExp(Loc loc, DArray<Expression> keys, DArray<Expression> values) {
                 super(loc, TOK.assocArrayLiteral, 32);
-                assert(((keys.get()).length == (values.get()).length));
+                assert(((keys).length == (values).length));
                 this.keys = pcopy(keys);
                 this.values = pcopy(values);
             }
@@ -6756,9 +6756,9 @@ public class astbase {
         public static class ArrayLiteralExp extends Expression
         {
             public Expression basis = null;
-            public Ptr<DArray<Expression>> elements = null;
+            public DArray<Expression> elements = null;
             // Erasure: __ctor<Loc, Ptr>
-            public  ArrayLiteralExp(Loc loc, Ptr<DArray<Expression>> elements) {
+            public  ArrayLiteralExp(Loc loc, DArray<Expression> elements) {
                 super(loc, TOK.arrayLiteral, 32);
                 this.elements = pcopy(elements);
             }
@@ -6766,12 +6766,12 @@ public class astbase {
             // Erasure: __ctor<Loc, Expression>
             public  ArrayLiteralExp(Loc loc, Expression e) {
                 super(loc, TOK.arrayLiteral, 32);
-                this.elements = pcopy((refPtr(new DArray<Expression>())));
-                (this.elements.get()).push(e);
+                this.elements = pcopy(new DArray<Expression>());
+                (this.elements).push(e);
             }
 
             // Erasure: __ctor<Loc, Expression, Ptr>
-            public  ArrayLiteralExp(Loc loc, Expression basis, Ptr<DArray<Expression>> elements) {
+            public  ArrayLiteralExp(Loc loc, Expression basis, DArray<Expression> elements) {
                 super(loc, TOK.arrayLiteral, 32);
                 this.basis = basis;
                 this.elements = pcopy(elements);
@@ -6810,8 +6810,8 @@ public class astbase {
                 if (this.td != null)
                 {
                     assert(this.td.literal);
-                    assert((this.td.members != null) && ((this.td.members.get()).length == 1));
-                    this.fd = (this.td.members.get()).get(0).isFuncLiteralDeclaration();
+                    assert((this.td.members != null) && ((this.td.members).length == 1));
+                    this.fd = (this.td.members).get(0).isFuncLiteralDeclaration();
                 }
                 this.tok = this.fd.tok;
                 assert(this.fd.fbody != null);
@@ -7169,16 +7169,16 @@ public class astbase {
         public static class TupleExp extends Expression
         {
             public Expression e0 = null;
-            public Ptr<DArray<Expression>> exps = null;
+            public DArray<Expression> exps = null;
             // Erasure: __ctor<Loc, Expression, Ptr>
-            public  TupleExp(Loc loc, Expression e0, Ptr<DArray<Expression>> exps) {
+            public  TupleExp(Loc loc, Expression e0, DArray<Expression> exps) {
                 super(loc, TOK.tuple, 32);
                 this.e0 = e0;
                 this.exps = pcopy(exps);
             }
 
             // Erasure: __ctor<Loc, Ptr>
-            public  TupleExp(Loc loc, Ptr<DArray<Expression>> exps) {
+            public  TupleExp(Loc loc, DArray<Expression> exps) {
                 super(loc, TOK.tuple, 32);
                 this.exps = pcopy(exps);
             }
@@ -7186,30 +7186,30 @@ public class astbase {
             // Erasure: __ctor<Loc, TupleDeclaration>
             public  TupleExp(Loc loc, TupleDeclaration tup) {
                 super(loc, TOK.tuple, 32);
-                this.exps = pcopy((refPtr(new DArray<Expression>())));
-                (this.exps.get()).reserve((tup.objects.get()).length);
+                this.exps = pcopy(new DArray<Expression>());
+                (this.exps).reserve((tup.objects).length);
                 {
                     int i = 0;
-                    for (; (i < (tup.objects.get()).length);i++){
-                        RootObject o = (tup.objects.get()).get(i);
+                    for (; (i < (tup.objects).length);i++){
+                        RootObject o = (tup.objects).get(i);
                         {
                             Dsymbol s = this.getDsymbol(o);
                             if ((s) != null)
                             {
                                 Expression e = new DsymbolExp(loc, s, true);
-                                (this.exps.get()).push(e);
+                                (this.exps).push(e);
                             }
                             else if ((o.dyncast() == DYNCAST.expression))
                             {
-                                Expression e = ((Expression)o).copy();
+                                Expression e = (((Expression)o)).copy();
                                 e.loc.opAssign(loc.copy());
-                                (this.exps.get()).push(e);
+                                (this.exps).push(e);
                             }
                             else if ((o.dyncast() == DYNCAST.type))
                             {
-                                Type t = (Type)o;
+                                Type t = ((Type)o);
                                 Expression e = new TypeExp(loc, t);
-                                (this.exps.get()).push(e);
+                                (this.exps).push(e);
                             }
                             else
                             {
@@ -7226,7 +7226,7 @@ public class astbase {
                 {
                     return null;
                 }
-                return (Dsymbol)o;
+                return ((Dsymbol)o);
             }
 
             // Erasure: getDsymbol<RootObject>
@@ -7237,22 +7237,22 @@ public class astbase {
                 {
                     if (((ea.op & 0xFF) == 26))
                     {
-                        sa = ((VarExp)ea).var;
+                        sa = (((VarExp)ea)).var;
                     }
                     else if (((ea.op & 0xFF) == 161))
                     {
-                        if (((FuncExp)ea).td != null)
+                        if ((((FuncExp)ea)).td != null)
                         {
-                            sa = ((FuncExp)ea).td;
+                            sa = (((FuncExp)ea)).td;
                         }
                         else
                         {
-                            sa = ((FuncExp)ea).fd;
+                            sa = (((FuncExp)ea)).fd;
                         }
                     }
                     else if (((ea.op & 0xFF) == 36))
                     {
-                        sa = ((TemplateExp)ea).td;
+                        sa = (((TemplateExp)ea)).td;
                     }
                     else
                     {
@@ -7627,9 +7627,9 @@ public class astbase {
         }
         public static class CallExp extends UnaExp
         {
-            public Ptr<DArray<Expression>> arguments = null;
+            public DArray<Expression> arguments = null;
             // Erasure: __ctor<Loc, Expression, Ptr>
-            public  CallExp(Loc loc, Expression e, Ptr<DArray<Expression>> exps) {
+            public  CallExp(Loc loc, Expression e, DArray<Expression> exps) {
                 super(loc, TOK.call, 32, e);
                 this.arguments = pcopy(exps);
             }
@@ -7642,11 +7642,11 @@ public class astbase {
             // Erasure: __ctor<Loc, Expression, Expression>
             public  CallExp(Loc loc, Expression e, Expression earg1) {
                 super(loc, TOK.call, 32, e);
-                Ptr<DArray<Expression>> arguments = refPtr(new DArray<Expression>());
+                DArray<Expression> arguments = new DArray<Expression>();
                 if (earg1 != null)
                 {
-                    (arguments.get()).setDim(1);
-                    arguments.get().set(0, earg1);
+                    (arguments).setDim(1);
+                    arguments.set(0, earg1);
                 }
                 this.arguments = pcopy(arguments);
             }
@@ -7654,10 +7654,10 @@ public class astbase {
             // Erasure: __ctor<Loc, Expression, Expression, Expression>
             public  CallExp(Loc loc, Expression e, Expression earg1, Expression earg2) {
                 super(loc, TOK.call, 32, e);
-                Ptr<DArray<Expression>> arguments = refPtr(new DArray<Expression>());
-                (arguments.get()).setDim(2);
-                arguments.get().set(0, earg1);
-                arguments.get().set(1, earg2);
+                DArray<Expression> arguments = new DArray<Expression>();
+                (arguments).setDim(2);
+                arguments.set(0, earg1);
+                arguments.set(1, earg2);
                 this.arguments = pcopy(arguments);
             }
 
@@ -7746,9 +7746,9 @@ public class astbase {
         }
         public static class CompileExp extends Expression
         {
-            public Ptr<DArray<Expression>> exps = null;
+            public DArray<Expression> exps = null;
             // Erasure: __ctor<Loc, Ptr>
-            public  CompileExp(Loc loc, Ptr<DArray<Expression>> exps) {
+            public  CompileExp(Loc loc, DArray<Expression> exps) {
                 super(loc, TOK.mixin_, 28);
                 this.exps = pcopy(exps);
             }
@@ -7802,7 +7802,7 @@ public class astbase {
         {
             public TemplateInstance ti = null;
             // Erasure: __ctor<Loc, Expression, Identifier, Ptr>
-            public  DotTemplateInstanceExp(Loc loc, Expression e, Identifier name, Ptr<DArray<RootObject>> tiargs) {
+            public  DotTemplateInstanceExp(Loc loc, Expression e, Identifier name, DArray<RootObject> tiargs) {
                 super(loc, TOK.dotTemplateInstance, 32, e);
                 this.ti = new TemplateInstance(loc, name, tiargs);
             }
@@ -7835,14 +7835,14 @@ public class astbase {
         }
         public static class ArrayExp extends UnaExp
         {
-            public Ptr<DArray<Expression>> arguments = null;
+            public DArray<Expression> arguments = null;
             // Erasure: __ctor<Loc, Expression, Expression>
             public  ArrayExp(Loc loc, Expression e1, Expression index) {
                 super(loc, TOK.array, 32, e1);
-                this.arguments = pcopy((refPtr(new DArray<Expression>())));
+                this.arguments = pcopy(new DArray<Expression>());
                 if (index != null)
                 {
-                    (this.arguments.get()).push(index);
+                    (this.arguments).push(index);
                 }
             }
 
@@ -7852,7 +7852,7 @@ public class astbase {
             }
 
             // Erasure: __ctor<Loc, Expression, Ptr>
-            public  ArrayExp(Loc loc, Expression e1, Ptr<DArray<Expression>> args) {
+            public  ArrayExp(Loc loc, Expression e1, DArray<Expression> args) {
                 super(loc, TOK.array, 32, e1);
                 this.arguments = pcopy(args);
             }
@@ -9523,11 +9523,11 @@ public class astbase {
         {
             public Loc loc = new Loc();
             public Identifier id = null;
-            public Ptr<DArray<Identifier>> packages = null;
+            public DArray<Identifier> packages = null;
             public boolean isdeprecated = false;
             public Expression msg = null;
             // Erasure: __ctor<Loc, Ptr, Identifier, Expression, boolean>
-            public  ModuleDeclaration(Loc loc, Ptr<DArray<Identifier>> packages, Identifier id, Expression msg, boolean isdeprecated) {
+            public  ModuleDeclaration(Loc loc, DArray<Identifier> packages, Identifier id, Expression msg, boolean isdeprecated) {
                 this.loc.opAssign(loc.copy());
                 this.packages = pcopy(packages);
                 this.id = id;
@@ -9539,12 +9539,12 @@ public class astbase {
             public  BytePtr toChars() {
                 OutBuffer buf = new OutBuffer();
                 try {
-                    if ((this.packages != null) && ((this.packages.get()).length != 0))
+                    if ((this.packages != null) && ((this.packages).length != 0))
                     {
                         {
                             int i = 0;
-                            for (; (i < (this.packages.get()).length);i++){
-                                Identifier pid = (this.packages.get()).get(i);
+                            for (; (i < (this.packages).length);i++){
+                                Identifier pid = (this.packages).get(i);
                                 buf.writestring(pid.asString());
                                 buf.writeByte(46);
                             }
@@ -9627,7 +9627,7 @@ public class astbase {
             {
                 return null;
             }
-            return (Tuple)o;
+            return ((Tuple)o);
         }
 
         // Erasure: isType<RootObject>
@@ -9636,7 +9636,7 @@ public class astbase {
             {
                 return null;
             }
-            return (Type)o;
+            return ((Type)o);
         }
 
         // Erasure: isExpression<RootObject>
@@ -9645,7 +9645,7 @@ public class astbase {
             {
                 return null;
             }
-            return (Expression)o;
+            return ((Expression)o);
         }
 
         // Erasure: isTemplateParameter<RootObject>
@@ -9654,7 +9654,7 @@ public class astbase {
             {
                 return null;
             }
-            return (TemplateParameter)o;
+            return ((TemplateParameter)o);
         }
 
         // Erasure: protectionToChars<int>
@@ -9681,7 +9681,7 @@ public class astbase {
         }
 
         // Erasure: stcToBuffer<Ptr, long>
-        public static boolean stcToBuffer(Ptr<OutBuffer> buf, long stc) {
+        public static boolean stcToBuffer(OutBuffer buf, long stc) {
             Ref<Long> stc_ref = ref(stc);
             boolean result = false;
             if (((stc_ref.value & 17592186568704L) == 17592186568704L))
@@ -9700,9 +9700,9 @@ public class astbase {
                 }
                 else
                 {
-                    (buf.get()).writeByte(32);
+                    (buf).writeByte(32);
                 }
-                (buf.get()).writestring(p);
+                (buf).writestring(p);
             }
             return result;
         }

@@ -273,8 +273,8 @@ public class errors {
         tmp.value.vprintf(format, ap);
         if ((con != null) && (strchr(tmp.value.peekChars(), 96) != null))
         {
-            colorSyntaxHighlight(ptr(tmp));
-            writeHighlights(con, ptr(tmp));
+            colorSyntaxHighlight(tmp.value);
+            writeHighlights(con, tmp.value);
         }
         else
         {
@@ -465,14 +465,14 @@ public class errors {
     }
 
     // Erasure: colorSyntaxHighlight<Ptr>
-    public static void colorSyntaxHighlight(Ptr<OutBuffer> buf) {
+    public static void colorSyntaxHighlight(OutBuffer buf) {
         boolean inBacktick = false;
         int iCodeStart = 0;
         int offset = 0;
         {
             int i = offset;
-            for (; (i < (buf.get()).offset);i += 1){
-                byte c = (byte)(buf.get()).data.get(i);
+            for (; (i < (buf).offset);i += 1){
+                byte c = (byte)(buf).data.get(i);
                 switch ((c & 0xFF))
                 {
                     case 96:
@@ -481,13 +481,13 @@ public class errors {
                             inBacktick = false;
                             Ref<OutBuffer> codebuf = ref(new OutBuffer());
                             try {
-                                codebuf.value.write(((buf.get()).peekSlice().getPtr(0).plus(iCodeStart).plus(1)), i - (iCodeStart + 1));
+                                codebuf.value.write(((buf).peekSlice().getPtr(0).plus(iCodeStart).plus(1)), i - (iCodeStart + 1));
                                 codebuf.value.writeByte(0);
-                                colorHighlightCode(ptr(codebuf));
-                                (buf.get()).remove(iCodeStart, i - iCodeStart + 1);
+                                colorHighlightCode(codebuf.value);
+                                (buf).remove(iCodeStart, i - iCodeStart + 1);
                                 ByteSlice pre = new ByteSlice("").copy();
-                                i = (buf.get()).insert(iCodeStart, toByteSlice(pre));
-                                i = (buf.get()).insert(i, codebuf.value.peekSlice());
+                                i = (buf).insert(iCodeStart, toByteSlice(pre));
+                                i = (buf).insert(i, codebuf.value.peekSlice());
                                 i--;
                                 break;
                             }
@@ -517,7 +517,7 @@ public class errors {
     }
 
     // Erasure: colorHighlightCode<Ptr>
-    public static void colorHighlightCode(Ptr<OutBuffer> buf) {
+    public static void colorHighlightCode(OutBuffer buf) {
         if (errors.colorHighlightCodenested != 0)
         {
             errors.colorHighlightCodenested -= 1;
@@ -526,10 +526,10 @@ public class errors {
         errors.colorHighlightCodenested += 1;
         int gaggedErrorsSave = global.startGagging();
         StderrDiagnosticReporter diagnosticReporter = new StderrDiagnosticReporter(global.params.useDeprecated);
-        Lexer lex = new Lexer(null, toBytePtr(buf.get().data), 0, (buf.get()).offset - 1, false, true, diagnosticReporter);
+        Lexer lex = new Lexer(null, toBytePtr(buf.data), 0, (buf).offset - 1, false, true, diagnosticReporter);
         OutBuffer res = new OutBuffer();
-        BytePtr lastp = pcopy(toBytePtr(buf.get().data));
-        res.reserve((buf.get()).offset);
+        BytePtr lastp = pcopy(toBytePtr(buf.data));
+        res.reserve((buf).offset);
         res.writeByte(255);
         res.writeByte(6);
         for (; 1 != 0;){
@@ -590,22 +590,22 @@ public class errors {
         }
         res.writeByte(255);
         res.writeByte(0);
-        (buf.get()).setsize(0);
-        (buf.get()).write(ptr(res));
+        (buf).setsize(0);
+        (buf).write(res);
         global.endGagging(gaggedErrorsSave);
         errors.colorHighlightCodenested -= 1;
     }
 
     // Erasure: writeHighlights<Ptr, Ptr>
-    public static void writeHighlights(Ptr<Console> con, Ptr<OutBuffer> buf) {
+    public static void writeHighlights(Ptr<Console> con, OutBuffer buf) {
         boolean colors = false;
         {
             int i = 0;
-            for (; (i < (buf.get()).offset);i += 1){
-                byte c = (buf.get()).data.get(i);
+            for (; (i < (buf).offset);i += 1){
+                byte c = (buf).data.get(i);
                 if (((c & 0xFF) == 255))
                 {
-                    byte color = (buf.get()).data.get(i += 1);
+                    byte color = (buf).data.get(i += 1);
                     if (((color & 0xFF) == 0))
                     {
                         (con.get()).resetColor();

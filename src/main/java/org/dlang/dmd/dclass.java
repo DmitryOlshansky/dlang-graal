@@ -48,11 +48,11 @@ public class dclass {
         }
 
         // Erasure: fillVtbl<ClassDeclaration, Ptr, int>
-        public  boolean fillVtbl(ClassDeclaration cd, Ptr<DArray<FuncDeclaration>> vtbl, int newinstance) {
+        public  boolean fillVtbl(ClassDeclaration cd, DArray<FuncDeclaration> vtbl, int newinstance) {
             boolean result = false;
             if (vtbl != null)
             {
-                (vtbl.get()).setDim(this.sym.vtbl.value.length);
+                (vtbl).setDim(this.sym.vtbl.value.length);
             }
             {
                 int j = this.sym.vtblOffset();
@@ -88,7 +88,7 @@ public class dclass {
                     }
                     if (vtbl != null)
                     {
-                        vtbl.get().set(j, fd);
+                        vtbl.set(j, fd);
                     }
                 }
             }
@@ -96,19 +96,19 @@ public class dclass {
         }
 
         // Erasure: copyBaseInterfaces<Ptr>
-        public  void copyBaseInterfaces(Ptr<DArray<Ptr<BaseClass>>> vtblInterfaces) {
+        public  void copyBaseInterfaces(DArray<Ptr<BaseClass>> vtblInterfaces) {
             Ptr<BaseClass> bc = ptr(new BaseClass[36]);
             this.baseInterfaces = bc.slice(0,this.sym.interfaces.getLength()).copy();
             {
                 int i = 0;
                 for (; (i < this.baseInterfaces.getLength());i++){
-                    Ptr<BaseClass> b = ptr(this.baseInterfaces.get(i));
+                    Ptr<BaseClass> b = this.baseInterfaces.getPtr(i);
                     Ptr<BaseClass> b2 = this.sym.interfaces.get(i);
                     assert(((b2.get()).vtbl.length == 0));
                     (b).set(0, (b2).get());
                     if (i != 0)
                     {
-                        (vtblInterfaces.get()).push(b);
+                        (vtblInterfaces).push(b);
                     }
                     (b.get()).copyBaseInterfaces(vtblInterfaces);
                 }
@@ -161,9 +161,9 @@ public class dclass {
         public FuncDeclaration staticDtor = null;
         public Ref<DArray<Dsymbol>> vtbl = ref(new DArray<Dsymbol>());
         public Ref<DArray<Dsymbol>> vtblFinal = ref(new DArray<Dsymbol>());
-        public Ptr<DArray<Ptr<BaseClass>>> baseclasses = null;
+        public DArray<Ptr<BaseClass>> baseclasses = null;
         public Slice<Ptr<BaseClass>> interfaces = new RawSlice<Ptr<BaseClass>>();
-        public Ptr<DArray<Ptr<BaseClass>>> vtblInterfaces = null;
+        public DArray<Ptr<BaseClass>> vtblInterfaces = null;
         public TypeInfoClassDeclaration vclassinfo = null;
         public boolean com = false;
         public boolean stack = false;
@@ -175,7 +175,7 @@ public class dclass {
         public ObjcClassDeclaration objc = new ObjcClassDeclaration();
         public Ptr<Symbol> cpp_type_info_ptr_sym = null;
         // Erasure: __ctor<Loc, Identifier, Ptr, Ptr, boolean>
-        public  ClassDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses, Ptr<DArray<Dsymbol>> members, boolean inObject) {
+        public  ClassDeclaration(Loc loc, Identifier id, DArray<Ptr<BaseClass>> baseclasses, DArray<Dsymbol> members, boolean inObject) {
             this.objc = new ObjcClassDeclaration(this);
             if (id == null)
             {
@@ -188,7 +188,7 @@ public class dclass {
             }
             else
             {
-                this.baseclasses = pcopy((refPtr(new DArray<Ptr<BaseClass>>())));
+                this.baseclasses = pcopy(new DArray<Ptr<BaseClass>>());
             }
             this.members = pcopy(members);
             this.type = new TypeClass(this);
@@ -378,21 +378,21 @@ public class dclass {
         }
 
         // Erasure: create<Loc, Identifier, Ptr, Ptr, boolean>
-        public static ClassDeclaration create(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses, Ptr<DArray<Dsymbol>> members, boolean inObject) {
+        public static ClassDeclaration create(Loc loc, Identifier id, DArray<Ptr<BaseClass>> baseclasses, DArray<Dsymbol> members, boolean inObject) {
             return new ClassDeclaration(loc, id, baseclasses, members, inObject);
         }
 
         // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            ClassDeclaration cd = s != null ? (ClassDeclaration)s : new ClassDeclaration(this.loc, this.ident, null, null, false);
+            ClassDeclaration cd = s != null ? ((ClassDeclaration)s) : new ClassDeclaration(this.loc, this.ident, null, null, false);
             cd.storage_class |= this.storage_class;
-            (cd.baseclasses.get()).setDim((this.baseclasses.get()).length);
+            (cd.baseclasses).setDim((this.baseclasses).length);
             {
                 int i = 0;
-                for (; (i < (cd.baseclasses.get()).length);i++){
-                    Ptr<BaseClass> b = (this.baseclasses.get()).get(i);
+                for (; (i < (cd.baseclasses).length);i++){
+                    Ptr<BaseClass> b = (this.baseclasses).get(i);
                     Ptr<BaseClass> b2 = refPtr(new BaseClass((b.get()).type.syntaxCopy()));
-                    cd.baseclasses.get().set(i, b2);
+                    cd.baseclasses.set(i, b2);
                 }
             }
             return this.syntaxCopy(cd);
@@ -416,8 +416,8 @@ public class dclass {
             }
             {
                 int i = 0;
-                for (; (i < (cd.baseclasses.get()).length);i++){
-                    Ptr<BaseClass> b = (cd.baseclasses.get()).get(i);
+                for (; (i < (cd.baseclasses).length);i++){
+                    Ptr<BaseClass> b = (cd.baseclasses).get(i);
                     if ((pequals((b.get()).sym, this)) || this.isBaseOf2((b.get()).sym))
                     {
                         return true;
@@ -483,8 +483,8 @@ public class dclass {
             {
                 {
                     int i = 0;
-                    for (; (i < (this.baseclasses.get()).length);i++){
-                        Ptr<BaseClass> b = (this.baseclasses.get()).get(i);
+                    for (; (i < (this.baseclasses).length);i++){
+                        Ptr<BaseClass> b = (this.baseclasses).get(i);
                         if ((b.get()).sym != null)
                         {
                             if ((b.get()).sym.symtab == null)
@@ -526,7 +526,7 @@ public class dclass {
         // Erasure: searchBase<Identifier>
         public  ClassDeclaration searchBase(Identifier ident) {
             {
-                Slice<Ptr<BaseClass>> __r919 = (this.baseclasses.get()).opSlice().copy();
+                Slice<Ptr<BaseClass>> __r919 = (this.baseclasses).opSlice().copy();
                 int __key920 = 0;
                 for (; (__key920 < __r919.getLength());__key920 += 1) {
                     Ptr<BaseClass> b = __r919.get(__key920);
@@ -600,8 +600,8 @@ public class dclass {
                                 (b.get()).sym.alignsize.value = target.ptrsize;
                             }
                             AggregateDeclaration.alignmember((b.get()).sym.alignsize.value, (b.get()).sym.alignsize.value, ptr(offset));
-                            assert((bi.value < (vtblInterfaces.get()).length));
-                            Ptr<BaseClass> bv = (vtblInterfaces.get()).get(bi.value);
+                            assert((bi.value < (vtblInterfaces).length));
+                            Ptr<BaseClass> bv = (vtblInterfaces).get(bi.value);
                             if (((b.get()).sym.interfaces.getLength() == 0))
                             {
                                 (bv.get()).offset = offset.value;
@@ -609,7 +609,7 @@ public class dclass {
                                 {
                                     Ref<Ptr<BaseClass>> b2 = ref(bv);
                                     for (; (b2.value.get()).baseInterfaces.getLength() != 0;){
-                                        b2.value = pcopy((ptr((b2.value.get()).baseInterfaces.get(0))));
+                                        b2.value = pcopy(b2.value.get().baseInterfaces.getPtr(0));
                                         (b2.value.get()).offset = offset.value;
                                     }
                                 }
@@ -635,7 +635,7 @@ public class dclass {
             this.fields.setDim(0);
             Ref<Integer> offset = ref(this.structsize.value);
             {
-                Slice<Dsymbol> __r923 = (this.members.get()).opSlice().copy();
+                Slice<Dsymbol> __r923 = (this.members).opSlice().copy();
                 int __key924 = 0;
                 for (; (__key924 < __r923.getLength());__key924 += 1) {
                     Dsymbol s = __r923.get(__key924);
@@ -880,8 +880,8 @@ public class dclass {
             };
             {
                 int i = 0;
-                for (; (i < (this.members.get()).length);i++){
-                    Dsymbol s = (this.members.get()).get(i);
+                for (; (i < (this.members).length);i++){
+                    Dsymbol s = (this.members).get(i);
                     if (s.apply(func, this) != 0)
                     {
                         return yes.invoke();
@@ -908,8 +908,8 @@ public class dclass {
                 };
                 {
                     int i = 0;
-                    for (; (i < (this.members.get()).length);i++){
-                        Dsymbol s = (this.members.get()).get(i);
+                    for (; (i < (this.members).length);i++){
+                        Dsymbol s = (this.members).get(i);
                         s.apply(virtualSemantic, this);
                     }
                 }
@@ -940,15 +940,15 @@ public class dclass {
         }
 
         // Erasure: addLocalClass<Ptr>
-        public  void addLocalClass(Ptr<DArray<ClassDeclaration>> aclasses) {
+        public  void addLocalClass(DArray<ClassDeclaration> aclasses) {
             if ((this.classKind != ClassKind.objc))
             {
-                (aclasses.get()).push(this);
+                (aclasses).push(this);
             }
         }
 
         // Erasure: addObjcSymbols<Ptr, Ptr>
-        public  void addObjcSymbols(Ptr<DArray<ClassDeclaration>> classes, Ptr<DArray<ClassDeclaration>> categories) {
+        public  void addObjcSymbols(DArray<ClassDeclaration> classes, DArray<ClassDeclaration> categories) {
             objc().addSymbols(this, classes, categories);
         }
 
@@ -1060,7 +1060,7 @@ public class dclass {
     public static class InterfaceDeclaration extends ClassDeclaration
     {
         // Erasure: __ctor<Loc, Identifier, Ptr>
-        public  InterfaceDeclaration(Loc loc, Identifier id, Ptr<DArray<Ptr<BaseClass>>> baseclasses) {
+        public  InterfaceDeclaration(Loc loc, Identifier id, DArray<Ptr<BaseClass>> baseclasses) {
             super(loc, id, baseclasses, null, false);
             if ((pequals(id, Id.IUnknown)))
             {
@@ -1071,7 +1071,7 @@ public class dclass {
 
         // Erasure: syntaxCopy<Dsymbol>
         public  Dsymbol syntaxCopy(Dsymbol s) {
-            InterfaceDeclaration id = s != null ? (InterfaceDeclaration)s : new InterfaceDeclaration(this.loc, this.ident, null);
+            InterfaceDeclaration id = s != null ? ((InterfaceDeclaration)s) : new InterfaceDeclaration(this.loc, this.ident, null);
             return this.syntaxCopy(id);
         }
 
@@ -1105,7 +1105,7 @@ public class dclass {
                     {
                         if (poffset != null)
                         {
-                            poffset.set(0, ((cd.sizeok == Sizeok.done) ? (b.get()).offset : 1985229329));
+                            poffset.set(0, (cd.sizeok == Sizeok.done) ? (b.get()).offset : 1985229329);
                         }
                         return true;
                     }
@@ -1131,12 +1131,12 @@ public class dclass {
             {
                 int j = 0;
                 for (; (j < (bc.get()).baseInterfaces.getLength());j++){
-                    Ptr<BaseClass> b = ptr((bc.get()).baseInterfaces.get(j));
+                    Ptr<BaseClass> b = bc.get().baseInterfaces.getPtr(j);
                     if ((pequals(this, (b.get()).sym)))
                     {
                         if (poffset != null)
                         {
-                            poffset.set(0, ((b.get()).offset));
+                            poffset.set(0, (b.get()).offset);
                         }
                         return true;
                     }

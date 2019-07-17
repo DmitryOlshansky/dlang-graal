@@ -43,7 +43,7 @@ public class traits {
     private static class PointerBitmapVisitor extends Visitor
     {
         // Erasure: __ctor<Ptr, long>
-        public  PointerBitmapVisitor(Ptr<DArray<Long>> _data, long _sz_size_t) {
+        public  PointerBitmapVisitor(DArray<Long> _data, long _sz_size_t) {
             this.data = pcopy(_data);
             this.sz_size_t = _sz_size_t;
         }
@@ -51,7 +51,7 @@ public class traits {
         // Erasure: setpointer<long>
         public  void setpointer(long off) {
             long ptroff = off / this.sz_size_t;
-            (this.data.get()).get((int)(ptroff / (8L * this.sz_size_t))) |= (long)(1L << (int)(ptroff % (8L * this.sz_size_t)));
+            (this.data).get((int)(ptroff / (8L * this.sz_size_t))) |= (long)(1L << (int)(ptroff % (8L * this.sz_size_t)));
         }
 
         // Erasure: visit<Type>
@@ -217,7 +217,7 @@ public class traits {
             long classoff = this.offset;
             if (t.sym.baseClass != null)
             {
-                this.visitClass((TypeClass)t.sym.baseClass.type);
+                this.visitClass(((TypeClass)t.sym.baseClass.type));
             }
             {
                 Slice<VarDeclaration> __r1677 = t.sym.fields.opSlice().copy();
@@ -231,7 +231,7 @@ public class traits {
             this.offset = classoff;
         }
 
-        private Ptr<DArray<Long>> data = null;
+        private DArray<Long> data = null;
         private long offset = 0L;
         private long sz_size_t = 0L;
         private boolean error = false;
@@ -248,11 +248,11 @@ public class traits {
             {
                 if (((e.op & 0xFF) == 27))
                 {
-                    return ((DotVarExp)e).var;
+                    return (((DotVarExp)e)).var;
                 }
                 if (((e.op & 0xFF) == 37))
                 {
-                    return ((DotTemplateExp)e).td;
+                    return (((DotTemplateExp)e)).td;
                 }
             }
         }
@@ -273,11 +273,11 @@ public class traits {
         }
     }
     // Erasure: getTypePointerBitmap<Loc, Type, Ptr>
-    public static long getTypePointerBitmap(Loc loc, Type t, Ptr<DArray<Long>> data) {
+    public static long getTypePointerBitmap(Loc loc, Type t, DArray<Long> data) {
         long sz = 0L;
-        if (((t.ty & 0xFF) == ENUMTY.Tclass) && (((TypeClass)t).sym.isInterfaceDeclaration() == null))
+        if (((t.ty & 0xFF) == ENUMTY.Tclass) && ((((TypeClass)t)).sym.isInterfaceDeclaration() == null))
         {
-            sz = ((TypeClass)t).sym.size(loc);
+            sz = (((TypeClass)t)).sym.size(loc);
         }
         else
         {
@@ -296,13 +296,13 @@ public class traits {
         long bitsPerWord = sz_size_t * 8L;
         long cntptr = (sz + sz_size_t - 1L) / sz_size_t;
         long cntdata = (cntptr + bitsPerWord - 1L) / bitsPerWord;
-        (data.get()).setDim((int)cntdata);
-        (data.get()).zero();
+        (data).setDim((int)cntdata);
+        (data).zero();
         // skipping duplicate class PointerBitmapVisitor
         PointerBitmapVisitor pbv = new PointerBitmapVisitor(data, sz_size_t);
         if (((t.ty & 0xFF) == ENUMTY.Tclass))
         {
-            pbv.visitClass((TypeClass)t);
+            pbv.visitClass(((TypeClass)t));
         }
         else
         {
@@ -313,32 +313,32 @@ public class traits {
 
     // Erasure: pointerBitmap<TraitsExp>
     public static Expression pointerBitmap(TraitsExp e) {
-        if ((e.args == null) || ((e.args.get()).length != 1))
+        if ((e.args == null) || ((e.args).length != 1))
         {
             error(e.loc, new BytePtr("a single type expected for trait pointerBitmap"));
             return new ErrorExp();
         }
-        Type t = getType((e.args.get()).get(0));
+        Type t = getType((e.args).get(0));
         if (t == null)
         {
-            error(e.loc, new BytePtr("`%s` is not a type"), (e.args.get()).get(0).toChars());
+            error(e.loc, new BytePtr("`%s` is not a type"), (e.args).get(0).toChars());
             return new ErrorExp();
         }
         Ref<DArray<Long>> data = ref(new DArray<Long>());
         try {
-            long sz = getTypePointerBitmap(e.loc, t, ptr(data));
+            long sz = getTypePointerBitmap(e.loc, t, data.value);
             if ((sz == -1L))
             {
                 return new ErrorExp();
             }
-            Ptr<DArray<Expression>> exps = refPtr(new DArray<Expression>(data.value.length + 1));
-            exps.get().set(0, new IntegerExp(e.loc, sz, Type.tsize_t));
+            DArray<Expression> exps = new DArray<Expression>(data.value.length + 1);
+            exps.set(0, new IntegerExp(e.loc, sz, Type.tsize_t));
             {
                 int __key1679 = 1;
-                int __limit1680 = (exps.get()).length;
+                int __limit1680 = (exps).length;
                 for (; (__key1679 < __limit1680);__key1679 += 1) {
                     int i = __key1679;
-                    exps.get().set(i, new IntegerExp(e.loc, data.value.get(i - 1), Type.tsize_t));
+                    exps.set(i, new IntegerExp(e.loc, data.value.get(i - 1), Type.tsize_t));
                 }
             }
             ArrayLiteralExp ale = new ArrayLiteralExp(e.loc, Type.tsize_t.sarrayOf((long)(data.value.length + 1)), exps);
@@ -357,7 +357,7 @@ public class traits {
                 return new ErrorExp();
             }
         }
-        int dim = e.args != null ? (e.args.get()).length : 0;
+        int dim = e.args != null ? (e.args).length : 0;
         Function1<Integer,Expression> dimError = new Function1<Integer,Expression>() {
             public Expression invoke(Integer expected) {
              {
@@ -418,15 +418,15 @@ public class traits {
                 {
                     if (((t.value.ty & 0xFF) == ENUMTY.Tfunction))
                     {
-                        return (TypeFunction)t.value;
+                        return ((TypeFunction)t.value);
                     }
                     else if (((t.value.ty & 0xFF) == ENUMTY.Tdelegate))
                     {
-                        return (TypeFunction)t.value.nextOf();
+                        return ((TypeFunction)t.value.nextOf());
                     }
                     else if (((t.value.ty & 0xFF) == ENUMTY.Tpointer) && ((t.value.nextOf().ty & 0xFF) == ENUMTY.Tfunction))
                     {
-                        return (TypeFunction)t.value.nextOf();
+                        return ((TypeFunction)t.value.nextOf());
                     }
                 }
                 return null;
@@ -442,7 +442,7 @@ public class traits {
                     return False.invoke();
                 }
                 {
-                    Slice<RootObject> __r1685 = (e.args.get()).opSlice().copy();
+                    Slice<RootObject> __r1685 = (e.args).opSlice().copy();
                     Ref<Integer> __key1686 = ref(0);
                     for (; (__key1686.value < __r1685.getLength());__key1686.value += 1) {
                         RootObject o = __r1685.get(__key1686.value);
@@ -472,7 +472,7 @@ public class traits {
                     return False.invoke();
                 }
                 {
-                    Slice<RootObject> __r1683 = (e.args.get()).opSlice().copy();
+                    Slice<RootObject> __r1683 = (e.args).opSlice().copy();
                     Ref<Integer> __key1684 = ref(0);
                     for (; (__key1684.value < __r1683.getLength());__key1684.value += 1) {
                         RootObject o = __r1683.get(__key1684.value);
@@ -501,7 +501,7 @@ public class traits {
                     return False.invoke();
                 }
                 {
-                    Slice<RootObject> __r1689 = (e.args.get()).opSlice().copy();
+                    Slice<RootObject> __r1689 = (e.args).opSlice().copy();
                     Ref<Integer> __key1690 = ref(0);
                     for (; (__key1690.value < __r1689.getLength());__key1690.value += 1) {
                         RootObject o = __r1689.get(__key1690.value);
@@ -531,7 +531,7 @@ public class traits {
                     return False.invoke();
                 }
                 {
-                    Slice<RootObject> __r1687 = (e.args.get()).opSlice().copy();
+                    Slice<RootObject> __r1687 = (e.args).opSlice().copy();
                     Ref<Integer> __key1688 = ref(0);
                     for (; (__key1688.value < __r1687.getLength());__key1688.value += 1) {
                         RootObject o = __r1687.get(__key1688.value);
@@ -561,7 +561,7 @@ public class traits {
                     return False.invoke();
                 }
                 {
-                    Slice<RootObject> __r1681 = (e.args.get()).opSlice().copy();
+                    Slice<RootObject> __r1681 = (e.args).opSlice().copy();
                     Ref<Integer> __key1682 = ref(0);
                     for (; (__key1682.value < __r1681.getLength());__key1682.value += 1) {
                         RootObject o = __r1681.get(__key1682.value);
@@ -703,7 +703,7 @@ public class traits {
             Function1<Type,Boolean> __lambda18 = new Function1<Type,Boolean>() {
                 public Boolean invoke(Type t) {
                  {
-                    return ((t.toBasetype().ty & 0xFF) == ENUMTY.Tclass) && ((TypeClass)t.toBasetype()).sym.isAbstract();
+                    return ((t.toBasetype().ty & 0xFF) == ENUMTY.Tclass) && (((TypeClass)t.toBasetype())).sym.isAbstract();
                 }}
 
             };
@@ -714,7 +714,7 @@ public class traits {
             Function1<Type,Boolean> __lambda19 = new Function1<Type,Boolean>() {
                 public Boolean invoke(Type t) {
                  {
-                    return ((t.toBasetype().ty & 0xFF) == ENUMTY.Tclass) && ((((TypeClass)t.toBasetype()).sym.storage_class & 8L) != 0L);
+                    return ((t.toBasetype().ty & 0xFF) == ENUMTY.Tclass) && (((((TypeClass)t.toBasetype())).sym.storage_class & 8L) != 0L);
                 }}
 
             };
@@ -752,7 +752,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Type t = isType(o);
             if (t == null)
             {
@@ -761,7 +761,7 @@ public class traits {
             }
             Type tb = t.baseElemOf();
             {
-                StructDeclaration sd = ((tb.ty & 0xFF) == ENUMTY.Tstruct) ? ((TypeStruct)tb).sym : null;
+                StructDeclaration sd = ((tb.ty & 0xFF) == ENUMTY.Tstruct) ? (((TypeStruct)tb)).sym : null;
                 if ((sd) != null)
                 {
                     return sd.isPOD() ? True.invoke() : False.invoke();
@@ -775,7 +775,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Dsymbol s = getDsymbolWithoutExpCtx(o);
             if (s == null)
             {
@@ -987,7 +987,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Identifier id = null;
             {
                 Parameter po = isParameter(o);
@@ -1028,7 +1028,7 @@ public class traits {
             {
                 return new ErrorExp();
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Dsymbol s = getDsymbolWithoutExpCtx(o);
             if (s == null)
             {
@@ -1053,7 +1053,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Dsymbol s = getDsymbolWithoutExpCtx(o);
             if (s != null)
             {
@@ -1070,7 +1070,7 @@ public class traits {
                                     if (p.isTemplateInstance() != null)
                                     {
                                         s = p;
-                                        Dsymbol td = ((TemplateInstance)p).tempdecl;
+                                        Dsymbol td = (((TemplateInstance)p)).tempdecl;
                                         if (td != null)
                                         {
                                             s = td;
@@ -1133,8 +1133,8 @@ public class traits {
             {
                 return dimError.invoke(2);
             }
-            RootObject o = (e.args.get()).get(0);
-            Expression ex = isExpression((e.args.get()).get(1));
+            RootObject o = (e.args).get(0);
+            Expression ex = isExpression((e.args).get(1));
             if (ex == null)
             {
                 e.error(new BytePtr("expression expected as second argument of __traits `%s`"), e.ident.toChars());
@@ -1144,7 +1144,7 @@ public class traits {
             boolean includeTemplates = false;
             if ((dim == 3) && (pequals(e.ident, Id.getOverloads)))
             {
-                Expression b = isExpression((e.args.get()).get(2));
+                Expression b = isExpression((e.args).get(2));
                 b = b.ctfeInterpret();
                 if (!b.type.value.equals(Type.tbool))
                 {
@@ -1213,7 +1213,7 @@ public class traits {
                 {
                     if (((ex.op & 0xFF) == 28))
                     {
-                        ((DotIdExp)ex).wantsym = true;
+                        (((DotIdExp)ex)).wantsym = true;
                     }
                     ex = expressionSemantic(ex, scx);
                     return ex;
@@ -1227,17 +1227,17 @@ public class traits {
                     {
                         e.error(new BytePtr("`%s` cannot be resolved"), eorig.toChars());
                     }
-                    Ptr<DArray<Expression>> exps = refPtr(new DArray<Expression>());
+                    DArray<Expression> exps = new DArray<Expression>();
                     Dsymbol f = null;
                     if (((ex.op & 0xFF) == 26))
                     {
-                        VarExp ve = (VarExp)ex;
+                        VarExp ve = ((VarExp)ex);
                         f = ve.var.isFuncDeclaration();
                         ex = null;
                     }
                     else if (((ex.op & 0xFF) == 27))
                     {
-                        DotVarExp dve = (DotVarExp)ex;
+                        DotVarExp dve = ((DotVarExp)ex);
                         f = dve.var.isFuncDeclaration();
                         if (((dve.e1.value.op & 0xFF) == 30) || ((dve.e1.value.op & 0xFF) == 123))
                         {
@@ -1250,7 +1250,7 @@ public class traits {
                     }
                     else if (((ex.op & 0xFF) == 36))
                     {
-                        VarExp ve = (VarExp)ex;
+                        VarExp ve = ((VarExp)ex);
                         TemplateDeclaration td = ve.var.isTemplateDeclaration();
                         f = td;
                         if ((td != null) && (td.funcroot != null))
@@ -1269,7 +1269,7 @@ public class traits {
                             if (funcTypeHash.getLvalue(signature) == null)
                             {
                                 funcTypeHash.set(signature, __aaval1691);
-                                (exps.get()).push(e);
+                                (exps).push(e);
                             }
                             return null;
                         }}
@@ -1280,7 +1280,7 @@ public class traits {
                          {
                             if (includeTemplates)
                             {
-                                (exps.get()).push(new DsymbolExp(Loc.initial, s, false));
+                                (exps).push(new DsymbolExp(Loc.initial, s, false));
                                 return 0;
                             }
                             FuncDeclaration fd = s.isFuncDeclaration();
@@ -1305,7 +1305,7 @@ public class traits {
                             }
                             else
                             {
-                                (exps.get()).push(e);
+                                (exps).push(e);
                             }
                             return 0;
                         }}
@@ -1352,7 +1352,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Dsymbol s = getDsymbol(o);
             ClassDeclaration cd = s != null ? s.isClassDeclaration() : null;
             if (cd == null)
@@ -1377,13 +1377,13 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Dsymbol s = getDsymbol(o);
             AggregateDeclaration ad = s != null ? s.isAggregateDeclaration() : null;
-            Ptr<DArray<Expression>> exps = refPtr(new DArray<Expression>());
+            DArray<Expression> exps = new DArray<Expression>();
             if ((ad != null) && (ad.aliasthis != null))
             {
-                (exps.get()).push(new StringExp(e.loc, ad.aliasthis.ident.toChars()));
+                (exps).push(new StringExp(e.loc, ad.aliasthis.ident.toChars()));
             }
             Expression ex = new TupleExp(e.loc, exps);
             ex = expressionSemantic(ex, sc);
@@ -1399,7 +1399,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Parameter po = isParameter(o);
             Dsymbol s = getDsymbolWithoutExpCtx(o);
             UserAttributeDeclaration udad = null;
@@ -1420,7 +1420,7 @@ public class traits {
                 e.error(new BytePtr("first argument is not a symbol"));
                 return new ErrorExp();
             }
-            Ptr<DArray<Expression>> exps = udad != null ? udad.getAttributes() : refPtr(new DArray<Expression>());
+            DArray<Expression> exps = udad != null ? udad.getAttributes() : new DArray<Expression>();
             TupleExp tup = new TupleExp(e.loc, exps);
             return expressionSemantic(tup, sc);
         }
@@ -1431,17 +1431,17 @@ public class traits {
                 return dimError.invoke(1);
             }
             Ref<FuncDeclaration> fd = ref(null);
-            TypeFunction tf = toTypeFunction.invoke((e.args.get()).get(0), fd);
+            TypeFunction tf = toTypeFunction.invoke((e.args).get(0), fd);
             if (tf == null)
             {
                 e.error(new BytePtr("first argument is not a function"));
                 return new ErrorExp();
             }
-            Ptr<DArray<Expression>> mods = refPtr(new DArray<Expression>());
+            DArray<Expression> mods = new DArray<Expression>();
             Runnable1<ByteSlice> addToMods = new Runnable1<ByteSlice>() {
                 public Void invoke(ByteSlice str) {
                  {
-                    (mods.get()).push(new StringExp(Loc.initial, toBytePtr(str.getPtr(0)), str.getLength()));
+                    (mods).push(new StringExp(Loc.initial, toBytePtr(str.getPtr(0)), str.getLength()));
                     return null;
                 }}
 
@@ -1457,7 +1457,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Ref<FuncDeclaration> fd = ref(null);
             TypeFunction tf = toTypeFunction.invoke(o, fd);
             if (tf == null)
@@ -1476,7 +1476,7 @@ public class traits {
             }
             int link = LINK.default_;
             int varargs = VarArg.none;
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Ref<FuncDeclaration> fd = ref(null);
             TypeFunction tf = toTypeFunction.invoke(o, fd);
             if (tf != null)
@@ -1501,7 +1501,7 @@ public class traits {
                     style = new ByteSlice("none").copy();
                     break;
                 case VarArg.variadic:
-                    style = ((link == LINK.d) ? new ByteSlice("argptr") : new ByteSlice("stdarg")).copy();
+                    style = (link == LINK.d) ? new ByteSlice("argptr") : new ByteSlice("stdarg").copy();
                     break;
                 case VarArg.typesafe:
                     style = new ByteSlice("typesafe").copy();
@@ -1518,8 +1518,8 @@ public class traits {
             {
                 return dimError.invoke(2);
             }
-            RootObject o = (e.args.get()).get(0);
-            RootObject o1 = (e.args.get()).get(1);
+            RootObject o = (e.args).get(0);
+            RootObject o1 = (e.args).get(1);
             Ref<FuncDeclaration> fd = ref(null);
             TypeFunction tf = toTypeFunction.invoke(o, fd);
             ParameterList fparams = new ParameterList();
@@ -1537,7 +1537,7 @@ public class traits {
                 return new ErrorExp();
             }
             long stc = 0L;
-            Expression ex = isExpression((e.args.get()).get(1));
+            Expression ex = isExpression((e.args).get(1));
             if (ex == null)
             {
                 e.error(new BytePtr("expression expected as second argument of `__traits(getParameterStorageClasses, %s, %s)`"), o.toChars(), o1.toChars());
@@ -1557,11 +1557,11 @@ public class traits {
             {
                 stc &= -536870913L;
             }
-            Ptr<DArray<Expression>> exps = refPtr(new DArray<Expression>());
+            DArray<Expression> exps = new DArray<Expression>();
             Runnable1<ByteSlice> push = new Runnable1<ByteSlice>() {
                 public Void invoke(ByteSlice s) {
                  {
-                    (exps.get()).push(new StringExp(e.loc, toBytePtr(s.getPtr(0)), s.getLength()));
+                    (exps).push(new StringExp(e.loc, toBytePtr(s.getPtr(0)), s.getLength()));
                     return null;
                 }}
 
@@ -1624,7 +1624,7 @@ public class traits {
                 return dimError.invoke(1);
             }
             int link = LINK.default_;
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Ref<FuncDeclaration> fd = ref(null);
             TypeFunction tf = toTypeFunction.invoke(o, fd);
             if (tf != null)
@@ -1673,7 +1673,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Dsymbol s = getDsymbol(o);
             if (s == null)
             {
@@ -1693,7 +1693,7 @@ public class traits {
                 e.error(new BytePtr("%s `%s` has no members"), s.kind(), s.toChars());
                 return new ErrorExp();
             }
-            Ptr<DArray<Identifier>> idents = refPtr(new DArray<Identifier>());
+            DArray<Identifier> idents = new DArray<Identifier>();
             Function2<Integer,Dsymbol,Integer> pushIdentsDg = new Function2<Integer,Dsymbol,Integer>() {
                 public Integer invoke(Integer n, Dsymbol sm) {
                  {
@@ -1731,7 +1731,7 @@ public class traits {
                             return 0;
                         }
                         {
-                            Slice<Identifier> __r1694 = (idents.get()).opSlice().copy();
+                            Slice<Identifier> __r1694 = (idents).opSlice().copy();
                             Ref<Integer> __key1695 = ref(0);
                             for (; (__key1695.value < __r1694.getLength());__key1695.value += 1) {
                                 Identifier id = __r1694.get(__key1695.value);
@@ -1741,7 +1741,7 @@ public class traits {
                                 }
                             }
                         }
-                        (idents.get()).push(sm.ident);
+                        (idents).push(sm.ident);
                     }
                     else {
                         EnumDeclaration ed = sm.isEnumDeclaration();
@@ -1767,11 +1767,11 @@ public class traits {
                      {
                         {
                             int i = 0;
-                            for (; (i < (cd.baseclasses.get()).length);i++){
-                                ClassDeclaration cb = ((cd.baseclasses.get()).get(i).get()).sym;
+                            for (; (i < (cd.baseclasses).length);i++){
+                                ClassDeclaration cb = ((cd.baseclasses).get(i).get()).sym;
                                 assert(cb != null);
                                 ScopeDsymbol._foreach(null, cb.members, pushIdentsDg, null);
-                                if ((cb.baseclasses.get()).length != 0)
+                                if ((cb.baseclasses).length != 0)
                                 {
                                     invoke(cb);
                                 }
@@ -1784,15 +1784,15 @@ public class traits {
                 pushBaseMembersDg.invoke(cd);
             }
             assert(true);
-            Ptr<DArray<Expression>> exps = ((Ptr<DArray<Expression>>)idents);
+            DArray<Expression> exps = ((DArray<Expression>)idents);
             {
-                Slice<Identifier> __r1697 = (idents.get()).opSlice().copy();
+                Slice<Identifier> __r1697 = (idents).opSlice().copy();
                 int __key1696 = 0;
                 for (; (__key1696 < __r1697.getLength());__key1696 += 1) {
                     Identifier id = __r1697.get(__key1696);
                     int i = __key1696;
                     StringExp se = new StringExp(e.loc, id.toChars());
-                    exps.get().set(i, se);
+                    exps.set(i, se);
                 }
             }
             Expression ex = new TupleExp(e.loc, exps);
@@ -1806,7 +1806,7 @@ public class traits {
                 return False.invoke();
             }
             {
-                Slice<RootObject> __r1698 = (e.args.get()).opSlice().copy();
+                Slice<RootObject> __r1698 = (e.args).opSlice().copy();
                 int __key1699 = 0;
                 for (; (__key1699 < __r1698.getLength());__key1699 += 1) {
                     RootObject o = __r1698.get(__key1699);
@@ -1842,7 +1842,7 @@ public class traits {
                         ex.value = ex.value.optimize(0, false);
                         if (((sc2.get()).func != null) && (((sc2.get()).func.type.ty & 0xFF) == ENUMTY.Tfunction))
                         {
-                            TypeFunction tf = (TypeFunction)(sc2.get()).func.type;
+                            TypeFunction tf = ((TypeFunction)(sc2.get()).func.type);
                             (err ? 1 : 0) |= ((tf.isnothrow && canThrow(ex.value, (sc2.get()).func, false)) ? 1 : 0);
                         }
                         ex.value = checkGC(sc2, ex.value);
@@ -1870,8 +1870,8 @@ public class traits {
             {
                 return new ErrorExp();
             }
-            RootObject o1 = (e.args.get()).get(0);
-            RootObject o2 = (e.args.get()).get(1);
+            RootObject o1 = (e.args).get(0);
+            RootObject o2 = (e.args).get(1);
             Function1<RootObject,FuncLiteralDeclaration> isLambda = new Function1<RootObject,FuncLiteralDeclaration>() {
                 public FuncLiteralDeclaration invoke(RootObject oarg) {
                  {
@@ -1883,10 +1883,10 @@ public class traits {
                                 TemplateDeclaration td = t.isTemplateDeclaration();
                                 if ((td) != null)
                                 {
-                                    if ((td.members != null) && ((td.members.get()).length == 1))
+                                    if ((td.members != null) && ((td.members).length == 1))
                                     {
                                         {
-                                            FuncLiteralDeclaration fd = (td.members.get()).get(0).isFuncLiteralDeclaration();
+                                            FuncLiteralDeclaration fd = (td.members).get(0).isFuncLiteralDeclaration();
                                             if ((fd) != null)
                                             {
                                                 return fd;
@@ -1903,7 +1903,7 @@ public class traits {
                                 if (((ea.op & 0xFF) == 161))
                                 {
                                     {
-                                        FuncExp fe = (FuncExp)ea;
+                                        FuncExp fe = ((FuncExp)ea);
                                         if ((fe) != null)
                                         {
                                             return fe.fd;
@@ -2024,7 +2024,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Dsymbol s = getDsymbolWithoutExpCtx(o);
             if (s == null)
             {
@@ -2044,7 +2044,7 @@ public class traits {
                 e.error(new BytePtr("argument `%s` to __traits(getUnitTests) must be a module or aggregate, not a %s"), s.toChars(), s.kind());
                 return new ErrorExp();
             }
-            Ptr<DArray<Expression>> exps = refPtr(new DArray<Expression>());
+            DArray<Expression> exps = new DArray<Expression>();
             if (global.params.useUnitTests)
             {
                 AA<Object,Boolean> uniqueUnitTests = null;
@@ -2069,7 +2069,7 @@ public class traits {
                                     FuncAliasDeclaration ad = new FuncAliasDeclaration(ud.ident, ud, false);
                                     ad.protection.opAssign(ud.protection.copy());
                                     DsymbolExp e = new DsymbolExp(Loc.initial, ad, false);
-                                    (exps.get()).push(e);
+                                    (exps).push(e);
                                 }
                             }
                         }
@@ -2088,7 +2088,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Dsymbol s = getDsymbolWithoutExpCtx(o);
             FuncDeclaration fd = s != null ? s.isFuncDeclaration() : null;
             if (fd == null)
@@ -2109,7 +2109,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject o = (e.args.get()).get(0);
+            RootObject o = (e.args).get(0);
             Type t = isType(o);
             if (t == null)
             {
@@ -2125,7 +2125,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            Expression ex = isExpression((e.args.get()).get(0));
+            Expression ex = isExpression((e.args).get(0));
             StringExp se = ex != null ? ex.ctfeInterpret().toStringExp() : null;
             if ((ex == null) || (se == null) || (se.len == 0))
             {
@@ -2147,7 +2147,7 @@ public class traits {
             {
                 return dimError.invoke(1);
             }
-            RootObject arg0 = (e.args.get()).get(0);
+            RootObject arg0 = (e.args).get(0);
             Dsymbol s = getDsymbolWithoutExpCtx(arg0);
             if (s == null)
             {
@@ -2160,10 +2160,10 @@ public class traits {
                 e.error(new BytePtr("cannot get location of an overload set, use `__traits(getOverloads, ..., \"%s\"%s)[N]` to get the Nth overload"), arg0.toChars(), new BytePtr(""));
                 return new ErrorExp();
             }
-            Ptr<DArray<Expression>> exps = refPtr(new DArray<Expression>(3));
-            (exps.get()).data.set(0, new StringExp(e.loc, s.loc.filename, strlen(s.loc.filename)));
-            (exps.get()).data.set(1, new IntegerExp(e.loc, (long)s.loc.linnum, Type.tint32));
-            (exps.get()).data.set(2, new IntegerExp(e.loc, (long)s.loc.charnum, Type.tint32));
+            DArray<Expression> exps = new DArray<Expression>(3);
+            (exps).data.set(0, new StringExp(e.loc, s.loc.filename, strlen(s.loc.filename)));
+            (exps).data.set(1, new IntegerExp(e.loc, (long)s.loc.linnum, Type.tint32));
+            (exps).data.set(2, new IntegerExp(e.loc, (long)s.loc.charnum, Type.tint32));
             TupleExp tup = new TupleExp(e.loc, exps);
             return expressionSemantic(tup, sc);
         }

@@ -134,21 +134,21 @@ public class expression {
 
     // from template emplaceExp!(AddrExpLocVarExpType)
 
-    // from template emplaceExp!(ArrayLiteralExpLocObjectPtr<DArray<Expression>>)
+    // from template emplaceExp!(ArrayLiteralExpLocObjectDArray<Expression>)
 
-    // from template emplaceExp!(ArrayLiteralExpLocTypeArrayPtr<DArray<Expression>>)
+    // from template emplaceExp!(ArrayLiteralExpLocTypeArrayDArray<Expression>)
+
+    // from template emplaceExp!(ArrayLiteralExpLocTypeDArray<Expression>)
+
+    // from template emplaceExp!(ArrayLiteralExpLocTypeDArray<Expression>)
 
     // from template emplaceExp!(ArrayLiteralExpLocTypeExpression)
 
-    // from template emplaceExp!(ArrayLiteralExpLocTypeExpressionPtr<DArray<Expression>>)
+    // from template emplaceExp!(ArrayLiteralExpLocTypeExpressionDArray<Expression>)
 
-    // from template emplaceExp!(ArrayLiteralExpLocTypePtr<DArray<Expression>>)
+    // from template emplaceExp!(ArrayLiteralExpLocTypeSArrayDArray<Expression>)
 
-    // from template emplaceExp!(ArrayLiteralExpLocTypePtr<DArray<Expression>>)
-
-    // from template emplaceExp!(ArrayLiteralExpLocTypeSArrayPtr<DArray<Expression>>)
-
-    // from template emplaceExp!(AssocArrayLiteralExpLocPtr<DArray<Expression>>Ptr<DArray<Expression>>)
+    // from template emplaceExp!(AssocArrayLiteralExpLocDArray<Expression>DArray<Expression>)
 
     // from template emplaceExp!(CTFEExpByte)
 
@@ -222,11 +222,11 @@ public class expression {
 
     // from template emplaceExp!(StringExpLocObjectIntegerByte)
 
-    // from template emplaceExp!(StructLiteralExpLocStructDeclarationPtr<DArray<Expression>>)
+    // from template emplaceExp!(StructLiteralExpLocStructDeclarationDArray<Expression>)
 
-    // from template emplaceExp!(StructLiteralExpLocStructDeclarationPtr<DArray<Expression>>)
+    // from template emplaceExp!(StructLiteralExpLocStructDeclarationDArray<Expression>)
 
-    // from template emplaceExp!(StructLiteralExpLocStructDeclarationPtr<DArray<Expression>>Type)
+    // from template emplaceExp!(StructLiteralExpLocStructDeclarationDArray<Expression>Type)
 
     // from template emplaceExp!(SymOffExpLocDeclarationInteger)
 
@@ -234,7 +234,7 @@ public class expression {
 
     // from template emplaceExp!(SymOffExpLocDeclarationLong)
 
-    // from template emplaceExp!(TupleExpLocPtr<DArray<Expression>>)
+    // from template emplaceExp!(TupleExpLocDArray<Expression>)
 
     // from template emplaceExp!(TypeidExpLocType)
 
@@ -260,7 +260,7 @@ public class expression {
     public static Expression firstComma(Expression e) {
         Expression ex = e;
         for (; ((ex.op & 0xFF) == 99);) {
-            ex = ((CommaExp)ex).e1.value;
+            ex = (((CommaExp)ex)).e1.value;
         }
         return ex;
     }
@@ -269,7 +269,7 @@ public class expression {
     public static Expression lastComma(Expression e) {
         Expression ex = e;
         for (; ((ex.op & 0xFF) == 99);) {
-            ex = ((CommaExp)ex).e2.value;
+            ex = (((CommaExp)ex)).e2.value;
         }
         return ex;
     }
@@ -377,15 +377,15 @@ public class expression {
     }
 
     // Erasure: expandTuples<Ptr>
-    public static void expandTuples(Ptr<DArray<Expression>> exps) {
+    public static void expandTuples(DArray<Expression> exps) {
         if ((exps == null))
         {
             return ;
         }
         {
             int i = 0;
-            for (; (i < (exps.get()).length);i++){
-                Expression arg = (exps.get()).get(i);
+            for (; (i < (exps).length);i++){
+                Expression arg = (exps).get(i);
                 if (arg == null)
                 {
                     continue;
@@ -398,10 +398,10 @@ public class expression {
                             TypeTuple tt = e.type.value.toBasetype().isTypeTuple();
                             if ((tt) != null)
                             {
-                                if ((tt.arguments == null) || ((tt.arguments.get()).length == 0))
+                                if ((tt.arguments == null) || ((tt.arguments).length == 0))
                                 {
-                                    (exps.get()).remove(i);
-                                    if ((i == (exps.get()).length))
+                                    (exps).remove(i);
+                                    if ((i == (exps).length))
                                     {
                                         return ;
                                     }
@@ -413,15 +413,15 @@ public class expression {
                     }
                 }
                 for (; ((arg.op & 0xFF) == 126);){
-                    TupleExp te = (TupleExp)arg;
-                    (exps.get()).remove(i);
-                    (exps.get()).insert(i, te.exps);
-                    if ((i == (exps.get()).length))
+                    TupleExp te = ((TupleExp)arg);
+                    (exps).remove(i);
+                    (exps).insert(i, te.exps);
+                    if ((i == (exps).length))
                     {
                         return ;
                     }
-                    exps.get().set(i, Expression.combine(te.e0.value, (exps.get()).get(i)));
-                    arg = (exps.get()).get(i);
+                    exps.set(i, Expression.combine(te.e0.value, (exps).get(i)));
+                    arg = (exps).get(i);
                 }
             }
         }
@@ -469,22 +469,22 @@ public class expression {
     }
 
     // Erasure: expandAliasThisTuples<Ptr, int>
-    public static int expandAliasThisTuples(Ptr<DArray<Expression>> exps, int starti) {
-        if ((exps == null) || ((exps.get()).length == 0))
+    public static int expandAliasThisTuples(DArray<Expression> exps, int starti) {
+        if ((exps == null) || ((exps).length == 0))
         {
             return -1;
         }
         {
             int u = starti;
-            for (; (u < (exps.get()).length);u++){
-                Expression exp = (exps.get()).get(u);
+            for (; (u < (exps).length);u++){
+                Expression exp = (exps).get(u);
                 {
                     TupleDeclaration td = isAliasThisTuple(exp);
                     if ((td) != null)
                     {
-                        (exps.get()).remove(u);
+                        (exps).remove(u);
                         {
-                            Slice<RootObject> __r1333 = (td.objects.get()).opSlice().copy();
+                            Slice<RootObject> __r1333 = (td.objects).opSlice().copy();
                             int __key1332 = 0;
                             for (; (__key1332 < __r1333.getLength());__key1332 += 1) {
                                 RootObject o = __r1333.get(__key1332);
@@ -493,7 +493,7 @@ public class expression {
                                 DotVarExp e = new DotVarExp(exp.loc, exp, d, true);
                                 assert(d.type != null);
                                 e.type.value = d.type;
-                                (exps.get()).insert(u + i, e);
+                                (exps).insert(u + i, e);
                             }
                         }
                         return u;
@@ -505,7 +505,7 @@ public class expression {
     }
 
     // defaulted all parameters starting with #2
-    public static int expandAliasThisTuples(Ptr<DArray<Expression>> exps) {
+    public static int expandAliasThisTuples(DArray<Expression> exps) {
         return expandAliasThisTuples(exps, 0);
     }
 
@@ -647,12 +647,12 @@ public class expression {
             switch ((e.op & 0xFF))
             {
                 case 26:
-                    return ((VarExp)e).var.isVarDeclaration();
+                    return (((VarExp)e)).var.isVarDeclaration();
                 case 27:
-                    e = ((DotVarExp)e).e1.value;
+                    e = (((DotVarExp)e)).e1.value;
                     continue;
                 case 62:
-                    IndexExp ei = (IndexExp)e;
+                    IndexExp ei = ((IndexExp)e);
                     e = ei.e1.value;
                     Type ti = e.type.value.toBasetype();
                     if (((ti.ty & 0xFF) == ENUMTY.Tsarray))
@@ -661,7 +661,7 @@ public class expression {
                     }
                     return null;
                 case 31:
-                    SliceExp ei_1 = (SliceExp)e;
+                    SliceExp ei_1 = ((SliceExp)e);
                     e = ei_1.e1.value;
                     Type ti_1 = e.type.value.toBasetype();
                     if (((ti_1.ty & 0xFF) == ENUMTY.Tsarray))
@@ -671,7 +671,7 @@ public class expression {
                     return null;
                 case 123:
                 case 124:
-                    return ((ThisExp)e).var.isVarDeclaration();
+                    return (((ThisExp)e)).var.isVarDeclaration();
                 default:
                 return null;
             }
@@ -738,7 +738,7 @@ public class expression {
             Ref<OutBuffer> buf = ref(new OutBuffer());
             try {
                 Ref<HdrGenState> hgs = ref(new HdrGenState());
-                toCBuffer(this, ptr(buf), ptr(hgs));
+                toCBuffer(this, buf.value, ptr(hgs));
                 return buf.value.extractChars();
             }
             finally {
@@ -816,7 +816,7 @@ public class expression {
             {
                 return e;
             }
-            CommaExp ce = (CommaExp)e;
+            CommaExp ce = ((CommaExp)e);
             if (((ce.e2.value.op & 0xFF) != 99))
             {
                 e0.value = ce.e1.value;
@@ -826,29 +826,29 @@ public class expression {
             {
                 e0.value = e;
                 Ptr<Expression> pce = pcopy(ptr(ce.e2));
-                for (; ((((CommaExp)pce.get()).e2.value.op & 0xFF) == 99);){
-                    pce = pcopy((ptr((CommaExp)pce.get().e2)));
+                for (; (((((CommaExp)pce.get())).e2.value.op & 0xFF) == 99);){
+                    pce = pcopy(ptr(((CommaExp)pce.get()).e2));
                 }
                 assert((((pce.get()).op & 0xFF) == 99));
-                ce = (CommaExp)pce.get();
+                ce = ((CommaExp)pce.get());
                 pce.set(0, ce.e1.value);
                 return ce.e2.value;
             }
         }
 
         // Erasure: arraySyntaxCopy<Ptr>
-        public static Ptr<DArray<Expression>> arraySyntaxCopy(Ptr<DArray<Expression>> exps) {
-            Ptr<DArray<Expression>> a = null;
+        public static DArray<Expression> arraySyntaxCopy(DArray<Expression> exps) {
+            DArray<Expression> a = null;
             if (exps != null)
             {
-                a = pcopy((refPtr(new DArray<Expression>((exps.get()).length))));
+                a = pcopy(new DArray<Expression>((exps).length));
                 {
-                    Slice<Expression> __r1335 = (exps.get()).opSlice().copy();
+                    Slice<Expression> __r1335 = (exps).opSlice().copy();
                     int __key1334 = 0;
                     for (; (__key1334 < __r1335.getLength());__key1334 += 1) {
                         Expression e = __r1335.get(__key1334);
                         int i = __key1334;
-                        a.get().set(i, e != null ? e.syntaxCopy() : null);
+                        a.set(i, e != null ? e.syntaxCopy() : null);
                     }
                 }
             }
@@ -1180,7 +1180,7 @@ public class expression {
             }
             if (((v.type.ty & 0xFF) == ENUMTY.Tstruct))
             {
-                StructDeclaration sd = ((TypeStruct)v.type).sym;
+                StructDeclaration sd = (((TypeStruct)v.type)).sym;
                 if (sd.hasNoFields)
                 {
                     return false;
@@ -1252,8 +1252,8 @@ public class expression {
                                 try {
                                     Ref<OutBuffer> vbuf = ref(new OutBuffer());
                                     try {
-                                        MODMatchToBuffer(ptr(ffbuf), ff.type.mod, v.type.mod);
-                                        MODMatchToBuffer(ptr(vbuf), v.type.mod, ff.type.mod);
+                                        MODMatchToBuffer(ffbuf.value, ff.type.mod, v.type.mod);
+                                        MODMatchToBuffer(vbuf.value, v.type.mod, ff.type.mod);
                                         this.error(new BytePtr("%s%s `%s` cannot access %sdata `%s`"), ffbuf.value.peekChars(), ff.kind(), ff.toPrettyChars(false), vbuf.value.peekChars(), v.toChars());
                                         err = true;
                                         break;
@@ -1384,7 +1384,7 @@ public class expression {
             }
             if (((this.op & 0xFF) == 26) && ((this.type.value.ty & 0xFF) != ENUMTY.Terror))
             {
-                VarExp ve = (VarExp)this;
+                VarExp ve = ((VarExp)this);
                 if (isNeedThisScope(sc, ve.var))
                 {
                     this.error(new BytePtr("need `this` for `%s` of type `%s`"), ve.var.toChars(), ve.var.type.toChars());
@@ -1538,527 +1538,527 @@ public class expression {
 
         // Erasure: isIntegerExp<>
         public  IntegerExp isIntegerExp() {
-            return ((this.op & 0xFF) == 135) ? (IntegerExp)this : null;
+            return ((this.op & 0xFF) == 135) ? ((IntegerExp)this) : null;
         }
 
         // Erasure: isErrorExp<>
         public  ErrorExp isErrorExp() {
-            return ((this.op & 0xFF) == 127) ? (ErrorExp)this : null;
+            return ((this.op & 0xFF) == 127) ? ((ErrorExp)this) : null;
         }
 
         // Erasure: isVoidInitExp<>
         public  VoidInitExp isVoidInitExp() {
-            return ((this.op & 0xFF) == 128) ? (VoidInitExp)this : null;
+            return ((this.op & 0xFF) == 128) ? ((VoidInitExp)this) : null;
         }
 
         // Erasure: isRealExp<>
         public  RealExp isRealExp() {
-            return ((this.op & 0xFF) == 140) ? (RealExp)this : null;
+            return ((this.op & 0xFF) == 140) ? ((RealExp)this) : null;
         }
 
         // Erasure: isComplexExp<>
         public  ComplexExp isComplexExp() {
-            return ((this.op & 0xFF) == 147) ? (ComplexExp)this : null;
+            return ((this.op & 0xFF) == 147) ? ((ComplexExp)this) : null;
         }
 
         // Erasure: isIdentifierExp<>
         public  IdentifierExp isIdentifierExp() {
-            return ((this.op & 0xFF) == 120) ? (IdentifierExp)this : null;
+            return ((this.op & 0xFF) == 120) ? ((IdentifierExp)this) : null;
         }
 
         // Erasure: isDollarExp<>
         public  DollarExp isDollarExp() {
-            return ((this.op & 0xFF) == 35) ? (DollarExp)this : null;
+            return ((this.op & 0xFF) == 35) ? ((DollarExp)this) : null;
         }
 
         // Erasure: isDsymbolExp<>
         public  DsymbolExp isDsymbolExp() {
-            return ((this.op & 0xFF) == 41) ? (DsymbolExp)this : null;
+            return ((this.op & 0xFF) == 41) ? ((DsymbolExp)this) : null;
         }
 
         // Erasure: isThisExp<>
         public  ThisExp isThisExp() {
-            return ((this.op & 0xFF) == 123) ? (ThisExp)this : null;
+            return ((this.op & 0xFF) == 123) ? ((ThisExp)this) : null;
         }
 
         // Erasure: isSuperExp<>
         public  SuperExp isSuperExp() {
-            return ((this.op & 0xFF) == 124) ? (SuperExp)this : null;
+            return ((this.op & 0xFF) == 124) ? ((SuperExp)this) : null;
         }
 
         // Erasure: isNullExp<>
         public  NullExp isNullExp() {
-            return ((this.op & 0xFF) == 13) ? (NullExp)this : null;
+            return ((this.op & 0xFF) == 13) ? ((NullExp)this) : null;
         }
 
         // Erasure: isStringExp<>
         public  StringExp isStringExp() {
-            return ((this.op & 0xFF) == 121) ? (StringExp)this : null;
+            return ((this.op & 0xFF) == 121) ? ((StringExp)this) : null;
         }
 
         // Erasure: isTupleExp<>
         public  TupleExp isTupleExp() {
-            return ((this.op & 0xFF) == 126) ? (TupleExp)this : null;
+            return ((this.op & 0xFF) == 126) ? ((TupleExp)this) : null;
         }
 
         // Erasure: isArrayLiteralExp<>
         public  ArrayLiteralExp isArrayLiteralExp() {
-            return ((this.op & 0xFF) == 47) ? (ArrayLiteralExp)this : null;
+            return ((this.op & 0xFF) == 47) ? ((ArrayLiteralExp)this) : null;
         }
 
         // Erasure: isAssocArrayLiteralExp<>
         public  AssocArrayLiteralExp isAssocArrayLiteralExp() {
-            return ((this.op & 0xFF) == 48) ? (AssocArrayLiteralExp)this : null;
+            return ((this.op & 0xFF) == 48) ? ((AssocArrayLiteralExp)this) : null;
         }
 
         // Erasure: isStructLiteralExp<>
         public  StructLiteralExp isStructLiteralExp() {
-            return ((this.op & 0xFF) == 49) ? (StructLiteralExp)this : null;
+            return ((this.op & 0xFF) == 49) ? ((StructLiteralExp)this) : null;
         }
 
         // Erasure: isTypeExp<>
         public  TypeExp isTypeExp() {
-            return ((this.op & 0xFF) == 20) ? (TypeExp)this : null;
+            return ((this.op & 0xFF) == 20) ? ((TypeExp)this) : null;
         }
 
         // Erasure: isScopeExp<>
         public  ScopeExp isScopeExp() {
-            return ((this.op & 0xFF) == 203) ? (ScopeExp)this : null;
+            return ((this.op & 0xFF) == 203) ? ((ScopeExp)this) : null;
         }
 
         // Erasure: isTemplateExp<>
         public  TemplateExp isTemplateExp() {
-            return ((this.op & 0xFF) == 36) ? (TemplateExp)this : null;
+            return ((this.op & 0xFF) == 36) ? ((TemplateExp)this) : null;
         }
 
         // Erasure: isNewExp<>
         public  NewExp isNewExp() {
-            return ((this.op & 0xFF) == 22) ? (NewExp)this : null;
+            return ((this.op & 0xFF) == 22) ? ((NewExp)this) : null;
         }
 
         // Erasure: isNewAnonClassExp<>
         public  NewAnonClassExp isNewAnonClassExp() {
-            return ((this.op & 0xFF) == 45) ? (NewAnonClassExp)this : null;
+            return ((this.op & 0xFF) == 45) ? ((NewAnonClassExp)this) : null;
         }
 
         // Erasure: isSymOffExp<>
         public  SymOffExp isSymOffExp() {
-            return ((this.op & 0xFF) == 25) ? (SymOffExp)this : null;
+            return ((this.op & 0xFF) == 25) ? ((SymOffExp)this) : null;
         }
 
         // Erasure: isVarExp<>
         public  VarExp isVarExp() {
-            return ((this.op & 0xFF) == 26) ? (VarExp)this : null;
+            return ((this.op & 0xFF) == 26) ? ((VarExp)this) : null;
         }
 
         // Erasure: isOverExp<>
         public  OverExp isOverExp() {
-            return ((this.op & 0xFF) == 214) ? (OverExp)this : null;
+            return ((this.op & 0xFF) == 214) ? ((OverExp)this) : null;
         }
 
         // Erasure: isFuncExp<>
         public  FuncExp isFuncExp() {
-            return ((this.op & 0xFF) == 161) ? (FuncExp)this : null;
+            return ((this.op & 0xFF) == 161) ? ((FuncExp)this) : null;
         }
 
         // Erasure: isDeclarationExp<>
         public  DeclarationExp isDeclarationExp() {
-            return ((this.op & 0xFF) == 38) ? (DeclarationExp)this : null;
+            return ((this.op & 0xFF) == 38) ? ((DeclarationExp)this) : null;
         }
 
         // Erasure: isTypeidExp<>
         public  TypeidExp isTypeidExp() {
-            return ((this.op & 0xFF) == 42) ? (TypeidExp)this : null;
+            return ((this.op & 0xFF) == 42) ? ((TypeidExp)this) : null;
         }
 
         // Erasure: isTraitsExp<>
         public  TraitsExp isTraitsExp() {
-            return ((this.op & 0xFF) == 213) ? (TraitsExp)this : null;
+            return ((this.op & 0xFF) == 213) ? ((TraitsExp)this) : null;
         }
 
         // Erasure: isHaltExp<>
         public  HaltExp isHaltExp() {
-            return ((this.op & 0xFF) == 125) ? (HaltExp)this : null;
+            return ((this.op & 0xFF) == 125) ? ((HaltExp)this) : null;
         }
 
         // Erasure: isExp<>
         public  IsExp isExp() {
-            return ((this.op & 0xFF) == 63) ? (IsExp)this : null;
+            return ((this.op & 0xFF) == 63) ? ((IsExp)this) : null;
         }
 
         // Erasure: isCompileExp<>
         public  CompileExp isCompileExp() {
-            return ((this.op & 0xFF) == 162) ? (CompileExp)this : null;
+            return ((this.op & 0xFF) == 162) ? ((CompileExp)this) : null;
         }
 
         // Erasure: isImportExp<>
         public  ImportExp isImportExp() {
-            return ((this.op & 0xFF) == 157) ? (ImportExp)this : null;
+            return ((this.op & 0xFF) == 157) ? ((ImportExp)this) : null;
         }
 
         // Erasure: isAssertExp<>
         public  AssertExp isAssertExp() {
-            return ((this.op & 0xFF) == 14) ? (AssertExp)this : null;
+            return ((this.op & 0xFF) == 14) ? ((AssertExp)this) : null;
         }
 
         // Erasure: isDotIdExp<>
         public  DotIdExp isDotIdExp() {
-            return ((this.op & 0xFF) == 28) ? (DotIdExp)this : null;
+            return ((this.op & 0xFF) == 28) ? ((DotIdExp)this) : null;
         }
 
         // Erasure: isDotTemplateExp<>
         public  DotTemplateExp isDotTemplateExp() {
-            return ((this.op & 0xFF) == 37) ? (DotTemplateExp)this : null;
+            return ((this.op & 0xFF) == 37) ? ((DotTemplateExp)this) : null;
         }
 
         // Erasure: isDotVarExp<>
         public  DotVarExp isDotVarExp() {
-            return ((this.op & 0xFF) == 27) ? (DotVarExp)this : null;
+            return ((this.op & 0xFF) == 27) ? ((DotVarExp)this) : null;
         }
 
         // Erasure: isDotTemplateInstanceExp<>
         public  DotTemplateInstanceExp isDotTemplateInstanceExp() {
-            return ((this.op & 0xFF) == 29) ? (DotTemplateInstanceExp)this : null;
+            return ((this.op & 0xFF) == 29) ? ((DotTemplateInstanceExp)this) : null;
         }
 
         // Erasure: isDelegateExp<>
         public  DelegateExp isDelegateExp() {
-            return ((this.op & 0xFF) == 160) ? (DelegateExp)this : null;
+            return ((this.op & 0xFF) == 160) ? ((DelegateExp)this) : null;
         }
 
         // Erasure: isDotTypeExp<>
         public  DotTypeExp isDotTypeExp() {
-            return ((this.op & 0xFF) == 30) ? (DotTypeExp)this : null;
+            return ((this.op & 0xFF) == 30) ? ((DotTypeExp)this) : null;
         }
 
         // Erasure: isCallExp<>
         public  CallExp isCallExp() {
-            return ((this.op & 0xFF) == 18) ? (CallExp)this : null;
+            return ((this.op & 0xFF) == 18) ? ((CallExp)this) : null;
         }
 
         // Erasure: isAddrExp<>
         public  AddrExp isAddrExp() {
-            return ((this.op & 0xFF) == 19) ? (AddrExp)this : null;
+            return ((this.op & 0xFF) == 19) ? ((AddrExp)this) : null;
         }
 
         // Erasure: isPtrExp<>
         public  PtrExp isPtrExp() {
-            return ((this.op & 0xFF) == 24) ? (PtrExp)this : null;
+            return ((this.op & 0xFF) == 24) ? ((PtrExp)this) : null;
         }
 
         // Erasure: isNegExp<>
         public  NegExp isNegExp() {
-            return ((this.op & 0xFF) == 8) ? (NegExp)this : null;
+            return ((this.op & 0xFF) == 8) ? ((NegExp)this) : null;
         }
 
         // Erasure: isUAddExp<>
         public  UAddExp isUAddExp() {
-            return ((this.op & 0xFF) == 43) ? (UAddExp)this : null;
+            return ((this.op & 0xFF) == 43) ? ((UAddExp)this) : null;
         }
 
         // Erasure: isComExp<>
         public  ComExp isComExp() {
-            return ((this.op & 0xFF) == 92) ? (ComExp)this : null;
+            return ((this.op & 0xFF) == 92) ? ((ComExp)this) : null;
         }
 
         // Erasure: isNotExp<>
         public  NotExp isNotExp() {
-            return ((this.op & 0xFF) == 91) ? (NotExp)this : null;
+            return ((this.op & 0xFF) == 91) ? ((NotExp)this) : null;
         }
 
         // Erasure: isDeleteExp<>
         public  DeleteExp isDeleteExp() {
-            return ((this.op & 0xFF) == 23) ? (DeleteExp)this : null;
+            return ((this.op & 0xFF) == 23) ? ((DeleteExp)this) : null;
         }
 
         // Erasure: isCastExp<>
         public  CastExp isCastExp() {
-            return ((this.op & 0xFF) == 12) ? (CastExp)this : null;
+            return ((this.op & 0xFF) == 12) ? ((CastExp)this) : null;
         }
 
         // Erasure: isVectorExp<>
         public  VectorExp isVectorExp() {
-            return ((this.op & 0xFF) == 229) ? (VectorExp)this : null;
+            return ((this.op & 0xFF) == 229) ? ((VectorExp)this) : null;
         }
 
         // Erasure: isVectorArrayExp<>
         public  VectorArrayExp isVectorArrayExp() {
-            return ((this.op & 0xFF) == 236) ? (VectorArrayExp)this : null;
+            return ((this.op & 0xFF) == 236) ? ((VectorArrayExp)this) : null;
         }
 
         // Erasure: isSliceExp<>
         public  SliceExp isSliceExp() {
-            return ((this.op & 0xFF) == 31) ? (SliceExp)this : new RawSliceExp();
+            return ((this.op & 0xFF) == 31) ? ((SliceExp)this) : new RawSliceExp();
         }
 
         // Erasure: isArrayLengthExp<>
         public  ArrayLengthExp isArrayLengthExp() {
-            return ((this.op & 0xFF) == 32) ? (ArrayLengthExp)this : null;
+            return ((this.op & 0xFF) == 32) ? ((ArrayLengthExp)this) : null;
         }
 
         // Erasure: isArrayExp<>
         public  ArrayExp isArrayExp() {
-            return ((this.op & 0xFF) == 17) ? (ArrayExp)this : null;
+            return ((this.op & 0xFF) == 17) ? ((ArrayExp)this) : null;
         }
 
         // Erasure: isDotExp<>
         public  DotExp isDotExp() {
-            return ((this.op & 0xFF) == 97) ? (DotExp)this : null;
+            return ((this.op & 0xFF) == 97) ? ((DotExp)this) : null;
         }
 
         // Erasure: isCommaExp<>
         public  CommaExp isCommaExp() {
-            return ((this.op & 0xFF) == 99) ? (CommaExp)this : null;
+            return ((this.op & 0xFF) == 99) ? ((CommaExp)this) : null;
         }
 
         // Erasure: isIntervalExp<>
         public  IntervalExp isIntervalExp() {
-            return ((this.op & 0xFF) == 231) ? (IntervalExp)this : null;
+            return ((this.op & 0xFF) == 231) ? ((IntervalExp)this) : null;
         }
 
         // Erasure: isDelegatePtrExp<>
         public  DelegatePtrExp isDelegatePtrExp() {
-            return ((this.op & 0xFF) == 52) ? (DelegatePtrExp)this : null;
+            return ((this.op & 0xFF) == 52) ? ((DelegatePtrExp)this) : null;
         }
 
         // Erasure: isDelegateFuncptrExp<>
         public  DelegateFuncptrExp isDelegateFuncptrExp() {
-            return ((this.op & 0xFF) == 53) ? (DelegateFuncptrExp)this : null;
+            return ((this.op & 0xFF) == 53) ? ((DelegateFuncptrExp)this) : null;
         }
 
         // Erasure: isIndexExp<>
         public  IndexExp isIndexExp() {
-            return ((this.op & 0xFF) == 62) ? (IndexExp)this : null;
+            return ((this.op & 0xFF) == 62) ? ((IndexExp)this) : null;
         }
 
         // Erasure: isPostExp<>
         public  PostExp isPostExp() {
-            return ((this.op & 0xFF) == 93) || ((this.op & 0xFF) == 94) ? (PostExp)this : null;
+            return ((this.op & 0xFF) == 93) || ((this.op & 0xFF) == 94) ? ((PostExp)this) : null;
         }
 
         // Erasure: isPreExp<>
         public  PreExp isPreExp() {
-            return ((this.op & 0xFF) == 103) || ((this.op & 0xFF) == 104) ? (PreExp)this : null;
+            return ((this.op & 0xFF) == 103) || ((this.op & 0xFF) == 104) ? ((PreExp)this) : null;
         }
 
         // Erasure: isAssignExp<>
         public  AssignExp isAssignExp() {
-            return ((this.op & 0xFF) == 90) ? (AssignExp)this : null;
+            return ((this.op & 0xFF) == 90) ? ((AssignExp)this) : null;
         }
 
         // Erasure: isConstructExp<>
         public  ConstructExp isConstructExp() {
-            return ((this.op & 0xFF) == 95) ? (ConstructExp)this : null;
+            return ((this.op & 0xFF) == 95) ? ((ConstructExp)this) : null;
         }
 
         // Erasure: isBlitExp<>
         public  BlitExp isBlitExp() {
-            return ((this.op & 0xFF) == 96) ? (BlitExp)this : null;
+            return ((this.op & 0xFF) == 96) ? ((BlitExp)this) : null;
         }
 
         // Erasure: isAddAssignExp<>
         public  AddAssignExp isAddAssignExp() {
-            return ((this.op & 0xFF) == 76) ? (AddAssignExp)this : null;
+            return ((this.op & 0xFF) == 76) ? ((AddAssignExp)this) : null;
         }
 
         // Erasure: isMinAssignExp<>
         public  MinAssignExp isMinAssignExp() {
-            return ((this.op & 0xFF) == 77) ? (MinAssignExp)this : null;
+            return ((this.op & 0xFF) == 77) ? ((MinAssignExp)this) : null;
         }
 
         // Erasure: isMulAssignExp<>
         public  MulAssignExp isMulAssignExp() {
-            return ((this.op & 0xFF) == 81) ? (MulAssignExp)this : null;
+            return ((this.op & 0xFF) == 81) ? ((MulAssignExp)this) : null;
         }
 
         // Erasure: isDivAssignExp<>
         public  DivAssignExp isDivAssignExp() {
-            return ((this.op & 0xFF) == 82) ? (DivAssignExp)this : null;
+            return ((this.op & 0xFF) == 82) ? ((DivAssignExp)this) : null;
         }
 
         // Erasure: isModAssignExp<>
         public  ModAssignExp isModAssignExp() {
-            return ((this.op & 0xFF) == 83) ? (ModAssignExp)this : null;
+            return ((this.op & 0xFF) == 83) ? ((ModAssignExp)this) : null;
         }
 
         // Erasure: isAndAssignExp<>
         public  AndAssignExp isAndAssignExp() {
-            return ((this.op & 0xFF) == 87) ? (AndAssignExp)this : null;
+            return ((this.op & 0xFF) == 87) ? ((AndAssignExp)this) : null;
         }
 
         // Erasure: isOrAssignExp<>
         public  OrAssignExp isOrAssignExp() {
-            return ((this.op & 0xFF) == 88) ? (OrAssignExp)this : null;
+            return ((this.op & 0xFF) == 88) ? ((OrAssignExp)this) : null;
         }
 
         // Erasure: isXorAssignExp<>
         public  XorAssignExp isXorAssignExp() {
-            return ((this.op & 0xFF) == 89) ? (XorAssignExp)this : null;
+            return ((this.op & 0xFF) == 89) ? ((XorAssignExp)this) : null;
         }
 
         // Erasure: isPowAssignExp<>
         public  PowAssignExp isPowAssignExp() {
-            return ((this.op & 0xFF) == 227) ? (PowAssignExp)this : null;
+            return ((this.op & 0xFF) == 227) ? ((PowAssignExp)this) : null;
         }
 
         // Erasure: isShlAssignExp<>
         public  ShlAssignExp isShlAssignExp() {
-            return ((this.op & 0xFF) == 66) ? (ShlAssignExp)this : null;
+            return ((this.op & 0xFF) == 66) ? ((ShlAssignExp)this) : null;
         }
 
         // Erasure: isShrAssignExp<>
         public  ShrAssignExp isShrAssignExp() {
-            return ((this.op & 0xFF) == 67) ? (ShrAssignExp)this : null;
+            return ((this.op & 0xFF) == 67) ? ((ShrAssignExp)this) : null;
         }
 
         // Erasure: isUshrAssignExp<>
         public  UshrAssignExp isUshrAssignExp() {
-            return ((this.op & 0xFF) == 69) ? (UshrAssignExp)this : null;
+            return ((this.op & 0xFF) == 69) ? ((UshrAssignExp)this) : null;
         }
 
         // Erasure: isCatAssignExp<>
         public  CatAssignExp isCatAssignExp() {
-            return ((this.op & 0xFF) == 71) ? (CatAssignExp)this : null;
+            return ((this.op & 0xFF) == 71) ? ((CatAssignExp)this) : null;
         }
 
         // Erasure: isCatElemAssignExp<>
         public  CatElemAssignExp isCatElemAssignExp() {
-            return ((this.op & 0xFF) == 72) ? (CatElemAssignExp)this : null;
+            return ((this.op & 0xFF) == 72) ? ((CatElemAssignExp)this) : null;
         }
 
         // Erasure: isCatDcharAssignExp<>
         public  CatDcharAssignExp isCatDcharAssignExp() {
-            return ((this.op & 0xFF) == 73) ? (CatDcharAssignExp)this : null;
+            return ((this.op & 0xFF) == 73) ? ((CatDcharAssignExp)this) : null;
         }
 
         // Erasure: isAddExp<>
         public  AddExp isAddExp() {
-            return ((this.op & 0xFF) == 74) ? (AddExp)this : null;
+            return ((this.op & 0xFF) == 74) ? ((AddExp)this) : null;
         }
 
         // Erasure: isMinExp<>
         public  MinExp isMinExp() {
-            return ((this.op & 0xFF) == 75) ? (MinExp)this : null;
+            return ((this.op & 0xFF) == 75) ? ((MinExp)this) : null;
         }
 
         // Erasure: isCatExp<>
         public  CatExp isCatExp() {
-            return ((this.op & 0xFF) == 70) ? (CatExp)this : null;
+            return ((this.op & 0xFF) == 70) ? ((CatExp)this) : null;
         }
 
         // Erasure: isMulExp<>
         public  MulExp isMulExp() {
-            return ((this.op & 0xFF) == 78) ? (MulExp)this : null;
+            return ((this.op & 0xFF) == 78) ? ((MulExp)this) : null;
         }
 
         // Erasure: isDivExp<>
         public  DivExp isDivExp() {
-            return ((this.op & 0xFF) == 79) ? (DivExp)this : null;
+            return ((this.op & 0xFF) == 79) ? ((DivExp)this) : null;
         }
 
         // Erasure: isModExp<>
         public  ModExp isModExp() {
-            return ((this.op & 0xFF) == 80) ? (ModExp)this : null;
+            return ((this.op & 0xFF) == 80) ? ((ModExp)this) : null;
         }
 
         // Erasure: isPowExp<>
         public  PowExp isPowExp() {
-            return ((this.op & 0xFF) == 226) ? (PowExp)this : null;
+            return ((this.op & 0xFF) == 226) ? ((PowExp)this) : null;
         }
 
         // Erasure: isShlExp<>
         public  ShlExp isShlExp() {
-            return ((this.op & 0xFF) == 64) ? (ShlExp)this : null;
+            return ((this.op & 0xFF) == 64) ? ((ShlExp)this) : null;
         }
 
         // Erasure: isShrExp<>
         public  ShrExp isShrExp() {
-            return ((this.op & 0xFF) == 65) ? (ShrExp)this : null;
+            return ((this.op & 0xFF) == 65) ? ((ShrExp)this) : null;
         }
 
         // Erasure: isUshrExp<>
         public  UshrExp isUshrExp() {
-            return ((this.op & 0xFF) == 68) ? (UshrExp)this : null;
+            return ((this.op & 0xFF) == 68) ? ((UshrExp)this) : null;
         }
 
         // Erasure: isAndExp<>
         public  AndExp isAndExp() {
-            return ((this.op & 0xFF) == 84) ? (AndExp)this : null;
+            return ((this.op & 0xFF) == 84) ? ((AndExp)this) : null;
         }
 
         // Erasure: isOrExp<>
         public  OrExp isOrExp() {
-            return ((this.op & 0xFF) == 85) ? (OrExp)this : null;
+            return ((this.op & 0xFF) == 85) ? ((OrExp)this) : null;
         }
 
         // Erasure: isXorExp<>
         public  XorExp isXorExp() {
-            return ((this.op & 0xFF) == 86) ? (XorExp)this : null;
+            return ((this.op & 0xFF) == 86) ? ((XorExp)this) : null;
         }
 
         // Erasure: isLogicalExp<>
         public  LogicalExp isLogicalExp() {
-            return ((this.op & 0xFF) == 101) || ((this.op & 0xFF) == 102) ? (LogicalExp)this : null;
+            return ((this.op & 0xFF) == 101) || ((this.op & 0xFF) == 102) ? ((LogicalExp)this) : null;
         }
 
         // Erasure: isInExp<>
         public  InExp isInExp() {
-            return ((this.op & 0xFF) == 175) ? (InExp)this : null;
+            return ((this.op & 0xFF) == 175) ? ((InExp)this) : null;
         }
 
         // Erasure: isRemoveExp<>
         public  RemoveExp isRemoveExp() {
-            return ((this.op & 0xFF) == 44) ? (RemoveExp)this : null;
+            return ((this.op & 0xFF) == 44) ? ((RemoveExp)this) : null;
         }
 
         // Erasure: isEqualExp<>
         public  EqualExp isEqualExp() {
-            return ((this.op & 0xFF) == 58) || ((this.op & 0xFF) == 59) ? (EqualExp)this : null;
+            return ((this.op & 0xFF) == 58) || ((this.op & 0xFF) == 59) ? ((EqualExp)this) : null;
         }
 
         // Erasure: isIdentityExp<>
         public  IdentityExp isIdentityExp() {
-            return ((this.op & 0xFF) == 60) || ((this.op & 0xFF) == 61) ? (IdentityExp)this : null;
+            return ((this.op & 0xFF) == 60) || ((this.op & 0xFF) == 61) ? ((IdentityExp)this) : null;
         }
 
         // Erasure: isCondExp<>
         public  CondExp isCondExp() {
-            return ((this.op & 0xFF) == 100) ? (CondExp)this : null;
+            return ((this.op & 0xFF) == 100) ? ((CondExp)this) : null;
         }
 
         // Erasure: isDefaultInitExp<>
         public  DefaultInitExp isDefaultInitExp() {
-            return ((this.op & 0xFF) == 190) ? (DefaultInitExp)this : null;
+            return ((this.op & 0xFF) == 190) ? ((DefaultInitExp)this) : null;
         }
 
         // Erasure: isFileInitExp<>
         public  FileInitExp isFileInitExp() {
-            return ((this.op & 0xFF) == 219) || ((this.op & 0xFF) == 220) ? (FileInitExp)this : null;
+            return ((this.op & 0xFF) == 219) || ((this.op & 0xFF) == 220) ? ((FileInitExp)this) : null;
         }
 
         // Erasure: isLineInitExp<>
         public  LineInitExp isLineInitExp() {
-            return ((this.op & 0xFF) == 218) ? (LineInitExp)this : null;
+            return ((this.op & 0xFF) == 218) ? ((LineInitExp)this) : null;
         }
 
         // Erasure: isModuleInitExp<>
         public  ModuleInitExp isModuleInitExp() {
-            return ((this.op & 0xFF) == 221) ? (ModuleInitExp)this : null;
+            return ((this.op & 0xFF) == 221) ? ((ModuleInitExp)this) : null;
         }
 
         // Erasure: isFuncInitExp<>
         public  FuncInitExp isFuncInitExp() {
-            return ((this.op & 0xFF) == 222) ? (FuncInitExp)this : null;
+            return ((this.op & 0xFF) == 222) ? ((FuncInitExp)this) : null;
         }
 
         // Erasure: isPrettyFuncInitExp<>
         public  PrettyFuncInitExp isPrettyFuncInitExp() {
-            return ((this.op & 0xFF) == 223) ? (PrettyFuncInitExp)this : null;
+            return ((this.op & 0xFF) == 223) ? ((PrettyFuncInitExp)this) : null;
         }
 
         // Erasure: isClassReferenceExp<>
         public  ClassReferenceExp isClassReferenceExp() {
-            return ((this.op & 0xFF) == 50) ? (ClassReferenceExp)this : null;
+            return ((this.op & 0xFF) == 50) ? ((ClassReferenceExp)this) : null;
         }
 
         // Erasure: accept<Visitor>
@@ -2114,7 +2114,7 @@ public class expression {
                 return true;
             }
             {
-                IntegerExp ne = ((Expression)o).isIntegerExp();
+                IntegerExp ne = (((Expression)o)).isIntegerExp();
                 if ((ne) != null)
                 {
                     if (this.type.value.toHeadMutable().equals(ne.type.value.toHeadMutable()) && (this.value == ne.value))
@@ -2395,7 +2395,7 @@ public class expression {
                 return true;
             }
             {
-                RealExp ne = ((Expression)o).isRealExp();
+                RealExp ne = (((Expression)o)).isRealExp();
                 if ((ne) != null)
                 {
                     if (this.type.value.toHeadMutable().equals(ne.type.value.toHeadMutable()) && (RealIdentical(this.value, ne.value) != 0))
@@ -2483,7 +2483,7 @@ public class expression {
                 return true;
             }
             {
-                ComplexExp ne = ((Expression)o).isComplexExp();
+                ComplexExp ne = (((Expression)o)).isComplexExp();
                 if ((ne) != null)
                 {
                     if (this.type.value.toHeadMutable().equals(ne.type.value.toHeadMutable()) && (RealIdentical(creall(this.value), creall(ne.value)) != 0) && (RealIdentical(cimagl(this.value), cimagl(ne.value)) != 0))
@@ -2681,7 +2681,7 @@ public class expression {
 
         // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
-            ThisExp r = (ThisExp)super.syntaxCopy();
+            ThisExp r = ((ThisExp)super.syntaxCopy());
             r.type.value = null;
             r.var = null;
             return r;
@@ -2836,7 +2836,7 @@ public class expression {
         // Erasure: __ctor<Loc, Ptr, int>
         public  StringExp(Loc loc, Object string, int len) {
             super(loc, TOK.string_, 36);
-            this.string = pcopy((((BytePtr)string)));
+            this.string = pcopy(((BytePtr)string));
             this.len = len;
             this.sz = (byte)1;
         }
@@ -2844,7 +2844,7 @@ public class expression {
         // Erasure: __ctor<Loc, Ptr, int, byte>
         public  StringExp(Loc loc, Object string, int len, byte postfix) {
             super(loc, TOK.string_, 36);
-            this.string = pcopy((((BytePtr)string)));
+            this.string = pcopy(((BytePtr)string));
             this.len = len;
             this.postfix = postfix;
             this.sz = (byte)1;
@@ -3201,16 +3201,16 @@ public class expression {
     public static class TupleExp extends Expression
     {
         public Ref<Expression> e0 = ref(null);
-        public Ptr<DArray<Expression>> exps = null;
+        public DArray<Expression> exps = null;
         // Erasure: __ctor<Loc, Expression, Ptr>
-        public  TupleExp(Loc loc, Expression e0, Ptr<DArray<Expression>> exps) {
+        public  TupleExp(Loc loc, Expression e0, DArray<Expression> exps) {
             super(loc, TOK.tuple, 32);
             this.e0.value = e0;
             this.exps = pcopy(exps);
         }
 
         // Erasure: __ctor<Loc, Ptr>
-        public  TupleExp(Loc loc, Ptr<DArray<Expression>> exps) {
+        public  TupleExp(Loc loc, DArray<Expression> exps) {
             super(loc, TOK.tuple, 32);
             this.exps = pcopy(exps);
         }
@@ -3218,10 +3218,10 @@ public class expression {
         // Erasure: __ctor<Loc, TupleDeclaration>
         public  TupleExp(Loc loc, TupleDeclaration tup) {
             super(loc, TOK.tuple, 32);
-            this.exps = pcopy((refPtr(new DArray<Expression>())));
-            (this.exps.get()).reserve((tup.objects.get()).length);
+            this.exps = pcopy(new DArray<Expression>());
+            (this.exps).reserve((tup.objects).length);
             {
-                Slice<RootObject> __r1342 = (tup.objects.get()).opSlice().copy();
+                Slice<RootObject> __r1342 = (tup.objects).opSlice().copy();
                 int __key1343 = 0;
                 for (; (__key1343 < __r1342.getLength());__key1343 += 1) {
                     RootObject o = __r1342.get(__key1343);
@@ -3230,7 +3230,7 @@ public class expression {
                         if ((s) != null)
                         {
                             Expression e = new DsymbolExp(loc, s, true);
-                            (this.exps.get()).push(e);
+                            (this.exps).push(e);
                         }
                         else {
                             Expression eo = isExpression(o);
@@ -3238,14 +3238,14 @@ public class expression {
                             {
                                 Expression e = eo.copy();
                                 e.loc.opAssign(loc.copy());
-                                (this.exps.get()).push(e);
+                                (this.exps).push(e);
                             }
                             else {
                                 Type t = isType(o);
                                 if ((t) != null)
                                 {
                                     Expression e = new TypeExp(loc, t);
-                                    (this.exps.get()).push(e);
+                                    (this.exps).push(e);
                                 }
                                 else
                                 {
@@ -3259,7 +3259,7 @@ public class expression {
         }
 
         // Erasure: create<Loc, Ptr>
-        public static TupleExp create(Loc loc, Ptr<DArray<Expression>> exps) {
+        public static TupleExp create(Loc loc, DArray<Expression> exps) {
             return new TupleExp(loc, exps);
         }
 
@@ -3287,7 +3287,7 @@ public class expression {
                         TupleExp te = e.isTupleExp();
                         if ((te) != null)
                         {
-                            if (((this.exps.get()).length != (te.exps.get()).length))
+                            if (((this.exps).length != (te.exps).length))
                             {
                                 return false;
                             }
@@ -3296,12 +3296,12 @@ public class expression {
                                 return false;
                             }
                             {
-                                Slice<Expression> __r1345 = (this.exps.get()).opSlice().copy();
+                                Slice<Expression> __r1345 = (this.exps).opSlice().copy();
                                 int __key1344 = 0;
                                 for (; (__key1344 < __r1345.getLength());__key1344 += 1) {
                                     Expression e1 = __r1345.get(__key1344);
                                     int i = __key1344;
-                                    Expression e2 = (te.exps.get()).get(i);
+                                    Expression e2 = (te.exps).get(i);
                                     if (!e1.equals(e2))
                                     {
                                         return false;
@@ -3339,10 +3339,10 @@ public class expression {
     public static class ArrayLiteralExp extends Expression
     {
         public Ref<Expression> basis = ref(null);
-        public Ptr<DArray<Expression>> elements = null;
+        public DArray<Expression> elements = null;
         public byte ownedByCtfe = OwnedBy.code;
         // Erasure: __ctor<Loc, Type, Ptr>
-        public  ArrayLiteralExp(Loc loc, Type type, Ptr<DArray<Expression>> elements) {
+        public  ArrayLiteralExp(Loc loc, Type type, DArray<Expression> elements) {
             super(loc, TOK.arrayLiteral, 33);
             this.type.value = type;
             this.elements = pcopy(elements);
@@ -3352,12 +3352,12 @@ public class expression {
         public  ArrayLiteralExp(Loc loc, Type type, Expression e) {
             super(loc, TOK.arrayLiteral, 33);
             this.type.value = type;
-            this.elements = pcopy((refPtr(new DArray<Expression>())));
-            (this.elements.get()).push(e);
+            this.elements = pcopy(new DArray<Expression>());
+            (this.elements).push(e);
         }
 
         // Erasure: __ctor<Loc, Type, Expression, Ptr>
-        public  ArrayLiteralExp(Loc loc, Type type, Expression basis, Ptr<DArray<Expression>> elements) {
+        public  ArrayLiteralExp(Loc loc, Type type, Expression basis, DArray<Expression> elements) {
             super(loc, TOK.arrayLiteral, 33);
             this.type.value = type;
             this.basis.value = basis;
@@ -3365,12 +3365,12 @@ public class expression {
         }
 
         // Erasure: create<Loc, Ptr>
-        public static ArrayLiteralExp create(Loc loc, Ptr<DArray<Expression>> elements) {
+        public static ArrayLiteralExp create(Loc loc, DArray<Expression> elements) {
             return new ArrayLiteralExp(loc, null, elements);
         }
 
         // Erasure: emplace<Ptr, Loc, Ptr>
-        public static void emplace(Ptr<UnionExp> pue, Loc loc, Ptr<DArray<Expression>> elements) {
+        public static void emplace(Ptr<UnionExp> pue, Loc loc, DArray<Expression> elements) {
             (pue) = new UnionExp(new ArrayLiteralExp(loc, null, elements));
         }
 
@@ -3394,21 +3394,21 @@ public class expression {
                 ArrayLiteralExp ae = e.isArrayLiteralExp();
                 if ((ae) != null)
                 {
-                    if (((this.elements.get()).length != (ae.elements.get()).length))
+                    if (((this.elements).length != (ae.elements).length))
                     {
                         return false;
                     }
-                    if (((this.elements.get()).length == 0) && !this.type.value.equals(ae.type.value))
+                    if (((this.elements).length == 0) && !this.type.value.equals(ae.type.value))
                     {
                         return false;
                     }
                     {
-                        Slice<Expression> __r1347 = (this.elements.get()).opSlice().copy();
+                        Slice<Expression> __r1347 = (this.elements).opSlice().copy();
                         int __key1346 = 0;
                         for (; (__key1346 < __r1347.getLength());__key1346 += 1) {
                             Expression e1 = __r1347.get(__key1346);
                             int i = __key1346;
-                            Expression e2 = (ae.elements.get()).get(i);
+                            Expression e2 = (ae.elements).get(i);
                             if (e1 == null)
                             {
                                 e1 = this.basis.value;
@@ -3431,20 +3431,20 @@ public class expression {
 
         // Erasure: getElement<int>
         public  Expression getElement(int i) {
-            Expression el = (this.elements.get()).get(i);
+            Expression el = (this.elements).get(i);
             return el != null ? el : this.basis.value;
         }
 
         // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
-            int dim = this.elements != null ? (this.elements.get()).length : 0;
+            int dim = this.elements != null ? (this.elements).length : 0;
             return result ? dim != 0 : dim == 0;
         }
 
         // Erasure: toStringExp<>
         public  StringExp toStringExp() {
             byte telem = this.type.value.nextOf().toBasetype().ty;
-            if (((telem & 0xFF) == ENUMTY.Tchar) || ((telem & 0xFF) == ENUMTY.Twchar) || ((telem & 0xFF) == ENUMTY.Tdchar) || ((telem & 0xFF) == ENUMTY.Tvoid) && (this.elements == null) || ((this.elements.get()).length == 0))
+            if (((telem & 0xFF) == ENUMTY.Tchar) || ((telem & 0xFF) == ENUMTY.Twchar) || ((telem & 0xFF) == ENUMTY.Tdchar) || ((telem & 0xFF) == ENUMTY.Tvoid) && (this.elements == null) || ((this.elements).length == 0))
             {
                 byte sz = (byte)1;
                 if (((telem & 0xFF) == ENUMTY.Twchar))
@@ -3461,7 +3461,7 @@ public class expression {
                     {
                         {
                             int __key1348 = 0;
-                            int __limit1349 = (this.elements.get()).length;
+                            int __limit1349 = (this.elements).length;
                             for (; (__key1348 < __limit1349);__key1348 += 1) {
                                 int i = __key1348;
                                 Expression ch = this.getElement(i);
@@ -3535,13 +3535,13 @@ public class expression {
     }
     public static class AssocArrayLiteralExp extends Expression
     {
-        public Ptr<DArray<Expression>> keys = null;
-        public Ptr<DArray<Expression>> values = null;
+        public DArray<Expression> keys = null;
+        public DArray<Expression> values = null;
         public byte ownedByCtfe = OwnedBy.code;
         // Erasure: __ctor<Loc, Ptr, Ptr>
-        public  AssocArrayLiteralExp(Loc loc, Ptr<DArray<Expression>> keys, Ptr<DArray<Expression>> values) {
+        public  AssocArrayLiteralExp(Loc loc, DArray<Expression> keys, DArray<Expression> values) {
             super(loc, TOK.assocArrayLiteral, 33);
-            assert(((keys.get()).length == (values.get()).length));
+            assert(((keys).length == (values).length));
             this.keys = pcopy(keys);
             this.values = pcopy(values);
         }
@@ -3561,26 +3561,26 @@ public class expression {
                 AssocArrayLiteralExp ae = e.isAssocArrayLiteralExp();
                 if ((ae) != null)
                 {
-                    if (((this.keys.get()).length != (ae.keys.get()).length))
+                    if (((this.keys).length != (ae.keys).length))
                     {
                         return false;
                     }
                     int count = 0;
                     {
-                        Slice<Expression> __r1351 = (this.keys.get()).opSlice().copy();
+                        Slice<Expression> __r1351 = (this.keys).opSlice().copy();
                         int __key1350 = 0;
                         for (; (__key1350 < __r1351.getLength());__key1350 += 1) {
                             Expression key = __r1351.get(__key1350);
                             int i = __key1350;
                             {
-                                Slice<Expression> __r1353 = (ae.keys.get()).opSlice().copy();
+                                Slice<Expression> __r1353 = (ae.keys).opSlice().copy();
                                 int __key1352 = 0;
                                 for (; (__key1352 < __r1353.getLength());__key1352 += 1) {
                                     Expression akey = __r1353.get(__key1352);
                                     int j = __key1352;
                                     if (key.equals(akey))
                                     {
-                                        if (!(this.values.get()).get(i).equals((ae.values.get()).get(j)))
+                                        if (!(this.values).get(i).equals((ae.values).get(j)))
                                         {
                                             return false;
                                         }
@@ -3590,7 +3590,7 @@ public class expression {
                             }
                         }
                     }
-                    return count == (this.keys.get()).length;
+                    return count == (this.keys).length;
                 }
             }
             return false;
@@ -3603,7 +3603,7 @@ public class expression {
 
         // Erasure: isBool<boolean>
         public  boolean isBool(boolean result) {
-            int dim = (this.keys.get()).length;
+            int dim = (this.keys).length;
             return result ? dim != 0 : dim == 0;
         }
 
@@ -3637,7 +3637,7 @@ public class expression {
     public static class StructLiteralExp extends Expression
     {
         public StructDeclaration sd = null;
-        public Ptr<DArray<Expression>> elements = null;
+        public DArray<Expression> elements = null;
         public Type stype = null;
         public Ptr<Symbol> sym = null;
         public StructLiteralExp origin = null;
@@ -3646,12 +3646,12 @@ public class expression {
         public boolean useStaticInit = false;
         public byte ownedByCtfe = OwnedBy.code;
         // Erasure: __ctor<Loc, StructDeclaration, Ptr, Type>
-        public  StructLiteralExp(Loc loc, StructDeclaration sd, Ptr<DArray<Expression>> elements, Type stype) {
+        public  StructLiteralExp(Loc loc, StructDeclaration sd, DArray<Expression> elements, Type stype) {
             super(loc, TOK.structLiteral, 54);
             this.sd = sd;
             if (elements == null)
             {
-                elements = pcopy((refPtr(new DArray<Expression>())));
+                elements = pcopy(new DArray<Expression>());
             }
             this.elements = pcopy(elements);
             this.stype = stype;
@@ -3659,13 +3659,13 @@ public class expression {
         }
 
         // defaulted all parameters starting with #4
-        public  StructLiteralExp(Loc loc, StructDeclaration sd, Ptr<DArray<Expression>> elements) {
+        public  StructLiteralExp(Loc loc, StructDeclaration sd, DArray<Expression> elements) {
             this(loc, sd, elements, (Type)null);
         }
 
         // Erasure: create<Loc, StructDeclaration, Ptr, Type>
         public static StructLiteralExp create(Loc loc, StructDeclaration sd, Object elements, Type stype) {
-            return new StructLiteralExp(loc, sd, ((Ptr<DArray<Expression>>)elements), stype);
+            return new StructLiteralExp(loc, sd, ((DArray<Expression>)elements), stype);
         }
 
         // defaulted all parameters starting with #4
@@ -3692,17 +3692,17 @@ public class expression {
                     {
                         return false;
                     }
-                    if (((this.elements.get()).length != (se.elements.get()).length))
+                    if (((this.elements).length != (se.elements).length))
                     {
                         return false;
                     }
                     {
-                        Slice<Expression> __r1355 = (this.elements.get()).opSlice().copy();
+                        Slice<Expression> __r1355 = (this.elements).opSlice().copy();
                         int __key1354 = 0;
                         for (; (__key1354 < __r1355.getLength());__key1354 += 1) {
                             Expression e1 = __r1355.get(__key1354);
                             int i = __key1354;
-                            Expression e2 = (se.elements.get()).get(i);
+                            Expression e2 = (se.elements).get(i);
                             if ((!pequals(e1, e2)) && (e1 == null) || (e2 == null) || !e1.equals(e2))
                             {
                                 return false;
@@ -3732,17 +3732,17 @@ public class expression {
                 {
                     return null;
                 }
-                assert((i < (this.elements.get()).length));
-                e = (this.elements.get()).get(i);
+                assert((i < (this.elements).length));
+                e = (this.elements).get(i);
                 if (e != null)
                 {
                     TypeSArray tsa = type.isTypeSArray();
                     if ((tsa != null) && (!pequals(e.type.value.castMod((byte)0), type.castMod((byte)0))))
                     {
                         int length = (int)tsa.dim.toInteger();
-                        Ptr<DArray<Expression>> z = refPtr(new DArray<Expression>(length));
+                        DArray<Expression> z = new DArray<Expression>(length);
                         {
-                            Slice<Expression> __r1356 = (z.get()).opSlice().copy();
+                            Slice<Expression> __r1356 = (z).opSlice().copy();
                             int __key1357 = 0;
                             for (; (__key1357 < __r1356.getLength());__key1357 += 1) {
                                 Expression q = __r1356.get(__key1357);
@@ -3773,7 +3773,7 @@ public class expression {
 
         // Erasure: getFieldIndex<Type, int>
         public  int getFieldIndex(Type type, int offset) {
-            if ((this.elements.get()).length != 0)
+            if ((this.elements).length != 0)
             {
                 {
                     Slice<VarDeclaration> __r1359 = this.sd.fields.opSlice().copy();
@@ -3788,7 +3788,7 @@ public class expression {
                                 return i;
                             }
                             {
-                                Expression e = (this.elements.get()).get(i);
+                                Expression e = (this.elements).get(i);
                                 if ((e) != null)
                                 {
                                     return i;
@@ -3903,7 +3903,7 @@ public class expression {
 
         // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
-            return new ScopeExp(this.loc, (ScopeDsymbol)this.sds.syntaxCopy(null));
+            return new ScopeExp(this.loc, ((ScopeDsymbol)this.sds.syntaxCopy(null)));
         }
 
         // Erasure: checkType<>
@@ -4018,16 +4018,16 @@ public class expression {
     public static class NewExp extends Expression
     {
         public Ref<Expression> thisexp = ref(null);
-        public Ptr<DArray<Expression>> newargs = null;
+        public DArray<Expression> newargs = null;
         public Type newtype = null;
-        public Ptr<DArray<Expression>> arguments = null;
+        public DArray<Expression> arguments = null;
         public Ref<Expression> argprefix = ref(null);
         public CtorDeclaration member = null;
         public NewDeclaration allocator = null;
         public boolean onstack = false;
         public boolean thrownew = false;
         // Erasure: __ctor<Loc, Expression, Ptr, Type, Ptr>
-        public  NewExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, Type newtype, Ptr<DArray<Expression>> arguments) {
+        public  NewExp(Loc loc, Expression thisexp, DArray<Expression> newargs, Type newtype, DArray<Expression> arguments) {
             super(loc, TOK.new_, 54);
             this.thisexp.value = thisexp;
             this.newargs = pcopy(newargs);
@@ -4036,7 +4036,7 @@ public class expression {
         }
 
         // Erasure: create<Loc, Expression, Ptr, Type, Ptr>
-        public static NewExp create(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, Type newtype, Ptr<DArray<Expression>> arguments) {
+        public static NewExp create(Loc loc, Expression thisexp, DArray<Expression> newargs, Type newtype, DArray<Expression> arguments) {
             return new NewExp(loc, thisexp, newargs, newtype, arguments);
         }
 
@@ -4075,11 +4075,11 @@ public class expression {
     public static class NewAnonClassExp extends Expression
     {
         public Expression thisexp = null;
-        public Ptr<DArray<Expression>> newargs = null;
+        public DArray<Expression> newargs = null;
         public ClassDeclaration cd = null;
-        public Ptr<DArray<Expression>> arguments = null;
+        public DArray<Expression> arguments = null;
         // Erasure: __ctor<Loc, Expression, Ptr, ClassDeclaration, Ptr>
-        public  NewAnonClassExp(Loc loc, Expression thisexp, Ptr<DArray<Expression>> newargs, ClassDeclaration cd, Ptr<DArray<Expression>> arguments) {
+        public  NewAnonClassExp(Loc loc, Expression thisexp, DArray<Expression> newargs, ClassDeclaration cd, DArray<Expression> arguments) {
             super(loc, TOK.newAnonymousClass, 40);
             this.thisexp = thisexp;
             this.newargs = pcopy(newargs);
@@ -4089,7 +4089,7 @@ public class expression {
 
         // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
-            return new NewAnonClassExp(this.loc, this.thisexp != null ? this.thisexp.syntaxCopy() : null, Expression.arraySyntaxCopy(this.newargs), (ClassDeclaration)this.cd.syntaxCopy(null), Expression.arraySyntaxCopy(this.arguments));
+            return new NewAnonClassExp(this.loc, this.thisexp != null ? this.thisexp.syntaxCopy() : null, Expression.arraySyntaxCopy(this.newargs), ((ClassDeclaration)this.cd.syntaxCopy(null)), Expression.arraySyntaxCopy(this.arguments));
         }
 
         // Erasure: accept<Visitor>
@@ -4375,8 +4375,8 @@ public class expression {
             if (this.td != null)
             {
                 assert(this.td.literal);
-                assert((this.td.members != null) && ((this.td.members.get()).length == 1));
-                this.fd = (this.td.members.get()).get(0).isFuncLiteralDeclaration();
+                assert((this.td.members != null) && ((this.td.members).length == 1));
+                this.fd = (this.td.members).get(0).isFuncLiteralDeclaration();
             }
             this.tok = this.fd.tok;
             assert(this.fd.fbody.value != null);
@@ -4502,7 +4502,7 @@ public class expression {
                     }
                     return MATCH.nomatch;
                 }
-                tof = (TypeFunction)to.nextOf();
+                tof = ((TypeFunction)to.nextOf());
             }
             else if (((to.ty & 0xFF) == ENUMTY.Tpointer) && ((tof = to.nextOf().isTypeFunction()) != null))
             {
@@ -4528,10 +4528,10 @@ public class expression {
                 {
                     return cannotInfer.invoke(this, to, flag);
                 }
-                Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
-                (tiargs.get()).reserve((this.td.parameters.get()).length);
+                DArray<RootObject> tiargs = new DArray<RootObject>();
+                (tiargs).reserve((this.td.parameters).length);
                 {
-                    Slice<TemplateParameter> __r1360 = (this.td.parameters.get()).opSlice().copy();
+                    Slice<TemplateParameter> __r1360 = (this.td.parameters).opSlice().copy();
                     int __key1361 = 0;
                     for (; (__key1361 < __r1360.getLength());__key1361 += 1) {
                         TemplateParameter tp = __r1360.get(__key1361);
@@ -4556,7 +4556,7 @@ public class expression {
                         {
                             return cannotInfer.invoke(this, to, flag);
                         }
-                        (tiargs.get()).push(t);
+                        (tiargs).push(t);
                     }
                 }
                 if ((tf.next.value == null) && (tof.next.value != null))
@@ -4769,9 +4769,9 @@ public class expression {
     public static class TraitsExp extends Expression
     {
         public Identifier ident = null;
-        public Ptr<DArray<RootObject>> args = null;
+        public DArray<RootObject> args = null;
         // Erasure: __ctor<Loc, Identifier, Ptr>
-        public  TraitsExp(Loc loc, Identifier ident, Ptr<DArray<RootObject>> args) {
+        public  TraitsExp(Loc loc, Identifier ident, DArray<RootObject> args) {
             super(loc, TOK.traits, 32);
             this.ident = ident;
             this.args = pcopy(args);
@@ -4832,11 +4832,11 @@ public class expression {
         public Type targ = null;
         public Identifier id = null;
         public Type tspec = null;
-        public Ptr<DArray<TemplateParameter>> parameters = null;
+        public DArray<TemplateParameter> parameters = null;
         public byte tok = 0;
         public byte tok2 = 0;
         // Erasure: __ctor<Loc, Type, Identifier, byte, Type, byte, Ptr>
-        public  IsExp(Loc loc, Type targ, Identifier id, byte tok, Type tspec, byte tok2, Ptr<DArray<TemplateParameter>> parameters) {
+        public  IsExp(Loc loc, Type targ, Identifier id, byte tok, Type tspec, byte tok2, DArray<TemplateParameter> parameters) {
             super(loc, TOK.is_, 42);
             this.targ = targ;
             this.id = id;
@@ -4848,17 +4848,17 @@ public class expression {
 
         // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
-            Ptr<DArray<TemplateParameter>> p = null;
+            DArray<TemplateParameter> p = null;
             if (this.parameters != null)
             {
-                p = pcopy((refPtr(new DArray<TemplateParameter>((this.parameters.get()).length))));
+                p = pcopy(new DArray<TemplateParameter>((this.parameters).length));
                 {
-                    Slice<TemplateParameter> __r1363 = (this.parameters.get()).opSlice().copy();
+                    Slice<TemplateParameter> __r1363 = (this.parameters).opSlice().copy();
                     int __key1362 = 0;
                     for (; (__key1362 < __r1363.getLength());__key1362 += 1) {
                         TemplateParameter el = __r1363.get(__key1362);
                         int i = __key1362;
-                        p.get().set(i, el.syntaxCopy());
+                        p.set(i, el.syntaxCopy());
                     }
                 }
             }
@@ -4901,7 +4901,7 @@ public class expression {
 
         // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
-            UnaExp e = (UnaExp)this.copy();
+            UnaExp e = ((UnaExp)this.copy());
             e.type.value = null;
             e.e1.value = e.e1.value.syntaxCopy();
             return e;
@@ -4966,7 +4966,7 @@ public class expression {
 
         // Erasure: syntaxCopy<>
         public  Expression syntaxCopy() {
-            BinExp e = (BinExp)this.copy();
+            BinExp e = ((BinExp)this.copy());
             e.type.value = null;
             e.e1.value = e.e1.value.syntaxCopy();
             e.e2.value = e.e2.value.syntaxCopy();
@@ -5244,9 +5244,9 @@ public class expression {
     }
     public static class CompileExp extends Expression
     {
-        public Ptr<DArray<Expression>> exps = null;
+        public DArray<Expression> exps = null;
         // Erasure: __ctor<Loc, Ptr>
-        public  CompileExp(Loc loc, Ptr<DArray<Expression>> exps) {
+        public  CompileExp(Loc loc, DArray<Expression> exps) {
             super(loc, TOK.mixin_, 28);
             this.exps = pcopy(exps);
         }
@@ -5271,17 +5271,17 @@ public class expression {
                 CompileExp ce = e.isCompileExp();
                 if ((ce) != null)
                 {
-                    if (((this.exps.get()).length != (ce.exps.get()).length))
+                    if (((this.exps).length != (ce.exps).length))
                     {
                         return false;
                     }
                     {
-                        Slice<Expression> __r1365 = (this.exps.get()).opSlice().copy();
+                        Slice<Expression> __r1365 = (this.exps).opSlice().copy();
                         int __key1364 = 0;
                         for (; (__key1364 < __r1365.getLength());__key1364 += 1) {
                             Expression e1 = __r1365.get(__key1364);
                             int i = __key1364;
-                            Expression e2 = (ce.exps.get()).get(i);
+                            Expression e2 = (ce.exps).get(i);
                             if ((!pequals(e1, e2)) && (e1 == null) || (e2 == null) || !e1.equals(e2))
                             {
                                 return false;
@@ -5584,7 +5584,7 @@ public class expression {
     {
         public TemplateInstance ti = null;
         // Erasure: __ctor<Loc, Expression, Identifier, Ptr>
-        public  DotTemplateInstanceExp(Loc loc, Expression e, Identifier name, Ptr<DArray<RootObject>> tiargs) {
+        public  DotTemplateInstanceExp(Loc loc, Expression e, Identifier name, DArray<RootObject> tiargs) {
             super(loc, TOK.dotTemplateInstance, 36, e);
             this.ti = new TemplateInstance(loc, name, tiargs);
         }
@@ -5610,25 +5610,25 @@ public class expression {
             e = expressionSemantic(e, sc);
             if (((e.op & 0xFF) == 97))
             {
-                e = ((DotExp)e).e2.value;
+                e = (((DotExp)e)).e2.value;
             }
             Dsymbol s = null;
             switch ((e.op & 0xFF))
             {
                 case 214:
-                    s = ((OverExp)e).vars;
+                    s = (((OverExp)e)).vars;
                     break;
                 case 37:
-                    s = ((DotTemplateExp)e).td;
+                    s = (((DotTemplateExp)e)).td;
                     break;
                 case 203:
-                    s = ((ScopeExp)e).sds;
+                    s = (((ScopeExp)e)).sds;
                     break;
                 case 27:
-                    s = ((DotVarExp)e).var;
+                    s = (((DotVarExp)e)).var;
                     break;
                 case 26:
-                    s = ((VarExp)e).var;
+                    s = (((VarExp)e)).var;
                     break;
                 default:
                 return false;
@@ -5735,12 +5735,12 @@ public class expression {
     }
     public static class CallExp extends UnaExp
     {
-        public Ptr<DArray<Expression>> arguments = null;
+        public DArray<Expression> arguments = null;
         public FuncDeclaration f = null;
         public boolean directcall = false;
         public VarDeclaration vthis2 = null;
         // Erasure: __ctor<Loc, Expression, Ptr>
-        public  CallExp(Loc loc, Expression e, Ptr<DArray<Expression>> exps) {
+        public  CallExp(Loc loc, Expression e, DArray<Expression> exps) {
             super(loc, TOK.call, 48, e);
             this.arguments = pcopy(exps);
         }
@@ -5753,19 +5753,19 @@ public class expression {
         // Erasure: __ctor<Loc, Expression, Expression>
         public  CallExp(Loc loc, Expression e, Expression earg1) {
             super(loc, TOK.call, 48, e);
-            this.arguments = pcopy((refPtr(new DArray<Expression>())));
+            this.arguments = pcopy(new DArray<Expression>());
             if (earg1 != null)
             {
-                (this.arguments.get()).push(earg1);
+                (this.arguments).push(earg1);
             }
         }
 
         // Erasure: __ctor<Loc, Expression, Expression, Expression>
         public  CallExp(Loc loc, Expression e, Expression earg1, Expression earg2) {
             super(loc, TOK.call, 48, e);
-            Ptr<DArray<Expression>> arguments = refPtr(new DArray<Expression>(2));
-            arguments.get().set(0, earg1);
-            arguments.get().set(1, earg2);
+            DArray<Expression> arguments = new DArray<Expression>(2);
+            arguments.set(0, earg1);
+            arguments.set(1, earg2);
             this.arguments = pcopy(arguments);
         }
 
@@ -5776,7 +5776,7 @@ public class expression {
         }
 
         // Erasure: create<Loc, Expression, Ptr>
-        public static CallExp create(Loc loc, Expression e, Ptr<DArray<Expression>> exps) {
+        public static CallExp create(Loc loc, Expression e, DArray<Expression> exps) {
             return new CallExp(loc, e, exps);
         }
 
@@ -6273,7 +6273,7 @@ public class expression {
         public  VectorExp(Loc loc, Expression e, Type t) {
             super(loc, TOK.vector, 41, e);
             assert(((t.ty & 0xFF) == ENUMTY.Tvector));
-            this.to = (TypeVector)t;
+            this.to = ((TypeVector)t);
         }
 
         // Erasure: create<Loc, Expression, Type>
@@ -6466,16 +6466,16 @@ public class expression {
     }
     public static class ArrayExp extends UnaExp
     {
-        public Ptr<DArray<Expression>> arguments = null;
+        public DArray<Expression> arguments = null;
         public int currentDimension = 0;
         public Ref<VarDeclaration> lengthVar = ref(null);
         // Erasure: __ctor<Loc, Expression, Expression>
         public  ArrayExp(Loc loc, Expression e1, Expression index) {
             super(loc, TOK.array, 44, e1);
-            this.arguments = pcopy((refPtr(new DArray<Expression>())));
+            this.arguments = pcopy(new DArray<Expression>());
             if (index != null)
             {
-                (this.arguments.get()).push(index);
+                (this.arguments).push(index);
             }
         }
 
@@ -6485,7 +6485,7 @@ public class expression {
         }
 
         // Erasure: __ctor<Loc, Expression, Ptr>
-        public  ArrayExp(Loc loc, Expression e1, Ptr<DArray<Expression>> args) {
+        public  ArrayExp(Loc loc, Expression e1, DArray<Expression> args) {
             super(loc, TOK.array, 44, e1);
             this.arguments = pcopy(args);
         }
@@ -8148,7 +8148,7 @@ public class expression {
 
         // Erasure: toLvalue<Ptr, Expression>
         public  Expression toLvalue(Ptr<Scope> sc, Expression ex) {
-            CondExp e = (CondExp)this.copy();
+            CondExp e = ((CondExp)this.copy());
             e.e1.value = this.e1.value.toLvalue(sc, null).addressOf();
             e.e2.value = this.e2.value.toLvalue(sc, null).addressOf();
             e.type.value = this.type.value.pointerTo();
@@ -8257,7 +8257,7 @@ public class expression {
             }
             else
             {
-                s = pcopy((loc.isValid() ? loc.filename : (sc.get())._module.ident.toChars()));
+                s = pcopy(loc.isValid() ? loc.filename : (sc.get())._module.ident.toChars());
             }
             Expression e = new StringExp(loc, s);
             e = expressionSemantic(e, sc);
@@ -8415,7 +8415,7 @@ public class expression {
                 BytePtr funcStr = pcopy(fd.toPrettyChars(false));
                 Ref<OutBuffer> buf = ref(new OutBuffer());
                 try {
-                    functionToBufferWithIdent(fd.type.isTypeFunction(), ptr(buf), funcStr);
+                    functionToBufferWithIdent(fd.type.isTypeFunction(), buf.value, funcStr);
                     s = pcopy(buf.value.extractChars());
                 }
                 finally {

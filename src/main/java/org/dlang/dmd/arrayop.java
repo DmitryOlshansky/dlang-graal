@@ -28,10 +28,10 @@ public class arrayop {
     private static class BuildArrayOpVisitor extends Visitor
     {
         private Ptr<Scope> sc = null;
-        private Ptr<DArray<RootObject>> tiargs = null;
-        private Ptr<DArray<Expression>> args = null;
+        private DArray<RootObject> tiargs = null;
+        private DArray<Expression> args = null;
         // Erasure: __ctor<Ptr, Ptr, Ptr>
-        public  BuildArrayOpVisitor(Ptr<Scope> sc, Ptr<DArray<RootObject>> tiargs, Ptr<DArray<Expression>> args) {
+        public  BuildArrayOpVisitor(Ptr<Scope> sc, DArray<RootObject> tiargs, DArray<Expression> args) {
             this.sc = pcopy(sc);
             this.tiargs = pcopy(tiargs);
             this.args = pcopy(args);
@@ -39,8 +39,8 @@ public class arrayop {
 
         // Erasure: visit<Expression>
         public  void visit(Expression e) {
-            (this.tiargs.get()).push(e.type.value);
-            (this.args.get()).push(e);
+            (this.tiargs).push(e.type.value);
+            (this.args).push(e);
         }
 
         // Erasure: visit<SliceExp>
@@ -67,7 +67,7 @@ public class arrayop {
                     buf.writestring(new ByteSlice("u"));
                     buf.writestring(Token.asString(e.op));
                     e.e1.value.accept(this);
-                    (this.tiargs.get()).push(expressionSemantic(new StringExp(Loc.initial, buf.extractChars()), this.sc));
+                    (this.tiargs).push(expressionSemantic(new StringExp(Loc.initial, buf.extractChars()), this.sc));
                 }
                 finally {
                 }
@@ -85,7 +85,7 @@ public class arrayop {
             {
                 e.e1.value.accept(this);
                 e.e2.value.accept(this);
-                (this.tiargs.get()).push(expressionSemantic(new StringExp(Loc.initial, Token.toChars(e.op)), this.sc));
+                (this.tiargs).push(expressionSemantic(new StringExp(Loc.initial, Token.toChars(e.op)), this.sc));
             }
         }
 
@@ -112,16 +112,16 @@ public class arrayop {
         {
             if (isUnaArrayOp(e.op))
             {
-                return isArrayOpValid(((UnaExp)e).e1.value);
+                return isArrayOpValid((((UnaExp)e)).e1.value);
             }
             if (isBinArrayOp(e.op) || isBinAssignArrayOp(e.op) || ((e.op & 0xFF) == 90))
             {
-                BinExp be = (BinExp)e;
+                BinExp be = ((BinExp)e);
                 return isArrayOpValid(be.e1.value) && isArrayOpValid(be.e2.value);
             }
             if (((e.op & 0xFF) == 95))
             {
-                BinExp be = (BinExp)e;
+                BinExp be = ((BinExp)e);
                 return ((be.e1.value.op & 0xFF) == 31) && isArrayOpValid(be.e2.value);
             }
             return false;
@@ -133,7 +133,7 @@ public class arrayop {
     public static boolean isNonAssignmentArrayOp(Expression e) {
         if (((e.op & 0xFF) == 31))
         {
-            return isNonAssignmentArrayOp(((SliceExp)e).e1.value);
+            return isNonAssignmentArrayOp((((SliceExp)e)).e1.value);
         }
         Type tb = e.type.value.toBasetype();
         if (((tb.ty & 0xFF) == ENUMTY.Tarray) || ((tb.ty & 0xFF) == ENUMTY.Tsarray))
@@ -177,8 +177,8 @@ public class arrayop {
         {
             return arrayOpInvalidError(e);
         }
-        Ptr<DArray<RootObject>> tiargs = refPtr(new DArray<RootObject>());
-        Ptr<DArray<Expression>> args = refPtr(new DArray<Expression>());
+        DArray<RootObject> tiargs = new DArray<RootObject>();
+        DArray<Expression> args = new DArray<Expression>();
         buildArrayOp(sc, e, tiargs, args);
         if ((arrayop.arrayOparrayOp == null))
         {
@@ -190,7 +190,7 @@ public class arrayop {
             {
                 ObjectNotFound(Identifier.idPool(new ByteSlice("_arrayOp")));
             }
-            arrayop.arrayOparrayOp = ((TemplateExp)id).td;
+            arrayop.arrayOparrayOp = (((TemplateExp)id)).td;
         }
         FuncDeclaration fd = resolveFuncCall(e.loc, sc, arrayop.arrayOparrayOp, tiargs, null, args, FuncResolveFlag.standard);
         if ((fd == null) || fd.errors)
@@ -220,7 +220,7 @@ public class arrayop {
     }
 
     // Erasure: buildArrayOp<Ptr, Expression, Ptr, Ptr>
-    public static void buildArrayOp(Ptr<Scope> sc, Expression e, Ptr<DArray<RootObject>> tiargs, Ptr<DArray<Expression>> args) {
+    public static void buildArrayOp(Ptr<Scope> sc, Expression e, DArray<RootObject> tiargs, DArray<Expression> args) {
         // skipping duplicate class BuildArrayOpVisitor
         BuildArrayOpVisitor v = new BuildArrayOpVisitor(sc, tiargs, args);
         e.accept(v);
